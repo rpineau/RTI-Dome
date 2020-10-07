@@ -10,7 +10,7 @@
 #include "WProgram.h"
 #endif
 
-#if defined __SAM3X8E__ // DUE
+#if defined ARDUINO_DUE // DUE
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
 #else
@@ -78,7 +78,7 @@ enum Seeks { HOMING_NONE, // Not homing or calibrating
 #endif
 
 #define VOLTAGE_MONITOR_PIN  A0
-#if defined __SAM3X8E__
+#if defined ARDUINO_DUE
 #define AD_REF  3.3
 #else
 #define AD_REF  5.0
@@ -241,7 +241,7 @@ void RotatorClass::SaveToEEProm()
 {
     m_Config.signature = SIGNATURE;
 
-#if defined __SAM3X8E__ // DUE
+#if defined ARDUINO_DUE // DUE
     byte data[sizeof(Configuration)];
     memcpy(data, &m_Config, sizeof(Configuration));
     dueFlashStorage.write(0, data, sizeof(Configuration));
@@ -258,7 +258,7 @@ bool RotatorClass::LoadFromEEProm()
     //  dont end up loaded with random garbage
     memset(&m_Config, 0, sizeof(Configuration));
 
-#if defined __SAM3X8E__ // DUE
+#if defined ARDUINO_DUE // DUE
     byte* data = dueFlashStorage.readAddress(0);
     memcpy(&m_Config, data, sizeof(Configuration));
 #else

@@ -5,14 +5,9 @@
 
 // #define TEENY_3_5
 
-#if defined __SAM3X8E__ // Arduino DUE
-#include <DueFlashStorage.h>
-DueFlashStorage dueFlashStorage;
-#else
-#include <EEPROM.h>
-#endif
 
 #if defined __SAM3X8E__ // Arduino DUE
+#define ARDUINO_DUE
 // DUE
 #define Computer Serial     // programing port
 #define DebugPort Computer
@@ -25,6 +20,13 @@ DueFlashStorage dueFlashStorage;
 #endif
 
 #define ERR_NO_DATA	-1
+
+#if defined ARDUINO_DUE
+#include <DueFlashStorage.h>
+DueFlashStorage dueFlashStorage;
+#else
+#include <EEPROM.h>
+#endif
 
 #include "ShutterClass.h"
 
@@ -67,7 +69,7 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATCH0C","ATMY1","ATDH0",
 // This allows us to change the Pan ID and store it in the EEPROM/Flash
 #define PANID_STEP 4
 
-#if defined __SAM3X8E__ // Arduino DUE
+#if defined ARDUINO_DUE // Arduino DUE
 #define XBEE_RESET_PIN  8
 #endif
 
@@ -87,20 +89,20 @@ bool doFinalUpdate = false;
 void setup()
 {
 #ifdef DEBUG
-	Computer.begin(9600);
+	Computer.begin(115200);
 #endif
 	Wireless.begin(9600);
 
     XbeeStarted = false;
 	XbeeResets = 0;
 	isConfiguringWireless = false;
-#if defined __SAM3X8E__ // Arduino DUE
+#if defined ARDUINO_DUE // Arduino DUE
     pinMode(XBEE_RESET_PIN, OUTPUT);
     digitalWrite(XBEE_RESET_PIN, 1);
 #endif
 	watchdogTimer.reset();
 // AccelStepper run() is called under a 20KHz timer interrupt
-#if defined __SAM3X8E__
+#if defined ARDUINO_DUE
     startTimer(TC1, 0, TC3_IRQn, 20000);
 #endif
     Shutter.EnableOutputs(false);
@@ -134,7 +136,7 @@ void loop()
 	        if(!isResetingXbee && XbeeResets == 0) {
 	            XbeeResets++;
 	            isResetingXbee = true;
-#if defined __SAM3X8E__ // Arduino DUE
+#if defined ARDUINO_DUE // Arduino DUE
                 ResetXbee();
 #endif
                 Shutter.setRadioConfigured(false);
@@ -161,7 +163,7 @@ void loop()
 
 }
 
-#if defined __SAM3X8E__
+#if defined ARDUINO_DUE
 /*
  * As demonstrated by RCArduino and modified by BKM:
  * pick clock that provides the least error for specified frequency.
@@ -274,7 +276,7 @@ inline void ConfigXBee(String result)
     delay(100);
 }
 
-#if defined __SAM3X8E__ // Arduino DUE
+#if defined ARDUINO_DUE // Arduino DUE
 void ResetXbee()
 {
     DBPrintln("Resetting Xbee");
@@ -337,7 +339,7 @@ void ReceiveWireless()
 				wirelessBuffer += String(character);
 			}
 		}
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
     stepper.run(); // we don't want the stepper to stop
 #endif
 	} // end while

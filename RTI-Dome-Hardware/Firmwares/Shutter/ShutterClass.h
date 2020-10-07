@@ -16,7 +16,7 @@
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)
@@ -71,7 +71,7 @@ typedef struct ShutterConfiguration {
 #define MAX_WATCHDOG_INTERVAL   300000
 
 #define VOLTAGE_MONITOR_PIN A0
-#if defined __SAM3X8E__
+#if defined ARDUINO_DUE
 #define AD_REF  3.3
 #else
 #define AD_REF  5.0
@@ -253,7 +253,7 @@ int ShutterClass::restoreDefaultMotorSettings()
 
 void ShutterClass::LoadFromEEProm()
 {
-#if defined __SAM3X8E__ // DUE
+#if defined ARDUINO_DUE // DUE
     byte* data = dueFlashStorage.readAddress(0);
     memcpy(&m_Config, data, sizeof(Configuration));
 #else
@@ -274,7 +274,7 @@ void ShutterClass::LoadFromEEProm()
 void ShutterClass::SaveToEEProm()
 {
 
-#if defined __SAM3X8E__ // DUE
+#if defined ARDUINO_DUE // DUE
     byte data[sizeof(Configuration)];
     memcpy(data, &m_Config, sizeof(Configuration));
     dueFlashStorage.write(0, data, sizeof(Configuration));
@@ -555,7 +555,7 @@ void ShutterClass::Run()
 {
     static bool hitSwitch = false, firstBatteryCheck = true, doSync = true;
 
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
     stepper.run(); // we don't want the stepper to stop
 #endif
 

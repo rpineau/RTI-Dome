@@ -8,17 +8,6 @@
 // #define STANDALONE
 // #define TEENY_3_5
 
-#include "RotatorClass.h"
-
-#ifndef STANDALONE
-#include "RemoteShutterClass.h"
-#endif
-
-RotatorClass Rotator ;
-
-#ifndef STANDALONE
-RemoteShutterClass RemoteShutter;
-#endif
 
 #define MAX_TIMEOUT 100
 #define ERR_NO_DATA -1
@@ -27,6 +16,7 @@ RemoteShutterClass RemoteShutter;
 #define VERSION "2.64"
 
 #if defined __SAM3X8E__
+#define ARDUINO_DUE
 // DUE
 #define Computer Serial     // programing port
 #ifndef STANDALONE
@@ -40,6 +30,18 @@ RemoteShutterClass RemoteShutter;
 #define Wireless Serial1
 #endif
 #define DebugPort Computer
+#endif
+
+#include "RotatorClass.h"
+
+#ifndef STANDALONE
+#include "RemoteShutterClass.h"
+#endif
+
+RotatorClass Rotator ;
+
+#ifndef STANDALONE
+RemoteShutterClass RemoteShutter;
 #endif
 
 String computerBuffer;
@@ -144,7 +146,7 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 
 void setup()
 {
-    Computer.begin(9600);   // will change to 115200
+    Computer.begin(115200);
     Rainchecktimer.reset();
 #ifndef STANDALONE
     Wireless.begin(9600);
@@ -156,7 +158,7 @@ void setup()
 #endif
     DBPrint("Ready");
 // AccelStepper run() is called under a 20KHz timer interrupt
-#if defined __SAM3X8E__
+#if defined ARDUINO_DUE
     startTimer(TC1, 0, TC3_IRQn, 20000);
 #endif
     Rotator.EnableMotor(false);
@@ -195,7 +197,7 @@ void loop()
 }
 
 
-#if defined __SAM3X8E__
+#if defined ARDUINO_DUE
 /*
  * As demonstrated by RCArduino and modified by BKM:
  * pick clock that provides the least error for specified frequency.
@@ -333,49 +335,49 @@ void requestShutterData()
 {
         Wireless.print(String(STATE_SHUTTER_GET) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 
         Wireless.print(String(VERSION_SHUTTER_GET) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 
         Wireless.print(String(REVERSED_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 
         Wireless.print(String(STEPSPER_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 
         Wireless.print(String(SPEED_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 
         Wireless.print(String(ACCELERATION_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 
         Wireless.print(String(VOLTS_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 
         Wireless.print(String(VOLTSCLOSE_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
 }
@@ -874,7 +876,7 @@ int ReceiveWireless()
     // wait for response
     timeout = 0;
     while(Wireless.available() < 1) {
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
         timeout++;
@@ -892,7 +894,7 @@ int ReceiveWireless()
                 wirelessBuffer += String(wirelessCharacter);
             }
         }
-#ifndef __SAM3X8E__
+#ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
     } while (wirelessCharacter != '#');
