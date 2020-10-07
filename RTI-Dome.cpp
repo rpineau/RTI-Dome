@@ -10,8 +10,6 @@
 CRTIDome::CRTIDome()
 {
     // set some sane values
-    m_bDebugLog = true;
-
     m_pSerx = NULL;
     m_bIsConnected = false;
 

@@ -967,6 +967,9 @@ void ProcessWireless()
             bShutterPresnt = true;
             break;
 
+         case SHUTTER_RESTORE_MOTOR_DEFAULT:
+            break;
+
         default:
             break;
     }

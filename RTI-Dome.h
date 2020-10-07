@@ -155,7 +155,6 @@ protected:
 
     SerXInterface   *m_pSerx;
     SleeperInterface *m_pSleeper;
-    bool            m_bDebugLog;
 
     bool            m_bIsConnected;
     bool            m_bHomed;
