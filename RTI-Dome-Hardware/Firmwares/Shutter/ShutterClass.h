@@ -10,6 +10,12 @@
 #else
 #include "WProgram.h"
 #endif
+#if defined ARDUINO_DUE
+#include <DueFlashStorage.h>
+DueFlashStorage dueFlashStorage;
+#else
+#include <EEPROM.h>
+#endif
 
 #include <AccelStepper.h>
 
@@ -27,9 +33,6 @@
 
 typedef struct ShutterConfiguration {
     int             signature;
-    byte            sleepMode;
-    uint16_t        sleepPeriod;
-    uint16_t        sleepDelay;
     uint64_t        stepsPerStroke;
     uint16_t        acceleration;
     uint16_t        maxSpeed;
@@ -122,7 +125,7 @@ public:
     void        setRadioConfigured(bool bConfigured);
     void        setWatchdogInterval(int nIntervalMs);
     // Movers
-    void        DoButtons();
+    bool        DoButtons();
     void        Open();
     void        Close();
     void        GotoPosition(const unsigned long);
@@ -225,9 +228,6 @@ void ShutterClass::SetDefaultConfig()
 {
     memset(&m_Config, 0, sizeof(Configuration));
     m_Config.signature = EEPROM_SIGNATURE;
-    m_Config.sleepMode = 0;
-    m_Config.sleepPeriod = 300;
-    m_Config.sleepDelay = 30000;
     m_Config.stepsPerStroke = 885000;
     m_Config.acceleration = 7000;
     m_Config.maxSpeed = 5000;
@@ -285,9 +285,10 @@ void ShutterClass::SaveToEEProm()
 }
 
 // INPUTS
-void ShutterClass::DoButtons()
+bool ShutterClass::DoButtons()
 {
     int PRESSED = 0;
+    bool bButtonUsed = false;
     static int whichButtonPressed = 0, lastButtonPressed = 0;
 
     if (digitalRead(BUTTON_OPEN) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != OPEN) {
@@ -297,6 +298,7 @@ void ShutterClass::DoButtons()
         shutterState = OPENING;
         MoveRelative(m_Config.stepsPerStroke);
         lastButtonPressed = BUTTON_OPEN;
+        bButtonUsed = true;
     }
     else if (digitalRead(BUTTON_CLOSE) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != CLOSED) {
         DBPrintln("Button Close Shutter");
@@ -305,12 +307,16 @@ void ShutterClass::DoButtons()
         shutterState = CLOSING;
         MoveRelative(1 - m_Config.stepsPerStroke);
         lastButtonPressed = BUTTON_CLOSE;
+        bButtonUsed = true;
     }
 
     if (digitalRead(whichButtonPressed) == !PRESSED && lastButtonPressed > 0) {
         Stop();
         lastButtonPressed = whichButtonPressed = 0;
+        bButtonUsed = false;
     }
+
+    return bButtonUsed;
 }
 
 int ShutterClass::MeasureVoltage()
@@ -365,27 +371,27 @@ float ShutterClass::GetElevation()
     return PositionToAltitude(stepper.currentPosition());
 }
 
-uint32_t    ShutterClass::GetMaxSpeed()
+uint32_t ShutterClass::GetMaxSpeed()
 {
     return stepper.maxSpeed();
 }
 
-long        ShutterClass::GetPosition()
+long ShutterClass::GetPosition()
 {
     return stepper.currentPosition();
 }
 
-bool        ShutterClass::GetReversed()
+bool ShutterClass::GetReversed()
 {
     return m_Config.reversed;
 }
 
-short       ShutterClass::GetState()
+short ShutterClass::GetState()
 {
     return (short)shutterState;
 }
 
-uint32_t    ShutterClass::GetStepsPerStroke()
+uint32_t ShutterClass::GetStepsPerStroke()
 {
     return m_Config.stepsPerStroke;
 }

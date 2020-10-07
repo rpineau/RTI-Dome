@@ -21,13 +21,6 @@
 
 #define ERR_NO_DATA	-1
 
-#if defined ARDUINO_DUE
-#include <DueFlashStorage.h>
-DueFlashStorage dueFlashStorage;
-#else
-#include <EEPROM.h>
-#endif
-
 #include "ShutterClass.h"
 
 
@@ -85,6 +78,7 @@ int XbeeResets = 0;
 unsigned long voltUpdateInterval = 5000;
 
 bool doFinalUpdate = false;
+bool	bManualMode = false;
 
 void setup()
 {
@@ -158,7 +152,9 @@ void loop()
 	}
 
 
-	Shutter.DoButtons();
+	if(Shutter.DoButtons())
+	    watchdogTimer.reset();
+
 	Shutter.Run();
 
 }
