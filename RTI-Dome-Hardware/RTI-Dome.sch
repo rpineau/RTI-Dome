@@ -13386,7 +13386,6 @@ Source: MaxStream, Inc. xbee_productmanual.pdf</description>
 <sheets>
 <sheet>
 <plain>
-<text x="129.54" y="35.56" size="1.016" layer="97">Pin 0 and 1 are connected to XBee</text>
 </plain>
 <instances>
 <instance part="X2" gate="-1" x="254" y="45.72" rot="R180"/>
