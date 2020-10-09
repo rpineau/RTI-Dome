@@ -132,8 +132,8 @@ public:
 
     float       GetParkAzimuth();
     long        GetAzimuthToPosition(const float);
-    String      GetPANID();
 #ifndef STANDALONE
+    String      GetPANID();
     bool        isRadioConfigured();
 #endif
 
@@ -152,8 +152,8 @@ public:
     void        SetCheckRainTwice(const bool);
     void        SetHomingCalibratingSpeed(const long newSpeed);
     void        RestoreNormalSpeed();
-    void        setPANID(const String panID);
 #ifndef STANDALONE
+    void        setPANID(const String panID);
     void        setRadioConfigured(bool bConfigured);
 #endif
     // Movers
@@ -275,12 +275,13 @@ bool RotatorClass::LoadFromEEProm()
     SetAcceleration(m_Config.acceleration);
     SetStepsPerRotation(m_Config.stepsPerRotation);
     SetReversed(m_Config.reversed);
+#ifndef STANDALONE
     if(m_Config.panid < 0) { // set to default.. there was something bad in eeprom.
         SetDefaultConfig();
         SaveToEEProm();
         response = false;
     }
-
+#endif
     return response;
 }
 
@@ -752,6 +753,7 @@ float RotatorClass::GetAzimuth()
     return azimuth;
 }
 
+#ifndef STANDALONE
 String RotatorClass::GetPANID()
 {
     return String(m_Config.panid, HEX);
@@ -773,6 +775,7 @@ void RotatorClass::setRadioConfigured(bool bConfigured)
 {
     m_Config.radioIsConfigured = bConfigured;
 }
+#endif
 
 
 void RotatorClass::Run()

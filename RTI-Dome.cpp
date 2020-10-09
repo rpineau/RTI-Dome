@@ -1036,6 +1036,45 @@ int CRTIDome::getFirmwareVersion(float &fVersion)
     return nErr;
 }
 
+int CRTIDome::getShutterFirmwareVersion(char *szVersion, int nStrMaxLen)
+{
+    int nErr = ND_OK;
+    int i;
+    char szResp[SERIAL_BUFFER_SIZE];
+    std::vector<std::string> firmwareFields;
+    std::vector<std::string> versionFields;
+    std::string strVersion;
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    if(m_bCalibrating)
+        return SB_OK;
+
+    nErr = domeCommand("V#", szResp, 'V', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::getShutterFirmwareVersion] ERROR = %s\n", timestamp, szResp);
+        fflush(Logfile);
+#endif
+        return nErr;
+    }
+
+    nErr = parseFields(szResp,firmwareFields, 'V');
+    if(nErr) {
+        strncpy(szVersion, szResp, nStrMaxLen);
+        m_fVersion = atof(szResp);
+        return ND_OK;
+    }
+
+    strncpy(szVersion, szResp, nStrMaxLen);
+    m_fVersion = atof(szResp);
+    return nErr;
+}
+
 int CRTIDome::goHome()
 {
     int nErr = ND_OK;

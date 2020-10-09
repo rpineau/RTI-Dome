@@ -178,6 +178,13 @@ int X2Dome::execModalSettingsDialog()
     }
 
     if(m_bLinked) {
+        nErr = m_RTIDome.getShutterFirmwareVersion(szTmpBuf, SERIAL_BUFFER_SIZE);
+        if(nErr) {
+            m_bHasShutterControl = false;
+            m_RTIDome.setShutterPresent(m_bHasShutterControl);
+            dx->setChecked("hasShutterCtrl",false);
+        }
+        
         if(m_bHasShutterControl)
             m_RTIDome.sendShutterHello();   // refresh values.
         dx->setEnabled("homePosition",true);
@@ -201,47 +208,65 @@ int X2Dome::execModalSettingsDialog()
         dx->setEnabled("rotationAcceletation",true);
         m_RTIDome.getRotationAcceleration(nRAcc);
         dx->setPropertyInt("rotationAcceletation","value", nRAcc);
+
+        dx->setEnabled("pushButton_3", true);
+
         if(m_bHasShutterControl) {
             dx->setEnabled("shutterSpeed",true);
-            m_RTIDome.getShutterSpeed(nSSpeed);
+            nErr = m_RTIDome.getShutterSpeed(nSSpeed);
             dx->setPropertyInt("shutterSpeed","value", nSSpeed);
 
             dx->setEnabled("shutterAcceleration",true);
             m_RTIDome.getShutterAcceleration(nSAcc);
             dx->setPropertyInt("shutterAcceleration","value", nSAcc);
 
+            dx->setEnabled("pushButton_4", true);
+
             dx->setEnabled("shutterWatchdog",true);
             m_RTIDome.getSutterWatchdogTimerValue(nWatchdog);
             dx->setPropertyInt("shutterWatchdog", "value", nWatchdog);
+
+            dx->setEnabled("lowShutBatCutOff",true);
         } else {
             dx->setEnabled("shutterSpeed",false);
+            dx->setPropertyInt("shutterSpeed","value",0);
             dx->setEnabled("shutterAcceleration",false);
+            dx->setPropertyInt("shutterAcceleration","value",0);
             dx->setEnabled("shutterWatchdog",false);
+            dx->setPropertyInt("shutterWatchdog","value",0);
+            dx->setEnabled("pushButton_4", false);
+            dx->setPropertyInt("shutterWatchdog", "value", 0);
+            dx->setEnabled("lowShutBatCutOff",false);
         }
+
+        dx->setEnabled("lowRotBatCutOff",true);
+
         dx->setEnabled("rainCheckInterval",true);
         m_RTIDome.getRainTimerValue(nRainTimer);
         dx->setPropertyInt("rainCheckInterval", "value", nRainTimer);
 
-        dx->setEnabled("lowRotBatCutOff",true);
-        dx->setEnabled("lowShutBatCutOff",true);
 
-        // panID
-        dx->setEnabled("panID", true);
-        dx->setEnabled("pushButton_2", true);
-        m_RTIDome.getPanId(m_nPanId);
-        dx->setPropertyInt("panID", "value", m_nPanId);
-
-        dx->setEnabled("pushButton_3", true);
-        dx->setEnabled("pushButton_4", true);
+        if(m_bHasShutterControl) {
+            // panID
+            dx->setEnabled("panID", true);
+            dx->setEnabled("pushButton_2", true);
+            m_RTIDome.getPanId(m_nPanId);
+            dx->setPropertyInt("panID", "value", m_nPanId);
+        }
+        else {
+            dx->setEnabled("panID", false);
+            dx->setEnabled("pushButton_2", false);
+            dx->setPropertyInt("panID", "value", 0);
+        }
 
         m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
         dx->setPropertyDouble("lowRotBatCutOff","value", dDomeCutOff);
-        dx->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
 
         snprintf(szTmpBuf,16,"%2.2f V",dDomeBattery);
         dx->setPropertyString("domeBatteryLevel","text", szTmpBuf);
 
         if(m_bHasShutterControl) {
+            dx->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
             snprintf(szTmpBuf,16,"%2.2f V",dShutterCutOff);
             dx->setPropertyString("lowShutBatCutOff","text", szTmpBuf);
 
@@ -252,6 +277,7 @@ int X2Dome::execModalSettingsDialog()
             dx->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
         }
         else {
+            dx->setPropertyDouble("lowShutBatCutOff","value", 0);
             dx->setPropertyString("shutterBatteryLevel","text", "--");
         }
         nErr = m_RTIDome.getRainSensorStatus(nRainSensorStatus);

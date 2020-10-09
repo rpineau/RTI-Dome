@@ -70,6 +70,7 @@ public:
     int closeShutter();
     int getFirmwareVersion(char *szVersion, int nStrMaxLen);
     int getFirmwareVersion(float &fVersion);
+    int getShutterFirmwareVersion(char *szVersion, int nStrMaxLen);
     int goHome();
     int calibrate();
 
