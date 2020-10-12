@@ -612,7 +612,7 @@ void X2Dome::deviceInfoNameLong(BasicStringInterface& str) const
 
 void X2Dome::deviceInfoDetailedDescription(BasicStringInterface& str) const
 {
-    str = "RTI-Dome Dome Rotation Kit";
+    str = "RTI-Dome Dome Controller";
 }
 
  void X2Dome::deviceInfoFirmwareVersion(BasicStringInterface& str)
@@ -631,7 +631,7 @@ void X2Dome::deviceInfoDetailedDescription(BasicStringInterface& str) const
 
 void X2Dome::deviceInfoModel(BasicStringInterface& str)
 {
-    str = "RTI-Dome Dome Rotation Kit";
+    str = "RTI-Dome Dome Controller";
 }
 
 //
@@ -641,7 +641,7 @@ void X2Dome::deviceInfoModel(BasicStringInterface& str)
 
  void	X2Dome::driverInfoDetailedInfo(BasicStringInterface& str) const
 {
-    str = "RTI-Dome Dome Rotation Kit X2 plugin by Rodolphe Pineau";
+    str = "RTI-Dome Dome Controller X2 plugin by Rodolphe Pineau";
 }
 
 double	X2Dome::driverInfoVersion(void) const

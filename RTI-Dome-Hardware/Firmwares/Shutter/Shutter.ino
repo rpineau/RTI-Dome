@@ -4,6 +4,8 @@
 //
 
 // #define TEENY_3_5
+#define TB6600
+// #define ISD0X
 
 
 #if defined __SAM3X8E__ // Arduino DUE
@@ -99,7 +101,7 @@ void setup()
 #if defined ARDUINO_DUE
     startTimer(TC1, 0, TC3_IRQn, 20000);
 #endif
-    Shutter.EnableOutputs(false);
+    Shutter.EnableMotor(false);
 }
 
 void loop()

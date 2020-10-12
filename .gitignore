@@ -16,3 +16,14 @@ Release
 .idea/*.iml
 *.VC.db
 *.user
+*.xcuserdatad
+.DS_Store
+build
+*.b#*
+*.s#*
+*.zip
+*.ZIP
+*.epf
+*.job
+*.pro
+*.lst

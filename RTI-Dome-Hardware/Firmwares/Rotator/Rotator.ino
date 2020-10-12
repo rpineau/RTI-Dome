@@ -7,7 +7,8 @@
 
 // #define STANDALONE
 // #define TEENY_3_5
-
+#define TB6600
+// #define ISD0X
 
 #define MAX_TIMEOUT 100
 #define ERR_NO_DATA -1
@@ -38,7 +39,7 @@
 #include "RemoteShutterClass.h"
 #endif
 
-RotatorClass Rotator ;
+RotatorClass Rotator;
 
 #ifndef STANDALONE
 RemoteShutterClass RemoteShutter;

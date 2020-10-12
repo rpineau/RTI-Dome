@@ -31,23 +31,8 @@ DueFlashStorage dueFlashStorage;
 #define DBPrintln(x)
 #endif // DEBUG
 
-typedef struct ShutterConfiguration {
-    int             signature;
-    uint64_t        stepsPerStroke;
-    uint16_t        acceleration;
-    uint16_t        maxSpeed;
-    uint8_t         reversed;
-    uint16_t        cutoffVolts;
-    byte            voltsClose;
-    unsigned long   watchdogInterval;
-    bool            radioIsConfigured;
-    int             panid;
-} Configuration;
 
-
-
-// AccelStepper Setup
-
+// Pin configuration
 #ifdef TEENY_3_5
 #define     STEPPER_ENABLE_PIN       9
 #define     STEPPER_DIRECTION_PIN   10
@@ -74,11 +59,37 @@ typedef struct ShutterConfiguration {
 #define MAX_WATCHDOG_INTERVAL   300000
 
 #define VOLTAGE_MONITOR_PIN A0
-#if defined ARDUINO_DUE
+#if defined(ARDUINO_DUE)
 #define AD_REF  3.3
 #else
 #define AD_REF  5.0
 #endif
+
+#if defined(TB6600)
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
+#elif defined(ISD0X)
+#define M_ENABLE    HIGH
+#define M_DISABLE   LOW
+#else
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
+#endif
+
+typedef struct ShutterConfiguration {
+    int             signature;
+    uint64_t        stepsPerStroke;
+    uint16_t        acceleration;
+    uint16_t        maxSpeed;
+    uint8_t         reversed;
+    uint16_t        cutoffVolts;
+    byte            voltsClose;
+    unsigned long   watchdogInterval;
+    bool            radioIsConfigured;
+    int             panid;
+} Configuration;
+
+
 
 AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_PIN);
 
@@ -136,7 +147,7 @@ public:
     void        SetVoltsClose(const byte);
 
     // xbee stuff
-    void        EnableOutputs(const bool);
+    void        EnableMotor(const bool);
     void        Run();
     void        Stop();
     void        LoadFromEEProm();
@@ -181,7 +192,7 @@ ShutterClass::ShutterClass()
     stepper.setEnablePin(STEPPER_ENABLE_PIN);
     SetAcceleration(m_Config.acceleration);
     SetMaxSpeed(m_Config.maxSpeed);
-    EnableOutputs(false);
+    EnableMotor(false);
     attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), ClosedInterrupt, FALLING);
     attachInterrupt(digitalPinToInterrupt(OPENED_PIN), OpenInterrupt, FALLING);
 
@@ -408,13 +419,13 @@ String ShutterClass::GetVoltString()
 }
 
 // Setters
-void ShutterClass::EnableOutputs(const bool newState)
+void ShutterClass::EnableMotor(const bool newState)
 {
-    if (newState == false) {
-        digitalWrite(STEPPER_ENABLE_PIN, 1);
+    if (!newState) {
+        digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
     }
     else {
-        digitalWrite(STEPPER_ENABLE_PIN, 0);
+        digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
     }
 }
 
@@ -484,7 +495,7 @@ void ShutterClass::GotoPosition(const unsigned long newPos)
     }
 
     if (doMove) {
-        EnableOutputs(true);
+        EnableMotor(true);
         stepper.moveTo(newPos);
     }
 }
@@ -497,7 +508,7 @@ void ShutterClass::GotoAltitude(const float newAlt)
 
 void ShutterClass::MoveRelative(const long amount)
 {
-    EnableOutputs(true);
+    EnableMotor(true);
     stepper.move(amount);
 }
 
@@ -627,7 +638,7 @@ void ShutterClass::Run()
         m_nLastButtonPressed = 0;
         m_bWasRunning = false;
         hitSwitch = false;
-        EnableOutputs(false);
+        EnableMotor(false);
     }
 }
 

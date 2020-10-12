@@ -32,31 +32,6 @@ DueFlashStorage dueFlashStorage;
 #endif // DEBUG
 
 
-typedef struct RotatorConfiguration {
-    int             signature;
-    long            maxSpeed;
-    long            acceleration;
-    long            stepsPerRotation;
-    bool            reversed;
-    float           homeAzimuth;
-    float           parkAzimuth;
-    int             cutOffVolts;
-    unsigned long   rainCheckInterval;
-    bool            rainCheckTwice;
-    byte            rainAction;
-#ifndef STANDALONE
-    bool            radioIsConfigured;
-    int             panid;
-#endif
-} Configuration;
-
-enum HomeStatuses { NEVER_HOMED, HOMED, ATHOME };
-enum Seeks { HOMING_NONE, // Not homing or calibrating
-                HOMING_HOME, // Homing
-                CALIBRATION_MOVEOFF, // Ignore home until we've moved off while measuring the dome.
-                CALIBRATION_MEASURE // Measuring dome until home hit again.
-};
-
 #ifndef TEENY_3_5
 // Arduino boards
 #define HOME_PIN             2  // Also used for Shutter open status
@@ -91,6 +66,17 @@ enum Seeks { HOMING_NONE, // Not homing or calibrating
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
 
+#if defined(TB6600)
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
+#elif defined(ISD0X)
+#define M_ENABLE    HIGH
+#define M_DISABLE   LOW
+#else
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
+#endif
+
 
 #ifndef STANDALONE
 #define SIGNATURE         2641
@@ -99,6 +85,33 @@ enum Seeks { HOMING_NONE, // Not homing or calibrating
 #endif
 // not used on DUE
 #define EEPROM_LOCATION     10
+
+
+typedef struct RotatorConfiguration {
+    int             signature;
+    long            maxSpeed;
+    long            acceleration;
+    long            stepsPerRotation;
+    bool            reversed;
+    float           homeAzimuth;
+    float           parkAzimuth;
+    int             cutOffVolts;
+    unsigned long   rainCheckInterval;
+    bool            rainCheckTwice;
+    byte            rainAction;
+#ifndef STANDALONE
+    bool            radioIsConfigured;
+    int             panid;
+#endif
+} Configuration;
+
+enum HomeStatuses { NEVER_HOMED, HOMED, ATHOME };
+enum Seeks { HOMING_NONE, // Not homing or calibrating
+                HOMING_HOME, // Homing
+                CALIBRATION_MOVEOFF, // Ignore home until we've moved off while measuring the dome.
+                CALIBRATION_MEASURE // Measuring dome until home hit again.
+};
+
 
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
@@ -408,13 +421,14 @@ inline void RotatorClass::SetCheckRainTwice(const bool state)
     SaveToEEProm();
 }
 
+
 void RotatorClass::EnableMotor(const bool newState)
 {
     if (!newState) {
-        digitalWrite(STEPPER_ENABLE_PIN, 1);
+        digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
     }
     else {
-        digitalWrite(STEPPER_ENABLE_PIN, 0);
+        digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
     }
 
 }
