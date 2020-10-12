@@ -63,8 +63,6 @@ bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
 int configStep = 0;
 #endif
 
-int sleepMode = 0, sleepPeriod = 300, sleepDelay = 30000;
-
 #ifndef STANDALONE
 /// ATAC,CE1,ID4242,CH0C,MY0,DH0,DLFFFF,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATCH0C","ATMY0","ATDH0","ATDLFFFF",
