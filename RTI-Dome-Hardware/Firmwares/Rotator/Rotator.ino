@@ -416,10 +416,10 @@ void CheckForRain()
         }
 #endif
         if (bIsRaining) {
-            if (Rotator.GetRainAction() == 1)
+            if (Rotator.GetRainAction() == HOME)
                 Rotator.SetAzimuth(Rotator.GetHomeAzimuth());
 
-            if (Rotator.GetRainAction() == 2)
+            if (Rotator.GetRainAction() == PARK)
                 Rotator.SetAzimuth(Rotator.GetParkAzimuth());
         }
         Rainchecktimer.reset();

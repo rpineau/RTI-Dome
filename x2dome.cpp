@@ -140,6 +140,7 @@ int X2Dome::execModalSettingsDialog()
     int nSAcc;
 	int nWatchdog;
     int nRainTimer;
+    int nRainAction;
     double  batRotCutOff;
     double  batShutCutOff;
     
@@ -280,6 +281,10 @@ int X2Dome::execModalSettingsDialog()
             dx->setPropertyDouble("lowShutBatCutOff","value", 0);
             dx->setPropertyString("shutterBatteryLevel","text", "--");
         }
+
+        m_RTIDome.getRainAction(nRainAction);
+        dx->setCurrentIndex("comboBox", nRainAction);
+        
         nErr = m_RTIDome.getRainSensorStatus(nRainSensorStatus);
         if(nErr)
             dx->setPropertyString("rainStatus","text", "--");
@@ -291,26 +296,27 @@ int X2Dome::execModalSettingsDialog()
         dx->setEnabled("pushButton",true);
     }
     else {
-        dx->setEnabled("homePosition",false);
-        dx->setEnabled("parkPosition",false);
-        dx->setEnabled("needReverse",false);
-        dx->setEnabled("ticksPerRev",false);
-        dx->setEnabled("rotationSpeed",false);
-        dx->setEnabled("rotationAcceletation",false);
-        dx->setEnabled("shutterSpeed",false);
-        dx->setEnabled("shutterAcceleration",false);
-		dx->setEnabled("shutterWatchdog",false);
-        dx->setEnabled("rainCheckInterval",false);
-        dx->setEnabled("lowRotBatCutOff",false);
-        dx->setEnabled("lowShutBatCutOff",false);
-        dx->setPropertyString("domeBatteryLevel","text", "--");
-        dx->setPropertyString("shutterBatteryLevel","text", "--");
+        dx->setEnabled("homePosition", false);
+        dx->setEnabled("parkPosition", false);
+        dx->setEnabled("needReverse", false);
+        dx->setEnabled("ticksPerRev", false);
+        dx->setEnabled("rotationSpeed", false);
+        dx->setEnabled("rotationAcceletation", false);
+        dx->setEnabled("shutterSpeed", false);
+        dx->setEnabled("shutterAcceleration", false);
+		dx->setEnabled("shutterWatchdog", false);
+        dx->setEnabled("rainCheckInterval", false);
+        dx->setEnabled("lowRotBatCutOff", false);
+        dx->setEnabled("lowShutBatCutOff", false);
+        dx->setEnabled("comboBox", false);
+        dx->setPropertyString("domeBatteryLevel", "text", "--");
+        dx->setPropertyString("shutterBatteryLevel", "text", "--");
         dx->setEnabled("panID", false);
         dx->setEnabled("pushButton_2", false);
-        dx->setEnabled("pushButton",false);
+        dx->setEnabled("pushButton", false);
         dx->setEnabled("pushButton_3", false);
         dx->setEnabled("pushButton_4", false);
-        dx->setPropertyString("domePointingError","text", "--");
+        dx->setPropertyString("domePointingError", "text", "--");
         dx->setPropertyString("rainStatus","text", "--");
     }
     dx->setPropertyDouble("homePosition","value", m_RTIDome.getHomeAz());
@@ -338,6 +344,7 @@ int X2Dome::execModalSettingsDialog()
         dx->propertyInt("rainCheckInterval", "value", nRainTimer);
         dx->propertyDouble("lowRotBatCutOff", "value", batRotCutOff);
         dx->propertyDouble("lowShutBatCutOff", "value", batShutCutOff);
+        nRainAction = dx->currentIndex("comboBox");
         m_bHasShutterControl = dx->isChecked("hasShutterCtrl");
         m_bHomeOnPark = dx->isChecked("homeOnPark");
         m_bHomeOnUnpark = dx->isChecked("homeOnUnpark");
@@ -354,6 +361,7 @@ int X2Dome::execModalSettingsDialog()
             m_RTIDome.setRotationAcceleration(nRAcc);
             m_RTIDome.setRainTimerValue(nRainTimer);
 			m_RTIDome.setBatteryCutOff(batRotCutOff, batShutCutOff);
+            m_RTIDome.setRainAction(nRainAction);
 			if(m_bHasShutterControl) {
                 m_RTIDome.setShutterPresent(m_bHasShutterControl);
 				m_RTIDome.setShutterSpeed(nSSpeed);

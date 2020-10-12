@@ -112,6 +112,7 @@ enum Seeks { HOMING_NONE, // Not homing or calibrating
                 CALIBRATION_MEASURE // Measuring dome until home hit again.
 };
 
+enum RainActions {DO_NOTHING=0, HOME, PARK};
 
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
@@ -312,7 +313,7 @@ void RotatorClass::SetDefaultConfig()
     m_Config.cutOffVolts = 1150;
     m_Config.rainCheckInterval = 10; // In seconds
     m_Config.rainCheckTwice = false;
-    m_Config.rainAction = 0;
+    m_Config.rainAction = DO_NOTHING;
 #ifndef STANDALONE
     m_Config.radioIsConfigured = false;
     m_Config.panid = 0x4242;

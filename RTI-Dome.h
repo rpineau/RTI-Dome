@@ -45,6 +45,8 @@
 enum RTIDomeErrors {ND_OK=0, NOT_CONNECTED, ND_CANT_CONNECT, ND_BAD_CMD_RESPONSE, COMMAND_FAILED};
 enum RTIDomeShutterState {OPEN = 0, CLOSED, OPENING, CLOSING, SHUTTER_ERROR };
 enum HomeStatuses {NEVER_HOMED = 0, HOMED, ATHOME};
+enum RainActions {DO_NOTHING=0, HOME, PARK};
+
 // RG-11
 enum RainSensorStates {RAINING= 0, NOT_RAINING};
 
@@ -130,6 +132,9 @@ public:
 
     int getRainTimerValue(int &nValue);
     int setRainTimerValue(const int &nValue);
+
+    int getRainAction(int &nAction);
+    int setRainAction(const int &nAction);
 
     int getPanId(int &nPanId);
     int setPanId(const int nPanId);
