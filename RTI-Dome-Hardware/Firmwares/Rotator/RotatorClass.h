@@ -52,11 +52,13 @@ DueFlashStorage dueFlashStorage;
 #define RAIN_SENSOR_PIN     19  // Digital Input from RG11
 #endif
 
-#define VOLTAGE_MONITOR_PIN  A0
-#if defined ARDUINO_DUE
-#define AD_REF  3.3
+#define VOLTAGE_MONITOR_PIN A0
+#if defined(ARDUINO_DUE)
+#define AD_REF      3.3
+#define RES_MULT    5.0 // resistor voltage divider on the shield
 #else
-#define AD_REF  5.0
+#define AD_REF      5.0
+#define RES_MULT    3.0 // resistor voltage divider on the shield
 #endif
 
 
@@ -231,7 +233,7 @@ private:
 
 RotatorClass::RotatorClass()
 {
-    m_fAdcConvert = 5.0 * (AD_REF / 1024.0) * 100;
+    m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
 
     LoadFromEEProm();
     pinMode(HOME_PIN, INPUT_PULLUP);

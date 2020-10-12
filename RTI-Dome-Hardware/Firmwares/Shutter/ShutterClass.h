@@ -22,7 +22,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)
@@ -60,9 +60,11 @@ DueFlashStorage dueFlashStorage;
 
 #define VOLTAGE_MONITOR_PIN A0
 #if defined(ARDUINO_DUE)
-#define AD_REF  3.3
+#define AD_REF      3.3
+#define RES_MULT    5.0 // resistor voltage divider on the shield
 #else
-#define AD_REF  5.0
+#define AD_REF      5.0
+#define RES_MULT    3.0 // resistor voltage divider on the shield
 #endif
 
 #if defined(TB6600)
@@ -178,7 +180,7 @@ private:
 ShutterClass::ShutterClass()
 {
     int sw1, sw2;
-    m_fAdcConvert = 5.0 * (AD_REF / 1024.0) * 100;
+    m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
 
     pinMode(CLOSED_PIN, INPUT_PULLUP);
     pinMode(OPENED_PIN, INPUT_PULLUP);
