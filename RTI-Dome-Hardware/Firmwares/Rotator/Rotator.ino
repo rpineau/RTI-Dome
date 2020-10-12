@@ -692,6 +692,12 @@ void ProcessSerialCommand()
             sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
             Wireless.print(sTmpString+ "#");
             ReceiveWireless();
+
+            Wireless.print(String(SPEED_SHUTTER_CMD)+ "#");
+            ReceiveWireless();
+
+            Wireless.print(String(ACCELERATION_SHUTTER_CMD)+ "#");
+            ReceiveWireless();
             serialMessage = sTmpString;
             break;
 
@@ -880,6 +886,7 @@ int ReceiveWireless()
 #ifndef ARDUINO_DUE
         stepper.run(); // we don't want the stepper to stop
 #endif
+        delay(1);
         timeout++;
         if(timeout >= MAX_TIMEOUT) {
             return ERR_NO_DATA;
@@ -971,6 +978,7 @@ void ProcessWireless()
             break;
 
          case SHUTTER_RESTORE_MOTOR_DEFAULT:
+
             break;
 
         default:

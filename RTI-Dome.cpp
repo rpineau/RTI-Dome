@@ -2144,7 +2144,8 @@ int CRTIDome::restoreShutterMotorSettings()
 {
     int nErr = ND_OK;
     char szResp[SERIAL_BUFFER_SIZE];
-
+    int nDummy;
+    
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
@@ -2158,6 +2159,8 @@ int CRTIDome::restoreShutterMotorSettings()
         fflush(Logfile);
 #endif
     }
+    nErr = getShutterAcceleration(nDummy);
+    nErr |= getShutterSpeed(nDummy);
     return nErr;
 }
 
