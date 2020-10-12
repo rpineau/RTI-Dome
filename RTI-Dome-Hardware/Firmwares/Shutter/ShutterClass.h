@@ -16,7 +16,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)

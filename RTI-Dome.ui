@@ -216,7 +216,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Dome battery cutoff :</string>
+        <string>Dome voltage cutoff :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -248,7 +248,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Shutter battery cutoff :</string>
+        <string>Shutter voltage cutoff :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -660,7 +660,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Dome battery level :</string>
+        <string>Dome voltage level :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -721,7 +721,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Shutter battery level :</string>
+        <string>Shutter voltage level :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
