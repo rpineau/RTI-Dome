@@ -417,10 +417,10 @@ void CheckForRain()
 #endif
         if (bIsRaining) {
             if (Rotator.GetRainAction() == HOME)
-                Rotator.SetAzimuth(Rotator.GetHomeAzimuth());
+                Rotator.GoToAzimuth(Rotator.GetHomeAzimuth());
 
             if (Rotator.GetRainAction() == PARK)
-                Rotator.SetAzimuth(Rotator.GetParkAzimuth());
+                Rotator.GoToAzimuth(Rotator.GetParkAzimuth());
         }
         Rainchecktimer.reset();
     }
@@ -517,7 +517,7 @@ void ProcessSerialCommand()
             if (hasValue) {
                 fTmp = value.toFloat();
                 if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
-                    Rotator.SetAzimuth(fTmp);
+                    Rotator.GoToAzimuth(fTmp);
                 }
             }
             serialMessage = String(GOTO_ROTATOR_CMD) + String(Rotator.GetAzimuth());

@@ -60,8 +60,6 @@ DueFlashStorage dueFlashStorage;
 #endif
 
 
-#define STEPSFORROTATION 55100
-
 #define MOVE_NEGATIVE       -1
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
@@ -156,7 +154,7 @@ public:
     void        SetPosition(const long);
     void        SetMaxSpeed(const long);
     void        SetAcceleration(const long);
-    void        SetAzimuth(const float);
+    void        GoToAzimuth(const float);
     void        SetParkAzimuth(const float);
     void        SetStepsPerRotation(const long);
     void        SetRainInterval(const unsigned long);
@@ -726,10 +724,10 @@ float RotatorClass::GetAngularDistance(const float fromAngle, const float toAngl
 }
 
 
-void RotatorClass::SetAzimuth(const float newHeading)
+void RotatorClass::GoToAzimuth(const float newHeading)
 {
-    // Set movement tarGet by compass azimuth
-    float currentHeading; // , tarGetPosition;
+    // Goto new target
+    float currentHeading;
     float delta;
 
     currentHeading = GetAzimuth();
