@@ -867,9 +867,9 @@ int ReceiveWireless()
     timeout = 0;
     while(Wireless.available() < 1) {
 #ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
+        if(!stepper.run()) // we don't want the stepper to stop
 #endif
-        delay(1);
+            delay(1);
         timeout++;
         if(timeout >= MAX_TIMEOUT) {
             return ERR_NO_DATA;
