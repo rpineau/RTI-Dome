@@ -808,7 +808,7 @@ void RotatorClass::Run()
     if (m_seekMode > HOMING_HOME)
         Calibrate();
 
-#define ARDUINO_DUE
+#if defined ARDUINO_DUE
     if (stepper.isRunning()) {
 #else
     if (stepper.run()) {
