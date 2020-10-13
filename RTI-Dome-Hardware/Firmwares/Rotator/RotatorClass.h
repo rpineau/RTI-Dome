@@ -414,9 +414,9 @@ inline void RotatorClass::SetCheckRainTwice(const bool state)
 }
 
 
-void RotatorClass::EnableMotor(const bool newState)
+void RotatorClass::EnableMotor(const bool bEnabled)
 {
-    if (!newState) {
+    if (!bEnabled) {
         digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
     }
     else {
