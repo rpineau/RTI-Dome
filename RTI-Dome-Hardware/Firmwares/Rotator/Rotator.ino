@@ -14,7 +14,7 @@
 #define ERR_NO_DATA -1
 #define OK  0
 
-#define VERSION "2.64"
+#define VERSION "2.642"
 
 #if defined __SAM3X8E__
 #define ARDUINO_DUE
@@ -127,7 +127,6 @@ const char STATE_SHUTTER_GET            = 'M'; // Get shutter state
 const char OPEN_SHUTTER_CMD             = 'O'; // Open the shutter
 const char SHUTTER_PANID_GET            = 'Q'; // get and set the XBEE PAN ID
 const char SPEED_SHUTTER_CMD            = 'R'; // Get/Set step rate (speed)
-const char SLEEP_SHUTTER_CMD            = 'S'; // Get/Set radio sleep settings
 const char STEPSPER_SHUTTER_CMD         = 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET          = 'V'; // Get version string
 const char INACTIVE_SHUTTER_CMD         = 'X'; // Get/Set how long before shutter closes
@@ -734,20 +733,6 @@ void ProcessSerialCommand()
             serialMessage = sTmpString + RemoteShutter.reversed;
             break;
 
-        case SLEEP_SHUTTER_CMD:
-            sTmpString = String(SLEEP_SHUTTER_CMD);
-            if (hasValue) {
-                RemoteShutter.sleepSettings = value;
-                wirelessMessage = sTmpString + value;
-            }
-            else {
-                wirelessMessage = sTmpString;
-            }
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.sleepSettings;
-            break;
-
         case SPEED_SHUTTER_CMD:
             sTmpString = String(SPEED_SHUTTER_CMD);
             if (hasValue) {
@@ -941,10 +926,6 @@ void ProcessWireless()
 
         case REVERSED_SHUTTER_CMD:
             RemoteShutter.reversed = value;
-            break;
-
-        case SLEEP_SHUTTER_CMD: // Sleep settings mode,period,delay
-            RemoteShutter.sleepSettings = value;
             break;
 
         case STATE_SHUTTER_GET: // Dome status

@@ -26,7 +26,6 @@ public:
 	String	OpenError = "";
 	String	speed = "";
 	String	reversed = "";
-	String	sleepSettings ="";
 	String	stepsPerStroke = "";
 	// ASCOM checks version and if it's blank then shutter doesn't exist
 	String	version = "";

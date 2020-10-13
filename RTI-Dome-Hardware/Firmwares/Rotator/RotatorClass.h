@@ -808,8 +808,11 @@ void RotatorClass::Run()
     if (m_seekMode > HOMING_HOME)
         Calibrate();
 
+#define ARDUINO_DUE
     if (stepper.isRunning()) {
-
+#else
+    if (stepper.run()) {
+#endif
         wasRunning = true;
         if (m_seekMode == HOMING_HOME && digitalRead(HOME_PIN) == 0) { // We're looking for home and found it
             Stop();
