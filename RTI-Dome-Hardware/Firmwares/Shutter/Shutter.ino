@@ -31,7 +31,7 @@ String serialBuffer;
 #endif
 String wirelessBuffer;
 
-const String version = "2.64";
+const String version = "2.642";
 
 const char ABORT_CMD				= 'a';
 const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
@@ -49,7 +49,6 @@ const char OPEN_SHUTTER_CMD			= 'O'; // Open the shutter
 const char POSITION_SHUTTER_GET		= 'P'; // Get step position
 const char PANID_GET                = 'Q'; // get and set the XBEE PAN ID
 const char SPEED_SHUTTER_CMD		= 'R'; // Get/Set step rate (speed)
-const char SLEEP_SHUTTER_CMD		= 'S'; // Get/Set radio sleep settings
 const char STEPSPER_SHUTTER_CMD		= 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET		= 'V'; // Get version string
 const char INIT_XBEE				= 'x'; // force a ConfigXBee
@@ -126,7 +125,7 @@ void loop()
 	}
 
 
-	if(watchdogTimer.elapsed() >= Shutter.getWatchdogInterval()) {
+	if((watchdogTimer.elapsed() >= Shutter.getWatchdogInterval()) && (Shutter.GetState() != CLOSED) && (Shutter.GetState() != CLOSING)) {
             DBPrintln("watchdogTimer triggered");
             // lets try to recover
 	        if(!isResetingXbee && XbeeResets == 0) {
@@ -142,11 +141,11 @@ void loop()
                 StartWirelessConfig();
 	        }
 	        else if (!isResetingXbee){
-                DBPrintln("watchdogTimer triggered.. closing");
-                DBPrintln("watchdogTimer.elapsed() = " + String(watchdogTimer.elapsed()));
-                DBPrintln("Shutter.getWatchdogInterval() = " + String(Shutter.getWatchdogInterval()));
                 // we lost communication with the rotator.. close everything.
                 if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING) {
+                    DBPrintln("watchdogTimer triggered.. closing");
+                    DBPrintln("watchdogTimer.elapsed() = " + String(watchdogTimer.elapsed()));
+                    DBPrintln("Shutter.getWatchdogInterval() = " + String(Shutter.getWatchdogInterval()));
                     Shutter.Close();
                     }
             }
@@ -416,10 +415,10 @@ void ProcessMessages(String buffer)
 		case WATCHDOG_INTERVAL_SET:
 			if (hasValue) {
 				Shutter.SetWatchdogInterval((unsigned long)value.toInt());
-				DBPrintln("Watchdog interval set to " + value + "ms");
+				DBPrintln("Watchdog interval set to " + value + " ms");
 			}
 			else {
-				DBPrintln("Watchdog interval " + String(Shutter.getWatchdogInterval()));
+    			DBPrintln("Watchdog interval " + String(Shutter.getWatchdogInterval()) + " ms");
 			}
 			wirelessMessage = String(WATCHDOG_INTERVAL_SET) + String(Shutter.getWatchdogInterval());
 			break;

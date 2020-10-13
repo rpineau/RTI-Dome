@@ -16,7 +16,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)
@@ -27,22 +27,25 @@ DueFlashStorage dueFlashStorage;
 
 
 // Pin configuration
-#ifdef TEENY_3_5
-#define     STEPPER_ENABLE_PIN       9
-#define     STEPPER_DIRECTION_PIN   10
-#define     STEPPER_STEP_PIN         6
-#define     CLOSED_PIN               4
-#define     OPENED_PIN               5
-#define     BUTTON_OPEN              7
-#define     BUTTON_CLOSE             8
-#else   // Standard Arduino
-#define     STEPPER_ENABLE_PIN      10
-#define     STEPPER_DIRECTION_PIN   11
-#define     STEPPER_STEP_PIN        12
+#ifndef TEENY_3_5
+// Arduino boards
 #define     CLOSED_PIN               2
 #define     OPENED_PIN               3
 #define     BUTTON_OPEN              5
 #define     BUTTON_CLOSE             6
+#define     STEPPER_ENABLE_PIN      10
+#define     STEPPER_DIRECTION_PIN   11
+#define     STEPPER_STEP_PIN        12
+#else
+// Teensy boards > 3.5
+#define     CLOSED_PIN               4
+#define     OPENED_PIN               5
+#define     BUTTON_OPEN              7
+#define     BUTTON_CLOSE             8
+#define     STEPPER_ENABLE_PIN       9
+#define     STEPPER_DIRECTION_PIN   10
+#define     STEPPER_STEP_PIN         6
+
 #endif
 
 
@@ -109,19 +112,19 @@ public:
     long        AltitudeToPosition(float);
 
     // Getters
-    int32_t     GetAcceleration();
-    float       GetElevation();
-    int         GetEndSwitchStatus();
-    uint32_t    GetMaxSpeed();
-    long        GetPosition();
-    bool        GetReversed();
-    short       GetState();
-    uint32_t    GetStepsPerStroke();
-    bool        GetVoltsAreLow();
-    String      GetVoltString();
-    String      GetPANID();
-    bool        isRadioConfigured();
-    int         getWatchdogInterval();
+    int32_t         GetAcceleration();
+    float           GetElevation();
+    int             GetEndSwitchStatus();
+    uint32_t        GetMaxSpeed();
+    long            GetPosition();
+    bool            GetReversed();
+    short           GetState();
+    uint32_t        GetStepsPerStroke();
+    bool            GetVoltsAreLow();
+    String          GetVoltString();
+    String          GetPANID();
+    bool            isRadioConfigured();
+    unsigned long   getWatchdogInterval();
     // Setters
     void        SetAcceleration(const uint16_t);
     void        SetMaxSpeed(const uint16_t);
@@ -130,7 +133,6 @@ public:
     void        SetVoltsFromString(const String);
     void        setPANID(const String panID);
     void        setRadioConfigured(bool bConfigured);
-    void        setWatchdogInterval(int nIntervalMs);
     // Movers
     bool        DoButtons();
     void        Open();
@@ -554,14 +556,9 @@ void ShutterClass::setRadioConfigured(bool bConfigured)
 }
 
 
-int ShutterClass::getWatchdogInterval()
+unsigned long ShutterClass::getWatchdogInterval()
 {
     return m_Config.watchdogInterval;
-}
-
-void ShutterClass::setWatchdogInterval(int nIntervalMs)
-{
-    m_Config.watchdogInterval = nIntervalMs;
 }
 
 void ShutterClass::Run()
