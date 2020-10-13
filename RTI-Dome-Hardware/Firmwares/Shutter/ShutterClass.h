@@ -50,7 +50,7 @@ DueFlashStorage dueFlashStorage;
 
 
 #define     EEPROM_LOCATION        100
-#define     EEPROM_SIGNATURE      2640
+#define     EEPROM_SIGNATURE      2642
 
 #define MIN_WATCHDOG_INTERVAL    60000
 #define MAX_WATCHDOG_INTERVAL   300000
@@ -77,12 +77,12 @@ DueFlashStorage dueFlashStorage;
 
 typedef struct ShutterConfiguration {
     int             signature;
-    uint64_t        stepsPerStroke;
-    uint16_t        acceleration;
-    uint16_t        maxSpeed;
-    uint8_t         reversed;
-    uint16_t        cutoffVolts;
-    byte            voltsClose;
+    unsigned long   stepsPerStroke;
+    int             acceleration;
+    int             maxSpeed;
+    bool            reversed;
+    int             cutoffVolts;
+    int            voltsClose;
     unsigned long   watchdogInterval;
     bool            radioIsConfigured;
     int             panid;
@@ -112,24 +112,24 @@ public:
     long        AltitudeToPosition(float);
 
     // Getters
-    int32_t         GetAcceleration();
+    int         GetAcceleration();
     float           GetElevation();
     int             GetEndSwitchStatus();
-    uint32_t        GetMaxSpeed();
+    int         GetMaxSpeed();
     long            GetPosition();
     bool            GetReversed();
     short           GetState();
-    uint32_t        GetStepsPerStroke();
+    unsigned long        GetStepsPerStroke();
     bool            GetVoltsAreLow();
     String          GetVoltString();
     String          GetPANID();
     bool            isRadioConfigured();
     unsigned long   getWatchdogInterval();
     // Setters
-    void        SetAcceleration(const uint16_t);
-    void        SetMaxSpeed(const uint16_t);
+    void        SetAcceleration(const int);
+    void        SetMaxSpeed(const int);
     void        SetReversed(const bool);
-    void        SetStepsPerStroke(const uint32_t);
+    void        SetStepsPerStroke(const unsigned long);
     void        SetVoltsFromString(const String);
     void        setPANID(const String panID);
     void        setRadioConfigured(bool bConfigured);
@@ -141,8 +141,8 @@ public:
     void        GotoAltitude(const float);
     void        MoveRelative(const long);
     void        SetWatchdogInterval(const unsigned long);
-    byte        GetVoltsClose();
-    void        SetVoltsClose(const byte);
+    int         GetVoltsClose();
+    void        SetVoltsClose(const int);
 
     // xbee stuff
     void        EnableMotor(const bool);
@@ -355,10 +355,8 @@ float ShutterClass::PositionToAltitude(const long pos)
     return result;
 }
 
-// Wireless Functions
-
 // Getters
-int32_t ShutterClass::GetAcceleration()
+int ShutterClass::GetAcceleration()
 {
     return m_Config.acceleration;
 }
@@ -380,7 +378,7 @@ float ShutterClass::GetElevation()
     return PositionToAltitude(stepper.currentPosition());
 }
 
-uint32_t ShutterClass::GetMaxSpeed()
+int ShutterClass::GetMaxSpeed()
 {
     return stepper.maxSpeed();
 }
@@ -400,7 +398,7 @@ short ShutterClass::GetState()
     return (short)shutterState;
 }
 
-uint32_t ShutterClass::GetStepsPerStroke()
+unsigned long ShutterClass::GetStepsPerStroke()
 {
     return m_Config.stepsPerStroke;
 }
@@ -427,14 +425,14 @@ void ShutterClass::EnableMotor(const bool newState)
     }
 }
 
-void ShutterClass::SetAcceleration(const uint16_t accel)
+void ShutterClass::SetAcceleration(const int accel)
 {
     m_Config.acceleration = accel;
     stepper.setAcceleration(accel);
     SaveToEEProm();
 }
 
-void ShutterClass::SetMaxSpeed(const uint16_t speed)
+void ShutterClass::SetMaxSpeed(const int speed)
 {
     m_Config.maxSpeed = speed;
     stepper.setMaxSpeed(speed);
@@ -448,7 +446,7 @@ void ShutterClass::SetReversed(const bool reversed)
     SaveToEEProm();
 }
 
-void ShutterClass::SetStepsPerStroke(const uint32_t newSteps)
+void ShutterClass::SetStepsPerStroke(const unsigned long newSteps)
 {
     m_Config.stepsPerStroke = newSteps;
     SaveToEEProm();
@@ -522,13 +520,13 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
     SaveToEEProm();
 }
 
-inline void ShutterClass::SetVoltsClose(const byte value)
+inline void ShutterClass::SetVoltsClose(const int value)
 {
     m_Config.voltsClose = value;
     SaveToEEProm();
 }
 
-inline byte ShutterClass::GetVoltsClose()
+inline int ShutterClass::GetVoltsClose()
 {
     return m_Config.voltsClose;
 }
