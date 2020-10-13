@@ -16,7 +16,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)
@@ -24,7 +24,6 @@ DueFlashStorage dueFlashStorage;
 #define DBPrint(x)
 #define DBPrintln(x)
 #endif // DEBUG
-
 
 // Pin configuration
 #ifndef TEENY_3_5
@@ -48,8 +47,7 @@ DueFlashStorage dueFlashStorage;
 
 #endif
 
-
-#define     EEPROM_LOCATION        100
+#define     EEPROM_LOCATION        100  // not used with Arduino Due
 #define     EEPROM_SIGNATURE      2642
 
 #define MIN_WATCHDOG_INTERVAL    60000
@@ -89,7 +87,6 @@ typedef struct ShutterConfiguration {
 } Configuration;
 
 
-
 AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_PIN);
 
 // need to make this global so we can access it in the interrupt
@@ -101,7 +98,6 @@ StopWatch watchdogTimer;
 class ShutterClass
 {
 public:
-
     // Constructor
     ShutterClass();
 
@@ -175,7 +171,6 @@ private:
     int             MeasureVoltage();
     void            SetDefaultConfig();
 };
-
 
 
 ShutterClass::ShutterClass()
@@ -298,7 +293,6 @@ void ShutterClass::SaveToEEProm()
 
 }
 
-
 float ShutterClass::PositionToAltitude(const long pos)
 {
     float result = (float)pos;
@@ -368,7 +362,6 @@ void ShutterClass::GotoPosition(const unsigned long newPos)
 
 void ShutterClass::GotoAltitude(const float newAlt)
 {
-
     GotoPosition(AltitudeToPosition(newAlt));
 }
 
@@ -546,8 +539,6 @@ void ShutterClass::EnableMotor(const bool newState)
     }
 }
 
-
-
 // Movers
 void ShutterClass::Open()
 {
@@ -562,15 +553,6 @@ void ShutterClass::Close()
     DBPrintln("shutterState = CLOSING");
     MoveRelative(1 - m_Config.stepsPerStroke * 1.2);
 }
-
-
-
-
-
-
-
-
-
 
 void ShutterClass::Run()
 {
