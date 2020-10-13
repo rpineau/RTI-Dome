@@ -82,7 +82,7 @@ typedef struct ShutterConfiguration {
     int             maxSpeed;
     bool            reversed;
     int             cutoffVolts;
-    int            voltsClose;
+    int             voltsClose;
     unsigned long   watchdogInterval;
     bool            radioIsConfigured;
     int             panid;
@@ -107,68 +107,73 @@ public:
 
     bool        m_bWasRunning = false;
 
-    // Helper functions
+    // Motor functions
     float       PositionToAltitude(long);
     long        AltitudeToPosition(float);
 
-    // Getters
     int         GetAcceleration();
-    float           GetElevation();
-    int             GetEndSwitchStatus();
-    int         GetMaxSpeed();
-    long            GetPosition();
-    bool            GetReversed();
-    short           GetState();
-    unsigned long        GetStepsPerStroke();
-    bool            GetVoltsAreLow();
-    String          GetVoltString();
-    String          GetPANID();
-    bool            isRadioConfigured();
-    unsigned long   getWatchdogInterval();
-    // Setters
     void        SetAcceleration(const int);
+
+    int         GetMaxSpeed();
     void        SetMaxSpeed(const int);
-    void        SetReversed(const bool);
-    void        SetStepsPerStroke(const unsigned long);
-    void        SetVoltsFromString(const String);
-    void        setPANID(const String panID);
-    void        setRadioConfigured(bool bConfigured);
-    // Movers
-    bool        DoButtons();
-    void        Open();
-    void        Close();
+
+    long        GetPosition();
     void        GotoPosition(const unsigned long);
     void        GotoAltitude(const float);
     void        MoveRelative(const long);
-    void        SetWatchdogInterval(const unsigned long);
+    float       GetElevation();
+
+    bool        GetReversed();
+    void        SetReversed(const bool);
+
+    int         GetEndSwitchStatus();
+    int         GetState();
+
+    unsigned long   GetStepsPerStroke();
+    void            SetStepsPerStroke(const unsigned long);
+
+    bool        GetVoltsAreLow();
+    String      GetVoltString();
     int         GetVoltsClose();
     void        SetVoltsClose(const int);
+    void        SetVoltsFromString(const String);
 
-    // xbee stuff
+    String      GetPANID();
+    void        setPANID(const String panID);
+    bool        isRadioConfigured();
+    void        setRadioConfigured(bool bConfigured);
+
+    unsigned long   getWatchdogInterval();
+    void            SetWatchdogInterval(const unsigned long);
+
+    // Move
+    bool        DoButtons();
     void        EnableMotor(const bool);
+    void        Open();
+    void        Close();
     void        Run();
     void        Stop();
+
+    // persistent data
     void        LoadFromEEProm();
     void        SaveToEEProm();
     int         restoreDefaultMotorSettings();
 
+    // interrupts
     static void     ClosedInterrupt();
     static void     OpenInterrupt();
 
 private:
 
-    Configuration m_Config;
-
+    Configuration   m_Config;
     float           m_fAdcConvert;
-    uint16_t        m_nVolts;
+    int             m_nVolts;
     StopWatch       m_batteryCheckTimer;
     unsigned long   m_nBatteryCheckInterval = 0; // we want to check battery immedialtelly
+    // int             m_nLastButtonPressed;
 
-    uint8_t         m_nLastButtonPressed;
-
-
-    int         MeasureVoltage();
-    void        SetDefaultConfig();
+    int             MeasureVoltage();
+    void            SetDefaultConfig();
 };
 
 
@@ -293,60 +298,6 @@ void ShutterClass::SaveToEEProm()
 
 }
 
-// INPUTS
-bool ShutterClass::DoButtons()
-{
-    int PRESSED = 0;
-    bool bButtonUsed = false;
-    static int whichButtonPressed = 0, lastButtonPressed = 0;
-
-    if (digitalRead(BUTTON_OPEN) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != OPEN) {
-        DBPrintln("Button Open Shutter");
-        watchdogTimer.reset();
-        whichButtonPressed = BUTTON_OPEN;
-        shutterState = OPENING;
-        MoveRelative(m_Config.stepsPerStroke);
-        lastButtonPressed = BUTTON_OPEN;
-        bButtonUsed = true;
-    }
-    else if (digitalRead(BUTTON_CLOSE) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != CLOSED) {
-        DBPrintln("Button Close Shutter");
-        watchdogTimer.reset();
-        whichButtonPressed = BUTTON_CLOSE;
-        shutterState = CLOSING;
-        MoveRelative(1 - m_Config.stepsPerStroke);
-        lastButtonPressed = BUTTON_CLOSE;
-        bButtonUsed = true;
-    }
-
-    if (digitalRead(whichButtonPressed) == !PRESSED && lastButtonPressed > 0) {
-        Stop();
-        lastButtonPressed = whichButtonPressed = 0;
-        bButtonUsed = false;
-    }
-
-    return bButtonUsed;
-}
-
-int ShutterClass::MeasureVoltage()
-{
-    int adc;
-    float calc;
-
-    adc = analogRead(VOLTAGE_MONITOR_PIN);
-    DBPrintln("ADC returns " + String(adc));
-    calc = adc * m_fAdcConvert;
-    return int(calc);
-}
-
-// Helper functions
-long ShutterClass::AltitudeToPosition(const float alt)
-{
-    long result;
-
-    result = (long)(m_Config.stepsPerStroke * alt / 90.0);
-    return result;
-}
 
 float ShutterClass::PositionToAltitude(const long pos)
 {
@@ -355,74 +306,17 @@ float ShutterClass::PositionToAltitude(const long pos)
     return result;
 }
 
-// Getters
-int ShutterClass::GetAcceleration()
+long ShutterClass::AltitudeToPosition(const float alt)
 {
-    return m_Config.acceleration;
-}
+    long result;
 
-int ShutterClass::GetEndSwitchStatus()
-{
-    int result= ERROR;
-
-    if (digitalRead(CLOSED_PIN) == 0)
-        result = CLOSED;
-
-    if (digitalRead(OPENED_PIN) == 0)
-        result = OPEN;
+    result = (long)(m_Config.stepsPerStroke * alt / 90.0);
     return result;
 }
 
-float ShutterClass::GetElevation()
+int ShutterClass::GetAcceleration()
 {
-    return PositionToAltitude(stepper.currentPosition());
-}
-
-int ShutterClass::GetMaxSpeed()
-{
-    return stepper.maxSpeed();
-}
-
-long ShutterClass::GetPosition()
-{
-    return stepper.currentPosition();
-}
-
-bool ShutterClass::GetReversed()
-{
-    return m_Config.reversed;
-}
-
-short ShutterClass::GetState()
-{
-    return (short)shutterState;
-}
-
-unsigned long ShutterClass::GetStepsPerStroke()
-{
-    return m_Config.stepsPerStroke;
-}
-
-inline bool ShutterClass::GetVoltsAreLow()
-{
-    bool low = (m_nVolts <= m_Config.cutoffVolts);
-    return low;
-}
-
-String ShutterClass::GetVoltString()
-{
-    return String(m_nVolts) + "," + String(m_Config.cutoffVolts);
-}
-
-// Setters
-void ShutterClass::EnableMotor(const bool newState)
-{
-    if (!newState) {
-        digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
-    }
-    else {
-        digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
-    }
+    return m_Config.acceleration;
 }
 
 void ShutterClass::SetAcceleration(const int accel)
@@ -432,6 +326,11 @@ void ShutterClass::SetAcceleration(const int accel)
     SaveToEEProm();
 }
 
+int ShutterClass::GetMaxSpeed()
+{
+    return stepper.maxSpeed();
+}
+
 void ShutterClass::SetMaxSpeed(const int speed)
 {
     m_Config.maxSpeed = speed;
@@ -439,38 +338,9 @@ void ShutterClass::SetMaxSpeed(const int speed)
     SaveToEEProm();
 }
 
-void ShutterClass::SetReversed(const bool reversed)
+long ShutterClass::GetPosition()
 {
-    m_Config.reversed = reversed;
-    stepper.setPinsInverted(reversed, reversed, reversed);
-    SaveToEEProm();
-}
-
-void ShutterClass::SetStepsPerStroke(const unsigned long newSteps)
-{
-    m_Config.stepsPerStroke = newSteps;
-    SaveToEEProm();
-}
-
-void ShutterClass::SetVoltsFromString(const String value)
-{
-    m_Config.cutoffVolts = value.toInt();
-    SaveToEEProm();
-}
-
-// Movers
-void ShutterClass::Open()
-{
-    shutterState = OPENING;
-    DBPrintln("shutterState = OPENING");
-    MoveRelative(m_Config.stepsPerStroke * 1.2);
-}
-
-void ShutterClass::Close()
-{
-    shutterState = CLOSING;
-    DBPrintln("shutterState = CLOSING");
-    MoveRelative(1 - m_Config.stepsPerStroke * 1.2);
+    return stepper.currentPosition();
 }
 
 void ShutterClass::GotoPosition(const unsigned long newPos)
@@ -508,16 +378,65 @@ void ShutterClass::MoveRelative(const long amount)
     stepper.move(amount);
 }
 
-inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
+float ShutterClass::GetElevation()
 {
-    if(newInterval > MAX_WATCHDOG_INTERVAL)
-        m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
-    else    if(newInterval < MIN_WATCHDOG_INTERVAL)
-        m_Config.watchdogInterval = MIN_WATCHDOG_INTERVAL;
-    else
-        m_Config.watchdogInterval = newInterval;
+    return PositionToAltitude(stepper.currentPosition());
+}
 
+bool ShutterClass::GetReversed()
+{
+    return m_Config.reversed;
+}
+
+void ShutterClass::SetReversed(const bool reversed)
+{
+    m_Config.reversed = reversed;
+    stepper.setPinsInverted(reversed, reversed, reversed);
     SaveToEEProm();
+}
+
+int ShutterClass::GetEndSwitchStatus()
+{
+    int result= ERROR;
+
+    if (digitalRead(CLOSED_PIN) == 0)
+        result = CLOSED;
+
+    if (digitalRead(OPENED_PIN) == 0)
+        result = OPEN;
+    return result;
+}
+
+int ShutterClass::GetState()
+{
+    return shutterState;
+}
+
+unsigned long ShutterClass::GetStepsPerStroke()
+{
+    return m_Config.stepsPerStroke;
+}
+
+void ShutterClass::SetStepsPerStroke(const unsigned long newSteps)
+{
+    m_Config.stepsPerStroke = newSteps;
+    SaveToEEProm();
+}
+
+inline bool ShutterClass::GetVoltsAreLow()
+{
+    bool low = (m_nVolts <= m_Config.cutoffVolts);
+    return low;
+}
+
+String ShutterClass::GetVoltString()
+{
+    return String(m_nVolts) + "," + String(m_Config.cutoffVolts);
+}
+
+inline int ShutterClass::GetVoltsClose()
+{
+    return m_Config.voltsClose;
 }
 
 inline void ShutterClass::SetVoltsClose(const int value)
@@ -526,11 +445,22 @@ inline void ShutterClass::SetVoltsClose(const int value)
     SaveToEEProm();
 }
 
-inline int ShutterClass::GetVoltsClose()
+void ShutterClass::SetVoltsFromString(const String value)
 {
-    return m_Config.voltsClose;
+    m_Config.cutoffVolts = value.toInt();
+    SaveToEEProm();
 }
 
+int ShutterClass::MeasureVoltage()
+{
+    int adc;
+    float calc;
+
+    adc = analogRead(VOLTAGE_MONITOR_PIN);
+    DBPrintln("ADC returns " + String(adc));
+    calc = adc * m_fAdcConvert;
+    return int(calc);
+}
 
 String ShutterClass::GetPANID()
 {
@@ -553,11 +483,94 @@ void ShutterClass::setRadioConfigured(bool bConfigured)
     m_Config.radioIsConfigured = bConfigured;
 }
 
-
 unsigned long ShutterClass::getWatchdogInterval()
 {
     return m_Config.watchdogInterval;
 }
+
+inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
+{
+    if(newInterval > MAX_WATCHDOG_INTERVAL)
+        m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
+    else    if(newInterval < MIN_WATCHDOG_INTERVAL)
+        m_Config.watchdogInterval = MIN_WATCHDOG_INTERVAL;
+    else
+        m_Config.watchdogInterval = newInterval;
+
+    SaveToEEProm();
+}
+
+// INPUTS
+bool ShutterClass::DoButtons()
+{
+    int PRESSED = 0;
+    bool bButtonUsed = false;
+    static int whichButtonPressed = 0, lastButtonPressed = 0;
+
+    if (digitalRead(BUTTON_OPEN) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != OPEN) {
+        DBPrintln("Button Open Shutter");
+        watchdogTimer.reset();
+        whichButtonPressed = BUTTON_OPEN;
+        shutterState = OPENING;
+        MoveRelative(m_Config.stepsPerStroke);
+        lastButtonPressed = BUTTON_OPEN;
+        bButtonUsed = true;
+    }
+    else if (digitalRead(BUTTON_CLOSE) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != CLOSED) {
+        DBPrintln("Button Close Shutter");
+        watchdogTimer.reset();
+        whichButtonPressed = BUTTON_CLOSE;
+        shutterState = CLOSING;
+        MoveRelative(1 - m_Config.stepsPerStroke);
+        lastButtonPressed = BUTTON_CLOSE;
+        bButtonUsed = true;
+    }
+
+    if (digitalRead(whichButtonPressed) == !PRESSED && lastButtonPressed > 0) {
+        Stop();
+        lastButtonPressed = whichButtonPressed = 0;
+        bButtonUsed = false;
+    }
+
+    return bButtonUsed;
+}
+
+// Setters
+void ShutterClass::EnableMotor(const bool newState)
+{
+    if (!newState) {
+        digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
+    }
+    else {
+        digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
+    }
+}
+
+
+
+// Movers
+void ShutterClass::Open()
+{
+    shutterState = OPENING;
+    DBPrintln("shutterState = OPENING");
+    MoveRelative(m_Config.stepsPerStroke * 1.2);
+}
+
+void ShutterClass::Close()
+{
+    shutterState = CLOSING;
+    DBPrintln("shutterState = CLOSING");
+    MoveRelative(1 - m_Config.stepsPerStroke * 1.2);
+}
+
+
+
+
+
+
+
+
+
 
 void ShutterClass::Run()
 {
@@ -626,7 +639,7 @@ void ShutterClass::Run()
 
     if (m_bWasRunning) { // So this bit only runs once after stopping.
         DBPrintln("m_bWasRunning " + String(shutterState) + " Hitswitch " + String(hitSwitch));
-        m_nLastButtonPressed = 0;
+        // m_nLastButtonPressed = 0;
         m_bWasRunning = false;
         hitSwitch = false;
         EnableMotor(false);

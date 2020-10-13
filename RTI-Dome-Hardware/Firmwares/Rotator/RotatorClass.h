@@ -89,7 +89,7 @@ typedef struct RotatorConfiguration {
     int             cutOffVolts;
     unsigned long   rainCheckInterval;
     bool            rainCheckTwice;
-    byte            rainAction;
+    int             rainAction;
 #ifndef STANDALONE
     bool            radioIsConfigured;
     int             panid;
@@ -127,7 +127,7 @@ public:
     long        GetMaxSpeed();
     long        GetAcceleration();
     long        GetStepsPerRotation();
-    byte        GetRainAction();
+    int        GetRainAction();
     unsigned long           GetRainCheckInterval();
     bool        GetRainCheckTwice();
     bool        GetReversed();
@@ -153,7 +153,7 @@ public:
     void        SetRainInterval(const unsigned long);
     void        SetReversed(const bool reversed);
     void        SetHomeAzimuth(const float);
-    void        SetRainAction(const byte);
+    void        SetRainAction(const int);
     void        SetCheckRainTwice(const bool);
     void        SetHomingCalibratingSpeed(const long newSpeed);
     void        RestoreNormalSpeed();
@@ -476,7 +476,7 @@ long RotatorClass::GetStepsPerRotation()
     return m_Config.stepsPerRotation;
 }
 
-inline byte RotatorClass::GetRainAction()
+inline int RotatorClass::GetRainAction()
 {
     return m_Config.rainAction;
 }
@@ -570,7 +570,7 @@ void RotatorClass::SetHomeAzimuth(const float newHome)
     SaveToEEProm();
 }
 
-inline void RotatorClass::SetRainAction(const byte value)
+inline void RotatorClass::SetRainAction(const int value)
 {
     m_Config.rainAction = value;
     SaveToEEProm();
