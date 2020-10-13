@@ -29,21 +29,21 @@ DueFlashStorage dueFlashStorage;
 #ifndef TEENY_3_5
 // Arduino boards
 #define HOME_PIN             2  // Also used for Shutter open status
-#define STEPPER_ENABLE_PIN  10  // Digital Output
-#define DIRECTION_PIN       11  // Digital Output
-#define STEP_PIN            12  // Digital Output
 #define BUTTON_CCW           5  // Digital Input
 #define BUTTON_CW            6  // Digital Input
 #define RAIN_SENSOR_PIN      7  // Digital Input from RG11
+#define STEPPER_ENABLE_PIN  10  // Digital Output
+#define DIRECTION_PIN       11  // Digital Output
+#define STEP_PIN            12  // Digital Output
 #else
 // Teensy boards > 3.5
 #define HOME_PIN             4  // Also used for Shutter open status
-#define STEPPER_ENABLE_PIN   9  // Digital Output
-#define DIRECTION_PIN       10  // Digital Output
-#define STEP_PIN             6  // Digital Output
 #define BUTTON_CCW           7  // Digital Input
 #define BUTTON_CW            8  // Digital Input
 #define RAIN_SENSOR_PIN     19  // Digital Input from RG11
+#define STEPPER_ENABLE_PIN   9  // Digital Output
+#define DIRECTION_PIN       10  // Digital Output
+#define STEP_PIN             6  // Digital Output
 #endif
 
 #define VOLTAGE_MONITOR_PIN A0
@@ -72,20 +72,17 @@ DueFlashStorage dueFlashStorage;
 #endif
 
 
-#ifndef STANDALONE
-#define SIGNATURE         2641
-#else
-#define SIGNATURE         2641
-#endif
+#define SIGNATURE         2642
+
 // not used on DUE
 #define EEPROM_LOCATION     10
 
 
 typedef struct RotatorConfiguration {
     int             signature;
-    long            maxSpeed;
-    long            acceleration;
     long            stepsPerRotation;
+    long            acceleration;
+    long            maxSpeed;
     bool            reversed;
     float           homeAzimuth;
     float           parkAzimuth;
