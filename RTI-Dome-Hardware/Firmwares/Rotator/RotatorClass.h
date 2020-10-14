@@ -108,6 +108,86 @@ enum RainActions {DO_NOTHING=0, HOME, PARK};
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
+// Arduino interrupt timer
+
+#if defined ARDUINO_DUE
+/*
+ * As demonstrated by RCArduino and modified by BKM:
+ * pick clock that provides the least error for specified frequency.
+ * https://github.com/SomeRandomGuy/DueTimer
+ * https://github.com/ivanseidel/DueTimer
+ */
+uint8_t pickClock(uint32_t frequency, uint32_t& retRC)
+{
+    /*
+        Timer       Definition
+        TIMER_CLOCK1    MCK/2
+        TIMER_CLOCK2    MCK/8
+        TIMER_CLOCK3    MCK/32
+        TIMER_CLOCK4    MCK/128
+    */
+    struct {
+        uint8_t flag;
+        uint8_t divisor;
+    } clockConfig[] = {
+        { TC_CMR_TCCLKS_TIMER_CLOCK1, 2 },
+        { TC_CMR_TCCLKS_TIMER_CLOCK2, 8 },
+        { TC_CMR_TCCLKS_TIMER_CLOCK3, 32 },
+        { TC_CMR_TCCLKS_TIMER_CLOCK4, 128 }
+    };
+    float ticks;
+    float error;
+    int clkId = 3;
+    int bestClock = 3;
+    float bestError = 1.0;
+    do
+    {
+        ticks = (float) VARIANT_MCK / (float) frequency / (float) clockConfig[clkId].divisor;
+        error = abs(ticks - round(ticks));
+        if (abs(error) < bestError)
+        {
+            bestClock = clkId;
+            bestError = error;
+        }
+    } while (clkId-- > 0);
+    ticks = (float) VARIANT_MCK / (float) frequency / (float) clockConfig[bestClock].divisor;
+    retRC = (uint32_t) round(ticks);
+    return clockConfig[bestClock].flag;
+}
+
+
+void startTimer(Tc *tc, uint32_t channel, IRQn_Type irq, uint32_t frequency)
+{
+    uint32_t rc = 0;
+    uint8_t clock;
+    pmc_set_writeprotect(false);
+    pmc_enable_periph_clk((uint32_t)irq);
+    clock = pickClock(frequency, rc);
+
+    TC_Configure(tc, channel, TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | clock);
+    TC_SetRA(tc, channel, rc/2); //50% high, 50% low
+    TC_SetRC(tc, channel, rc);
+    TC_Start(tc, channel);
+    tc->TC_CHANNEL[channel].TC_IER=TC_IER_CPCS;
+    tc->TC_CHANNEL[channel].TC_IDR=~TC_IER_CPCS;
+
+    NVIC_EnableIRQ(irq);
+}
+
+void stopTimer(Tc *tc, uint32_t channel, IRQn_Type irq)
+{
+    NVIC_DisableIRQ(irq);
+    TC_Stop(tc, channel);
+}
+
+// DUE stepper callback
+void TC3_Handler()
+{
+    TC_GetStatus(TC1, 0);
+    stepper.run();
+}
+#endif
+
 
 class RotatorClass
 {
@@ -190,6 +270,9 @@ public:
     void        MoveRelative(const long steps);
     void        Run();
     void        Stop();
+    void        motorStop();
+    void        motorMoveTo(const long newPosition);
+    void        motorMoveRelative(const long howFar);
 
 private:
 
@@ -451,7 +534,7 @@ void RotatorClass::SetPosition(const long newPosition)
         m_nMoveDirection = MOVE_NEGATIVE;
     }
     EnableMotor(true);
-    stepper.moveTo(newPosition);
+    motorMoveTo(newPosition);
 }
 
 float RotatorClass::GetAzimuth()
@@ -738,7 +821,7 @@ void RotatorClass::Calibrate()
 
             case(CALIBRATION_MEASURE):
                 if (digitalRead(HOME_PIN) == 0) {
-                    stepper.stop();
+                    motorStop();
                     // restore speed
                     RestoreNormalSpeed();
                     m_seekMode = HOMING_NONE;
@@ -781,7 +864,7 @@ void RotatorClass::MoveRelative(const long howFar)
     else if(howFar == 0 )
         m_nMoveDirection = 0;
 
-    stepper.move(howFar);
+    motorMoveRelative(howFar);
 }
 
 
@@ -905,13 +988,46 @@ void RotatorClass::Stop()
 
     RestoreNormalSpeed();
     m_seekMode = HOMING_NONE;
-    stepper.stop();
+    motorStop();
 }
 
 
 
+void RotatorClass::motorStop()
+{
+    stepper.stop();
+#if defined ARDUINO_DUE
+    // stop interrupt timer
+    stopTimer(TC1, 0, TC3_IRQn);
+#endif
+}
 
+void RotatorClass::motorMoveTo(const long newPosition)
+{
 
+    stepper.moveTo(newPosition);
+#if defined ARDUINO_DUE
+    int nFreq;
+    nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
+    // start interrupt timer
+    // AccelStepper run() is called under a timer interrupt
+    startTimer(TC1, 0, TC3_IRQn, nFreq);
+#endif
+
+}
+
+void RotatorClass::motorMoveRelative(const long howFar)
+{
+
+    stepper.move(howFar);
+#if defined ARDUINO_DUE
+    int nFreq;
+    nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
+    // start interrupt timer
+    // AccelStepper run() is called under a timer interrupt
+    startTimer(TC1, 0, TC3_IRQn, nFreq);
+#endif
+}
 
 
 
