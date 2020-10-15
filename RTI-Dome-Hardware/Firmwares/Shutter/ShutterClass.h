@@ -602,7 +602,7 @@ bool ShutterClass::DoButtons()
     }
 
     if (digitalRead(whichButtonPressed) == !PRESSED && lastButtonPressed > 0) {
-        Stop();
+        motorStop();
         lastButtonPressed = whichButtonPressed = 0;
         bButtonUsed = false;
     }
@@ -615,6 +615,9 @@ void ShutterClass::EnableMotor(const bool newState)
 {
     if (!newState) {
         digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
+#if defined ARDUINO_DUE
+        stopInterrupt();
+#endif
     }
     else {
         digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
@@ -707,16 +710,9 @@ void ShutterClass::Run()
         m_bWasRunning = false;
         hitSwitch = false;
         EnableMotor(false);
-#if defined ARDUINO_DUE
-        stopInterrupt();
-#endif
     }
 }
 
-void  ShutterClass::Stop()
-{
-    motorStop();
-}
 
 void ShutterClass::motorStop()
 {

@@ -3818,6 +3818,12 @@ design rules under a new name.</description>
 <attribute name="MPN" value="" x="11.557" y="3.175" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="11.557" y="3.175" size="1.778" layer="27" display="off"/>
 </element>
+<element name="X11" library="con-ptr500" package="AK500/2" value="" x="71.12" y="66.04" rot="R180">
+<attribute name="MF" value="" x="71.12" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="OC_NEWARK" value="unknown" x="71.12" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="MPN" value="" x="71.12" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="OC_FARNELL" value="unknown" x="71.12" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
+</element>
 </elements>
 <signals>
 <signal name="VPIN">
@@ -4367,6 +4373,16 @@ design rules under a new name.</description>
 <contactref element="R7" pad="1"/>
 <contactref element="R2" pad="2"/>
 <wire x1="40.193" y1="16.002" x2="42.5475" y2="16.002" width="0.8128" layer="1"/>
+</signal>
+<signal name="AT_PARK_PIN_LOOP">
+<contactref element="X11" pad="2"/>
+<contactref element="PCB1" pad="A4"/>
+<wire x1="68.6054" y1="66.04" x2="50.165" y2="11.1125" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="AT_PARK_PIN">
+<contactref element="X11" pad="1"/>
+<contactref element="PCB1" pad="A5"/>
+<wire x1="73.6346" y1="66.04" x2="52.705" y2="11.1125" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 <errors>

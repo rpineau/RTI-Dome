@@ -847,6 +847,9 @@ void RotatorClass::EnableMotor(const bool bEnabled)
 {
     if (!bEnabled) {
         digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
+#if defined ARDUINO_DUE
+        stopInterrupt();
+#endif
     }
     else {
         digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
@@ -976,10 +979,6 @@ void RotatorClass::Run()
 
         EnableMotor(false);
         wasRunning = false;
-#if defined ARDUINO_DUE
-        stopInterrupt();
-#endif
-
     } // end if (wasRunning)
 }
 

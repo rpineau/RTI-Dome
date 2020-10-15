@@ -154,7 +154,6 @@ void setup()
     isConfiguringWireless = false;
     gotHelloFromShutter = false;
 #endif
-    DBPrint("Ready");
     Rotator.EnableMotor(false);
 }
 
