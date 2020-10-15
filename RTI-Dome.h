@@ -31,11 +31,14 @@
 #include "../../licensedinterfaces/sleeperinterface.h"
 #include "../../licensedinterfaces/loggerinterface.h"
 
+#include "StopWatch.h"
+
 #define SERIAL_BUFFER_SIZE 256
 #define MAX_TIMEOUT 5000
 #define ND_LOG_BUFFER_SIZE 256
 // #define INTER_COMMAND_PAUSE_MS	100
 #define PANID_TIMEOUT 15    // in seconds
+#define RAIN_CHECK_INTERVAL 10
 
 #define PLUGIN_DEBUG 2
 #define DRIVER_VERSION      2.64
@@ -143,6 +146,10 @@ public:
     int restoreDomeMotorSettings();
     int restoreShutterMotorSettings();
     
+    void enableRainStatusFile(bool bEnable);
+    void getRainStatusFileName(std::string &fName);
+    void writeRainStatus();
+    
 protected:
 
     int             domeCommand(const char *cmd, char *result, char respCmdCode, int resultMaxLen, int nTimeout = MAX_TIMEOUT);
@@ -195,6 +202,11 @@ protected:
     bool            m_bHomeOnUnpark;
     bool            m_bShutterPresent;
 
+    std::string     m_sRainStatusfilePath;
+    FILE            *RainStatusfile;
+    bool            m_bSaveRainStatus;
+    CStopWatch      m_cRainCheckTimer;
+    
 #ifdef PLUGIN_DEBUG
     std::string m_sLogfilePath;
     // timestamp for logs

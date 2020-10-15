@@ -38,6 +38,7 @@ class TickCountInterface;
 #define CHILD_KEY_SHUTTER_CONTROL "ShutterCtrl"
 #define CHILD_KEY_HOME_ON_PARK "HomeOnPark"
 #define CHILD_KEY_HOME_ON_UNPARK "HomeOnUnpark"
+#define CHILD_KEY_LOG_RAIN_STATUS "LogRainStatus"
 
 #if defined(SB_WIN_BUILD)
 #define DEF_PORT_NAME					"COM1"
@@ -173,7 +174,8 @@ private:
 	int			m_nSavedTicksPerRev;
     int         m_nPanId;
     bool        m_bSettingPanID;
-    
+    bool        m_bLogRainStatus;
+
     CStopWatch  m_SetPanIdTimer;
     
     // bool        mIsRollOffRoof;

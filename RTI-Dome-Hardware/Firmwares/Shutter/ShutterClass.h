@@ -16,7 +16,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-//#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)
@@ -95,6 +95,84 @@ ShutterStates   shutterState = ERROR;
 
 StopWatch watchdogTimer;
 
+
+#if defined ARDUINO_DUE
+/*
+ * As demonstrated by RCArduino and modified by BKM:
+ * pick clock that provides the least error for specified frequency.
+ */
+uint8_t pickClock(uint32_t frequency, uint32_t& retRC)
+{
+    /*
+        Timer       Definition
+        TIMER_CLOCK1    MCK/2
+        TIMER_CLOCK2    MCK/8
+        TIMER_CLOCK3    MCK/32
+        TIMER_CLOCK4    MCK/128
+    */
+    struct {
+        uint8_t flag;
+        uint8_t divisor;
+    } clockConfig[] = {
+        { TC_CMR_TCCLKS_TIMER_CLOCK1, 2 },
+        { TC_CMR_TCCLKS_TIMER_CLOCK2, 8 },
+        { TC_CMR_TCCLKS_TIMER_CLOCK3, 32 },
+        { TC_CMR_TCCLKS_TIMER_CLOCK4, 128 }
+    };
+    float ticks;
+    float error;
+    int clkId = 3;
+    int bestClock = 3;
+    float bestError = 1.0;
+    do
+    {
+        ticks = (float) VARIANT_MCK / (float) frequency / (float) clockConfig[clkId].divisor;
+        error = abs(ticks - round(ticks));
+        if (abs(error) < bestError)
+        {
+            bestClock = clkId;
+            bestError = error;
+        }
+    } while (clkId-- > 0);
+    ticks = (float) VARIANT_MCK / (float) frequency / (float) clockConfig[bestClock].divisor;
+    retRC = (uint32_t) round(ticks);
+    return clockConfig[bestClock].flag;
+}
+
+
+void startTimer(Tc *tc, uint32_t channel, IRQn_Type irq, uint32_t frequency)
+{
+    uint32_t rc = 0;
+    uint8_t clock;
+    pmc_set_writeprotect(false);
+    pmc_enable_periph_clk((uint32_t)irq);
+    clock = pickClock(frequency, rc);
+
+    TC_Configure(tc, channel, TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | clock);
+    TC_SetRA(tc, channel, rc/2); //50% high, 50% low
+    TC_SetRC(tc, channel, rc);
+    TC_Start(tc, channel);
+    tc->TC_CHANNEL[channel].TC_IER=TC_IER_CPCS;
+    tc->TC_CHANNEL[channel].TC_IDR=~TC_IER_CPCS;
+
+    NVIC_EnableIRQ(irq);
+}
+
+void stopTimer(Tc *tc, uint32_t channel, IRQn_Type irq)
+{
+    NVIC_DisableIRQ(irq);
+    TC_Stop(tc, channel);
+}
+
+// DUE stepper callback
+void TC3_Handler()
+{
+    TC_GetStatus(TC1, 0);
+    stepper.run();
+}
+#endif
+
+
 class ShutterClass
 {
 public:
@@ -149,6 +227,12 @@ public:
     void        Close();
     void        Run();
     void        Stop();
+    static void motorStop();
+    void        motorMoveTo(const long newPosition);
+    void        motorMoveRelative(const long amount);
+#if defined ARDUINO_DUE
+    void        stopInterrupt();
+#endif
 
     // persistent data
     void        LoadFromEEProm();
@@ -215,7 +299,7 @@ void ShutterClass::ClosedInterrupt()
     // debounce
     if (digitalRead(CLOSED_PIN) == 0) {
         if(shutterState == CLOSING)
-            stepper.stop();
+            ShutterClass::motorStop();
         if(shutterState != OPENING)
             shutterState = CLOSED;
     }
@@ -226,7 +310,7 @@ void ShutterClass::OpenInterrupt()
     // debounce
     if (digitalRead(OPENED_PIN) == 0) {
         if(shutterState == OPENING)
-            stepper.stop();
+            ShutterClass::motorStop();
         if(shutterState != CLOSING)
             shutterState = OPEN;
     }
@@ -355,8 +439,7 @@ void ShutterClass::GotoPosition(const unsigned long newPos)
     }
 
     if (doMove) {
-        EnableMotor(true);
-        stepper.moveTo(newPos);
+        motorMoveTo(newPos);
     }
 }
 
@@ -367,8 +450,7 @@ void ShutterClass::GotoAltitude(const float newAlt)
 
 void ShutterClass::MoveRelative(const long amount)
 {
-    EnableMotor(true);
-    stepper.move(amount);
+    motorMoveRelative(amount);
 }
 
 float ShutterClass::GetElevation()
@@ -575,7 +657,7 @@ void ShutterClass::Run()
             hitSwitch = true;
             doSync = true;
             shutterState = CLOSED;
-            stepper.stop();
+            motorStop();
             DBPrintln("Hit closed switch");
             DBPrintln("shutterState = CLOSED");
     }
@@ -583,7 +665,7 @@ void ShutterClass::Run()
     if (digitalRead(OPENED_PIN) == 0 && shutterState != CLOSING && hitSwitch == false) {
             hitSwitch = true;
             shutterState = OPEN;
-            stepper.stop();
+            motorStop();
             DBPrintln("Hit opened switch");
             DBPrintln("shutterState = OPEN");
     }
@@ -625,11 +707,58 @@ void ShutterClass::Run()
         m_bWasRunning = false;
         hitSwitch = false;
         EnableMotor(false);
+#if defined ARDUINO_DUE
+        stopInterrupt();
+#endif
     }
 }
 
-void        ShutterClass::Stop()
+void  ShutterClass::Stop()
 {
-    stepper.stop();
+    motorStop();
 }
 
+void ShutterClass::motorStop()
+{
+    stepper.stop();
+
+}
+
+#if defined ARDUINO_DUE
+void ShutterClass::stopInterrupt()
+{
+    DBPrintln("Stopping interrupt");
+    // stop interrupt timer
+    stopTimer(TC1, 0, TC3_IRQn);
+}
+#endif
+
+void ShutterClass::motorMoveTo(const long newPosition)
+{
+    EnableMotor(true);
+    stepper.moveTo(newPosition);
+#if defined ARDUINO_DUE
+    DBPrintln("Starting interrupt");
+    int nFreq;
+    nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
+    // start interrupt timer
+    // AccelStepper run() is called under a timer interrupt
+    startTimer(TC1, 0, TC3_IRQn, nFreq);
+#endif
+
+}
+
+void ShutterClass::motorMoveRelative(const long amount)
+{
+
+    EnableMotor(true);
+    stepper.move(amount);
+#if defined ARDUINO_DUE
+    DBPrintln("Starting interrupt");
+    int nFreq;
+    nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
+    // start interrupt timer
+    // AccelStepper run() is called under a timer interrupt
+    startTimer(TC1, 0, TC3_IRQn, nFreq);
+#endif
+}

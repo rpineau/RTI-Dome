@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>712</width>
-    <height>548</height>
+    <height>574</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>712</width>
-    <height>548</height>
+    <height>574</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>712</width>
-    <height>548</height>
+    <height>574</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -599,8 +599,8 @@
      <widget class="QPushButton" name="pushButtonCancel">
       <property name="geometry">
        <rect>
-        <x>472</x>
-        <y>480</y>
+        <x>104</x>
+        <y>504</y>
         <width>80</width>
         <height>24</height>
        </rect>
@@ -612,8 +612,8 @@
      <widget class="QPushButton" name="pushButtonOK">
       <property name="geometry">
        <rect>
-        <x>576</x>
-        <y>480</y>
+        <x>208</x>
+        <y>504</y>
         <width>80</width>
         <height>24</height>
        </rect>
@@ -631,7 +631,7 @@
         <x>16</x>
         <y>328</y>
         <width>298</width>
-        <height>104</height>
+        <height>152</height>
        </rect>
       </property>
       <property name="title">
@@ -727,13 +727,39 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="geometry">
+        <rect>
+         <x>16</x>
+         <y>96</y>
+         <width>192</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Log rain sensor state</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="filePath">
+       <property name="geometry">
+        <rect>
+         <x>16</x>
+         <y>120</y>
+         <width>264</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>/Users/foo/RTI_Rain.txt</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>16</x>
-        <y>440</y>
-        <width>298</width>
+        <x>336</x>
+        <y>464</y>
+        <width>336</width>
         <height>72</height>
        </rect>
       </property>
@@ -759,7 +785,7 @@
       <widget class="QSpinBox" name="panID">
        <property name="geometry">
         <rect>
-         <x>120</x>
+         <x>128</x>
          <y>32</y>
          <width>72</width>
          <height>24</height>
@@ -784,7 +810,7 @@
       <widget class="QPushButton" name="pushButton_2">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>216</x>
          <y>32</y>
          <width>80</width>
          <height>24</height>

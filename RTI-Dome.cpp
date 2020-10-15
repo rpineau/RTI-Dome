@@ -37,12 +37,16 @@ CRTIDome::CRTIDome()
     m_nGotoTries = 0;
 
     m_nIsRaining = NOT_RAINING;
+    m_bSaveRainStatus = false;
+    RainStatusfile = NULL;
+    m_cRainCheckTimer.Reset();
 
     m_bHomeOnPark = false;
     m_bHomeOnUnpark = false;
 
     m_bShutterPresent = false;
-
+    
+    
     memset(m_szFirmwareVersion,0,SERIAL_BUFFER_SIZE);
     memset(m_szLogBuffer,0,ND_LOG_BUFFER_SIZE);
 
@@ -61,11 +65,25 @@ CRTIDome::CRTIDome()
     Logfile = fopen(m_sLogfilePath.c_str(), "w");
 #endif
 
+#if defined(SB_WIN_BUILD)
+    m_sRainStatusfilePath = getenv("HOMEDRIVE");
+    m_sRainStatusfilePath += getenv("HOMEPATH");
+    m_sRainStatusfilePath += "\\RTI_Rain.txt";
+#elif defined(SB_LINUX_BUILD)
+    m_sRainStatusfilePath = getenv("HOME");
+    m_sRainStatusfilePath += "/RTI_Rain.txt";
+#elif defined(SB_MAC_BUILD)
+    m_sRainStatusfilePath = getenv("HOME");
+    m_sRainStatusfilePath += "/RTI_Rain.txt";
+#endif
+    
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome Constructor Called.\n", timestamp);
+    fprintf(Logfile, "[%s] [CRTIDome] Version %3.2f build 2019_12_06_1810.\n", timestamp, DRIVER_VERSION);
+    fprintf(Logfile, "[%s] [CRTIDome] Constructor Called.\n", timestamp);
+    fprintf(Logfile, "[%s] [CRTIDome] Rains status file : '%s'.\n", timestamp, m_sRainStatusfilePath.c_str());
     fflush(Logfile);
 #endif
 
@@ -77,7 +95,10 @@ CRTIDome::~CRTIDome()
     // Close LogFile
     if (Logfile) fclose(Logfile);
 #endif
-
+    if(RainStatusfile) {
+        fclose(RainStatusfile);
+        RainStatusfile = NULL;
+    }
 }
 
 int CRTIDome::Connect(const char *pszPort)
@@ -326,6 +347,9 @@ int CRTIDome::getDomeAz(double &dDomeAz)
     dDomeAz = atof(szResp);
     m_dCurrentAzPosition = dDomeAz;
 
+    if(m_cRainCheckTimer.GetElapsedSeconds() > RAIN_CHECK_INTERVAL)
+        writeRainStatus();
+    
     return nErr;
 }
 
@@ -2162,6 +2186,54 @@ int CRTIDome::restoreShutterMotorSettings()
     nErr = getShutterAcceleration(nDummy);
     nErr |= getShutterSpeed(nDummy);
     return nErr;
+}
+
+void CRTIDome::enableRainStatusFile(bool bEnable)
+{
+    if(bEnable) {
+        if(!RainStatusfile)
+            RainStatusfile = fopen(m_sRainStatusfilePath.c_str(), "w");
+        if(RainStatusfile) {
+            m_bSaveRainStatus = true;
+            writeRainStatus();
+        }
+        else { // if we failed to open the file.. don't log ..
+            RainStatusfile = NULL;
+            m_bSaveRainStatus = false;
+        }
+    }
+    else {
+        if(RainStatusfile) {
+            fclose(RainStatusfile);
+            RainStatusfile = NULL;
+        }
+        m_bSaveRainStatus = false;
+    }
+}
+
+void CRTIDome::getRainStatusFileName(std::string &fName)
+{
+    fName.assign(m_sRainStatusfilePath);
+}
+
+void CRTIDome::writeRainStatus()
+{
+#ifdef PLUGIN_DEBUG
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CNexDomeV3::writeRainStatus] m_nIsRaining =  %s\n", timestamp, m_nIsRaining==RAINING?"Raining":"Not Raining");
+    fprintf(Logfile, "[%s] [CNexDomeV3::writeRainStatus] m_bSaveRainStatus =  %s\n", timestamp, m_bSaveRainStatus?"YES":"NO");
+    fflush(Logfile);
+#endif
+
+    if(m_bSaveRainStatus && RainStatusfile) {
+        int nStatus;
+        getRainSensorStatus(nStatus);
+        fseek(RainStatusfile, 0, SEEK_SET);
+        fprintf(RainStatusfile, "Raining:%s", nStatus == RAINING?"YES":"NO");
+        fflush(RainStatusfile);
+    }
 }
 
 

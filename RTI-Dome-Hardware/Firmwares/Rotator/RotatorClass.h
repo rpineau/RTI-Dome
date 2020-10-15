@@ -273,6 +273,9 @@ public:
     void        motorStop();
     void        motorMoveTo(const long newPosition);
     void        motorMoveRelative(const long howFar);
+#if defined ARDUINO_DUE
+    void        stopInterrupt();
+#endif
 
 private:
 
@@ -973,6 +976,10 @@ void RotatorClass::Run()
 
         EnableMotor(false);
         wasRunning = false;
+#if defined ARDUINO_DUE
+        stopInterrupt();
+#endif
+
     } // end if (wasRunning)
 }
 
@@ -996,17 +1003,23 @@ void RotatorClass::Stop()
 void RotatorClass::motorStop()
 {
     stepper.stop();
+}
+
 #if defined ARDUINO_DUE
+void RotatorClass::stopInterrupt()
+{
+    DBPrint("Stopping interrupt");
     // stop interrupt timer
     stopTimer(TC1, 0, TC3_IRQn);
-#endif
 }
+#endif
 
 void RotatorClass::motorMoveTo(const long newPosition)
 {
 
     stepper.moveTo(newPosition);
 #if defined ARDUINO_DUE
+    DBPrint("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
@@ -1021,6 +1034,7 @@ void RotatorClass::motorMoveRelative(const long howFar)
 
     stepper.move(howFar);
 #if defined ARDUINO_DUE
+    DBPrint("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer

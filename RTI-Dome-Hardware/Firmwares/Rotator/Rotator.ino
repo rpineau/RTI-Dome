@@ -155,10 +155,6 @@ void setup()
     gotHelloFromShutter = false;
 #endif
     DBPrint("Ready");
-// AccelStepper run() is called under a 20KHz timer interrupt
-#if defined ARDUINO_DUE
-    startTimer(TC1, 0, TC3_IRQn, 20000);
-#endif
     Rotator.EnableMotor(false);
 }
 
