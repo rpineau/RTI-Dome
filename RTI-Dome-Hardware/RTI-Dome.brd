@@ -3805,7 +3805,7 @@ design rules under a new name.</description>
 <element name="R17" library="rti" package="R0805" value="4.7K" x="33.02" y="28.829" rot="R90"/>
 <element name="R18" library="rti" package="R0805" value="4.7K" x="34.29" y="43.18" rot="R270"/>
 <element name="R19" library="rti" package="R0805" value="1K" x="23.114" y="35.90925" rot="R270"/>
-<element name="R6" library="rti" package="R0805" value="100K 0.1%" x="45.37075" y="13.81125" rot="R180"/>
+<element name="R6" library="rti" package="R0805" value="100K 0.1%" x="39.27475" y="13.81125"/>
 <element name="R7" library="rti" package="R0805" value="100K 0.1%" x="39.243" y="16.002" rot="R180"/>
 <element name="R8" library="rti" package="R0805" value="100K 0.1%" x="35.052" y="16.002" rot="R180"/>
 <element name="R10" library="rti" package="R0805" value="100K 0.1%" x="35.052" y="13.843"/>
@@ -3823,7 +3823,7 @@ design rules under a new name.</description>
 <attribute name="OC_NEWARK" value="unknown" x="35.433" y="21.082" size="1.778" layer="27" display="off"/>
 </element>
 <element name="PCB1" library="arduino_shield" package="ARDUINO_DUE_SHIELD_SHORT" value="ARDUINO_DUE_SHIELD_SHORT" x="40.005" y="32.7025"/>
-<element name="R2" library="rti" package="R0805" value="100K 0.1%" x="43.4975" y="16.002" rot="R180"/>
+<element name="R2" library="rti" package="R0805" value="100K 0.1%" x="42.4815" y="15.01775" rot="R90"/>
 <element name="C3" library="rti" package="C0805" value="10uF" x="35.2425" y="8.41375" rot="R180"/>
 <element name="X11" library="con-ptr500" package="AK500/2" value="" x="71.12" y="66.04" rot="R180">
 <attribute name="MF" value="" x="71.12" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
@@ -3837,11 +3837,10 @@ design rules under a new name.</description>
 <contactref element="R6" pad="2"/>
 <contactref element="PCB1" pad="A0"/>
 <contactref element="R2" pad="1"/>
-<wire x1="44.4475" y1="16.002" x2="44.4475" y2="13.838" width="0.8128" layer="1"/>
-<wire x1="44.4475" y1="13.838" x2="44.42075" y2="13.81125" width="0.8128" layer="1"/>
-<wire x1="44.42075" y1="13.81125" x2="41.05275" y2="13.81125" width="0.8128" layer="1"/>
-<wire x1="41.05275" y1="13.81125" x2="40.005" y2="12.7635" width="0.8128" layer="1"/>
-<wire x1="40.005" y1="12.7635" x2="40.005" y2="11.1125" width="0.8128" layer="1"/>
+<wire x1="40.22475" y1="13.81125" x2="40.22475" y2="11.33225" width="0.8128" layer="1"/>
+<wire x1="40.22475" y1="11.33225" x2="40.005" y2="11.1125" width="0.8128" layer="1"/>
+<wire x1="42.4815" y1="14.06775" x2="40.48125" y2="14.06775" width="0.8128" layer="1"/>
+<wire x1="40.48125" y1="14.06775" x2="40.22475" y2="13.81125" width="0.8128" layer="1"/>
 </signal>
 <signal name="M_EN">
 <contactref element="IC2" pad="P$13"/>
@@ -3935,6 +3934,7 @@ design rules under a new name.</description>
 <contactref element="PCB1" pad="GND."/>
 <contactref element="PCB1" pad="GND.."/>
 <contactref element="C3" pad="2"/>
+<via x="37.49675" y="11.39825" extent="1-16" drill="0.6" diameter="1.27"/>
 </signal>
 <signal name="+12V" class="1">
 <contactref element="U$2" pad="2"/>
@@ -4368,17 +4368,18 @@ design rules under a new name.</description>
 <signal name="N$5">
 <contactref element="R7" pad="1"/>
 <contactref element="R2" pad="2"/>
-<wire x1="40.193" y1="16.002" x2="42.5475" y2="16.002" width="0.8128" layer="1"/>
+<wire x1="40.193" y1="16.002" x2="42.44725" y2="16.002" width="0.8128" layer="1"/>
+<wire x1="42.44725" y1="16.002" x2="42.4815" y2="15.96775" width="0.8128" layer="1"/>
 </signal>
 <signal name="AT_PARK_PIN_LOOP">
 <contactref element="X11" pad="2"/>
 <contactref element="PCB1" pad="A4"/>
-<wire x1="68.6054" y1="66.04" x2="50.165" y2="11.1125" width="0" layer="19" extent="1-1"/>
+<wire x1="50.165" y1="11.1125" x2="68.6054" y2="66.04" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="AT_PARK_PIN">
 <contactref element="X11" pad="1"/>
 <contactref element="PCB1" pad="A5"/>
-<wire x1="73.6346" y1="66.04" x2="52.705" y2="11.1125" width="0" layer="19" extent="1-1"/>
+<wire x1="52.705" y1="11.1125" x2="73.6346" y2="66.04" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 <errors>
