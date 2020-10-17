@@ -449,8 +449,11 @@ void ProcessMessages(String buffer)
 			if (hasValue) {
 				wirelessMessage = String(PANID_GET) + value;
     			Wireless.print(wirelessMessage + "#");
-				setPANID(value); // shutter XBee should be doing the same thing
+				setPANID(value);
 			}
+			else {
+                wirelessMessage = String(PANID_GET) + String(Shutter.GetPANID());
+            }
             DBPrintln("PAN ID '" + String(Shutter.GetPANID()) + "'");
 			break;
 

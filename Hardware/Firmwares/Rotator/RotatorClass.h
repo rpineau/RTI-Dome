@@ -393,8 +393,8 @@ void RotatorClass::SetDefaultConfig()
 
     m_Config.signature = SIGNATURE;
     m_Config.maxSpeed = 5000;
-    m_Config.acceleration = 8000;
-    m_Config.stepsPerRotation = 440800;
+    m_Config.acceleration = 3300;
+    m_Config.stepsPerRotation = 440640;
     m_Config.reversed = 0;
     m_Config.homeAzimuth = 0;
     m_Config.parkAzimuth = 0;
@@ -624,8 +624,8 @@ void RotatorClass::SetStepsPerRotation(const long newCount)
 int RotatorClass::restoreDefaultMotorSettings()
 {
     m_Config.maxSpeed = 5000;
-    m_Config.acceleration = 8000;
-    m_Config.stepsPerRotation = 440800;
+    m_Config.acceleration = 3300;
+    m_Config.stepsPerRotation = 440640;
     SetMaxSpeed(m_Config.maxSpeed);
     SetAcceleration(m_Config.acceleration);
     SetStepsPerRotation(m_Config.stepsPerRotation);

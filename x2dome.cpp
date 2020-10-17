@@ -503,6 +503,10 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 if(bComplete) {
                     uiex->setEnabled("pushButton_2", true);
                     m_bSettingPanID = false;
+                    m_RTIDome.getShutterSpeed(nSpeed);
+                    uiex->setPropertyInt("shutterSpeed","value", nSpeed);
+                    m_RTIDome.getShutterAcceleration(nAcc);
+                    uiex->setPropertyInt("shutterAcceleration","value", nAcc);
                 } else {
                     if(m_SetPanIdTimer.GetElapsedSeconds()>PANID_TIMEOUT ) {// 15 seconds is way more than needed.. something when wrong
                         snprintf(szErrorMessage, LOG_BUFFER_SIZE, "Timeout setting Xbee PAN ID");

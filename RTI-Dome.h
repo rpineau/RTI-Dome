@@ -141,6 +141,7 @@ public:
 
     int getPanId(int &nPanId);
     int setPanId(const int nPanId);
+    int getShutterPanId(int &nPanId);
     int isPanIdSet(const int nPanId, bool &bSet);
     
     int restoreDomeMotorSettings();

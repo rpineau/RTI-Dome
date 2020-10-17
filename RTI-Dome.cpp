@@ -2146,13 +2146,38 @@ int CRTIDome::setPanId(const int nPanId)
 
 }
 
+int CRTIDome::getShutterPanId(int &nPanId)
+{
+    int nErr = ND_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    nErr = domeCommand("Q#", szResp, 'Q', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+        return nErr;
+    }
+
+    nPanId = int(strtol(szResp, NULL, 16));
+#ifdef PLUGIN_DEBUG
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::getShutterPanId] nPanId =  %04X\n", timestamp, nPanId);
+    fflush(Logfile);
+#endif
+
+    return nErr;
+
+}
 int CRTIDome::isPanIdSet(const int nPanId, bool &bSet)
 {
     int nErr = ND_OK;
     int nCtrlPanId;
     
     bSet = false;
-    nErr = getPanId(nCtrlPanId);
+    nErr = getShutterPanId(nCtrlPanId);
     if(nErr)
         return nErr;
     if(nCtrlPanId == nPanId)

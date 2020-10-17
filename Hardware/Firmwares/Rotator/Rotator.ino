@@ -245,7 +245,7 @@ inline void ConfigXBee(String result)
 void setPANID(String value)
 {
     Rotator.setPANID(value);
-    Rotator.setRadioConfigured(false);;
+    Rotator.setRadioConfigured(false);
     isConfiguringWireless = false;
     XbeeStarted = false;
     configStep = 0;
@@ -590,14 +590,21 @@ void ProcessSerialCommand()
         case PANID_GET:
             sTmpString = String(PANID_GET);
             if (hasValue) {
-                RemoteShutter.panid = value;
-                wirelessMessage = SHUTTER_PANID_GET + RemoteShutter.panid;
+                RemoteShutter.panid = "0000";
+                wirelessMessage = SHUTTER_PANID_GET + value;
                 Wireless.print(wirelessMessage + "#");
                 setPANID(value); // shutter XBee should be doing the same thing
             }
             serialMessage = sTmpString + String(Rotator.GetPANID());
             break;
 
+
+        case SHUTTER_PANID_GET:
+            wirelessMessage = SHUTTER_PANID_GET;
+            Wireless.print(wirelessMessage + "#");
+            ReceiveWireless();
+            serialMessage = SHUTTER_PANID_GET + RemoteShutter.panid ;
+            break;
 
         case ACCELERATION_SHUTTER_CMD:
             sTmpString = String(ACCELERATION_SHUTTER_CMD);
@@ -895,7 +902,10 @@ void ProcessWireless()
             break;
 
          case SHUTTER_RESTORE_MOTOR_DEFAULT:
+            break;
 
+        case SHUTTER_PANID_GET:
+             RemoteShutter.panid = value;
             break;
 
         default:
