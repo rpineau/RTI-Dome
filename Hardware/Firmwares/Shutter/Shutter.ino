@@ -96,10 +96,6 @@ void setup()
     digitalWrite(XBEE_RESET_PIN, 1);
 #endif
 	watchdogTimer.reset();
-// AccelStepper run() is called under a 20KHz timer interrupt
-#if defined ARDUINO_DUE
-    startTimer(TC1, 0, TC3_IRQn, 20000);
-#endif
     Shutter.EnableMotor(false);
 }
 
@@ -302,7 +298,7 @@ void ProcessMessages(String buffer)
 
 		case ABORT_CMD:
 			DBPrintln("STOP!");
-			Shutter.Stop();
+			Shutter.motorStop();
 			wirelessMessage = String(ABORT_CMD);
 			break;
 

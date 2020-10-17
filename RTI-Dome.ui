@@ -58,7 +58,7 @@
         <x>16</x>
         <y>96</y>
         <width>298</width>
-        <height>224</height>
+        <height>216</height>
        </rect>
       </property>
       <property name="title">
@@ -68,7 +68,7 @@
        <property name="geometry">
         <rect>
          <x>13</x>
-         <y>193</y>
+         <y>184</y>
          <width>140</width>
          <height>20</height>
         </rect>
@@ -90,24 +90,11 @@
         <string>Calibrate</string>
        </property>
       </widget>
-      <widget class="QCheckBox" name="hasShutterCtrl">
-       <property name="geometry">
-        <rect>
-         <x>13</x>
-         <y>151</y>
-         <width>183</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Shutter controller present</string>
-       </property>
-      </widget>
       <widget class="QCheckBox" name="needReverse">
        <property name="geometry">
         <rect>
          <x>13</x>
-         <y>130</y>
+         <y>136</y>
          <width>132</width>
          <height>20</height>
         </rect>
@@ -120,7 +107,7 @@
        <property name="geometry">
         <rect>
          <x>13</x>
-         <y>172</y>
+         <y>160</y>
          <width>136</width>
          <height>20</height>
         </rect>
@@ -629,7 +616,7 @@
       <property name="geometry">
        <rect>
         <x>16</x>
-        <y>328</y>
+        <y>320</y>
         <width>298</width>
         <height>152</height>
        </rect>
@@ -760,7 +747,7 @@
         <x>336</x>
         <y>464</y>
         <width>336</width>
-        <height>72</height>
+        <height>80</height>
        </rect>
       </property>
       <property name="title">
@@ -818,6 +805,19 @@
        </property>
        <property name="text">
         <string>Set</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="shutterPresent">
+       <property name="geometry">
+        <rect>
+         <x>16</x>
+         <y>56</y>
+         <width>192</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Shutter Present</string>
        </property>
       </widget>
      </widget>

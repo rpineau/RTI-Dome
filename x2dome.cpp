@@ -26,6 +26,7 @@ X2Dome::X2Dome(const char* pszSelection,
     m_bCalibratingDome = false;
     m_nBattRequest = 0;
     m_bSettingPanID = false;
+    m_bHasShutterControl = false;
     
     m_RTIDome.setSerxPointer(pSerX);
     m_RTIDome.setSleeprPinter(pSleeper);
@@ -34,14 +35,12 @@ X2Dome::X2Dome(const char* pszSelection,
     {
         m_RTIDome.setHomeAz( m_pIniUtil->readDouble(PARENT_KEY, CHILD_KEY_HOME_AZ, 0) );
         m_RTIDome.setParkAz( m_pIniUtil->readDouble(PARENT_KEY, CHILD_KEY_PARK_AZ, 0) );
-        m_bHasShutterControl = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_SHUTTER_CONTROL, true);
         m_bLogRainStatus = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_LOG_RAIN_STATUS, false);
 
         m_bHomeOnPark = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_HOME_ON_PARK, false);
         m_bHomeOnUnpark = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_HOME_ON_UNPARK, false);
         m_RTIDome.setHomeOnPark(m_bHomeOnPark);
         m_RTIDome.setHomeOnUnpark(m_bHomeOnUnpark);
-        m_RTIDome.setShutterPresent(m_bHasShutterControl);
         m_RTIDome.enableRainStatusFile(m_bLogRainStatus);
     }
 }
@@ -84,6 +83,7 @@ int X2Dome::establishLink(void)
     else
         m_bLinked = true;
 
+    m_RTIDome.getShutterPresent(m_bHasShutterControl);
 	return nErr;
 }
 
@@ -157,7 +157,9 @@ int X2Dome::execModalSettingsDialog()
         return ERR_POINTER;
 
     X2MutexLocker ml(GetMutex());
+    m_RTIDome.getShutterPresent(m_bHasShutterControl);
 
+    printf("m_bHasShutterControl = %s\n", m_bHasShutterControl?"Present":"NOT Present");
     memset(szTmpBuf,0,SERIAL_BUFFER_SIZE);
     // set controls state depending on the connection state
     if(m_bHasShutterControl) {
@@ -192,13 +194,6 @@ int X2Dome::execModalSettingsDialog()
     }
 
     if(m_bLinked) {
-        nErr = m_RTIDome.getShutterFirmwareVersion(szTmpBuf, SERIAL_BUFFER_SIZE);
-        if(nErr) {
-            m_bHasShutterControl = false;
-            m_RTIDome.setShutterPresent(m_bHasShutterControl);
-            dx->setChecked("hasShutterCtrl",false);
-        }
-        
         if(m_bHasShutterControl)
             m_RTIDome.sendShutterHello();   // refresh values.
         dx->setEnabled("homePosition",true);
@@ -261,17 +256,18 @@ int X2Dome::execModalSettingsDialog()
 
 
         if(m_bHasShutterControl) {
-            // panID
-            dx->setEnabled("panID", true);
-            dx->setEnabled("pushButton_2", true);
-            m_RTIDome.getPanId(m_nPanId);
-            dx->setPropertyInt("panID", "value", m_nPanId);
+            dx->setText("shutterPresent", "Shutter present");
         }
         else {
-            dx->setEnabled("panID", false);
-            dx->setEnabled("pushButton_2", false);
-            dx->setPropertyInt("panID", "value", 0);
+            dx->setText("shutterPresent", "No Shutter detected");
         }
+        // panID
+        dx->setEnabled("panID", true);
+        dx->setEnabled("pushButton_2", true);
+        nErr = m_RTIDome.getPanId(m_nPanId);
+        if(nErr)
+            m_nPanId = 0;
+        dx->setPropertyInt("panID", "value", m_nPanId);
 
         m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
         dx->setPropertyDouble("lowRotBatCutOff","value", dDomeCutOff);
@@ -359,7 +355,6 @@ int X2Dome::execModalSettingsDialog()
         dx->propertyDouble("lowShutBatCutOff", "value", batShutCutOff);
         nRainAction = dx->currentIndex("comboBox");
         m_bHasShutterControl = dx->isChecked("hasShutterCtrl");
-        m_RTIDome.setShutterPresent(m_bHasShutterControl);
         m_bHomeOnPark = dx->isChecked("homeOnPark");
         m_RTIDome.setHomeOnPark(m_bHomeOnPark);
         m_bHomeOnUnpark = dx->isChecked("homeOnUnpark");
@@ -421,10 +416,14 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     if (!strcmp(pszEvent, "on_timer"))
     {
         bShutterPresent = uiex->isChecked("hasShutterCtrl");
+        m_RTIDome.getShutterPresent(bShutterPresent);
+        printf("bShutterPresent = %s\n", bShutterPresent?"Present":"NOT Present");
+
         if(bShutterPresent != m_bHasShutterControl) {
             m_bHasShutterControl = bShutterPresent;
-            m_RTIDome.setShutterPresent(m_bHasShutterControl);
+            printf("m_bHasShutterControl = %s\n", m_bHasShutterControl?"Present":"NOT Present");
             if(m_bHasShutterControl && m_bLinked) {
+                uiex->setText("shutterPresent", "Shutter present");
                 uiex->setEnabled("shutterSpeed",true);
                 m_RTIDome.getShutterSpeed(nSpeed);
                 uiex->setPropertyInt("shutterSpeed","value", nSpeed);
@@ -438,6 +437,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 uiex->setPropertyInt("shutterWatchdog", "value", nWatchdog);
             }
             else {
+                uiex->setText("shutterPresent", "No Shutter detected");
                 uiex->setPropertyInt("shutterSpeed","value", 0);
                 uiex->setPropertyInt("shutterAcceleration","value", 0);
                 uiex->setPropertyInt("shutterWatchdog", "value", 0);

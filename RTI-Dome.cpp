@@ -104,7 +104,8 @@ CRTIDome::~CRTIDome()
 int CRTIDome::Connect(const char *pszPort)
 {
     int nErr;
-
+    bool bDummy;
+    
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
@@ -194,7 +195,8 @@ int CRTIDome::Connect(const char *pszPort)
     }
 
     sendShutterHello();
-
+    getShutterPresent(bDummy);
+    
     return SB_OK;
 }
 
@@ -1063,7 +1065,6 @@ int CRTIDome::getFirmwareVersion(float &fVersion)
 int CRTIDome::getShutterFirmwareVersion(char *szVersion, int nStrMaxLen)
 {
     int nErr = ND_OK;
-    int i;
     char szResp[SERIAL_BUFFER_SIZE];
     std::vector<std::string> firmwareFields;
     std::vector<std::string> versionFields;
@@ -1574,11 +1575,30 @@ int CRTIDome::sendShutterHello()
     return nErr;
 }
 
-void CRTIDome::setShutterPresent(bool bShutterPresent)
+int CRTIDome::getShutterPresent(bool &bShutterPresent)
 {
-    m_bShutterPresent = bShutterPresent;
-}
+    int nErr = ND_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
 
+    nErr = domeCommand("o#", szResp, 'o', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+        return nErr;
+    }
+
+    m_bShutterPresent = atoi(szResp) ? true:false;
+#ifdef PLUGIN_DEBUG
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::getShutterPresent] m_bShutterPresent =  %s\n", timestamp, m_bShutterPresent?"Yes":"No");
+    fflush(Logfile);
+#endif
+
+
+    bShutterPresent = m_bShutterPresent;
+    return nErr;
+
+}
 
 #pragma mark - Getter / Setter
 

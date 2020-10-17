@@ -90,7 +90,7 @@ public:
 
     int abortCurrentCommand();
     int sendShutterHello();
-    void setShutterPresent(bool bShutterPresent);
+    int getShutterPresent(bool &bShutterPresent);
     // getter/setter
     int getNbTicksPerRev();
     int setNbTicksPerRev(int nSteps);

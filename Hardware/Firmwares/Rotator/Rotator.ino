@@ -80,6 +80,8 @@ bool SentHello = false;
 
 // Timer to periodically checks for rain and shutter ping.
 StopWatch PingTimer;
+StopWatch ShutterWatchdog;
+
 bool bShutterPresnt = false;
 #endif
 
@@ -101,6 +103,7 @@ const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
 const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered none, home, park
+const char IS_SHUUTER_PRESENT           = 'o'; // check if the shutter has responded to pings
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
 const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
 const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
@@ -182,6 +185,9 @@ void loop()
     if(!SentHello)
         SendHello();
     PingShutter();
+    if(ShutterWatchdog.elapsed() > (pingInterval*3)) {
+        bShutterPresnt = false;
+    }
     if(gotHelloFromShutter) {
         requestShutterData();
         gotHelloFromShutter = false;
@@ -564,6 +570,10 @@ void ProcessSerialCommand()
             serialMessage = String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0");
             break;
 
+        case IS_SHUUTER_PRESENT:
+            serialMessage = String(IS_SHUUTER_PRESENT) + String( bShutterPresnt? "1" : "0");
+            break;
+
 #ifndef STANDALONE
         case INIT_XBEE:
             sTmpString = String(INIT_XBEE);
@@ -831,6 +841,9 @@ void ProcessWireless()
     value = wirelessBuffer.substring(1);
 
     wirelessMessage = "";
+    // we got data so the shutter is alive
+    ShutterWatchdog.reset();
+    bShutterPresnt = true;
 
     switch (command) {
         case ACCELERATION_SHUTTER_CMD:

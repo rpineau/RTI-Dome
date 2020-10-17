@@ -16,7 +16,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)
@@ -226,7 +226,6 @@ public:
     void        Open();
     void        Close();
     void        Run();
-    void        Stop();
     static void motorStop();
     void        motorMoveTo(const long newPosition);
     void        motorMoveRelative(const long amount);
@@ -723,7 +722,6 @@ void ShutterClass::motorStop()
 #if defined ARDUINO_DUE
 void ShutterClass::stopInterrupt()
 {
-    DBPrintln("Stopping interrupt");
     // stop interrupt timer
     stopTimer(TC1, 0, TC3_IRQn);
 }
@@ -734,7 +732,6 @@ void ShutterClass::motorMoveTo(const long newPosition)
     EnableMotor(true);
     stepper.moveTo(newPosition);
 #if defined ARDUINO_DUE
-    DBPrintln("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
@@ -750,7 +747,6 @@ void ShutterClass::motorMoveRelative(const long amount)
     EnableMotor(true);
     stepper.move(amount);
 #if defined ARDUINO_DUE
-    DBPrintln("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
