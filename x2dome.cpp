@@ -159,7 +159,6 @@ int X2Dome::execModalSettingsDialog()
     X2MutexLocker ml(GetMutex());
     m_RTIDome.getShutterPresent(m_bHasShutterControl);
 
-    printf("m_bHasShutterControl = %s\n", m_bHasShutterControl?"Present":"NOT Present");
     memset(szTmpBuf,0,SERIAL_BUFFER_SIZE);
     // set controls state depending on the connection state
     if(m_bHasShutterControl) {
@@ -417,11 +416,9 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     {
         bShutterPresent = uiex->isChecked("hasShutterCtrl");
         m_RTIDome.getShutterPresent(bShutterPresent);
-        printf("bShutterPresent = %s\n", bShutterPresent?"Present":"NOT Present");
 
         if(bShutterPresent != m_bHasShutterControl) {
             m_bHasShutterControl = bShutterPresent;
-            printf("m_bHasShutterControl = %s\n", m_bHasShutterControl?"Present":"NOT Present");
             if(m_bHasShutterControl && m_bLinked) {
                 uiex->setText("shutterPresent", "Shutter present");
                 uiex->setEnabled("shutterSpeed",true);
