@@ -16,7 +16,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.print(x)
 #define DBPrintln(x) DebugPort.println(x)
@@ -320,9 +320,9 @@ void ShutterClass::SetDefaultConfig()
 {
     memset(&m_Config, 0, sizeof(Configuration));
     m_Config.signature = EEPROM_SIGNATURE;
-    m_Config.stepsPerStroke = 885000;
+    m_Config.stepsPerStroke = 885000; // 368000
     m_Config.acceleration = 7000;
-    m_Config.maxSpeed = 5000;
+    m_Config.maxSpeed = 6400;
     m_Config.reversed = false;
     m_Config.cutoffVolts = 1150;
     m_Config.voltsClose = 0;
@@ -333,9 +333,9 @@ void ShutterClass::SetDefaultConfig()
 
 int ShutterClass::restoreDefaultMotorSettings()
 {
-    m_Config.stepsPerStroke = 885000;
+    m_Config.stepsPerStroke = 885000; // 368000
     m_Config.acceleration = 7000;
-    m_Config.maxSpeed = 5000;
+    m_Config.maxSpeed = 6400;
 
     SetAcceleration(m_Config.acceleration);
     SetMaxSpeed(m_Config.maxSpeed);
