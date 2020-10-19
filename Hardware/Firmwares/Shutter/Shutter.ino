@@ -7,6 +7,8 @@
 #define TB6600
 // #define ISD0X
 
+#define XBEE_S1
+// #define XBEE_S2C
 
 #if defined __SAM3X8E__ // Arduino DUE
 #define ARDUINO_DUE
@@ -55,9 +57,18 @@ const char INIT_XBEE				= 'x'; // force a ConfigXBee
 const char REVERSED_SHUTTER_CMD		= 'Y'; // Get/Set stepper reversed status
 
 
+#if defined(XBEE_S1)
+#define NB_AT_OK  17
 // ATAC,CE0,ID4242,CH0C,MY1,DH0,DL0,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATCH0C","ATMY1","ATDH0","ATDL0",
                         "ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
+#else if defined(XBEE_S2C)
+#define NB_AT_OK  14
+/// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
+String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATDH0","ATDL0","ATJV1",
+                        "ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
+#endif
+
 
 // index in array above where the command is empty.
 // This allows us to change the Pan ID and store it in the EEPROM/Flash
@@ -183,7 +194,7 @@ inline void ConfigXBee(String result)
         Wireless.flush();
         configStep++;
     }
-	if (configStep > 17) {
+	if (configStep > NB_AT_OK) {
 		isConfiguringWireless = false;
 		Shutter.setRadioConfigured(true);
 		XbeeStarted = true;

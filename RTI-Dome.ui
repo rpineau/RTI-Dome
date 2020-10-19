@@ -739,6 +739,9 @@
        <property name="text">
         <string>/Users/foo/RTI_Rain.txt</string>
        </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+       </property>
       </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_3">
