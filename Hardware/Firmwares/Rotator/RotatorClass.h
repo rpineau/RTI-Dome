@@ -292,7 +292,7 @@ private:
     bool            m_bHasBeenHomed;
     enum Seeks      m_seekMode;
     bool            m_bSetToHomeAzimuth, m_bDoStepsPerRotation;
-    long            m_nStepsToStop;
+    long            m_nStepsAtHome;
     float           m_fStepsPerDegree;
     StopWatch       m_moveOffUntilTimer;
     unsigned long   m_nMoveOffUntilLapse = 5000;
@@ -343,6 +343,23 @@ RotatorClass::RotatorClass()
 
 inline void RotatorClass::homeInterrupt()
 {
+    switch(m_seekMode) {
+        case HOMING_HOME: // stop and take note of where we are so we can reverse.
+            m_nStepsAtHome = stepper.currentPosition();
+            SyncPosition(m_Config.homeAzimuth);
+            motorStop();
+            break;
+
+        case CALIBRATION_MEASURE: // stop and take note of where we are so we can reverse.
+            m_nStepsAtHome = stepper.currentPosition();
+            motorStop();
+            break;
+
+        default: // resync
+            SyncPosition(m_Config.homeAzimuth);
+            break;
+    }
+
 }
 
 
