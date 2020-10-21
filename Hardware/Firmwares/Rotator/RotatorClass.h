@@ -276,8 +276,10 @@ public:
 #if defined ARDUINO_DUE
     void        stopInterrupt();
 #endif
-
+/*
     void homeInterrupt();
+    long            m_nStepsAtHome;
+*/
 
 private:
     Configuration   m_Config;
@@ -291,8 +293,8 @@ private:
     bool            m_bisAtHome;
     bool            m_bHasBeenHomed;
     enum Seeks      m_seekMode;
-    bool            m_bSetToHomeAzimuth, m_bDoStepsPerRotation;
-    long            m_nStepsAtHome;
+    bool            m_bSetToHomeAzimuth;
+    bool            m_bDoStepsPerRotation;
     float           m_fStepsPerDegree;
     StopWatch       m_moveOffUntilTimer;
     unsigned long   m_nMoveOffUntilLapse = 5000;
@@ -338,15 +340,21 @@ RotatorClass::RotatorClass()
     // reset all timers
     m_moveOffUntilTimer.reset();
     m_periodicReadingTimer.reset();
+
+    m_seekMode = HOMING_NONE;
+    m_bisAtHome = false;
+    m_bHasBeenHomed = false;
+    m_bSetToHomeAzimuth = false;
+    m_bDoStepsPerRotation = false;
+    m_nMoveDirection = MOVE_POSITIVE;
 }
 
-
+/*
 inline void RotatorClass::homeInterrupt()
 {
     switch(m_seekMode) {
         case HOMING_HOME: // stop and take note of where we are so we can reverse.
             m_nStepsAtHome = stepper.currentPosition();
-            SyncPosition(m_Config.homeAzimuth);
             motorStop();
             break;
 
@@ -356,11 +364,12 @@ inline void RotatorClass::homeInterrupt()
             break;
 
         default: // resync
-            SyncPosition(m_Config.homeAzimuth);
+            // SyncPosition(m_Config.homeAzimuth); // THIS STOPS THE MOTOR :(
             break;
     }
 
 }
+*/
 
 
 void RotatorClass::SaveToEEProm()
@@ -976,6 +985,9 @@ void RotatorClass::Run()
 
         if (m_bDoStepsPerRotation) {
             m_Config.stepsPerRotation = stepper.currentPosition();
+            // m_Config.stepsPerRotation = m_nStepsAtHome;
+            // now we should meve back to home
+            // by doing a goto to m_nStepsAtHome
             SyncHome(m_Config.homeAzimuth);
             SaveToEEProm();
             m_bDoStepsPerRotation = false;
