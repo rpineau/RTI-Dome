@@ -92,7 +92,7 @@ bool SentHello = false;
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 
-bool bShutterPresnt = false;
+bool bShutterPresent = false;
 #endif
 
 StopWatch Rainchecktimer;
@@ -113,7 +113,7 @@ const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
 const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered none, home, park
-const char IS_SHUUTER_PRESENT           = 'o'; // check if the shutter has responded to pings
+const char IS_SHUTER_PRESENT            = 'o'; // check if the shutter has responded to pings
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
 const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
 const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
@@ -168,6 +168,7 @@ void setup()
     gotHelloFromShutter = false;
 #endif
     Rotator.EnableMotor(false);
+    attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
 }
 
 void loop()
@@ -196,7 +197,7 @@ void loop()
         SendHello();
     PingShutter();
     if(ShutterWatchdog.elapsed() > (pingInterval*3)) {
-        bShutterPresnt = false;
+        bShutterPresent = false;
     }
     if(gotHelloFromShutter) {
         requestShutterData();
@@ -205,7 +206,10 @@ void loop()
 #endif
 }
 
-
+void homeIntHandler()
+{
+    Rotator.homeInterrupt();
+}
 
 
 #ifndef STANDALONE
@@ -348,7 +352,7 @@ void CheckForRain()
         bIsRaining = Rotator.GetRainStatus();
 #ifndef STANDALONE
         // send value to shutter
-        if(bShutterPresnt) {
+        if(bShutterPresent) {
             Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
             ReceiveWireless();
         }
@@ -580,8 +584,8 @@ void ProcessSerialCommand()
             serialMessage = String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0");
             break;
 
-        case IS_SHUUTER_PRESENT:
-            serialMessage = String(IS_SHUUTER_PRESENT) + String( bShutterPresnt? "1" : "0");
+        case IS_SHUTER_PRESENT:
+            serialMessage = String(IS_SHUTER_PRESENT) + String( bShutterPresent? "1" : "0");
             break;
 
 #ifndef STANDALONE
@@ -860,7 +864,7 @@ void ProcessWireless()
     wirelessMessage = "";
     // we got data so the shutter is alive
     ShutterWatchdog.reset();
-    bShutterPresnt = true;
+    bShutterPresent = true;
 
     switch (command) {
         case ACCELERATION_SHUTTER_CMD:
@@ -869,7 +873,7 @@ void ProcessWireless()
 
         case HELLO_CMD:
             gotHelloFromShutter = true;
-            bShutterPresnt = true;
+            bShutterPresent = true;
             break;
 
         case SPEED_SHUTTER_CMD:
@@ -908,7 +912,7 @@ void ProcessWireless()
             break;
 
         case SHUTTER_PING:
-            bShutterPresnt = true;
+            bShutterPresent = true;
             break;
 
          case SHUTTER_RESTORE_MOTOR_DEFAULT:

@@ -277,8 +277,9 @@ public:
     void        stopInterrupt();
 #endif
 
-private:
+    void homeInterrupt();
 
+private:
     Configuration   m_Config;
 
     // Inputs
@@ -316,8 +317,9 @@ private:
     bool            LoadFromEEProm();
     void            SetDefaultConfig();
 
-
 };
+
+
 
 RotatorClass::RotatorClass()
 {
@@ -336,8 +338,13 @@ RotatorClass::RotatorClass()
     // reset all timers
     m_moveOffUntilTimer.reset();
     m_periodicReadingTimer.reset();
-
 }
+
+
+inline void RotatorClass::homeInterrupt()
+{
+}
+
 
 void RotatorClass::SaveToEEProm()
 {
