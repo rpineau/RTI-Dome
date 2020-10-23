@@ -195,8 +195,9 @@ int CRTIDome::Connect(const char *pszPort)
     }
 
     sendShutterHello();
+    m_pSleeper->sleep(250);
     getShutterPresent(bDummy);
-    
+
     return SB_OK;
 }
 
@@ -940,6 +941,7 @@ int CRTIDome::gotoAzimuth(double dNewAz)
 int CRTIDome::openShutter()
 {
     int nErr = ND_OK;
+    bool bDummy;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -948,6 +950,14 @@ int CRTIDome::openShutter()
     if(m_bCalibrating)
         return SB_OK;
 
+    getShutterPresent(bDummy);
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::openShutter] m_bShutterPresent = %s\n", timestamp, m_bShutterPresent?"Yes":"No");
+    fflush(Logfile);
+#endif
     if(!m_bShutterPresent) {
         return SB_OK;
     }
@@ -978,6 +988,7 @@ int CRTIDome::openShutter()
 int CRTIDome::closeShutter()
 {
     int nErr = ND_OK;
+    bool bDummy;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -985,6 +996,18 @@ int CRTIDome::closeShutter()
 
     if(m_bCalibrating)
         return SB_OK;
+
+    getShutterPresent(bDummy);
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::closeShutter] m_bShutterPresent = %s\n", timestamp, m_bShutterPresent?"Yes":"No");
+    fflush(Logfile);
+#endif
+    if(!m_bShutterPresent) {
+        return SB_OK;
+    }
 
     if(!m_bShutterPresent) {
         return SB_OK;
@@ -1601,7 +1624,7 @@ int CRTIDome::getShutterPresent(bool &bShutterPresent)
         return nErr;
     }
 
-    m_bShutterPresent = atoi(szResp) ? true:false;
+    m_bShutterPresent = (szResp[1]=='1') ? true : false;
 #ifdef PLUGIN_DEBUG
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
@@ -2256,7 +2279,6 @@ void CRTIDome::enableRainStatusFile(bool bEnable)
             RainStatusfile = fopen(m_sRainStatusfilePath.c_str(), "w");
         if(RainStatusfile) {
             m_bSaveRainStatus = true;
-            writeRainStatus();
         }
         else { // if we failed to open the file.. don't log ..
             RainStatusfile = NULL;
