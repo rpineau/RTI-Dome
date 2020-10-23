@@ -1624,7 +1624,7 @@ int CRTIDome::getShutterPresent(bool &bShutterPresent)
         return nErr;
     }
 
-    m_bShutterPresent = (szResp[1]=='1') ? true : false;
+    m_bShutterPresent = (szResp[0]=='1') ? true : false;
 #ifdef PLUGIN_DEBUG
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
