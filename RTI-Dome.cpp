@@ -1629,6 +1629,7 @@ int CRTIDome::getShutterPresent(bool &bShutterPresent)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::getShutterPresent] szResp =  %s\n", timestamp, szResp);
     fprintf(Logfile, "[%s] [CRTIDome::getShutterPresent] m_bShutterPresent =  %s\n", timestamp, m_bShutterPresent?"Yes":"No");
     fflush(Logfile);
 #endif
