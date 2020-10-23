@@ -353,7 +353,6 @@ int X2Dome::execModalSettingsDialog()
         dx->propertyDouble("lowRotBatCutOff", "value", batRotCutOff);
         dx->propertyDouble("lowShutBatCutOff", "value", batShutCutOff);
         nRainAction = dx->currentIndex("comboBox");
-        m_bHasShutterControl = dx->isChecked("hasShutterCtrl");
         m_bHomeOnPark = dx->isChecked("homeOnPark");
         m_RTIDome.setHomeOnPark(m_bHomeOnPark);
         m_bHomeOnUnpark = dx->isChecked("homeOnUnpark");
