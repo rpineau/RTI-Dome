@@ -349,9 +349,10 @@ int CRTIDome::getDomeAz(double &dDomeAz)
     dDomeAz = atof(szResp);
     m_dCurrentAzPosition = dDomeAz;
 
-    if(m_cRainCheckTimer.GetElapsedSeconds() > RAIN_CHECK_INTERVAL)
+    if(m_cRainCheckTimer.GetElapsedSeconds() > RAIN_CHECK_INTERVAL) {
         writeRainStatus();
-    
+        m_cRainCheckTimer.Reset();
+    }
     return nErr;
 }
 
@@ -454,6 +455,14 @@ int CRTIDome::getDomeParkAz(double &dAz)
     // convert Az string to double
     dAz = atof(szResp);
     m_dParkAz = dAz;
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::getDomeParkAz] m_dParkAz = %3.2f\n", timestamp, m_dParkAz);
+        fflush(Logfile);
+#endif
+
     return nErr;
 }
 
@@ -882,6 +891,13 @@ int CRTIDome::unparkDome()
         goHome();
     }
     else {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::unparkDome] m_dParkAz = %3.3f\n", timestamp, m_dParkAz);
+        fflush(Logfile);
+#endif
         syncDome(m_dParkAz, m_dCurrentElPosition);
         m_bParked = false;
         m_bUnParking = false;
