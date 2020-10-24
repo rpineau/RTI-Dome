@@ -71,6 +71,7 @@ DueFlashStorage dueFlashStorage;
 #define M_DISABLE   HIGH
 #endif
 
+#define CALIBRATION_SPEED 2500
 
 #define SIGNATURE         2642
 
@@ -812,7 +813,7 @@ void RotatorClass::StartHoming()
     }
 
     // reduce speed by half
-    SetHomingCalibratingSpeed(m_Config.maxSpeed/2);
+    SetHomingCalibratingSpeed(CALIBRATION_SPEED);
 
     diff = GetAngularDistance(GetAzimuth(), GetHomeAzimuth());
     m_nMoveDirection = MOVE_POSITIVE;
@@ -828,7 +829,7 @@ void RotatorClass::StartCalibrating()
 {
 
     // calibrate at half speed .. should increase precision
-    SetHomingCalibratingSpeed(m_Config.maxSpeed/2);
+    SetHomingCalibratingSpeed(CALIBRATION_SPEED);
     stepper.setCurrentPosition(0);
     m_bDoStepsPerRotation = false;
     m_nHomePosEdgePass1 = 0;
