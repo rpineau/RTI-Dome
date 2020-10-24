@@ -18,7 +18,7 @@ DueFlashStorage dueFlashStorage;
 // stepper controller
 #define STEP_TYPE 8
 
-// #define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) DebugPort.println(x)
 #else
@@ -100,6 +100,8 @@ enum HomeStatuses { NEVER_HOMED, HOMED, ATHOME };
 enum Seeks { HOMING_NONE, // Not homing or calibrating
                 HOMING_HOME, // Homing
                 CALIBRATION_MOVEOFF, // Ignore home until we've moved off while measuring the dome.
+                CALIBRATION_STEP1, // this is the mode until we hit the home sensor on the first pass
+                CALIBRATION_MOVEOFF2, // we need to clear the home sensor again
                 CALIBRATION_MEASURE // Measuring dome until home hit again.
 };
 
@@ -275,10 +277,8 @@ public:
 #if defined ARDUINO_DUE
     void        stopInterrupt();
 #endif
-/*
     void homeInterrupt();
     long            m_nStepsAtHome;
-*/
 
 private:
     Configuration   m_Config;
@@ -296,9 +296,11 @@ private:
     bool            m_bDoStepsPerRotation;
     float           m_fStepsPerDegree;
     StopWatch       m_moveOffUntilTimer;
-    unsigned long   m_nMoveOffUntilLapse = 5000;
+    unsigned long   m_nMoveOffUntilLapse = 2000;
     unsigned long   m_nNextCheckLapse = 10000;
     int             m_nMoveDirection;
+    long            m_nHomePosEdgePass1;
+    long            m_nHomePosEdgePass2;
 
     // Power values
     float           m_fAdcConvert;
@@ -348,17 +350,25 @@ RotatorClass::RotatorClass()
     m_nMoveDirection = MOVE_POSITIVE;
 }
 
-/*
+
 inline void RotatorClass::homeInterrupt()
 {
+
     switch(m_seekMode) {
         case HOMING_HOME: // stop and take note of where we are so we can reverse.
             m_nStepsAtHome = stepper.currentPosition();
             motorStop();
             break;
 
+        case CALIBRATION_STEP1: // take note of the first edge
+            m_nHomePosEdgePass1 = stepper.currentPosition();
+            m_seekMode = CALIBRATION_MOVEOFF2; // let's not be fooled by the double trigger
+            m_moveOffUntilTimer.reset();
+            break;
+
         case CALIBRATION_MEASURE: // stop and take note of where we are so we can reverse.
             m_nStepsAtHome = stepper.currentPosition();
+            m_nHomePosEdgePass2 = m_nStepsAtHome;
             motorStop();
             break;
 
@@ -368,7 +378,7 @@ inline void RotatorClass::homeInterrupt()
     }
 
 }
-*/
+
 
 
 void RotatorClass::SaveToEEProm()
@@ -816,16 +826,23 @@ void RotatorClass::StartHoming()
 
 void RotatorClass::StartCalibrating()
 {
-    if (!m_bisAtHome)
-        return;
 
-    m_seekMode = CALIBRATION_MOVEOFF;
     // calibrate at half speed .. should increase precision
     SetHomingCalibratingSpeed(m_Config.maxSpeed/2);
     stepper.setCurrentPosition(0);
-    m_moveOffUntilTimer.reset();
     m_bDoStepsPerRotation = false;
-    MoveRelative(m_Config.stepsPerRotation  * 1.5);
+    m_nHomePosEdgePass1 = 0;
+    m_nHomePosEdgePass2 = 0;
+
+    if(m_bisAtHome) {
+        m_moveOffUntilTimer.reset();
+        m_seekMode = CALIBRATION_MOVEOFF;
+        MoveRelative(-5000);
+    }
+    else {
+        m_seekMode = CALIBRATION_STEP1;
+        MoveRelative(m_Config.stepsPerRotation  * 3);
+    }
 }
 
 void RotatorClass::Calibrate()
@@ -833,6 +850,14 @@ void RotatorClass::Calibrate()
     if (m_seekMode > HOMING_HOME) {
         switch (m_seekMode) {
             case(CALIBRATION_MOVEOFF):
+                if (!stepper.isRunning()) {
+                    m_seekMode = CALIBRATION_STEP1;
+                    stepper.setCurrentPosition(0);
+                    MoveRelative(m_Config.stepsPerRotation  * 3);
+                }
+                break;
+
+            case(CALIBRATION_MOVEOFF2):
                 if(m_moveOffUntilTimer.elapsed() >= m_nMoveOffUntilLapse) {
                     m_seekMode = CALIBRATION_MEASURE;
                 }
@@ -967,8 +992,8 @@ void RotatorClass::Run()
         m_nMoveDirection = MOVE_NONE;
 
         if (m_bDoStepsPerRotation) {
-            m_Config.stepsPerRotation = stepper.currentPosition();
-            // m_Config.stepsPerRotation = m_nStepsAtHome;
+            m_Config.stepsPerRotation  = m_nHomePosEdgePass2 - m_nHomePosEdgePass1;
+            // m_Config.stepsPerRotation = stepper.currentPosition();
             // now we should move back to home
             // by doing a goto to m_nStepsAtHome
             SaveToEEProm();

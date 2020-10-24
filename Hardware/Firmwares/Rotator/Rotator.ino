@@ -168,7 +168,7 @@ void setup()
     gotHelloFromShutter = false;
 #endif
     Rotator.EnableMotor(false);
-    // attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+    attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
 }
 
 void loop()
@@ -205,12 +205,11 @@ void loop()
     }
 #endif
 }
-/*
+
 void homeIntHandler()
 {
     Rotator.homeInterrupt();
 }
-*/
 
 #ifndef STANDALONE
 void StartWirelessConfig()
