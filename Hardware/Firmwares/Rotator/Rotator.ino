@@ -558,7 +558,6 @@ void ProcessSerialCommand()
             if (hasValue) {
                 fTmp = value.toFloat();
                 if (fTmp >= 0 && fTmp < 360) {
-                    Rotator.SyncHome(fTmp);
                     Rotator.SyncPosition(fTmp);
                     serialMessage = String(SYNC_ROTATOR_CMD) + String(Rotator.GetPosition());
                 }

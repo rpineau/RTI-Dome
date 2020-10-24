@@ -244,7 +244,6 @@ public:
     // home and park methods
     float       GetHomeAzimuth();
     void        SetHomeAzimuth(const float);
-    void        SyncHome(const float);
     int         GetHomeStatus();
 
     float       GetParkAzimuth();
@@ -732,22 +731,6 @@ void RotatorClass::SetHomeAzimuth(const float newHome)
     SaveToEEProm();
 }
 
-void RotatorClass::SyncHome(const float newAzimuth)
-{
-    float delta;
-
-    delta = GetAngularDistance(GetAzimuth(), newAzimuth);
-    delta = delta + m_Config.homeAzimuth;
-    if (delta < 0)
-        delta = 360.0 + delta;
-
-    if (delta >= 360.0)
-        delta -= 360.0;
-
-    m_Config.homeAzimuth = delta;
-    SaveToEEProm();
-}
-
 int RotatorClass::GetHomeStatus()
 {
     int status = NEVER_HOMED;
@@ -986,9 +969,8 @@ void RotatorClass::Run()
         if (m_bDoStepsPerRotation) {
             m_Config.stepsPerRotation = stepper.currentPosition();
             // m_Config.stepsPerRotation = m_nStepsAtHome;
-            // now we should meve back to home
+            // now we should move back to home
             // by doing a goto to m_nStepsAtHome
-            SyncHome(m_Config.homeAzimuth);
             SaveToEEProm();
             m_bDoStepsPerRotation = false;
         }
