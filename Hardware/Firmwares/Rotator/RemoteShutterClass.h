@@ -3,13 +3,6 @@
 // As I contributed a lot to it and it's being deprecated, I'm now using it for myself.
 //
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
-
 class RemoteShutterClass
 {
 public:
