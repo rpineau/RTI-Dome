@@ -22,7 +22,6 @@ X2Dome::X2Dome(const char* pszSelection,
 	m_pTickCount					= pTickCount;
 
 	m_bLinked = false;
-    m_bHomingDome = false;
     m_bCalibratingDome = false;
     m_nBattRequest = 0;
     m_bSettingPanID = false;
@@ -331,9 +330,7 @@ int X2Dome::execModalSettingsDialog()
     dx->setPropertyDouble("parkPosition","value", m_RTIDome.getParkAz());
 
 
-    m_bHomingDome = false;
     m_nBattRequest = 0;
-
 
     //Display the user interface
     if ((nErr = ui->exec(bPressedOK)))
@@ -408,7 +405,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     int n_nbStepPerRev;
     int nWatchdog;
 
-    if (!strcmp(pszEvent, "on_pushButtonCancel_clicked") && (m_bCalibratingDome || m_bHomingDome))
+    if (!strcmp(pszEvent, "on_pushButtonCancel_clicked") && m_bCalibratingDome)
         m_RTIDome.abortCurrentCommand();
 
     if (!strcmp(pszEvent, "on_timer"))
@@ -446,29 +443,6 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 
         }
         if(m_bLinked) {
-            // are we going to Home position to calibrate ?
-            if(m_bHomingDome) {
-                // are we home ?
-                bComplete = false;
-                nErr = m_RTIDome.isFindHomeComplete(bComplete);
-                if(nErr) {
-                    snprintf(szErrorMessage, LOG_BUFFER_SIZE, "Error homing dome while calibrating dome : Error %d", nErr);
-                    uiex->messageBox("RTI-Dome Calibrate", szErrorMessage);
-                    m_bHomingDome = false;
-                    m_bCalibratingDome = false;
-					// enable buttons
-					uiex->setEnabled("pushButton",true);
-					uiex->setEnabled("pushButtonOK",true);
-                    return;
-                }
-                if(bComplete) {
-                    m_bHomingDome = false;
-                    m_bCalibratingDome = true;
-                    m_RTIDome.calibrate();
-                    return;
-                }
-            }
-
            if(m_bCalibratingDome) {
                 // are we still calibrating ?
                 bComplete = false;
@@ -478,7 +452,6 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 					uiex->setEnabled("pushButtonCancel", true);
                     snprintf(szErrorMessage, LOG_BUFFER_SIZE, "Error calibrating dome : Error %d", nErr);
                     uiex->messageBox("RTI-Dome Calibrate", szErrorMessage);
-                    m_bHomingDome = false;
                     m_bCalibratingDome = false;
                     return;
                 }
@@ -491,7 +464,6 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 uiex->setEnabled("pushButtonOK",true);
 				uiex->setEnabled("pushButtonCancel", true);
 				m_bCalibratingDome = false;
-				m_bHomingDome = false;
 				uiex->setText("pushButton", "Calibrate");
                 // read step per rev from controller
                 uiex->setPropertyInt("ticksPerRev","value", m_RTIDome.getNbTicksPerRev());
@@ -518,7 +490,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                     }
                 }
             }
-            else if(m_bHasShutterControl && !m_bHomingDome && !m_bCalibratingDome) {
+            else if(m_bHasShutterControl && !m_bCalibratingDome) {
                 // don't ask to often
                 if (!(m_nBattRequest%4)) {
                     m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
@@ -551,14 +523,13 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     if (!strcmp(pszEvent, "on_pushButton_clicked"))
     {
         if(m_bLinked) {
-            if(m_bHomingDome || m_bCalibratingDome) { // Abort
+            if( m_bCalibratingDome) { // Abort
                 // enable buttons
                 uiex->setEnabled("pushButtonOK", true);
                 uiex->setEnabled("pushButtonCancel", true);
                 uiex->setEnabled("pushButton_2", true);
                 // stop everything
                 m_RTIDome.abortCurrentCommand();
-                m_bHomingDome = false;
                 m_bCalibratingDome = false;
                 // set button text the Calibrate
                 uiex->setText("pushButton", "Calibrate");
@@ -573,9 +544,9 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 // change "Calibrate" to "Abort"
                 uiex->setText("pushButton", "Abort");
 				m_nSavedTicksPerRev = m_RTIDome.getNbTicksPerRev();
-				m_RTIDome.setNbTicksPerRev(16000000L);    // set this to a large value as the firmware only do 1 move of 1.5 time the current step per rev
-                m_RTIDome.goHome();
-                m_bHomingDome = true;
+				m_RTIDome.setNbTicksPerRev(16000000L);    // set this to a large value as the firmware only do 1 move of 3 time the current step per rev
+                m_RTIDome.calibrate();
+                m_bCalibratingDome = true;
             }
         }
     }

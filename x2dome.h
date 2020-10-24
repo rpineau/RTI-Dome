@@ -167,7 +167,6 @@ private:
     bool        m_bHomeOnPark;
     bool        m_bHomeOnUnpark;
     bool        m_bOpenUpperShutterOnly;
-    bool        m_bHomingDome;
     bool        m_bCalibratingDome;
     char        m_szLogBuffer[LOG_BUFFER_SIZE];
     int         m_nBattRequest;
