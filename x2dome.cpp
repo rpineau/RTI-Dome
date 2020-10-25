@@ -1,12 +1,11 @@
 #include "x2dome.h"
 
 
-X2Dome::X2Dome(const char* pszSelection,
-							 const int& nISIndex,
+X2Dome::X2Dome(const char* pszSelection, const int& nISIndex,
 					SerXInterface*						pSerX,
-					TheSkyXFacadeForDriversInterface*	pTheSkyXForMounts,
+					TheSkyXFacadeForDriversInterface*	pTheSkyX,
 					SleeperInterface*					pSleeper,
-					BasicIniUtilInterface*			pIniUtil,
+					BasicIniUtilInterface*			    pIniUtil,
 					LoggerInterface*					pLogger,
 					MutexInterface*						pIOMutex,
 					TickCountInterface*					pTickCount)
@@ -14,7 +13,7 @@ X2Dome::X2Dome(const char* pszSelection,
 
     m_nPrivateISIndex				= nISIndex;
 	m_pSerX							= pSerX;
-	m_pTheSkyXForMounts				= pTheSkyXForMounts;
+	m_pTheSkyX			            = pTheSkyX;
 	m_pSleeper						= pSleeper;
 	m_pIniUtil						= pIniUtil;
 	m_pLogger						= pLogger;
@@ -32,10 +31,7 @@ X2Dome::X2Dome(const char* pszSelection,
 
     if (m_pIniUtil)
     {
-        m_RTIDome.setHomeAz( m_pIniUtil->readDouble(PARENT_KEY, CHILD_KEY_HOME_AZ, 0) );
-        m_RTIDome.setParkAz( m_pIniUtil->readDouble(PARENT_KEY, CHILD_KEY_PARK_AZ, 0) );
         m_bLogRainStatus = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_LOG_RAIN_STATUS, false);
-
         m_bHomeOnPark = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_HOME_ON_PARK, false);
         m_bHomeOnUnpark = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_HOME_ON_UNPARK, false);
         m_RTIDome.setHomeOnPark(m_bHomeOnPark);
@@ -49,8 +45,8 @@ X2Dome::~X2Dome()
 {
 	if (m_pSerX)
 		delete m_pSerX;
-	if (m_pTheSkyXForMounts)
-		delete m_pTheSkyXForMounts;
+	if (m_pTheSkyX)
+		delete m_pTheSkyX;
 	if (m_pSleeper)
 		delete m_pSleeper;
 	if (m_pIniUtil)
@@ -377,9 +373,6 @@ int X2Dome::execModalSettingsDialog()
         }
 
         // save the values to persistent storage
-        nErr |= m_pIniUtil->writeDouble(PARENT_KEY, CHILD_KEY_HOME_AZ, dHomeAz);
-        nErr |= m_pIniUtil->writeDouble(PARENT_KEY, CHILD_KEY_PARK_AZ, dParkAz);
-        nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_SHUTTER_CONTROL, m_bHasShutterControl);
         nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_HOME_ON_PARK, m_bHomeOnPark);
         nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_HOME_ON_UNPARK, m_bHomeOnUnpark);
         nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_LOG_RAIN_STATUS, m_bLogRainStatus);

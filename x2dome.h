@@ -20,22 +20,8 @@
 #include "RTI-Dome.h"
 #include "StopWatch.h"
 
-class SerXInterface;
-class TheSkyXFacadeForDriversInterface;
-class SleeperInterface;
-class BasicIniUtilInterface;
-class LoggerInterface;
-class MutexInterface;
-class BasicIniUtilInterface;
-class TickCountInterface;
-
-
 #define PARENT_KEY			"RTI-Dome"
 #define CHILD_KEY_PORTNAME	"PortName"
-#define CHILD_KEY_TICKS_PER_REV "NbTicksPerRev"
-#define CHILD_KEY_HOME_AZ "HomeAzimuth"
-#define CHILD_KEY_PARK_AZ "ParkAzimuth"
-#define CHILD_KEY_SHUTTER_CONTROL "ShutterCtrl"
 #define CHILD_KEY_HOME_ON_PARK "HomeOnPark"
 #define CHILD_KEY_HOME_ON_UNPARK "HomeOnUnpark"
 #define CHILD_KEY_LOG_RAIN_STATUS "LogRainStatus"
@@ -64,7 +50,7 @@ public:
 	X2Dome(	const char* pszSelectionString,
 					const int& nISIndex,
 					SerXInterface*						pSerX,
-					TheSkyXFacadeForDriversInterface* pTheSkyXForMounts,
+					TheSkyXFacadeForDriversInterface* pTheSkyX,
 					SleeperInterface*				pSleeper,
 					BasicIniUtilInterface*			pIniUtil,
 					LoggerInterface*					pLogger,
@@ -142,7 +128,7 @@ public:
 private:
 
 	SerXInterface 									*	GetSerX() {return m_pSerX; }
-	TheSkyXFacadeForDriversInterface				*	GetTheSkyXFacadeForDrivers() {return m_pTheSkyXForMounts;}
+	TheSkyXFacadeForDriversInterface				*	GetTheSkyXFacadeForDrivers() {return m_pTheSkyX;}
 	SleeperInterface								*	GetSleeper() {return m_pSleeper; }
 	BasicIniUtilInterface							*	GetSimpleIniUtil() {return m_pIniUtil; }
 	LoggerInterface									*	GetLogger() {return m_pLogger; }
@@ -150,7 +136,7 @@ private:
 	TickCountInterface								*	GetTickCountInterface() {return m_pTickCount;}
 
 	SerXInterface									*	m_pSerX;
-	TheSkyXFacadeForDriversInterface				*	m_pTheSkyXForMounts;
+	TheSkyXFacadeForDriversInterface				*	m_pTheSkyX;
 	SleeperInterface								*	m_pSleeper;
 	BasicIniUtilInterface							*	m_pIniUtil;
 	LoggerInterface									*	m_pLogger;
