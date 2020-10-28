@@ -113,7 +113,7 @@ const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
 const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered none, home, park
-const char IS_SHUTER_PRESENT            = 'o'; // check if the shutter has responded to pings
+const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
 const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
 const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
@@ -582,8 +582,8 @@ void ProcessSerialCommand()
             serialMessage = String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0");
             break;
 
-        case IS_SHUTER_PRESENT:
-            serialMessage = String(IS_SHUTER_PRESENT) + String( bShutterPresent? "1" : "0");
+        case IS_SHUTTER_PRESENT:
+            serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
             break;
 
 #ifndef STANDALONE
