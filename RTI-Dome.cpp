@@ -25,7 +25,6 @@ CRTIDome::CRTIDome()
     m_bCalibrating = false;
     m_bParking = false;
     m_bUnParking = false;
-    m_bHasBeenHome = false;
 
     m_bShutterOpened = false;
 
@@ -656,16 +655,6 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
         #endif
                 return COMMAND_FAILED;
             }
-
-        #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-            ltime = time(NULL);
-            timestamp = asctime(localtime(&ltime));
-            timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] [CRTIDome::getBatteryLevels] shutterVolts = %f\n", timestamp, dShutterVolts);
-            fprintf(Logfile, "[%s] [CRTIDome::getBatteryLevels] dShutterCutOff = %f\n", timestamp, dShutterCutOff);
-            fflush(Logfile);
-        #endif
-
             // do a proper conversion as for some reason the value is scaled weirdly ( it's multiplied by 3/2)
             // Arduino ADC convert 0-5V to 0-1023 which is 0.0049V per unit
             if(m_fVersion < 2.0f) {
@@ -883,11 +872,7 @@ int CRTIDome::parkDome()
 
 int CRTIDome::unparkDome()
 {
-    if(!m_bHasBeenHome && m_bHomeOnUnpark) {
-        m_bUnParking = true;
-        goHome();
-    }
-    else if(m_bHomeOnUnpark) {
+    if(m_bHomeOnUnpark) {
         m_bUnParking = true;
         goHome();
     }
@@ -943,7 +928,11 @@ int CRTIDome::openShutter()
     int nErr = ND_OK;
     bool bDummy;
     char szResp[SERIAL_BUFFER_SIZE];
-
+    double domeVolts;
+    double dDomeCutOff;
+    double dShutterVolts;
+    double dShutterCutOff;
+    
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
@@ -962,6 +951,7 @@ int CRTIDome::openShutter()
         return SB_OK;
     }
 
+    getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
@@ -981,7 +971,9 @@ int CRTIDome::openShutter()
         fflush(Logfile);
 #endif
     }
-
+    if(szResp[0] == 'L') { // batteryb LOW.. can't open
+        nErr = ERR_CMDFAILED;
+    }
     return nErr;
 }
 
@@ -990,7 +982,11 @@ int CRTIDome::closeShutter()
     int nErr = ND_OK;
     bool bDummy;
     char szResp[SERIAL_BUFFER_SIZE];
-
+    double domeVolts;
+    double dDomeCutOff;
+    double dShutterVolts;
+    double dShutterCutOff;
+    
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
@@ -1005,13 +1001,12 @@ int CRTIDome::closeShutter()
     fprintf(Logfile, "[%s] [CRTIDome::closeShutter] m_bShutterPresent = %s\n", timestamp, m_bShutterPresent?"Yes":"No");
     fflush(Logfile);
 #endif
-    if(!m_bShutterPresent) {
-        return SB_OK;
-    }
 
     if(!m_bShutterPresent) {
         return SB_OK;
     }
+
+    getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -1031,6 +1026,10 @@ int CRTIDome::closeShutter()
         fprintf(Logfile, "[%s] [CRTIDome::openShutter] closeShutter = %d\n", timestamp, nErr);
         fflush(Logfile);
 #endif
+    }
+
+    if(szResp[0] == 'L') { // batteryb LOW.. can't open
+        nErr = ERR_CMDFAILED;
     }
 
     return nErr;
@@ -1491,7 +1490,6 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
         if(m_bUnParking)
             m_bParked = false;
         syncDome(m_dHomeAz, m_dCurrentElPosition);
-        m_bHasBeenHome = true;
         m_nHomingTries = 0;
 #ifdef PLUGIN_DEBUG
         ltime = time(NULL);

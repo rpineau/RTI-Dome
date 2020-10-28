@@ -197,7 +197,6 @@ protected:
     int             m_nGotoTries;
     bool            m_bParking;
     bool            m_bUnParking;
-    bool            m_bHasBeenHome;
     int             m_nIsRaining;
     bool            m_bHomeOnPark;
     bool            m_bHomeOnUnpark;

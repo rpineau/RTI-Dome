@@ -338,7 +338,9 @@ void ProcessMessages(String buffer)
 				DBPrintln("Voltage Low");
 			}
 			else {
-				if (Shutter.GetState() != OPEN) Shutter.Open();
+				wirelessMessage = "O"; // (O)pen command
+				if (Shutter.GetState() != OPEN)
+				    Shutter.Open();
 			}
 
 			break;

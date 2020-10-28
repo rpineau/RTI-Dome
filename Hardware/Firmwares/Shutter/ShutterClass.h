@@ -53,6 +53,8 @@ DueFlashStorage dueFlashStorage;
 #define MIN_WATCHDOG_INTERVAL    60000
 #define MAX_WATCHDOG_INTERVAL   300000
 
+#define BATTERY_CHECK_INTERVAL   60000   // check battery once a minute
+
 #define VOLTAGE_MONITOR_PIN A0
 #if defined(ARDUINO_DUE)
 #define AD_REF      3.3
@@ -248,8 +250,7 @@ private:
     float           m_fAdcConvert;
     int             m_nVolts;
     StopWatch       m_batteryCheckTimer;
-    unsigned long   m_nBatteryCheckInterval = 0; // we want to check battery immedialtelly
-    // int             m_nLastButtonPressed;
+    unsigned long   m_nBatteryCheckInterval;
 
     int             MeasureVoltage();
     void            SetDefaultConfig();
@@ -278,6 +279,7 @@ ShutterClass::ShutterClass()
     attachInterrupt(digitalPinToInterrupt(OPENED_PIN), OpenInterrupt, FALLING);
 
     // reset all timers
+    m_nBatteryCheckInterval = BATTERY_CHECK_INTERVAL;
     m_batteryCheckTimer.reset();
 
     // read initial shutter state
@@ -291,6 +293,7 @@ ShutterClass::ShutterClass()
     else if (sw1 == 0 && sw2 == 1)
         shutterState = OPEN;
 
+    m_nVolts = MeasureVoltage();
 }
 
 void ShutterClass::ClosedInterrupt()
@@ -505,6 +508,7 @@ inline bool ShutterClass::GetVoltsAreLow()
 
 String ShutterClass::GetVoltString()
 {
+    m_nVolts = MeasureVoltage();  // make sure we're reporting the current value
     return String(m_nVolts) + "," + String(m_Config.cutoffVolts);
 }
 
@@ -626,21 +630,25 @@ void ShutterClass::EnableMotor(const bool newState)
 // Movers
 void ShutterClass::Open()
 {
+    m_nVolts = MeasureVoltage();
+    if(GetVoltsAreLow()) // do not try to open if we're already at low voltage
+        return;
+
     shutterState = OPENING;
     DBPrintln("shutterState = OPENING");
-    MoveRelative(m_Config.stepsPerStroke * 1.2);
+    MoveRelative(m_Config.stepsPerStroke * 1.25);
 }
 
 void ShutterClass::Close()
 {
     shutterState = CLOSING;
     DBPrintln("shutterState = CLOSING");
-    MoveRelative(1 - m_Config.stepsPerStroke * 1.2);
+    MoveRelative(1 - m_Config.stepsPerStroke * 1.25);
 }
 
 void ShutterClass::Run()
 {
-    static bool hitSwitch = false, firstBatteryCheck = true, doSync = true;
+    static bool hitSwitch = false, doSync = true;
 
 #ifndef ARDUINO_DUE
     stepper.run(); // we don't want the stepper to stop
@@ -683,15 +691,10 @@ void ShutterClass::Run()
     if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
         DBPrintln("Measuring Battery");
         m_nVolts = MeasureVoltage();
-        if (firstBatteryCheck) {
-            m_batteryCheckTimer.reset();
-            m_nBatteryCheckInterval  = 5000;
-            firstBatteryCheck = false;
+        if(GetVoltsAreLow() && shutterState!=CLOSED) {
+            Close();
         }
-        else {
-            m_batteryCheckTimer.reset();
-            m_nBatteryCheckInterval = 120000;
-        }
+        m_batteryCheckTimer.reset();
     }
 
     if (stepper.isRunning())

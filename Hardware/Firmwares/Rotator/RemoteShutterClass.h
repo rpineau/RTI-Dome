@@ -26,6 +26,7 @@ public:
 	String 	voltsClose = "";
 	String	watchdogInterval = "90"; // set proper default.. just in case.
 	String  panid = "";
+	String  openResp = "";
 	RemoteShutterClass();
 };
 

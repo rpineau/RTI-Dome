@@ -670,7 +670,7 @@ void ProcessSerialCommand()
                 sTmpString = String(OPEN_SHUTTER_CMD);
                 Wireless.print(sTmpString + "#");
                 ReceiveWireless();
-                serialMessage = sTmpString;
+                serialMessage = sTmpString + RemoteShutter.openResp;
                 break;
 
         case REVERSED_SHUTTER_CMD:
@@ -840,8 +840,9 @@ int ReceiveWireless()
             }
         }
 #ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
+        if(!stepper.run()) // we don't want the stepper to stop
 #endif
+            delay(1);
     } while (wirelessCharacter != '#');
 
     if (wirelessBuffer.length() > 0) {
@@ -853,20 +854,23 @@ int ReceiveWireless()
 void ProcessWireless()
 {
     char command;
-    String value, wirelessMessage;
+    bool hasValue = false;
+    String value;
 
     DBPrint("<<< Received: '" + wirelessBuffer + "'");
     command = wirelessBuffer.charAt(0);
     value = wirelessBuffer.substring(1);
+    if (value.length() > 0)
+        hasValue = true;
 
-    wirelessMessage = "";
     // we got data so the shutter is alive
     ShutterWatchdog.reset();
     bShutterPresent = true;
 
     switch (command) {
         case ACCELERATION_SHUTTER_CMD:
-            RemoteShutter.acceleration = value;
+            if (hasValue)
+                RemoteShutter.acceleration = value;
             break;
 
         case HELLO_CMD:
@@ -875,38 +879,53 @@ void ProcessWireless()
             break;
 
         case SPEED_SHUTTER_CMD:
-            RemoteShutter.speed = value;
+            if (hasValue)
+                RemoteShutter.speed = value;
             break;
 
         case RAIN_SHUTTER_GET:
             break;
 
         case REVERSED_SHUTTER_CMD:
-            RemoteShutter.reversed = value;
+            if (hasValue)
+                RemoteShutter.reversed = value;
             break;
 
         case STATE_SHUTTER_GET: // Dome status
-            RemoteShutter.state = value;
+            if (hasValue)
+                RemoteShutter.state = value;
+            break;
+
+        case OPEN_SHUTTER_CMD:
+            if (hasValue)
+                RemoteShutter.openResp = value;
+            else
+                RemoteShutter.openResp = "";
             break;
 
         case STEPSPER_SHUTTER_CMD:
-            RemoteShutter.stepsPerStroke = value;
+            if (hasValue)
+                RemoteShutter.stepsPerStroke = value;
             break;
 
         case VERSION_SHUTTER_GET:
-            RemoteShutter.version = value;
+            if (hasValue)
+                RemoteShutter.version = value;
             break;
 
-        case VOLTS_SHUTTER_CMD: // Sending battery voltage and cutoff
-            RemoteShutter.volts = value;
+        case VOLTS_SHUTTER_CMD: // battery voltage and cutoff
+            if (hasValue)
+                RemoteShutter.volts = value;
             break;
 
         case VOLTSCLOSE_SHUTTER_CMD:
-            RemoteShutter.voltsClose = value;
+            if (hasValue)
+                RemoteShutter.voltsClose = value;
             break;
 
         case WATCHDOG_INTERVAL_SET:
-            RemoteShutter.watchdogInterval = value;
+            if (hasValue)
+                RemoteShutter.watchdogInterval = value;
             break;
 
         case SHUTTER_PING:
@@ -917,17 +936,14 @@ void ProcessWireless()
             break;
 
         case SHUTTER_PANID_GET:
-             RemoteShutter.panid = value;
+            if (hasValue)
+                 RemoteShutter.panid = value;
             break;
 
         default:
             break;
     }
 
-    if (wirelessMessage.length() > 0) {
-        DBPrint(">>> Sending " + wirelessMessage);
-        Wireless.print(wirelessMessage + "#");
-    }
 }
 #endif
 
