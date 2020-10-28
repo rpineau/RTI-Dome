@@ -147,14 +147,6 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 #endif
 
 
-/*
-** An XBee may or may not be present and we don't want to waste time trying to
-** talk to an XBee that isn't there. Good thing is that all serial comms are asychronous
-** so just try to start a read-only check of it's configuration then if it responds go
-** ahead and use it. if it doesn't respond, there's nothing that will talk to it. Config
-** routine sets XBee.present to true if the XBee responds.
-*/
-
 void setup()
 {
     Computer.begin(115200);
