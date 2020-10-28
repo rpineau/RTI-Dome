@@ -1273,10 +1273,11 @@ int CRTIDome::isOpenComplete(bool &bComplete)
 {
     int nErr = ND_OK;
     int nState;
-
+    bool bDummy;
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
+    getShutterPresent(bDummy);
     if(!m_bShutterPresent) {
         bComplete = true;
         return SB_OK;
@@ -1311,10 +1312,12 @@ int CRTIDome::isCloseComplete(bool &bComplete)
 {
     int nErr = ND_OK;
     int nState;
-
+    bool bDummy;
+    
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
+    getShutterPresent(bDummy);
     if(!m_bShutterPresent) {
         bComplete = true;
         return SB_OK;

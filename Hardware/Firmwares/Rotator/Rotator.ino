@@ -823,7 +823,7 @@ int ReceiveWireless()
 #ifndef ARDUINO_DUE
         if(!stepper.run()) // we don't want the stepper to stop
 #endif
-            delay(1);
+            delay(5);   // give time to the shutter to reply
         timeout++;
         if(timeout >= MAX_TIMEOUT) {
             return ERR_NO_DATA;
@@ -842,7 +842,7 @@ int ReceiveWireless()
 #ifndef ARDUINO_DUE
         if(!stepper.run()) // we don't want the stepper to stop
 #endif
-            delay(1);
+            delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
     } while (wirelessCharacter != '#');
 
     if (wirelessBuffer.length() > 0) {
