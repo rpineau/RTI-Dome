@@ -692,6 +692,7 @@ void ShutterClass::Run()
         DBPrintln("Measuring Battery");
         m_nVolts = MeasureVoltage();
         if(GetVoltsAreLow() && shutterState!=CLOSED) {
+            DBPrintln("Voltage is low, closing");
             Close();
         }
         m_batteryCheckTimer.reset();

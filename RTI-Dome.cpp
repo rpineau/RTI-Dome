@@ -972,6 +972,13 @@ int CRTIDome::openShutter()
 #endif
     }
     if(szResp[0] == 'L') { // batteryb LOW.. can't open
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::openShutter] Voltage too low to open\n", timestamp);
+        fflush(Logfile);
+#endif
         nErr = ERR_CMDFAILED;
     }
     return nErr;

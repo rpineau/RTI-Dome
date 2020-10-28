@@ -703,10 +703,13 @@ int X2Dome::dapiOpen(void)
     if(!m_bLinked)
         return ERR_NOLINK;
 
+    X2MutexLocker ml(GetMutex());
+
+    m_RTIDome.getShutterPresent(m_bHasShutterControl);
+    
 	if(!m_bHasShutterControl)
         return SB_OK;
 
-	X2MutexLocker ml(GetMutex());
 
     nErr = m_RTIDome.openShutter();
     if(nErr)
@@ -722,10 +725,13 @@ int X2Dome::dapiClose(void)
     if(!m_bLinked)
         return ERR_NOLINK;
 
+    X2MutexLocker ml(GetMutex());
+
+    m_RTIDome.getShutterPresent(m_bHasShutterControl);
+
     if(!m_bHasShutterControl)
         return SB_OK;
 
-	X2MutexLocker ml(GetMutex());
 
     nErr = m_RTIDome.closeShutter();
     if(nErr)

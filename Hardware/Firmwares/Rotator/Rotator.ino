@@ -670,7 +670,7 @@ void ProcessSerialCommand()
                 sTmpString = String(OPEN_SHUTTER_CMD);
                 Wireless.print(sTmpString + "#");
                 ReceiveWireless();
-                serialMessage = sTmpString + RemoteShutter.openResp;
+                serialMessage = sTmpString + RemoteShutter.lowVoltStateOrRaining;
                 break;
 
         case REVERSED_SHUTTER_CMD:
@@ -898,9 +898,9 @@ void ProcessWireless()
 
         case OPEN_SHUTTER_CMD:
             if (hasValue)
-                RemoteShutter.openResp = value;
+                RemoteShutter.lowVoltStateOrRaining = value;
             else
-                RemoteShutter.openResp = "";
+                RemoteShutter.lowVoltStateOrRaining = "";
             break;
 
         case STEPSPER_SHUTTER_CMD:
@@ -930,6 +930,11 @@ void ProcessWireless()
 
         case SHUTTER_PING:
             bShutterPresent = true;
+            if (hasValue)
+                RemoteShutter.lowVoltStateOrRaining = value;
+            else
+                RemoteShutter.lowVoltStateOrRaining = "";
+
             break;
 
          case SHUTTER_RESTORE_MOTOR_DEFAULT:

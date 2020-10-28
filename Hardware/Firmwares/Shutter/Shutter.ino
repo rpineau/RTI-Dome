@@ -447,6 +447,14 @@ void ProcessMessages(String buffer)
 
 		case SHUTTER_PING:
 			wirelessMessage = String(SHUTTER_PING);
+            // make sure the rotator knows as soon as possible
+            if (Shutter.GetVoltsAreLow()) {
+                wirelessMessage += "L"; // low voltage detected
+            }
+            else if(isRaining) {
+                wirelessMessage += "R"; // Raining
+            }
+
 			DBPrintln("Got Ping");
 			watchdogTimer.reset();
 			XbeeResets = 0;
