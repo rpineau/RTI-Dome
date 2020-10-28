@@ -1,8 +1,9 @@
 //
-// RTI-Zone Dome Shutter firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed a lot to it and it's being deprecated, I'm now using it for myself.
+// RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
+// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// fix most of the known issues. I also added some feature related to XBee init and reset.
+// This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
-
 
 #if defined ARDUINO_DUE
 #include <DueFlashStorage.h>
@@ -102,6 +103,8 @@ StopWatch watchdogTimer;
 /*
  * As demonstrated by RCArduino and modified by BKM:
  * pick clock that provides the least error for specified frequency.
+ * https://github.com/SomeRandomGuy/DueTimer
+ * https://github.com/ivanseidel/DueTimer
  */
 uint8_t pickClock(uint32_t frequency, uint32_t& retRC)
 {

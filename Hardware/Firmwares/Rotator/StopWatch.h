@@ -1,6 +1,5 @@
-//
-// RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed a lot to it and it's being deprecated, I'm now using it for myself.
+// Rodolphe Pineau
+// Easy timer to check for time passed between a reset and elapsed call
 //
 
 #ifndef StopWatch_h

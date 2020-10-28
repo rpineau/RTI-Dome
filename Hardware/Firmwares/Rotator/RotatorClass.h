@@ -1,7 +1,10 @@
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed a lot to it and it's being deprecated, I'm now using it for myself.
+// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// fix most of the known issues. I also added some feature related to XBee init and reset.
+// This is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
+
 
 
 #if defined ARDUINO_DUE // DUE
@@ -374,10 +377,9 @@ inline void RotatorClass::homeInterrupt()
             break;
 
         default: // resync
-            // SyncPosition(m_Config.homeAzimuth); // THIS STOPS THE MOTOR :(
+            // SyncPosition(m_Config.homeAzimuth); // THIS STOPS THE MOTOR :( Thanks AccelStepper :((
             break;
     }
-
 }
 
 
