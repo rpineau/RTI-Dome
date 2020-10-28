@@ -1,14 +1,27 @@
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed a lot to it and it's being deprecated, I'm now using it for myself.
+// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// fix most of the known issues. I also added some feature related to XBee init and reset.
+// This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
 
 // Uncomment #define DEBUG in RotatorClass.h to enable printing debug messages in serial
 
+// if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
+// This us useful for people who only want to automate the rotation.
 // #define STANDALONE
+
+// I started making a PCB with the Teensy 2,5/3.6 .. work in progress.
 // #define TEENY_3_5
+
+// The TB6600 is the original stepper controller used on a NexDome automation kit.
+// I also want to test the ISD04 (or other) with more powerfull stepper.
 #define TB6600
 // #define ISD0X
+
+// The Xbee S1 were the original one used on the NexDome controller.
+// I have since tested with a pair of S2C that are easier to find and
+// fix the Xbee init command to make it work.
 #define XBEE_S1
 // #define XBEE_S2C
 
@@ -18,6 +31,8 @@
 
 #define VERSION "2.642"
 
+// As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
+// This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
 #if defined __SAM3X8E__
 #define ARDUINO_DUE
 // DUE
@@ -65,6 +80,9 @@ bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
 int configStep = 0;
 #endif
 
+//
+// XBee init AT commands
+///
 #ifndef STANDALONE
 #if defined(XBEE_S1)
 #define NB_AT_OK  17
