@@ -49,7 +49,7 @@ const String version = "2.642";
 const char ABORT_CMD				= 'a';
 const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
 const char CLOSE_SHUTTER_CMD		= 'C'; // Close shutter
-const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // restore default values for motor controll.
+const char RESTORE_MOTOR_DEFAULT    = 'D'; // restore default values for motor controll.
 const char ACCELERATION_SHUTTER_CMD = 'E'; // Get/Set stepper acceleration
 const char RAIN_ROTATOR_GET			= 'F'; // Rotator telling us if it's raining or not
 // const char ELEVATION_SHUTTER_CMD	= 'G'; // Get/Set altitude
@@ -471,10 +471,10 @@ void ProcessMessages(String buffer)
 			XbeeResets = 0;
 			break;
 
-        case SHUTTER_RESTORE_MOTOR_DEFAULT:
+        case RESTORE_MOTOR_DEFAULT:
 			DBPrintln("Restore default motor settings");
             Shutter.restoreDefaultMotorSettings();
-			wirelessMessage = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
+			wirelessMessage = String(RESTORE_MOTOR_DEFAULT);
             break;
 
         case PANID_GET:

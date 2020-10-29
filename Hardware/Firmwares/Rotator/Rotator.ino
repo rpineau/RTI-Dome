@@ -158,7 +158,6 @@ const char SHUTTER_PANID_GET            = 'Q'; // get and set the XBEE PAN ID
 const char SPEED_SHUTTER_CMD            = 'R'; // Get/Set step rate (speed)
 const char STEPSPER_SHUTTER_CMD         = 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET          = 'V'; // Get version string
-const char INACTIVE_SHUTTER_CMD         = 'X'; // Get/Set how long before shutter closes
 const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed status
 #endif
 
