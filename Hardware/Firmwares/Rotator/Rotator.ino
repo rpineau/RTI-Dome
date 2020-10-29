@@ -29,7 +29,7 @@
 #define ERR_NO_DATA -1
 #define OK  0
 
-#define VERSION "2.642"
+#define VERSION "2.643"
 
 // As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
 // This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
@@ -106,14 +106,14 @@ static const unsigned long pingInterval = 30000; // 30 seconds, can't be changed
 // the shutter will send a hello when it's booted up.
 bool SentHello = false;
 
-// Timer to periodically checks for rain and shutter ping.
+// Timer to periodically ping the shutter.
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 
 bool bShutterPresent = false;
 #endif
 
-StopWatch Rainchecktimer;
+// global variable for rain status
 bool bIsRaining = false;
 
 
@@ -122,11 +122,9 @@ const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
 const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
 const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor controll.
 const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
-const char RAIN_ROTATOR_CMD             = 'f'; // Get or Set Rain Check Interval
 const char GOTO_ROTATOR_CMD             = 'g'; // Get/set dome azimuth
 const char HOME_ROTATOR_CMD             = 'h'; // Home the dome
 const char HOMEAZ_ROTATOR_CMD           = 'i'; // Get/Set home position
-const char RAIN_ROTATOR_TWICE_CMD       = 'j'; // Get/Set Rain check requires to hits
 const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
@@ -168,7 +166,6 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 void setup()
 {
     Computer.begin(115200);
-    Rainchecktimer.reset();
 #ifndef STANDALONE
     Wireless.begin(9600);
     PingTimer.reset();
@@ -179,6 +176,7 @@ void setup()
 #endif
     Rotator.EnableMotor(false);
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+    attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
 }
 
 void loop()
@@ -219,6 +217,11 @@ void loop()
 void homeIntHandler()
 {
     Rotator.homeInterrupt();
+}
+
+void rainIntHandler()
+{
+    Rotator.rainInterrupt();
 }
 
 #ifndef STANDALONE
@@ -353,27 +356,18 @@ void CheckForCommands()
 //<SUMMARY>Tells shutter the rain sensor status</SUMMARY>
 void CheckForRain()
 {
-    // Only check periodically (fast reads seem to mess it up)
-    // Disable by setting rain check interval to 0;
-    if(Rotator.GetRainCheckInterval() == 0)
-        return;
-    if(Rainchecktimer.elapsed() >= (Rotator.GetRainCheckInterval() * 1000) ) {
-        bIsRaining = Rotator.GetRainStatus();
-#ifndef STANDALONE
-        // send value to shutter
-        if(bShutterPresent) {
-            Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
-            ReceiveWireless();
-        }
-#endif
-        if (bIsRaining) {
-            if (Rotator.GetRainAction() == HOME)
-                Rotator.GoToAzimuth(Rotator.GetHomeAzimuth());
 
-            if (Rotator.GetRainAction() == PARK)
-                Rotator.GoToAzimuth(Rotator.GetParkAzimuth());
-        }
-        Rainchecktimer.reset();
+    if(bIsRaining != Rotator.GetRainStatus()) { // was there a state change ?
+        bIsRaining = Rotator.GetRainStatus();
+        Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
+        ReceiveWireless();
+    }
+    if (bIsRaining) {
+        if (Rotator.GetRainAction() == HOME)
+            Rotator.GoToAzimuth(Rotator.GetHomeAzimuth());
+
+        if (Rotator.GetRainAction() == PARK)
+            Rotator.GoToAzimuth(Rotator.GetParkAzimuth());
     }
 }
 
@@ -520,20 +514,6 @@ void ProcessSerialCommand()
                 Rotator.SetRainAction(value.toInt());
             }
             serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator.GetRainAction());
-            break;
-
-        case RAIN_ROTATOR_TWICE_CMD:
-            if (hasValue) {
-                Rotator.SetCheckRainTwice(value.equals("1"));
-            }
-            serialMessage = String(RAIN_ROTATOR_TWICE_CMD) + String(Rotator.GetRainCheckTwice());
-            break;
-
-        case RAIN_ROTATOR_CMD:
-            if (hasValue) {
-                Rotator.SetRainInterval((unsigned long)value.toInt());
-            }
-            serialMessage = String(RAIN_ROTATOR_CMD) + String(Rotator.GetRainCheckInterval());
             break;
 
         case SPEED_ROTATOR_CMD:

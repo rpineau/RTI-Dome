@@ -41,7 +41,7 @@
 #define RAIN_CHECK_INTERVAL 10
 
 #define PLUGIN_DEBUG 2
-#define DRIVER_VERSION      2.64
+#define DRIVER_VERSION      2.65
 
 // error codes
 // Error code
@@ -132,9 +132,6 @@ public:
 
 	int	getSutterWatchdogTimerValue(int &nValue);
 	int	setSutterWatchdogTimerValue(const int &nValue);
-
-    int getRainTimerValue(int &nValue);
-    int setRainTimerValue(const int &nValue);
 
     int getRainAction(int &nAction);
     int setRainAction(const int &nAction);

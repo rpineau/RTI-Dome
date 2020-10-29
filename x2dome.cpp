@@ -137,7 +137,6 @@ int X2Dome::execModalSettingsDialog()
     int nSSpeed;
     int nSAcc;
 	int nWatchdog;
-    int nRainTimer;
     int nRainAction;
     double  batRotCutOff;
     double  batShutCutOff;
@@ -244,11 +243,6 @@ int X2Dome::execModalSettingsDialog()
 
         dx->setEnabled("lowRotBatCutOff",true);
 
-        dx->setEnabled("rainCheckInterval",true);
-        m_RTIDome.getRainTimerValue(nRainTimer);
-        dx->setPropertyInt("rainCheckInterval", "value", nRainTimer);
-
-
         if(m_bHasShutterControl) {
             dx->setText("shutterPresent", "Shutter present");
         }
@@ -308,7 +302,6 @@ int X2Dome::execModalSettingsDialog()
         dx->setEnabled("shutterSpeed", false);
         dx->setEnabled("shutterAcceleration", false);
 		dx->setEnabled("shutterWatchdog", false);
-        dx->setEnabled("rainCheckInterval", false);
         dx->setEnabled("lowRotBatCutOff", false);
         dx->setEnabled("lowShutBatCutOff", false);
         dx->setEnabled("comboBox", false);
@@ -342,7 +335,6 @@ int X2Dome::execModalSettingsDialog()
         dx->propertyInt("shutterSpeed", "value", nSSpeed);
         dx->propertyInt("shutterAcceleration", "value", nSAcc);
 		dx->propertyInt("shutterWatchdog", "value", nWatchdog);
-        dx->propertyInt("rainCheckInterval", "value", nRainTimer);
         dx->propertyDouble("lowRotBatCutOff", "value", batRotCutOff);
         dx->propertyDouble("lowShutBatCutOff", "value", batShutCutOff);
         nRainAction = dx->currentIndex("comboBox");
@@ -361,7 +353,6 @@ int X2Dome::execModalSettingsDialog()
             m_RTIDome.setNbTicksPerRev(n_nbStepPerRev);
             m_RTIDome.setRotationSpeed(nRSpeed);
             m_RTIDome.setRotationAcceleration(nRAcc);
-            m_RTIDome.setRainTimerValue(nRainTimer);
 			m_RTIDome.setBatteryCutOff(batRotCutOff, batShutCutOff);
             m_RTIDome.setRainAction(nRainAction);
 			if(m_bHasShutterControl) {
@@ -834,7 +825,7 @@ int	X2Dome::dapiIsCloseComplete(bool* pbComplete)
 
     if(!m_bHasShutterControl)
     {
-        *pbComplete = true;
+        *pbComplete = false;    // it can't be open and closed at the same time :)
         return SB_OK;
     }
 

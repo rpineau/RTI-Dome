@@ -2072,47 +2072,6 @@ int	CRTIDome::setSutterWatchdogTimerValue(const int &nValue)
 	return nErr;
 }
 
-
-int CRTIDome::getRainTimerValue(int &nValue)
-{
-    int nErr = ND_OK;
-    char szResp[SERIAL_BUFFER_SIZE];
-
-    if(!m_bIsConnected)
-        return NOT_CONNECTED;
-
-    
-    nErr = domeCommand("f#", szResp, 'f', SERIAL_BUFFER_SIZE);
-    if(nErr) {
-        return nErr;
-    }
-
-    nValue = atoi(szResp);
-#ifdef PLUGIN_DEBUG
-    ltime = time(NULL);
-    timestamp = asctime(localtime(&ltime));
-    timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CRTIDome::getRainTimerValue] nValue =  %d\n", timestamp, nValue);
-    fflush(Logfile);
-#endif
-    return nErr;
-
-}
-
-int CRTIDome::setRainTimerValue(const int &nValue)
-{
-    int nErr = ND_OK;
-    char szBuf[SERIAL_BUFFER_SIZE];
-    char szResp[SERIAL_BUFFER_SIZE];
-
-    if(!m_bIsConnected)
-        return NOT_CONNECTED;
-
-    snprintf(szBuf, SERIAL_BUFFER_SIZE, "f%d#", nValue);
-    nErr = domeCommand(szBuf, szResp, 'f', SERIAL_BUFFER_SIZE);
-    return nErr;
-}
-
 int CRTIDome::getRainAction(int &nAction)
 {
     int nErr = ND_OK;

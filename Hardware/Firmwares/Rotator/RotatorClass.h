@@ -76,7 +76,7 @@ DueFlashStorage dueFlashStorage;
 
 #define CALIBRATION_SPEED 2500
 
-#define SIGNATURE         2642
+#define SIGNATURE         2643
 
 // not used on DUE
 #define EEPROM_LOCATION     10
@@ -91,8 +91,6 @@ typedef struct RotatorConfiguration {
     float           homeAzimuth;
     float           parkAzimuth;
     int             cutOffVolts;
-    unsigned long   rainCheckInterval;
-    bool            rainCheckTwice;
     int             rainAction;
 #ifndef STANDALONE
     bool            radioIsConfigured;
@@ -205,13 +203,10 @@ public:
     void        SaveToEEProm();
 
     // rain sensor methods
-    bool        GetRainStatus();
-    int         GetRainAction();
-    void        SetRainAction(const int);
-    unsigned long   GetRainCheckInterval();
-    void            SetRainInterval(const unsigned long);
-    bool        GetRainCheckTwice();
-    void        SetCheckRainTwice(const bool);
+    bool            GetRainStatus();
+    int             GetRainAction();
+    void            SetRainAction(const int);
+    void            rainInterrupt();
 
     // motor methods
     long        GetAcceleration();
@@ -281,16 +276,13 @@ public:
 #if defined ARDUINO_DUE
     void        stopInterrupt();
 #endif
-    void homeInterrupt();
-    long            m_nStepsAtHome;
+    void        homeInterrupt();
+    long        m_nStepsAtHome;
+
+
 
 private:
     Configuration   m_Config;
-
-    // Inputs
-    int         m_nBtnCCWPin;
-    int         m_nBtnCWpin;
-    int         m_nRainPin;
 
     // Rotator
     bool            m_bisAtHome;
@@ -324,6 +316,8 @@ private:
     bool            LoadFromEEProm();
     void            SetDefaultConfig();
 
+    bool            m_bIsRaining;
+
 };
 
 
@@ -352,6 +346,11 @@ RotatorClass::RotatorClass()
     m_bSetToHomeAzimuth = false;
     m_bDoStepsPerRotation = false;
     m_nMoveDirection = MOVE_POSITIVE;
+    if (digitalRead(RAIN_SENSOR_PIN) == 0) {
+        m_bIsRaining = true;
+    }
+    else
+        m_bIsRaining = false;
 }
 
 
@@ -383,6 +382,14 @@ inline void RotatorClass::homeInterrupt()
 }
 
 
+inline void RotatorClass::rainInterrupt()
+{
+    if (digitalRead(RAIN_SENSOR_PIN) == 0) {
+        m_bIsRaining = true;
+    }
+    else
+        m_bIsRaining = false;
+}
 
 void RotatorClass::SaveToEEProm()
 {
@@ -444,8 +451,6 @@ void RotatorClass::SetDefaultConfig()
     m_Config.homeAzimuth = 0;
     m_Config.parkAzimuth = 0;
     m_Config.cutOffVolts = 1150;
-    m_Config.rainCheckInterval = 10; // In seconds
-    m_Config.rainCheckTwice = false;
     m_Config.rainAction = DO_NOTHING;
 #ifndef STANDALONE
     m_Config.radioIsConfigured = false;
@@ -458,25 +463,7 @@ void RotatorClass::SetDefaultConfig()
 //
 bool RotatorClass::GetRainStatus()
 {
-    static int rainCount = 0;
-    bool isRaining = false;
-    if (!m_Config.rainCheckTwice)
-        rainCount = 1;
-
-    if (digitalRead(RAIN_SENSOR_PIN) == 1) {
-        rainCount = 0;
-    }
-    else {
-        if (digitalRead(RAIN_SENSOR_PIN) == 0) {
-            if (rainCount == 1) {
-                isRaining = true;
-            }
-            else {
-                rainCount = 1;
-            }
-        }
-    }
-    return isRaining;
+    return m_bIsRaining;
 }
 
 inline int RotatorClass::GetRainAction()
@@ -487,28 +474,6 @@ inline int RotatorClass::GetRainAction()
 inline void RotatorClass::SetRainAction(const int value)
 {
     m_Config.rainAction = value;
-    SaveToEEProm();
-}
-
-inline unsigned long RotatorClass::GetRainCheckInterval()
-{
-    return m_Config.rainCheckInterval;
-}
-
-inline void RotatorClass::SetRainInterval(const unsigned long interval)
-{
-    m_Config.rainCheckInterval = interval;
-    SaveToEEProm();
-}
-
-inline bool RotatorClass::GetRainCheckTwice()
-{
-    return m_Config.rainCheckTwice;
-}
-
-inline void RotatorClass::SetCheckRainTwice(const bool state)
-{
-    m_Config.rainCheckTwice = state;
     SaveToEEProm();
 }
 
