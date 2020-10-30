@@ -44,7 +44,10 @@ CRTIDome::CRTIDome()
     m_bHomeOnUnpark = false;
 
     m_bShutterPresent = false;
-    
+
+#ifdef    PLUGIN_DEBUG
+    Logfile = NULL;
+#endif
     
     memset(m_szFirmwareVersion,0,SERIAL_BUFFER_SIZE);
     memset(m_szLogBuffer,0,ND_LOG_BUFFER_SIZE);
@@ -92,7 +95,8 @@ CRTIDome::~CRTIDome()
 {
 #ifdef	PLUGIN_DEBUG
     // Close LogFile
-    if (Logfile) fclose(Logfile);
+    if (Logfile)
+        fclose(Logfile);
 #endif
     if(RainStatusfile) {
         fclose(RainStatusfile);
