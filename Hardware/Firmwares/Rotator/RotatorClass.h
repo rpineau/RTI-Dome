@@ -74,7 +74,7 @@ DueFlashStorage dueFlashStorage;
 #define M_DISABLE   HIGH
 #endif
 
-#define CALIBRATION_SPEED 2500
+#define CALIBRATION_SPEED 5000
 
 #define SIGNATURE         2643
 
