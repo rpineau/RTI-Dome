@@ -176,6 +176,8 @@ void setup()
     Rotator.EnableMotor(false);
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
 }
 
 void loop()
@@ -221,6 +223,11 @@ void homeIntHandler()
 void rainIntHandler()
 {
     Rotator.rainInterrupt();
+}
+
+void buttonHandler()
+{
+    Rotator.ButtonCheck();
 }
 
 #ifndef STANDALONE

@@ -279,6 +279,7 @@ public:
     void        homeInterrupt();
     long        m_nStepsAtHome;
 
+    void            ButtonCheck();
 
 
 private:
@@ -309,10 +310,6 @@ private:
 
 
     // Utility
-    StopWatch       m_buttonCheckTimer;
-    unsigned long   m_nNextCheckButtonLapse = 10;
-    void            ButtonCheck();
-
     bool            LoadFromEEProm();
     void            SetDefaultConfig();
 
@@ -885,23 +882,14 @@ void RotatorClass::MoveRelative(const long howFar)
 
 void RotatorClass::ButtonCheck()
 {
-    int PRESSED = 0;
-    static int whichButtonPressed = 0, lastButtonPressed = 0;
-
-    if (digitalRead(BUTTON_CW) == PRESSED && whichButtonPressed == 0) {
-        whichButtonPressed = BUTTON_CW;
-        MoveRelative(m_Config.stepsPerRotation);
-        lastButtonPressed = BUTTON_CW;
+    if (digitalRead(BUTTON_CW) == LOW) {
+        MoveRelative(160000000L);
     }
-    else if (digitalRead(BUTTON_CCW) == PRESSED && whichButtonPressed == 0) {
-        whichButtonPressed = BUTTON_CCW;
-        MoveRelative(1 - m_Config.stepsPerRotation);
-        lastButtonPressed = BUTTON_CCW;
+    else if (digitalRead(BUTTON_CCW) == LOW)  {
+        MoveRelative(-160000000L);
     }
-
-    if (digitalRead(whichButtonPressed) == !PRESSED && lastButtonPressed > 0) {
+    else {
         Stop();
-        lastButtonPressed = whichButtonPressed = 0;
     }
 }
 
@@ -909,12 +897,6 @@ void RotatorClass::Run()
 {
     static bool wasRunning = false;
     long stepsFromZero;
-
-
-    if (m_buttonCheckTimer.elapsed() >= m_nNextCheckButtonLapse) {
-        ButtonCheck();
-        m_buttonCheckTimer.reset();
-    }
 
     if (m_periodicReadingTimer.elapsed() >= m_nNextPeriodicReadingLapse) {
         m_nVolts = ReadVolts();
