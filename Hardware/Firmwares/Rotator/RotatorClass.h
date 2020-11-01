@@ -74,8 +74,10 @@ DueFlashStorage dueFlashStorage;
 #define M_DISABLE   HIGH
 #endif
 
-#define CALIBRATION_SPEED 5000
-
+#define CALIBRATION_SPEED   5000
+#define MAX_SPEED           8000
+#define ACCELERATION        6400
+#define STEPS_DEFAULT       440640
 #define SIGNATURE         2643
 
 // not used on DUE
@@ -441,9 +443,9 @@ void RotatorClass::SetDefaultConfig()
     memset(&m_Config, 0, sizeof(Configuration));
 
     m_Config.signature = SIGNATURE;
-    m_Config.maxSpeed = 5000;
-    m_Config.acceleration = 3300;
-    m_Config.stepsPerRotation = 440640;
+    m_Config.maxSpeed = MAX_SPEED;
+    m_Config.acceleration = ACCELERATION;
+    m_Config.stepsPerRotation = STEPS_DEFAULT;
     m_Config.reversed = 0;
     m_Config.homeAzimuth = 0;
     m_Config.parkAzimuth = 0;
@@ -630,9 +632,9 @@ void RotatorClass::SetStepsPerRotation(const long newCount)
 
 int RotatorClass::restoreDefaultMotorSettings()
 {
-    m_Config.maxSpeed = 5000;
-    m_Config.acceleration = 3300;
-    m_Config.stepsPerRotation = 440640;
+    m_Config.maxSpeed = MAX_SPEED;
+    m_Config.acceleration = ACCELERATION;
+    m_Config.stepsPerRotation = STEPS_DEFAULT;
     SetMaxSpeed(m_Config.maxSpeed);
     SetAcceleration(m_Config.acceleration);
     SetStepsPerRotation(m_Config.stepsPerRotation);
