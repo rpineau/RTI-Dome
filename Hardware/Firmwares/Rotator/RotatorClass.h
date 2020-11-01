@@ -23,7 +23,7 @@ DueFlashStorage dueFlashStorage;
 
 //#define DEBUG
 #ifdef DEBUG
-#define DBPrint(x) DebugPort.println(x)
+#define DBPrint(x) if(DebugPort) DebugPort.println(x)
 #else
 #define DBPrint(x)
 #endif // DEBUG
@@ -903,7 +903,7 @@ void RotatorClass::Run()
         m_periodicReadingTimer.reset();
     }
 
-    m_bisAtHome = false; // default to not at home switch
+    m_bisAtHome = false; // default not at home switch
 
     if (m_seekMode > HOMING_HOME)
         Calibrate();
@@ -928,6 +928,9 @@ void RotatorClass::Run()
     if (stepper.isRunning())
         return;
 
+    // not moving anymore ..
+    m_nMoveDirection = MOVE_NONE;
+
     // Won't get here if stepper is moving
     if (digitalRead(HOME_PIN) == 0 ) { // Not moving and we're at home
         m_bisAtHome = true;
@@ -937,9 +940,9 @@ void RotatorClass::Run()
         }
     }
 
+
     if (wasRunning)
     {
-        m_nMoveDirection = MOVE_NONE;
 
         if (m_bDoStepsPerRotation) {
             m_Config.stepsPerRotation  = m_nHomePosEdgePass2 - m_nHomePosEdgePass1;
