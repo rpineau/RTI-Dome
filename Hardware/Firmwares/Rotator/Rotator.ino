@@ -16,8 +16,8 @@
 
 // The TB6600 is the original stepper controller used on a NexDome automation kit.
 // I also want to test the ISD04 (or other) with more powerfull stepper.
-// #define TB6600
-#define ISD0X
+#define TB6600
+// #define ISD0X
 
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
@@ -56,7 +56,6 @@
 #include "RemoteShutterClass.h"
 #endif
 
-RotatorClass Rotator;
 
 #ifndef STANDALONE
 RemoteShutterClass RemoteShutter;
@@ -68,6 +67,8 @@ String computerBuffer;
 String wirelessBuffer;
 #endif
 
+
+RotatorClass *Rotator;
 
 
 // Flag to do XBee startup on first boot in loop(). Could do in setup but
@@ -172,8 +173,9 @@ void setup()
     sentHello = false;
     isConfiguringWireless = false;
     gotHelloFromShutter = false;
+    Rotator = new RotatorClass();
 #endif
-    Rotator.EnableMotor(false);
+    Rotator->EnableMotor(false);
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
@@ -184,13 +186,13 @@ void loop()
 {
 #ifndef STANDALONE
     if (!XbeeStarted) {
-        if (!Rotator.isRadioConfigured() && !isConfiguringWireless) {
+        if (!Rotator->isRadioConfigured() && !isConfiguringWireless) {
             DBPrint("Xbee reconfiguring");
             StartWirelessConfig();
-            DBPrint("Rotator.bIsRadioIsConfigured : " + String(Rotator.isRadioConfigured()));
+            DBPrint("Rotator->bIsRadioIsConfigured : " + String(Rotator->isRadioConfigured()));
             DBPrint("isConfiguringWireless : " + String(isConfiguringWireless));
         }
-        else if (Rotator.isRadioConfigured()) {
+        else if (Rotator->isRadioConfigured()) {
             XbeeStarted = true;
             wirelessBuffer = "";
             DBPrint("Radio configured");
@@ -198,7 +200,7 @@ void loop()
         }
     }
 #endif
-    Rotator.Run();
+    Rotator->Run();
     CheckForCommands();
     CheckForRain();
 #ifndef STANDALONE
@@ -217,17 +219,17 @@ void loop()
 
 void homeIntHandler()
 {
-    Rotator.homeInterrupt();
+    Rotator->homeInterrupt();
 }
 
 void rainIntHandler()
 {
-    Rotator.rainInterrupt();
+    Rotator->rainInterrupt();
 }
 
 void buttonHandler()
 {
-    Rotator.ButtonCheck();
+    Rotator->ButtonCheck();
 }
 
 #ifndef STANDALONE
@@ -246,7 +248,7 @@ inline void ConfigXBee(String result)
 
     DBPrint("Sending ");
     if ( configStep == PANID_STEP) {
-        String ATCmd = "ATID" + String(Rotator.GetPANID());
+        String ATCmd = "ATID" + String(Rotator->GetPANID());
         DBPrint(ATCmd);
         Wireless.println(ATCmd);
         Wireless.flush();
@@ -260,9 +262,9 @@ inline void ConfigXBee(String result)
     }
     if (configStep > NB_AT_OK) {
         isConfiguringWireless = false;
-        Rotator.setRadioConfigured(true);
+        Rotator->setRadioConfigured(true);
         XbeeStarted = true;
-        Rotator.SaveToEEProm();
+        Rotator->SaveToEEProm();
         DBPrint("Xbee configuration finished");
         while(Wireless.available() > 0) {
             Wireless.read();
@@ -276,8 +278,8 @@ inline void ConfigXBee(String result)
 
 void setPANID(String value)
 {
-    Rotator.setPANID(value);
-    Rotator.setRadioConfigured(false);
+    Rotator->setPANID(value);
+    Rotator->setRadioConfigured(false);
     isConfiguringWireless = false;
     XbeeStarted = false;
     configStep = 0;
@@ -363,17 +365,17 @@ void CheckForCommands()
 void CheckForRain()
 {
 
-    if(bIsRaining != Rotator.GetRainStatus()) { // was there a state change ?
-        bIsRaining = Rotator.GetRainStatus();
+    if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
+        bIsRaining = Rotator->GetRainStatus();
         Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
         ReceiveWireless();
     }
     if (bIsRaining) {
-        if (Rotator.GetRainAction() == HOME)
-            Rotator.GoToAzimuth(Rotator.GetHomeAzimuth());
+        if (Rotator->GetRainAction() == HOME)
+            Rotator->GoToAzimuth(Rotator->GetHomeAzimuth());
 
-        if (Rotator.GetRainAction() == PARK)
-            Rotator.GoToAzimuth(Rotator.GetParkAzimuth());
+        if (Rotator->GetRainAction() == PARK)
+            Rotator->GoToAzimuth(Rotator->GetParkAzimuth());
     }
 }
 
@@ -444,7 +446,7 @@ void ProcessSerialCommand()
         case ABORT_MOVE_CMD:
             sTmpString = String(ABORT_MOVE_CMD);
             serialMessage = sTmpString;
-            Rotator.Stop();
+            Rotator->Stop();
 #ifndef STANDALONE
             wirelessMessage = sTmpString;
             Wireless.print(wirelessMessage + "#");
@@ -454,13 +456,13 @@ void ProcessSerialCommand()
 
         case ACCELERATION_ROTATOR_CMD:
             if (hasValue) {
-                Rotator.SetAcceleration(value.toInt());
+                Rotator->SetAcceleration(value.toInt());
             }
-            serialMessage = String(ACCELERATION_ROTATOR_CMD) + String(Rotator.GetAcceleration());
+            serialMessage = String(ACCELERATION_ROTATOR_CMD) + String(Rotator->GetAcceleration());
             break;
 
         case CALIBRATE_ROTATOR_CMD:
-            Rotator.StartCalibrating();
+            Rotator->StartCalibrating();
             serialMessage = String(CALIBRATE_ROTATOR_CMD);
             break;
 
@@ -468,10 +470,10 @@ void ProcessSerialCommand()
             if (hasValue) {
                 fTmp = value.toFloat();
                 if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
-                    Rotator.GoToAzimuth(fTmp);
+                    Rotator->GoToAzimuth(fTmp);
                 }
             }
-            serialMessage = String(GOTO_ROTATOR_CMD) + String(Rotator.GetAzimuth());
+            serialMessage = String(GOTO_ROTATOR_CMD) + String(Rotator->GetAzimuth());
             break;
 #ifndef STANDALONE
         case HELLO_CMD:
@@ -480,7 +482,7 @@ void ProcessSerialCommand()
             break;
 #endif
         case HOME_ROTATOR_CMD:
-            Rotator.StartHoming();
+            Rotator->StartHoming();
             serialMessage = String(HOME_ROTATOR_CMD);
             break;
 
@@ -488,13 +490,13 @@ void ProcessSerialCommand()
             if (hasValue) {
                 fTmp = value.toFloat();
                 if ((fTmp >= 0) && (fTmp < 360))
-                    Rotator.SetHomeAzimuth(fTmp);
+                    Rotator->SetHomeAzimuth(fTmp);
             }
-            serialMessage = String(HOMEAZ_ROTATOR_CMD) + String(Rotator.GetHomeAzimuth());
+            serialMessage = String(HOMEAZ_ROTATOR_CMD) + String(Rotator->GetHomeAzimuth());
             break;
 
         case HOMESTATUS_ROTATOR_GET:
-            serialMessage = String(HOMESTATUS_ROTATOR_GET) + String(Rotator.GetHomeStatus());
+            serialMessage = String(HOMESTATUS_ROTATOR_GET) + String(Rotator->GetHomeStatus());
             break;
 
         case PARKAZ_ROTATOR_CMD:
@@ -503,58 +505,58 @@ void ProcessSerialCommand()
             if (hasValue) {
                 fTmp = value.toFloat();
                 if ((fTmp >= 0) && (fTmp < 360)) {
-                    Rotator.SetParkAzimuth(fTmp);
-                    serialMessage = sTmpString + String(Rotator.GetParkAzimuth());
+                    Rotator->SetParkAzimuth(fTmp);
+                    serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
                 }
                 else {
                     serialMessage = sTmpString + "E";
                 }
             }
             else {
-                serialMessage = sTmpString + String(Rotator.GetParkAzimuth());
+                serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
             }
             break;
 
         case RAIN_ROTATOR_ACTION:
             if (hasValue) {
-                Rotator.SetRainAction(value.toInt());
+                Rotator->SetRainAction(value.toInt());
             }
-            serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator.GetRainAction());
+            serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator->GetRainAction());
             break;
 
         case SPEED_ROTATOR_CMD:
             if (hasValue)
-                Rotator.SetMaxSpeed(value.toInt());
-            serialMessage = String(SPEED_ROTATOR_CMD) + String(Rotator.GetMaxSpeed());
+                Rotator->SetMaxSpeed(value.toInt());
+            serialMessage = String(SPEED_ROTATOR_CMD) + String(Rotator->GetMaxSpeed());
             break;
 
         case REVERSED_ROTATOR_CMD:
             if (hasValue)
-                Rotator.SetReversed(value.toInt());
-            serialMessage = String(REVERSED_ROTATOR_CMD) + String(Rotator.GetReversed());
+                Rotator->SetReversed(value.toInt());
+            serialMessage = String(REVERSED_ROTATOR_CMD) + String(Rotator->GetReversed());
             break;
 
         case RESTORE_MOTOR_DEFAULT:
-            Rotator.restoreDefaultMotorSettings();
+            Rotator->restoreDefaultMotorSettings();
             serialMessage = String(RESTORE_MOTOR_DEFAULT);
             break;
 
         case SLEW_ROTATOR_GET:
-            serialMessage = String(SLEW_ROTATOR_GET) + String(Rotator.GetDirection());
+            serialMessage = String(SLEW_ROTATOR_GET) + String(Rotator->GetDirection());
             break;
 
         case STEPSPER_ROTATOR_CMD:
             if (hasValue)
-                Rotator.SetStepsPerRotation(value.toInt());
-            serialMessage = String(STEPSPER_ROTATOR_CMD) + String(Rotator.GetStepsPerRotation());
+                Rotator->SetStepsPerRotation(value.toInt());
+            serialMessage = String(STEPSPER_ROTATOR_CMD) + String(Rotator->GetStepsPerRotation());
             break;
 
         case SYNC_ROTATOR_CMD:
             if (hasValue) {
                 fTmp = value.toFloat();
                 if (fTmp >= 0 && fTmp < 360) {
-                    Rotator.SyncPosition(fTmp);
-                    serialMessage = String(SYNC_ROTATOR_CMD) + String(Rotator.GetPosition());
+                    Rotator->SyncPosition(fTmp);
+                    serialMessage = String(SYNC_ROTATOR_CMD) + String(Rotator->GetPosition());
                 }
             }
             else {
@@ -569,9 +571,9 @@ void ProcessSerialCommand()
         case VOLTS_ROTATOR_CMD:
             // value only needs infrequent updating.
             if (hasValue) {
-                Rotator.SetLowVoltageCutoff(value.toInt());
+                Rotator->SetLowVoltageCutoff(value.toInt());
             }
-            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator.GetVoltString());
+            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->GetVoltString());
             break;
 
         case RAIN_SHUTTER_GET:
@@ -585,7 +587,7 @@ void ProcessSerialCommand()
 #ifndef STANDALONE
         case INIT_XBEE:
             sTmpString = String(INIT_XBEE);
-            Rotator.setRadioConfigured(false);
+            Rotator->setRadioConfigured(false);
             isConfiguringWireless = false;
             XbeeStarted = false;
             configStep = 0;
@@ -603,7 +605,7 @@ void ProcessSerialCommand()
                 Wireless.print(wirelessMessage + "#");
                 setPANID(value); // shutter XBee should be doing the same thing
             }
-            serialMessage = sTmpString + String(Rotator.GetPANID());
+            serialMessage = sTmpString + String(Rotator->GetPANID());
             break;
 
 
