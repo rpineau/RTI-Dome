@@ -17,10 +17,10 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
-#define DBPrint(x) DebugPort.print(x)
-#define DBPrintln(x) DebugPort.println(x)
+#define DBPrint(x)   if(DebugPort) DebugPort.print(x)
+#define DBPrintln(x) if(DebugPort) DebugPort.println(x)
 #else
 #define DBPrint(x)
 #define DBPrintln(x)
@@ -226,7 +226,7 @@ public:
     void            SetWatchdogInterval(const unsigned long);
 
     // Move
-    bool        DoButtons();
+    void        DoButtons();
     void        EnableMotor(const bool);
     void        Open();
     void        Close();
@@ -244,8 +244,9 @@ public:
     int         restoreDefaultMotorSettings();
 
     // interrupts
-    static void     ClosedInterrupt();
-    static void     OpenInterrupt();
+    void     ClosedInterrupt();
+    void     OpenInterrupt();
+    bool     m_bButtonUsed;
 
 private:
 
@@ -274,12 +275,12 @@ ShutterClass::ShutterClass()
     pinMode(BUTTON_CLOSE, INPUT_PULLUP);
     pinMode(VOLTAGE_MONITOR_PIN, INPUT);
     LoadFromEEProm();
+
     stepper.setEnablePin(STEPPER_ENABLE_PIN);
     SetAcceleration(m_Config.acceleration);
     SetMaxSpeed(m_Config.maxSpeed);
     EnableMotor(false);
-    attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), ClosedInterrupt, FALLING);
-    attachInterrupt(digitalPinToInterrupt(OPENED_PIN), OpenInterrupt, FALLING);
+
 
     // reset all timers
     m_nBatteryCheckInterval = BATTERY_CHECK_INTERVAL;
@@ -296,7 +297,7 @@ ShutterClass::ShutterClass()
     else if (sw1 == 0 && sw2 == 1)
         shutterState = OPEN;
 
-    m_nVolts = MeasureVoltage();
+    m_bButtonUsed = false;
 }
 
 void ShutterClass::ClosedInterrupt()
@@ -304,7 +305,7 @@ void ShutterClass::ClosedInterrupt()
     // debounce
     if (digitalRead(CLOSED_PIN) == 0) {
         if(shutterState == CLOSING)
-            ShutterClass::motorStop();
+            motorStop();
         if(shutterState != OPENING)
             shutterState = CLOSED;
     }
@@ -315,7 +316,7 @@ void ShutterClass::OpenInterrupt()
     // debounce
     if (digitalRead(OPENED_PIN) == 0) {
         if(shutterState == OPENING)
-            ShutterClass::motorStop();
+            motorStop();
         if(shutterState != CLOSING)
             shutterState = OPEN;
     }
@@ -479,10 +480,10 @@ int ShutterClass::GetEndSwitchStatus()
 {
     int result= ERROR;
 
-    if (digitalRead(CLOSED_PIN) == 0)
+    if (digitalRead(CLOSED_PIN) == LOW)
         result = CLOSED;
 
-    if (digitalRead(OPENED_PIN) == 0)
+    if (digitalRead(OPENED_PIN) == LOW)
         result = OPEN;
     return result;
 }
@@ -505,6 +506,7 @@ void ShutterClass::SetStepsPerStroke(const unsigned long newSteps)
 
 inline bool ShutterClass::GetVoltsAreLow()
 {
+    m_nVolts = MeasureVoltage();  // make sure we're using the current value
     bool low = (m_nVolts <= m_Config.cutoffVolts);
     return low;
 }
@@ -538,7 +540,6 @@ int ShutterClass::MeasureVoltage()
     float calc;
 
     adc = analogRead(VOLTAGE_MONITOR_PIN);
-    DBPrintln("ADC returns " + String(adc));
     calc = adc * m_fAdcConvert;
     return int(calc);
 }
@@ -582,38 +583,23 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 }
 
 // INPUTS
-bool ShutterClass::DoButtons()
+void ShutterClass::DoButtons()
 {
-    int PRESSED = 0;
-    bool bButtonUsed = false;
-    static int whichButtonPressed = 0, lastButtonPressed = 0;
-
-    if (digitalRead(BUTTON_OPEN) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != OPEN) {
-        DBPrintln("Button Open Shutter");
-        watchdogTimer.reset();
-        whichButtonPressed = BUTTON_OPEN;
+    if ((digitalRead(BUTTON_OPEN) == LOW) && (GetEndSwitchStatus() != OPEN)) {
         shutterState = OPENING;
-        MoveRelative(m_Config.stepsPerStroke);
-        lastButtonPressed = BUTTON_OPEN;
-        bButtonUsed = true;
+        MoveRelative(160000000L);
+        m_bButtonUsed = true;
     }
-    else if (digitalRead(BUTTON_CLOSE) == PRESSED && whichButtonPressed == 0 && GetEndSwitchStatus() != CLOSED) {
-        DBPrintln("Button Close Shutter");
-        watchdogTimer.reset();
-        whichButtonPressed = BUTTON_CLOSE;
+    else if ((digitalRead(BUTTON_CLOSE) == LOW) && (GetEndSwitchStatus() != CLOSED)) {
         shutterState = CLOSING;
-        MoveRelative(1 - m_Config.stepsPerStroke);
-        lastButtonPressed = BUTTON_CLOSE;
-        bButtonUsed = true;
+        MoveRelative(-160000000L);
+        m_bButtonUsed = true;
     }
 
-    if (digitalRead(whichButtonPressed) == !PRESSED && lastButtonPressed > 0) {
+    else {
         motorStop();
-        lastButtonPressed = whichButtonPressed = 0;
-        bButtonUsed = false;
+        m_bButtonUsed = false;
     }
-
-    return bButtonUsed;
 }
 
 // Setters

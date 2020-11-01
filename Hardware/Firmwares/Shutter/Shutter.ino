@@ -25,12 +25,12 @@
 #define ARDUINO_DUE
 // DUE
 #define Computer Serial     // programing port
-#define DebugPort Computer
+#define DebugPort Serial
 #define Wireless Serial1    // XBEE
 #else
 // Leonardo
 #define Computer Serial
-#define DebugPort Computer
+#define DebugPort Serial
 #define Wireless Serial1    //XBEE
 #endif
 
@@ -89,7 +89,7 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATDH0","ATDL0","ATJV1",
 #define XBEE_RESET_PIN  8
 #endif
 
-ShutterClass Shutter;
+ShutterClass *Shutter;
 
 int configStep = 0;
 
@@ -98,18 +98,12 @@ bool isRaining = false;
 bool isResetingXbee = false;
 int XbeeResets = 0;
 
-unsigned long voltUpdateInterval = 5000;
-
-bool doFinalUpdate = false;
-bool	bManualMode = false;
-
 void setup()
 {
 #ifdef DEBUG
 	Computer.begin(115200);
 #endif
 	Wireless.begin(9600);
-
     XbeeStarted = false;
 	XbeeResets = 0;
 	isConfiguringWireless = false;
@@ -117,8 +111,13 @@ void setup()
     pinMode(XBEE_RESET_PIN, OUTPUT);
     digitalWrite(XBEE_RESET_PIN, 1);
 #endif
+    Shutter = new ShutterClass();
 	watchdogTimer.reset();
-    Shutter.EnableMotor(false);
+    Shutter->EnableMotor(false);
+    attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
+    attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
 }
 
 void loop()
@@ -128,14 +127,15 @@ void loop()
 		ReceiveSerial();
 	}
 #endif
+
 	if (Wireless.available() > 0)
 		ReceiveWireless();
 
 	if (!XbeeStarted) {
-		if (!Shutter.isRadioConfigured() && !isConfiguringWireless) {
+		if (!Shutter->isRadioConfigured() && !isConfiguringWireless) {
 			StartWirelessConfig();
 		}
-		else if (Shutter.isRadioConfigured()) {
+		else if (Shutter->isRadioConfigured()) {
 			XbeeStarted = true;
 			wirelessBuffer = "";
 			DBPrintln("Radio configured");
@@ -143,7 +143,7 @@ void loop()
 	}
 
 
-	if((watchdogTimer.elapsed() >= Shutter.getWatchdogInterval()) && (Shutter.GetState() != CLOSED) && (Shutter.GetState() != CLOSING)) {
+	if((watchdogTimer.elapsed() >= Shutter->getWatchdogInterval()) && (Shutter->GetState() != CLOSED) && (Shutter->GetState() != CLOSING)) {
             DBPrintln("watchdogTimer triggered");
             // lets try to recover
 	        if(!isResetingXbee && XbeeResets == 0) {
@@ -152,7 +152,7 @@ void loop()
 #if defined ARDUINO_DUE // Arduino DUE
                 ResetXbee();
 #endif
-                Shutter.setRadioConfigured(false);
+                Shutter->setRadioConfigured(false);
                 isConfiguringWireless = false;
                 XbeeStarted = false;
                 configStep = 0;
@@ -160,22 +160,37 @@ void loop()
 	        }
 	        else if (!isResetingXbee){
                 // we lost communication with the rotator.. close everything.
-                if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING) {
+                if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING) {
                     DBPrintln("watchdogTimer triggered.. closing");
                     DBPrintln("watchdogTimer.elapsed() = " + String(watchdogTimer.elapsed()));
-                    DBPrintln("Shutter.getWatchdogInterval() = " + String(Shutter.getWatchdogInterval()));
-                    Shutter.Close();
+                    DBPrintln("Shutter->getWatchdogInterval() = " + String(Shutter->getWatchdogInterval()));
+                    Shutter->Close();
                     }
             }
 		delay(1000);
 	}
 
 
-	if(Shutter.DoButtons())
+	if(Shutter->m_bButtonUsed)
 	    watchdogTimer.reset();
 
-	Shutter.Run();
+	Shutter->Run();
+}
 
+void handleClosedInterrupt()
+{
+    Shutter->ClosedInterrupt();
+}
+
+void handleOpenInterrupt()
+{
+    Shutter->OpenInterrupt();
+}
+
+void handleButtons()
+{
+    DBPrintln("Buttons interrupt");
+    Shutter->DoButtons();
 }
 
 
@@ -193,7 +208,7 @@ inline void ConfigXBee(String result)
 {
     DBPrint("Sending : ");
     if ( configStep == PANID_STEP) {
-        String ATCmd = "ATID" + String(Shutter.GetPANID());
+        String ATCmd = "ATID" + String(Shutter->GetPANID());
         DBPrintln(ATCmd);
         Wireless.println(ATCmd);
         Wireless.flush();
@@ -207,9 +222,9 @@ inline void ConfigXBee(String result)
     }
 	if (configStep > NB_AT_OK) {
 		isConfiguringWireless = false;
-		Shutter.setRadioConfigured(true);
+		Shutter->setRadioConfigured(true);
 		XbeeStarted = true;
-		Shutter.SaveToEEProm();
+		Shutter->SaveToEEProm();
         DBPrintln("Xbee configuration finished");
 
         isResetingXbee = false;
@@ -232,8 +247,8 @@ void ResetXbee()
 
 void setPANID(String value)
 {
-    Shutter.setPANID(value);
-    Shutter.setRadioConfigured(false);
+    Shutter->setPANID(value);
+    Shutter->setRadioConfigured(false);
     isConfiguringWireless = false;
     XbeeStarted = false;
     configStep = 0;
@@ -312,24 +327,24 @@ void ProcessMessages(String buffer)
 		case ACCELERATION_SHUTTER_CMD:
 			if (hasValue) {
 				DBPrintln("Set acceleration to " + value);
-				Shutter.SetAcceleration(value.toInt());
+				Shutter->SetAcceleration(value.toInt());
 			}
-			wirelessMessage = String(ACCELERATION_SHUTTER_CMD) + String(Shutter.GetAcceleration());
-			DBPrintln("Acceleration is " + String(Shutter.GetAcceleration()));
+			wirelessMessage = String(ACCELERATION_SHUTTER_CMD) + String(Shutter->GetAcceleration());
+			DBPrintln("Acceleration is " + String(Shutter->GetAcceleration()));
 			break;
 
 		case ABORT_CMD:
 			DBPrintln("STOP!");
-			Shutter.motorStop();
+			Shutter->motorStop();
 			wirelessMessage = String(ABORT_CMD);
 			break;
 
 		case CLOSE_SHUTTER_CMD:
 			DBPrintln("Close shutter");
-			if (Shutter.GetState() != CLOSED) {
-				Shutter.Close();
+			if (Shutter->GetState() != CLOSED) {
+				Shutter->Close();
 			}
-			wirelessMessage = String(STATE_SHUTTER_GET) + String(Shutter.GetState());
+			wirelessMessage = String(STATE_SHUTTER_GET) + String(Shutter->GetState());
 			break;
 
 		case HELLO_CMD:
@@ -344,40 +359,40 @@ void ProcessMessages(String buffer)
 				wirelessMessage = "OR"; // (O)pen command (R)ain cancel
 				DBPrintln("Raining");
 			}
-			else if (Shutter.GetVoltsAreLow()) {
+			else if (Shutter->GetVoltsAreLow()) {
 				wirelessMessage = "OL"; // (O)pen command (L)ow voltage cancel
 				DBPrintln("Voltage Low");
 			}
 			else {
 				wirelessMessage = "O"; // (O)pen command
-				if (Shutter.GetState() != OPEN)
-				    Shutter.Open();
+				if (Shutter->GetState() != OPEN)
+				    Shutter->Open();
 			}
 
 			break;
 
 		case POSITION_SHUTTER_GET:
-			wirelessMessage = String(POSITION_SHUTTER_GET) + String(Shutter.GetPosition());
+			wirelessMessage = String(POSITION_SHUTTER_GET) + String(Shutter->GetPosition());
 			DBPrintln(wirelessMessage);
 			break;
 
 		case WATCHDOG_INTERVAL_SET:
 			if (hasValue) {
-				Shutter.SetWatchdogInterval((unsigned long)value.toInt());
+				Shutter->SetWatchdogInterval((unsigned long)value.toInt());
 				DBPrintln("Watchdog interval set to " + value + " ms");
 			}
 			else {
-    			DBPrintln("Watchdog interval " + String(Shutter.getWatchdogInterval()) + " ms");
+    			DBPrintln("Watchdog interval " + String(Shutter->getWatchdogInterval()) + " ms");
 			}
-			wirelessMessage = String(WATCHDOG_INTERVAL_SET) + String(Shutter.getWatchdogInterval());
+			wirelessMessage = String(WATCHDOG_INTERVAL_SET) + String(Shutter->getWatchdogInterval());
 			break;
 
 		case RAIN_ROTATOR_GET:
 		    if(hasValue) {
                 if (value.equals("1")) {
                     if (!isRaining) {
-                        if (Shutter.GetState() != CLOSED && Shutter.GetState() != CLOSING)
-                            Shutter.Close();
+                        if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING)
+                            Shutter->Close();
                         isRaining = true;
                         DBPrintln("It's raining! (" + value + ")");
                     }
@@ -392,37 +407,37 @@ void ProcessMessages(String buffer)
 
 		case REVERSED_SHUTTER_CMD:
 			if (hasValue) {
-				Shutter.SetReversed(value.equals("1"));
+				Shutter->SetReversed(value.equals("1"));
 				DBPrintln("Set Reversed to " + value);
 			}
-			wirelessMessage = String(REVERSED_SHUTTER_CMD) + String(Shutter.GetReversed());
+			wirelessMessage = String(REVERSED_SHUTTER_CMD) + String(Shutter->GetReversed());
 			DBPrintln(wirelessMessage);
 			break;
 
 		case SPEED_SHUTTER_CMD:
 			if (hasValue) {
 				DBPrintln("Set speed to " + value);
-				if (value.toInt() > 0) Shutter.SetMaxSpeed(value.toInt());
+				if (value.toInt() > 0) Shutter->SetMaxSpeed(value.toInt());
 			}
-			wirelessMessage = String(SPEED_SHUTTER_CMD) + String(Shutter.GetMaxSpeed());
+			wirelessMessage = String(SPEED_SHUTTER_CMD) + String(Shutter->GetMaxSpeed());
 			DBPrintln(wirelessMessage);
 			break;
 
 		case STATE_SHUTTER_GET:
-			wirelessMessage = String(STATE_SHUTTER_GET) + String(Shutter.GetState());
+			wirelessMessage = String(STATE_SHUTTER_GET) + String(Shutter->GetState());
 			DBPrintln(wirelessMessage);
 			break;
 
 		case STEPSPER_SHUTTER_CMD:
 			if (hasValue) {
 				if (value.toInt() > 0) {
-					Shutter.SetStepsPerStroke(value.toInt());
+					Shutter->SetStepsPerStroke(value.toInt());
 				}
 			}
 			else {
-				DBPrintln("Get Steps " + String(Shutter.GetStepsPerStroke()));
+				DBPrintln("Get Steps " + String(Shutter->GetStepsPerStroke()));
 			}
-			wirelessMessage = String(STEPSPER_SHUTTER_CMD) + String(Shutter.GetStepsPerStroke());
+			wirelessMessage = String(STEPSPER_SHUTTER_CMD) + String(Shutter->GetStepsPerStroke());
 			break;
 
 		case VERSION_SHUTTER_GET:
@@ -432,24 +447,24 @@ void ProcessMessages(String buffer)
 
 		case VOLTS_SHUTTER_CMD:
 			if (hasValue) {
-				Shutter.SetVoltsFromString(value);
+				Shutter->SetVoltsFromString(value);
 				DBPrintln("Set volts to " + value);
 			}
-			wirelessMessage = "K" + Shutter.GetVoltString();
+			wirelessMessage = "K" + Shutter->GetVoltString();
 			DBPrintln(wirelessMessage);
 			break;
 
 		case VOLTSCLOSE_SHUTTER_CMD:
 			if (hasValue) {
 				DBPrintln("Close on low voltage value inn" + String(value));
-				Shutter.SetVoltsClose(value.toInt());
+				Shutter->SetVoltsClose(value.toInt());
 			}
-			wirelessMessage = String(VOLTSCLOSE_SHUTTER_CMD) + String(Shutter.GetVoltsClose());
-			DBPrintln("Close on low voltage " + String(Shutter.GetVoltsClose()));
+			wirelessMessage = String(VOLTSCLOSE_SHUTTER_CMD) + String(Shutter->GetVoltsClose());
+			DBPrintln("Close on low voltage " + String(Shutter->GetVoltsClose()));
 			break;
 
 		case INIT_XBEE:
-			Shutter.setRadioConfigured(false);
+			Shutter->setRadioConfigured(false);
 			isConfiguringWireless = false;
 			XbeeStarted = false;
 			configStep = 0;
@@ -459,7 +474,7 @@ void ProcessMessages(String buffer)
 		case SHUTTER_PING:
 			wirelessMessage = String(SHUTTER_PING);
             // make sure the rotator knows as soon as possible
-            if (Shutter.GetVoltsAreLow()) {
+            if (Shutter->GetVoltsAreLow()) {
                 wirelessMessage += "L"; // low voltage detected
             }
             else if(isRaining) {
@@ -473,7 +488,7 @@ void ProcessMessages(String buffer)
 
         case RESTORE_MOTOR_DEFAULT:
 			DBPrintln("Restore default motor settings");
-            Shutter.restoreDefaultMotorSettings();
+            Shutter->restoreDefaultMotorSettings();
 			wirelessMessage = String(RESTORE_MOTOR_DEFAULT);
             break;
 
@@ -484,9 +499,9 @@ void ProcessMessages(String buffer)
 				setPANID(value);
 			}
 			else {
-                wirelessMessage = String(PANID_GET) + String(Shutter.GetPANID());
+                wirelessMessage = String(PANID_GET) + String(Shutter->GetPANID());
             }
-            DBPrintln("PAN ID '" + String(Shutter.GetPANID()) + "'");
+            DBPrintln("PAN ID '" + String(Shutter->GetPANID()) + "'");
 			break;
 
 
