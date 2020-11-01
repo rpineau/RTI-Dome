@@ -36,11 +36,12 @@
 #if defined __SAM3X8E__
 #define ARDUINO_DUE
 // DUE
-#define Computer Serial     // programing port
+// #define Computer Serial     // programing port
+#define Computer SerialUSB     // CDC usb  port
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
-#define DebugPort Computer
+#define DebugPort Serial
 #else
 // Leonardo
 #define Computer Serial
@@ -166,6 +167,9 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 void setup()
 {
     Computer.begin(115200);
+#ifdef DEBUG
+    DebugPort.begin(115200);
+#endif
 #ifndef STANDALONE
     Wireless.begin(9600);
     PingTimer.reset();
@@ -350,6 +354,9 @@ void requestShutterData()
 //<SUMMARY>Check for Serial and Wireless data</SUMMARY>
 void CheckForCommands()
 {
+    if(!Computer)
+        return;
+
     if (Computer.available() > 0) {
         ReceiveComputer();
     }

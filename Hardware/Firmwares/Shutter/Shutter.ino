@@ -24,12 +24,10 @@
 #if defined __SAM3X8E__ // Arduino DUE
 #define ARDUINO_DUE
 // DUE
-#define Computer Serial     // programing port
-#define DebugPort Serial
+#define DebugPort SerialUSB // CDC usb  port
 #define Wireless Serial1    // XBEE
 #else
 // Leonardo
-#define Computer Serial
 #define DebugPort Serial
 #define Wireless Serial1    //XBEE
 #endif
@@ -101,7 +99,7 @@ int XbeeResets = 0;
 void setup()
 {
 #ifdef DEBUG
-	Computer.begin(115200);
+	DebugPort.begin(115200);
 #endif
 	Wireless.begin(9600);
     XbeeStarted = false;
@@ -123,9 +121,11 @@ void setup()
 void loop()
 {
 #ifdef DEBUG
-	if (Computer.available() > 0) {
-		ReceiveSerial();
-	}
+    if(DebugPort) {
+        if (DebugPort.available() > 0) {
+            ReceiveSerial();
+        }
+    }
 #endif
 
 	if (Wireless.available() > 0)
@@ -257,7 +257,7 @@ void setPANID(String value)
 #ifdef DEBUG
 void ReceiveSerial()
 {
-	char character = Computer.read();
+	char character = DebugPort.read();
 
     if (character != ERR_NO_DATA) {
         if (character == '\r' || character == '\n') {

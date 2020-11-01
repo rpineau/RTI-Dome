@@ -117,9 +117,8 @@ int CRTIDome::Connect(const char *pszPort)
     fflush(Logfile);
 #endif
 
-    // 9600 8N1
-    // nErr = m_pSerx->open(pszPort, 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
-    nErr = m_pSerx->open(pszPort, 115200, SerXInterface::B_NOPARITY);
+    // 115200 8N1 DTR
+    nErr = m_pSerx->open(pszPort, 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
     if(nErr) {
         m_bIsConnected = false;
         return nErr;
