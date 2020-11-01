@@ -298,6 +298,8 @@ ShutterClass::ShutterClass()
         shutterState = OPEN;
 
     m_bButtonUsed = false;
+    m_nVolts = MeasureVoltage();
+
 }
 
 void ShutterClass::ClosedInterrupt()
@@ -541,6 +543,7 @@ int ShutterClass::MeasureVoltage()
 
     adc = analogRead(VOLTAGE_MONITOR_PIN);
     calc = adc * m_fAdcConvert;
+    DBPrintln("ADC volts = " + String(calc/100));
     return int(calc);
 }
 
