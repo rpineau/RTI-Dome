@@ -528,7 +528,6 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 // change "Calibrate" to "Abort"
                 uiex->setText("pushButton", "Abort");
 				m_nSavedTicksPerRev = m_RTIDome.getNbTicksPerRev();
-				m_RTIDome.setNbTicksPerRev(16000000L);    // set this to a large value as the firmware only do 1 move of 3 time the current step per rev
                 m_RTIDome.calibrate();
                 m_bCalibratingDome = true;
             }

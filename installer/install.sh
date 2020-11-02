@@ -32,10 +32,10 @@ else
 	PLUGINS_DIR="PlugIns"
 fi
 
-cp "./domelist RTI-Dome.txt" "$TheSkyX_Path/Resources/Common/Miscellaneous Files/"
-cp "./RTI-Dome.ui" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
-cp "./RTI-Zone.png" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
-cp "./libRTI-Dome.so" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
+cp -vf "./domelist RTI-Dome.txt" "$TheSkyX_Path/Resources/Common/Miscellaneous Files/"
+cp -vf "./RTI-Dome.ui" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
+cp -vf "./RTI-Zone.png" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
+cp -vf "./libRTI-Dome.so" "$TheSkyX_Path/Resources/Common/$PLUGINS_DIR/DomePlugIns/"
 
 app_owner=`/usr/bin/stat -c "%u" "$TheSkyX_Path" | xargs id -n -u`
 if [ ! -z "$app_owner" ]; then
