@@ -36,8 +36,7 @@
 #if defined __SAM3X8E__
 #define ARDUINO_DUE
 // DUE
-// #define Computer Serial     // programing port
-#define Computer Serial     // CDC usb  port
+#define Computer Serial     // programing port
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
