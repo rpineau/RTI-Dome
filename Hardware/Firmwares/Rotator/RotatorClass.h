@@ -74,7 +74,7 @@ DueFlashStorage dueFlashStorage;
 #define M_DISABLE   HIGH
 #endif
 
-#define CALIBRATION_SPEED   2500
+#define CALIBRATION_SPEED   3000
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
 #define STEPS_DEFAULT       440640
