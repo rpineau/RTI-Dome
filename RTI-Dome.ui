@@ -52,7 +52,7 @@
      <property name="SerialPortName" stdset="0">
       <string/>
      </property>
-     <widget class="QGroupBox" name="MaxDomeIIParams">
+     <widget class="QGroupBox" name="DomeParams">
       <property name="geometry">
        <rect>
         <x>16</x>
@@ -181,7 +181,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QGroupBox" name="ControllerParams">
       <property name="geometry">
        <rect>
         <x>336</x>
@@ -574,7 +574,7 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="ControllerStatus">
       <property name="geometry">
        <rect>
         <x>16</x>
@@ -706,7 +706,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_3">
+     <widget class="QGroupBox" name="PanIDParams">
       <property name="geometry">
        <rect>
         <x>336</x>
