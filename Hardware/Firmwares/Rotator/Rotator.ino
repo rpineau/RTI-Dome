@@ -193,15 +193,17 @@ void loop()
     CheckForCommands();
     CheckForRain();
 #ifndef STANDALONE
-    if(!SentHello)
-        SendHello();
-    PingShutter();
-    if(ShutterWatchdog.elapsed() > (pingInterval*3)) {
-        bShutterPresent = false;
-    }
-    if(gotHelloFromShutter) {
-        requestShutterData();
-        gotHelloFromShutter = false;
+    if(XbeeStarted) {
+        if(!SentHello)
+            SendHello();
+        PingShutter();
+        if(ShutterWatchdog.elapsed() > (pingInterval*3)) {
+            bShutterPresent = false;
+        }
+        if(gotHelloFromShutter) {
+            requestShutterData();
+            gotHelloFromShutter = false;
+        }
     }
 #endif
 }
