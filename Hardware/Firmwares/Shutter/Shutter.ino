@@ -19,18 +19,8 @@
 #define XBEE_S1
 // #define XBEE_S2C
 
-// As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
-// This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
-#if defined __SAM3X8E__ // Arduino DUE
-#define ARDUINO_DUE
-// DUE
 #define DebugPort SerialUSB // CDC usb  port
 #define Wireless Serial1    // XBEE
-#else
-// Leonardo
-#define DebugPort Serial
-#define Wireless Serial1    //XBEE
-#endif
 
 #define ERR_NO_DATA	-1
 
@@ -83,9 +73,7 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATDH0","ATDL0","ATJV1",
 // This allows us to change the Pan ID and store it in the EEPROM/Flash
 #define PANID_STEP 4
 
-#if defined ARDUINO_DUE // Arduino DUE
 #define XBEE_RESET_PIN  8
-#endif
 
 ShutterClass *Shutter;
 
@@ -105,10 +93,8 @@ void setup()
     XbeeStarted = false;
 	XbeeResets = 0;
 	isConfiguringWireless = false;
-#if defined ARDUINO_DUE // Arduino DUE
     pinMode(XBEE_RESET_PIN, OUTPUT);
     digitalWrite(XBEE_RESET_PIN, 1);
-#endif
     Shutter = new ShutterClass();
 	watchdogTimer.reset();
     Shutter->EnableMotor(false);
@@ -149,9 +135,7 @@ void loop()
 	        if(!isResetingXbee && XbeeResets == 0) {
 	            XbeeResets++;
 	            isResetingXbee = true;
-#if defined ARDUINO_DUE // Arduino DUE
                 ResetXbee();
-#endif
                 Shutter->setRadioConfigured(false);
                 isConfiguringWireless = false;
                 XbeeStarted = false;
@@ -235,7 +219,6 @@ inline void ConfigXBee(String result)
     delay(100);
 }
 
-#if defined ARDUINO_DUE // Arduino DUE
 void ResetXbee()
 {
     DBPrintln("Resetting Xbee");
@@ -243,7 +226,6 @@ void ResetXbee()
     delay(250);
     digitalWrite(XBEE_RESET_PIN, 1);
 }
-#endif
 
 void setPANID(String value)
 {
@@ -298,9 +280,6 @@ void ReceiveWireless()
 				wirelessBuffer += String(character);
 			}
 		}
-#ifndef ARDUINO_DUE
-    stepper.run(); // we don't want the stepper to stop
-#endif
 	} // end while
 }
 

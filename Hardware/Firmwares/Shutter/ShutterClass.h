@@ -5,12 +5,8 @@
 // This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
 
-#if defined ARDUINO_DUE
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
-#else
-#include <EEPROM.h>
-#endif
 
 #include <AccelStepper.h>
 
@@ -57,13 +53,8 @@ DueFlashStorage dueFlashStorage;
 #define BATTERY_CHECK_INTERVAL   60000   // check battery once a minute
 
 #define VOLTAGE_MONITOR_PIN A0
-#if defined(ARDUINO_DUE)
 #define AD_REF      3.3
 #define RES_MULT    5.0 // resistor voltage divider on the shield
-#else
-#define AD_REF      5.0
-#define RES_MULT    3.0 // resistor voltage divider on the shield
-#endif
 
 #if defined(TB6600)
 #define M_ENABLE    LOW
@@ -98,8 +89,6 @@ ShutterStates   shutterState = ERROR;
 
 StopWatch watchdogTimer;
 
-
-#if defined ARDUINO_DUE
 /*
  * As demonstrated by RCArduino and modified by BKM:
  * pick clock that provides the least error for specified frequency.
@@ -175,8 +164,6 @@ void TC3_Handler()
     TC_GetStatus(TC1, 0);
     stepper.run();
 }
-#endif
-
 
 class ShutterClass
 {
@@ -234,9 +221,7 @@ public:
     static void motorStop();
     void        motorMoveTo(const long newPosition);
     void        motorMoveRelative(const long amount);
-#if defined ARDUINO_DUE
     void        stopInterrupt();
-#endif
 
     // persistent data
     void        LoadFromEEProm();
@@ -354,12 +339,9 @@ int ShutterClass::restoreDefaultMotorSettings()
 
 void ShutterClass::LoadFromEEProm()
 {
-#if defined ARDUINO_DUE // DUE
     byte* data = dueFlashStorage.readAddress(0);
     memcpy(&m_Config, data, sizeof(Configuration));
-#else
-    EEPROM.get(EEPROM_LOCATION, m_Config);
-#endif
+
     if (m_Config.signature != EEPROM_SIGNATURE) {
         SetDefaultConfig();
         SaveToEEProm();
@@ -375,13 +357,9 @@ void ShutterClass::LoadFromEEProm()
 void ShutterClass::SaveToEEProm()
 {
 
-#if defined ARDUINO_DUE // DUE
     byte data[sizeof(Configuration)];
     memcpy(data, &m_Config, sizeof(Configuration));
     dueFlashStorage.write(0, data, sizeof(Configuration));
-#else
-    EEPROM.put(EEPROM_LOCATION, m_Config);
-#endif
 
 }
 
@@ -610,9 +588,7 @@ void ShutterClass::EnableMotor(const bool newState)
 {
     if (!newState) {
         digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
-#if defined ARDUINO_DUE
         stopInterrupt();
-#endif
     }
     else {
         digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
@@ -641,19 +617,6 @@ void ShutterClass::Close()
 void ShutterClass::Run()
 {
     static bool hitSwitch = false, doSync = true;
-
-#ifndef ARDUINO_DUE
-    stepper.run(); // we don't want the stepper to stop
-#endif
-
-    // ADC reads low if you sample too soon after startup
-    // and battery check interval of 5 minutes means no accurate
-    // display in ASCOM until after five minutes. So this first
-    // delay should be late enough for accurate ADC reading but
-    // fast enough to be available in ASCOM when the setup window
-    // is opened.
-    // Make both switches effectively one circuit so DIYers can use just one circuit
-    // Determines opened or closed by the direction of travel before a switch was hit
 
     if (digitalRead(CLOSED_PIN) == 0 && shutterState != OPENING && hitSwitch == false) {
             hitSwitch = true;
@@ -715,25 +678,21 @@ void ShutterClass::motorStop()
 
 }
 
-#if defined ARDUINO_DUE
 void ShutterClass::stopInterrupt()
 {
     // stop interrupt timer
     stopTimer(TC1, 0, TC3_IRQn);
 }
-#endif
 
 void ShutterClass::motorMoveTo(const long newPosition)
 {
     EnableMotor(true);
     stepper.moveTo(newPosition);
-#if defined ARDUINO_DUE
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
     startTimer(TC1, 0, TC3_IRQn, nFreq);
-#endif
 
 }
 
@@ -742,11 +701,9 @@ void ShutterClass::motorMoveRelative(const long amount)
 
     EnableMotor(true);
     stepper.move(amount);
-#if defined ARDUINO_DUE
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
     startTimer(TC1, 0, TC3_IRQn, nFreq);
-#endif
 }

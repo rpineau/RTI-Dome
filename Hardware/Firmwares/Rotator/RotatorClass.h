@@ -7,12 +7,8 @@
 
 
 
-#if defined ARDUINO_DUE // DUE
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
-#else
-#include <EEPROM.h>
-#endif
 
 #include <AccelStepper.h>
 #include "StopWatch.h"
@@ -50,13 +46,8 @@ DueFlashStorage dueFlashStorage;
 #endif
 
 #define VOLTAGE_MONITOR_PIN A0
-#if defined(ARDUINO_DUE)
 #define AD_REF      3.3
 #define RES_MULT    5.0 // resistor voltage divider on the shield
-#else
-#define AD_REF      5.0
-#define RES_MULT    3.0 // resistor voltage divider on the shield
-#endif
 
 
 #define MOVE_NEGATIVE       -1
@@ -115,8 +106,6 @@ enum RainActions {DO_NOTHING=0, HOME, PARK};
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
 // Arduino interrupt timer
-
-#if defined ARDUINO_DUE
 /*
  * As demonstrated by RCArduino and modified by BKM:
  * pick clock that provides the least error for specified frequency.
@@ -192,7 +181,6 @@ void TC3_Handler()
     TC_GetStatus(TC1, 0);
     stepper.run();
 }
-#endif
 
 
 class RotatorClass
@@ -275,9 +263,7 @@ public:
     void        motorStop();
     void        motorMoveTo(const long newPosition);
     void        motorMoveRelative(const long howFar);
-#if defined ARDUINO_DUE
     void        stopInterrupt();
-#endif
     void        homeInterrupt();
     long        m_nStepsAtHome;
 
@@ -394,13 +380,9 @@ void RotatorClass::SaveToEEProm()
 {
     m_Config.signature = SIGNATURE;
 
-#if defined ARDUINO_DUE // DUE
     byte data[sizeof(Configuration)];
     memcpy(data, &m_Config, sizeof(Configuration));
     dueFlashStorage.write(0, data, sizeof(Configuration));
-#else
-    EEPROM.put(EEPROM_LOCATION, m_Config);
-#endif
 }
 
 bool RotatorClass::LoadFromEEProm()
@@ -411,12 +393,8 @@ bool RotatorClass::LoadFromEEProm()
     //  dont end up loaded with random garbage
     memset(&m_Config, 0, sizeof(Configuration));
 
-#if defined ARDUINO_DUE // DUE
     byte* data = dueFlashStorage.readAddress(0);
     memcpy(&m_Config, data, sizeof(Configuration));
-#else
-    EEPROM.get(EEPROM_LOCATION, m_Config);
-#endif
 
     if (m_Config.signature != SIGNATURE) {
         SetDefaultConfig();
@@ -855,9 +833,7 @@ void RotatorClass::EnableMotor(const bool bEnabled)
 {
     if (!bEnabled) {
         digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
-#if defined ARDUINO_DUE
         stopInterrupt();
-#endif
     }
     else {
         digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
@@ -910,11 +886,7 @@ void RotatorClass::Run()
     if (m_seekMode > HOMING_HOME)
         Calibrate();
 
-#if defined ARDUINO_DUE
     if (stepper.isRunning()) {
-#else
-    if (stepper.run()) {
-#endif
         wasRunning = true;
         if (m_seekMode == HOMING_HOME && digitalRead(HOME_PIN) == 0) { // We're looking for home and found it
             Stop();
@@ -1002,42 +974,35 @@ void RotatorClass::motorStop()
     stepper.stop();
 }
 
-#if defined ARDUINO_DUE
 void RotatorClass::stopInterrupt()
 {
     DBPrint("Stopping interrupt");
     // stop interrupt timer
     stopTimer(TC1, 0, TC3_IRQn);
 }
-#endif
 
 void RotatorClass::motorMoveTo(const long newPosition)
 {
 
     stepper.moveTo(newPosition);
-#if defined ARDUINO_DUE
     DBPrint("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
     startTimer(TC1, 0, TC3_IRQn, nFreq);
-#endif
-
 }
 
 void RotatorClass::motorMoveRelative(const long howFar)
 {
 
     stepper.move(howFar);
-#if defined ARDUINO_DUE
     DBPrint("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
     startTimer(TC1, 0, TC3_IRQn, nFreq);
-#endif
 }
 
 

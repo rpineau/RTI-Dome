@@ -33,22 +33,11 @@
 
 // As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
 // This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
-#if defined __SAM3X8E__
-#define ARDUINO_DUE
-// DUE
 #define Computer Serial     // programing port
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
 #define DebugPort Serial
-#else
-// Leonardo
-#define Computer Serial
-#ifndef STANDALONE
-#define Wireless Serial1
-#endif
-#define DebugPort Computer
-#endif
 
 #include "RotatorClass.h"
 
@@ -301,51 +290,27 @@ void requestShutterData()
 {
         Wireless.print(String(STATE_SHUTTER_GET) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 
         Wireless.print(String(VERSION_SHUTTER_GET) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 
         Wireless.print(String(REVERSED_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 
         Wireless.print(String(STEPSPER_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 
         Wireless.print(String(SPEED_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 
         Wireless.print(String(ACCELERATION_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 
         Wireless.print(String(VOLTS_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 
         Wireless.print(String(VOLTSCLOSE_SHUTTER_CMD) + "#");
         ReceiveWireless();
-#ifndef ARDUINO_DUE
-        stepper.run(); // we don't want the stepper to stop
-#endif
 }
 
 #endif
@@ -824,10 +789,7 @@ int ReceiveWireless()
     // wait for response
     timeout = 0;
     while(Wireless.available() < 1) {
-#ifndef ARDUINO_DUE
-        if(!stepper.run()) // we don't want the stepper to stop
-#endif
-            delay(5);   // give time to the shutter to reply
+        delay(5);   // give time to the shutter to reply
         timeout++;
         if(timeout >= MAX_TIMEOUT) {
             return ERR_NO_DATA;
@@ -843,10 +805,7 @@ int ReceiveWireless()
                 wirelessBuffer += String(wirelessCharacter);
             }
         }
-#ifndef ARDUINO_DUE
-        if(!stepper.run()) // we don't want the stepper to stop
-#endif
-            delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
+        delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
     } while (wirelessCharacter != '#');
 
     if (wirelessBuffer.length() > 0) {
