@@ -1,3 +1,5 @@
+*.o
+*.dylib
 *.xcuserdatad
 *.xcworkspace
 .DS_Store
