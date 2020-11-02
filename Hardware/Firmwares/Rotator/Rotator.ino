@@ -37,7 +37,7 @@
 #define ARDUINO_DUE
 // DUE
 // #define Computer Serial     // programing port
-#define Computer SerialUSB     // CDC usb  port
+#define Computer Serial     // CDC usb  port
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
@@ -69,7 +69,7 @@ String wirelessBuffer;
 #endif
 
 
-RotatorClass *Rotator;
+RotatorClass *Rotator = NULL;
 
 
 // Flag to do XBee startup on first boot in loop(). Could do in setup but
@@ -167,9 +167,6 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 void setup()
 {
     Computer.begin(115200);
-#ifdef DEBUG
-    DebugPort.begin(115200);
-#endif
 #ifndef STANDALONE
     Wireless.begin(9600);
     PingTimer.reset();
@@ -223,17 +220,20 @@ void loop()
 
 void homeIntHandler()
 {
-    Rotator->homeInterrupt();
+    if(Rotator)
+        Rotator->homeInterrupt();
 }
 
 void rainIntHandler()
 {
-    Rotator->rainInterrupt();
+    if(Rotator)
+        Rotator->rainInterrupt();
 }
 
 void buttonHandler()
 {
-    Rotator->ButtonCheck();
+    if(Rotator)
+        Rotator->ButtonCheck();
 }
 
 #ifndef STANDALONE

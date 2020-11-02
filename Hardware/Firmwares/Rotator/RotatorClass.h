@@ -21,7 +21,7 @@ DueFlashStorage dueFlashStorage;
 // stepper controller
 #define STEP_TYPE 8
 
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) if(DebugPort) DebugPort.println(x)
 #else
@@ -786,7 +786,7 @@ void RotatorClass::StartHoming()
     if (diff < 0)
         m_nMoveDirection = MOVE_NEGATIVE;
 
-    distance = (m_Config.stepsPerRotation  * m_nMoveDirection * 1.5);
+    distance = (160000000L  * m_nMoveDirection);
     m_seekMode = HOMING_HOME;
     MoveRelative(distance);
 }
@@ -808,7 +808,7 @@ void RotatorClass::StartCalibrating()
     }
     else {
         m_seekMode = CALIBRATION_STEP1;
-        MoveRelative(m_Config.stepsPerRotation  * 3);
+        MoveRelative(160000000L);
     }
 }
 
@@ -820,7 +820,7 @@ void RotatorClass::Calibrate()
                 if (!stepper.isRunning()) {
                     m_seekMode = CALIBRATION_STEP1;
                     stepper.setCurrentPosition(0);
-                    MoveRelative(m_Config.stepsPerRotation  * 3);
+                    MoveRelative(160000000L);
                 }
                 break;
 
