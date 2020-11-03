@@ -265,8 +265,6 @@ int X2Dome::execModalSettingsDialog()
 
         if(m_bHasShutterControl) {
             dx->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
-            snprintf(szTmpBuf,16,"%2.2f V",dShutterCutOff);
-            dx->setPropertyString("lowShutBatCutOff","text", szTmpBuf);
 
             if(dShutterBattery>=0.0f)
                 snprintf(szTmpBuf,16,"%2.2f V",dShutterBattery);
@@ -449,6 +447,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 				uiex->setEnabled("pushButtonCancel", true);
 				m_bCalibratingDome = false;
 				uiex->setText("pushButton", "Calibrate");
+                uiex->setEnabled("pushButton_2", true);
                 // read step per rev from controller
                 uiex->setPropertyInt("ticksPerRev","value", m_RTIDome.getNbTicksPerRev());
 			}
@@ -462,6 +461,14 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                     uiex->setPropertyInt("shutterSpeed","value", nSpeed);
                     m_RTIDome.getShutterAcceleration(nAcc);
                     uiex->setPropertyInt("shutterAcceleration","value", nAcc);
+                    m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
+                    if(dShutterCutOff < 1.0f) // not right.. ask again
+                        m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
+                    snprintf(szTmpBuf,16,"%2.2f V",dShutterBattery);
+                    uiex->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
+                    uiex->setEnabled("lowShutBatCutOff",true);
+                    uiex->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
+
                 } else {
                     if(m_SetPanIdTimer.GetElapsedSeconds()>PANID_TIMEOUT ) {// 15 seconds is way more than needed.. something when wrong
                         snprintf(szErrorMessage, LOG_BUFFER_SIZE, "Timeout setting Xbee PAN ID");
@@ -478,6 +485,8 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 // don't ask to often
                 if (!(m_nBattRequest%4)) {
                     m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
+                    if(dShutterCutOff < 1.0f) // not right.. ask again
+                        m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
                     snprintf(szTmpBuf,16,"%2.2f V",dDomeBattery);
                     uiex->setPropertyString("domeBatteryLevel","text", szTmpBuf);
                     if(m_bHasShutterControl) {
@@ -486,6 +495,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                         else
                             snprintf(szTmpBuf,16,"--");
                         uiex->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
+                        uiex->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
                     }
                     else {
                         snprintf(szTmpBuf,16,"NA");
