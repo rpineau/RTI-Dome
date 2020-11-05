@@ -14872,7 +14872,6 @@ DIN A3, landscape with extra doc field</description>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="XB1" library="maxstream" deviceset="XBEE" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="X6" library="con-ptr500" deviceset="AK500/2" device=""/>
 <part name="PCB1" library="arduino_shield" deviceset="ARDUINO_DUE_SHIELD_SHORT" device=""/>
 <part name="R2" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%"/>
 <part name="C3" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
@@ -14953,8 +14952,6 @@ DIN A3, landscape with extra doc field</description>
 <instance part="GND1" gate="1" x="127" y="165.1"/>
 <instance part="XB1" gate="G$1" x="165.1" y="55.88"/>
 <instance part="GND6" gate="1" x="147.32" y="22.86"/>
-<instance part="X6" gate="-1" x="378.46" y="144.78" rot="R180"/>
-<instance part="X6" gate="-2" x="378.46" y="149.86" rot="R180"/>
 <instance part="PCB1" gate="G$1" x="53.34" y="38.1" rot="R270"/>
 <instance part="R2" gate="G$1" x="7.62" y="213.36" rot="R90"/>
 <instance part="C3" gate="G$1" x="378.46" y="58.42"/>
@@ -15265,11 +15262,6 @@ DIN A3, landscape with extra doc field</description>
 <label x="370.84" y="129.54" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<wire x1="370.84" y1="144.78" x2="373.38" y2="144.78" width="0.1524" layer="91"/>
-<label x="370.84" y="144.78" size="1.016" layer="95" rot="R180" xref="yes"/>
-<pinref part="X6" gate="-1" pin="KL"/>
-</segment>
-<segment>
 <pinref part="IC2" gate="G$1" pin="2A2"/>
 <wire x1="116.84" y1="231.14" x2="119.38" y2="231.14" width="0.1524" layer="91"/>
 <label x="116.84" y="231.14" size="0.8128" layer="95" rot="R180" xref="yes"/>
@@ -15293,6 +15285,11 @@ DIN A3, landscape with extra doc field</description>
 <pinref part="IC4" gate="G$1" pin="2A3"/>
 <wire x1="187.96" y1="220.98" x2="190.5" y2="220.98" width="0.1524" layer="91"/>
 <label x="187.96" y="220.98" size="0.8128" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="X12" gate="-2" pin="KL"/>
+<wire x1="370.84" y1="134.62" x2="373.38" y2="134.62" width="0.1524" layer="91"/>
+<label x="370.84" y="134.62" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="+12V" class="1">
@@ -15451,11 +15448,6 @@ DIN A3, landscape with extra doc field</description>
 <wire x1="276.86" y1="170.18" x2="264.16" y2="170.18" width="0.1524" layer="91"/>
 <wire x1="264.16" y1="170.18" x2="264.16" y2="175.26" width="0.1524" layer="91"/>
 <label x="264.16" y="175.26" size="1.016" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
-<pinref part="X12" gate="-2" pin="KL"/>
-<wire x1="370.84" y1="134.62" x2="373.38" y2="134.62" width="0.1524" layer="91"/>
-<label x="370.84" y="134.62" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="RG-11-IN_5V" class="0">
@@ -15680,11 +15672,6 @@ DIN A3, landscape with extra doc field</description>
 <wire x1="193.04" y1="190.5" x2="182.88" y2="190.5" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="190.5" x2="182.88" y2="185.42" width="0.1524" layer="91"/>
 <junction x="193.04" y="190.5"/>
-</segment>
-<segment>
-<wire x1="370.84" y1="149.86" x2="373.38" y2="149.86" width="0.1524" layer="91"/>
-<label x="370.84" y="149.86" size="1.016" layer="95" rot="R180" xref="yes"/>
-<pinref part="X6" gate="-2" pin="KL"/>
 </segment>
 <segment>
 <wire x1="370.84" y1="185.42" x2="373.38" y2="185.42" width="0.1524" layer="91"/>
