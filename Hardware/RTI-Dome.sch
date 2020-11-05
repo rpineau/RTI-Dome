@@ -15149,9 +15149,9 @@ DIN A3, landscape with extra doc field</description>
 <pinref part="PCB1" gate="G$1" pin="11"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="G$1" pin="2A0"/>
-<wire x1="187.96" y1="251.46" x2="190.5" y2="251.46" width="0.1524" layer="91"/>
-<label x="187.96" y="251.46" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC4" gate="G$1" pin="1A1"/>
+<wire x1="187.96" y1="246.38" x2="190.5" y2="246.38" width="0.1524" layer="91"/>
+<label x="187.96" y="246.38" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="M_STEP" class="0">
@@ -15161,9 +15161,9 @@ DIN A3, landscape with extra doc field</description>
 <pinref part="PCB1" gate="G$1" pin="12"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="G$1" pin="1A1"/>
-<wire x1="187.96" y1="246.38" x2="190.5" y2="246.38" width="0.1524" layer="91"/>
-<label x="187.96" y="246.38" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="IC4" gate="G$1" pin="2A0"/>
+<wire x1="187.96" y1="251.46" x2="190.5" y2="251.46" width="0.1524" layer="91"/>
+<label x="187.96" y="251.46" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="GND" class="2">
@@ -15657,14 +15657,14 @@ DIN A3, landscape with extra doc field</description>
 <pinref part="R13" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="G$1" pin="1Y1"/>
-<wire x1="218.44" y1="246.38" x2="215.9" y2="246.38" width="0.1524" layer="91"/>
-<label x="218.44" y="246.38" size="1.016" layer="95" xref="yes"/>
-</segment>
-<segment>
 <wire x1="337.82" y1="185.42" x2="340.36" y2="185.42" width="0.1524" layer="91"/>
 <label x="337.82" y="185.42" size="1.016" layer="95" rot="MR0" xref="yes"/>
 <pinref part="X6" gate="-5" pin="KL"/>
+</segment>
+<segment>
+<pinref part="IC4" gate="G$1" pin="2Y0"/>
+<wire x1="218.44" y1="251.46" x2="215.9" y2="251.46" width="0.1524" layer="91"/>
+<label x="218.44" y="251.46" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="M_DIR_5V" class="0">
@@ -15674,14 +15674,14 @@ DIN A3, landscape with extra doc field</description>
 <pinref part="R19" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="G$1" pin="2Y0"/>
-<wire x1="218.44" y1="251.46" x2="215.9" y2="251.46" width="0.1524" layer="91"/>
-<label x="218.44" y="251.46" size="1.016" layer="95" xref="yes"/>
-</segment>
-<segment>
 <wire x1="337.82" y1="175.26" x2="340.36" y2="175.26" width="0.1524" layer="91"/>
 <label x="337.82" y="175.26" size="1.016" layer="95" rot="MR0" xref="yes"/>
 <pinref part="X6" gate="-3" pin="KL"/>
+</segment>
+<segment>
+<pinref part="IC4" gate="G$1" pin="1Y1"/>
+<wire x1="218.44" y1="246.38" x2="215.9" y2="246.38" width="0.1524" layer="91"/>
+<label x="218.44" y="246.38" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="M_EN_5V" class="0">
