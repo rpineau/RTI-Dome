@@ -10,8 +10,8 @@
 
 // The TB6600 is the original stepper controller used on a NexDome automation kit.
 // I also want to test the ISD04 (or other) with more powerfull stepper.
-#define TB6600
-// #define ISD0X
+// #define TB6600
+#define ISD0X
 
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
@@ -19,7 +19,7 @@
 #define XBEE_S1
 // #define XBEE_S2C
 
-#define DebugPort SerialUSB // CDC usb  port
+#define DebugPort Serial    // programming port
 #define Wireless Serial1    // XBEE
 
 #define ERR_NO_DATA	-1
@@ -173,7 +173,6 @@ void handleOpenInterrupt()
 
 void handleButtons()
 {
-    DBPrintln("Buttons interrupt");
     Shutter->DoButtons();
 }
 

@@ -13,7 +13,7 @@ DueFlashStorage dueFlashStorage;
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #define DBPrint(x)   if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)
@@ -664,7 +664,6 @@ void ShutterClass::Run()
 
     if (m_bWasRunning) { // So this bit only runs once after stopping.
         DBPrintln("m_bWasRunning " + String(shutterState) + " Hitswitch " + String(hitSwitch));
-        // m_nLastButtonPressed = 0;
         m_bWasRunning = false;
         hitSwitch = false;
         EnableMotor(false);
