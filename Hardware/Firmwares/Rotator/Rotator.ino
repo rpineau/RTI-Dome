@@ -15,13 +15,15 @@
 // #define TEENY_3_5
 
 // The TB6600 is the original stepper controller used on a NexDome automation kit.
-// I also want to test the ISD04 (or other) with more powerfull stepper.
+// The ISD04 is a lot smaller and works from -40C to 85C. For now the logic between the 2
+// is inverted but with the next PCB this will no longer be necessary.
 #define TB6600
 // #define ISD0X
 
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.
+// Also the XBee3 model XB3-24Z8PT-J should work as the S1
 #define XBEE_S1
 // #define XBEE_S2C
 
