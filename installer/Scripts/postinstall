@@ -35,7 +35,7 @@ rm -f "$PLUGINS_DIR/DomePlugIns/RTI-Dome.ui"
 cp "/tmp/RTI-Dome_X2/RTI-Dome.ui" "$PLUGINS_DIR/DomePlugIns/"
 if [ "$?" -ne "0" ]; then exit 1; fi
 
-rm -f "$PLUGINS_DIR/DomePlugIns/RTI-Dome.png"
+rm -f "$PLUGINS_DIR/DomePlugIns/RTI-Zone.png"
 cp "/tmp/RTI-Dome_X2/RTI-Zone.png" "$PLUGINS_DIR/DomePlugIns/"
 if [ "$?" -ne "0" ]; then exit 1; fi
 
