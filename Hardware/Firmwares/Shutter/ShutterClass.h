@@ -251,21 +251,24 @@ ShutterClass::ShutterClass()
     int sw1, sw2;
     m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
 
+    // Input pins
     pinMode(CLOSED_PIN, INPUT_PULLUP);
     pinMode(OPENED_PIN, INPUT_PULLUP);
-    pinMode(STEPPER_STEP_PIN, OUTPUT);
-    pinMode(STEPPER_DIRECTION_PIN, OUTPUT);
-    pinMode(STEPPER_ENABLE_PIN, OUTPUT);
     pinMode(BUTTON_OPEN, INPUT_PULLUP);
     pinMode(BUTTON_CLOSE, INPUT_PULLUP);
     pinMode(VOLTAGE_MONITOR_PIN, INPUT);
+
+    // Ouput pins
+    pinMode(STEPPER_STEP_PIN, OUTPUT);
+    pinMode(STEPPER_DIRECTION_PIN, OUTPUT);
+    pinMode(STEPPER_ENABLE_PIN, OUTPUT);
+
     LoadFromEEProm();
 
     stepper.setEnablePin(STEPPER_ENABLE_PIN);
     SetAcceleration(m_Config.acceleration);
     SetMaxSpeed(m_Config.maxSpeed);
     EnableMotor(false);
-
 
     // reset all timers
     m_nBatteryCheckInterval = BATTERY_CHECK_INTERVAL;
@@ -284,7 +287,6 @@ ShutterClass::ShutterClass()
 
     m_bButtonUsed = false;
     m_nVolts = MeasureVoltage();
-
 }
 
 void ShutterClass::ClosedInterrupt()
