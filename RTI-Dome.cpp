@@ -1525,8 +1525,7 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
         bComplete = false;
         m_bHomed = false;
         m_bParked = false;
-        // sometimes we pass the home sensor and the dome doesn't rotate back enough to detect it.
-        // this is mostly the case with firmware 1.10 with the new error correction ...
+        // sometimes we pass the home sensor and we don't detect it.
         // so give it another try
         if(m_nHomingTries == 0) {
             m_nHomingTries = 1;
