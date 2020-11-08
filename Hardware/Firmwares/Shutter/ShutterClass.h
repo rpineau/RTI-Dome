@@ -687,10 +687,14 @@ void ShutterClass::stopInterrupt()
 
 void ShutterClass::motorMoveTo(const long newPosition)
 {
+    int nFreq;
+
     EnableMotor(true);
     stepper.moveTo(newPosition);
-    int nFreq;
+    // Why *3 .. I noticed that I don't do at least 3 times the amount of interrupt needed
+    // AccelStepper doesn't work well
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
+
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
     startTimer(TC1, 0, TC3_IRQn, nFreq);
@@ -699,10 +703,12 @@ void ShutterClass::motorMoveTo(const long newPosition)
 
 void ShutterClass::motorMoveRelative(const long amount)
 {
+    int nFreq;
 
     EnableMotor(true);
     stepper.move(amount);
-    int nFreq;
+    // Why *3 .. I noticed that I don't do at least 3 times the amount of interrupt needed
+    // AccelStepper doesn't work well
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
