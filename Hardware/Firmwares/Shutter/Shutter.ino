@@ -102,6 +102,8 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
     attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+    // enable input buffers
+    Shutter->bufferEnable(true);
 }
 
 void loop()

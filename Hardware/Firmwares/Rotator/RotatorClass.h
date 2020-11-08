@@ -34,6 +34,7 @@ DueFlashStorage dueFlashStorage;
 #define STEPPER_ENABLE_PIN  10  // Digital Output
 #define DIRECTION_PIN       11  // Digital Output
 #define STEP_PIN            12  // Digital Output
+#define BUFFERN_EN          57  // Digital output to enable 74LVC245 buffer
 #else
 // Teensy boards > 3.5
 #define HOME_PIN             4  // Also used for Shutter open status
@@ -269,6 +270,7 @@ public:
 
     void            ButtonCheck();
 
+    void        bufferEnable(bool bEnable);
 
 private:
     Configuration   m_Config;
@@ -321,6 +323,9 @@ RotatorClass::RotatorClass()
     pinMode(STEP_PIN, OUTPUT);
     pinMode(DIRECTION_PIN, OUTPUT);
     pinMode(STEPPER_ENABLE_PIN, OUTPUT);
+    pinMode(BUFFERN_EN, OUTPUT);
+
+    bufferEnable(false);
 
     m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
 
@@ -876,6 +881,14 @@ void RotatorClass::ButtonCheck()
     else {
         Stop();
     }
+}
+
+void RotatorClass::bufferEnable(bool bEnable)
+{
+    if(bEnable)
+        digitalWrite(BUFFERN_EN, 0);
+    else
+        digitalWrite(BUFFERN_EN, 1);
 }
 
 void RotatorClass::Run()

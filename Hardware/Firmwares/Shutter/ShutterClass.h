@@ -32,6 +32,8 @@ DueFlashStorage dueFlashStorage;
 #define     STEPPER_ENABLE_PIN      10
 #define     STEPPER_DIRECTION_PIN   11
 #define     STEPPER_STEP_PIN        12
+#define     BUFFERN_EN              57  // Digital output to enable 74LVC245 buffer
+
 #else
 // Teensy boards > 3.5
 #define     CLOSED_PIN               4
@@ -232,6 +234,8 @@ public:
     void     ClosedInterrupt();
     void     OpenInterrupt();
     bool     m_bButtonUsed;
+
+    void        bufferEnable(bool bEnable);
 
 private:
 
@@ -615,6 +619,16 @@ void ShutterClass::Close()
     DBPrintln("shutterState = CLOSING");
     MoveRelative(1 - m_Config.stepsPerStroke * 1.25);
 }
+
+
+void ShutterClass::bufferEnable(bool bEnable)
+{
+    if(bEnable)
+        digitalWrite(BUFFERN_EN, 0);
+    else
+        digitalWrite(BUFFERN_EN, 1);
+}
+
 
 void ShutterClass::Run()
 {

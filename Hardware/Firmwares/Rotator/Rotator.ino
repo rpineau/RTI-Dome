@@ -171,6 +171,9 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+    // enable input buffers
+    Rotator->bufferEnable(true);
+
 }
 
 void loop()
