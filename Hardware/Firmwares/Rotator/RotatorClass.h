@@ -309,17 +309,22 @@ private:
 
 RotatorClass::RotatorClass()
 {
-    m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
+    // input
 
-    LoadFromEEProm();
     pinMode(HOME_PIN, INPUT_PULLUP);
-    pinMode(STEP_PIN, OUTPUT);
-    pinMode(DIRECTION_PIN, OUTPUT);
-    pinMode(STEPPER_ENABLE_PIN, OUTPUT);
     pinMode(BUTTON_CCW, INPUT_PULLUP);
     pinMode(BUTTON_CW, INPUT_PULLUP);
     pinMode(RAIN_SENSOR_PIN, INPUT_PULLUP);
     pinMode(VOLTAGE_MONITOR_PIN, INPUT);
+
+    // output
+    pinMode(STEP_PIN, OUTPUT);
+    pinMode(DIRECTION_PIN, OUTPUT);
+    pinMode(STEPPER_ENABLE_PIN, OUTPUT);
+
+    m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
+
+    LoadFromEEProm();
 
     // reset all timers
     m_moveOffUntilTimer.reset();
@@ -331,11 +336,13 @@ RotatorClass::RotatorClass()
     m_bSetToHomeAzimuth = false;
     m_bDoStepsPerRotation = false;
     m_nMoveDirection = MOVE_POSITIVE;
+
     if (digitalRead(RAIN_SENSOR_PIN) == 0) {
         m_bIsRaining = true;
     }
-    else
+    else {
         m_bIsRaining = false;
+    }
 }
 
 

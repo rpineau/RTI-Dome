@@ -164,8 +164,8 @@ void setup()
     sentHello = false;
     isConfiguringWireless = false;
     gotHelloFromShutter = false;
-    Rotator = new RotatorClass();
 #endif
+    Rotator = new RotatorClass();
     Rotator->EnableMotor(false);
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
