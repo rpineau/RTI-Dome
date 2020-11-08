@@ -102,8 +102,8 @@ bool SentHello = false;
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 
-bool bShutterPresent = false;
 #endif
+bool bShutterPresent = false;
 
 // global variable for rain status
 bool bIsRaining = false;
@@ -345,8 +345,10 @@ void CheckForRain()
 
     if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
         bIsRaining = Rotator->GetRainStatus();
+#ifndef STANDALONE
         Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
         ReceiveWireless();
+#endif
     }
     if (bIsRaining) {
         if (Rotator->GetRainAction() == HOME)
