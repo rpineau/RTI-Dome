@@ -342,11 +342,22 @@ RotatorClass::RotatorClass()
     m_bDoStepsPerRotation = false;
     m_nMoveDirection = MOVE_POSITIVE;
 
-    if (digitalRead(RAIN_SENSOR_PIN) == 0) {
+    if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
         m_bIsRaining = true;
     }
     else {
         m_bIsRaining = false;
+    }
+
+    if(digitalRead(HOME_PIN) == LOW) {
+        // we're at the home position
+        m_bisAtHome = true;
+        m_bHasBeenHomed = true;
+        SyncPosition(m_Config.homeAzimuth);
+    }
+    else {
+        //if not at home on power up, assume we're at the park position
+        SyncPosition(m_Config.parkAzimuth);
     }
 }
 
@@ -381,7 +392,7 @@ inline void RotatorClass::homeInterrupt()
 
 inline void RotatorClass::rainInterrupt()
 {
-    if (digitalRead(RAIN_SENSOR_PIN) == 0) {
+    if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
         m_bIsRaining = true;
     }
     else
@@ -821,7 +832,7 @@ void RotatorClass::Calibrate()
                 break;
 
             case(CALIBRATION_MEASURE):
-                if (digitalRead(HOME_PIN) == 0) {
+                if (digitalRead(HOME_PIN) == LOW) {
                     motorStop();
                     // restore speed
                     RestoreNormalSpeed();
@@ -908,7 +919,7 @@ void RotatorClass::Run()
 
     if (stepper.isRunning()) {
         wasRunning = true;
-        if (m_seekMode == HOMING_HOME && digitalRead(HOME_PIN) == 0) { // We're looking for home and found it
+        if (m_seekMode == HOMING_HOME && digitalRead(HOME_PIN) == LOW) { // We're looking for home and found it
             Stop();
             // restore max speed
             RestoreNormalSpeed();
@@ -926,7 +937,7 @@ void RotatorClass::Run()
     m_nMoveDirection = MOVE_NONE;
 
     // Won't get here if stepper is moving
-    if (digitalRead(HOME_PIN) == 0 ) { // Not moving and we're at home
+    if (digitalRead(HOME_PIN) == LOW ) { // Not moving and we're at home
         m_bisAtHome = true;
         if (!m_bHasBeenHomed) { // Just started up rotator so tell rotator its at home.
             SyncPosition(m_Config.homeAzimuth); // Set the Azimuth to the home position
