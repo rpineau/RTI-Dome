@@ -33,13 +33,21 @@
 
 #define VERSION "2.643"
 
+// include and some defines for ethernet connection
 #include <SPI.h>
 #include <Ethernet.h>
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+/*
 IPAddress ip(192, 168, 254, 99);
 IPAddress myDns(192, 168, 254, 2);
 IPAddress gateway(192, 168, 254, 1);
 IPAddress subnet(255, 255, 255, 0);
+*/
+IPAddress ip;
+IPAddress myDns;
+IPAddress gateway;
+IPAddress subnet;
+
 EthernetServer server(2323);
 EthernetClient client;
 
@@ -185,6 +193,11 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
     // enable input buffers
     Rotator->bufferEnable(true);
+    // network configuration
+    ip.fromString("192.168.254.99");
+    myDns.fromString("192.168.254.2");
+    gateway.fromString("192.168.254.1");
+    subnet.fromString("255.255.255.0");
     Ethernet.init(52);  // use pin 52 for Ethernet CS
     Ethernet.begin(mac, ip, myDns, gateway, subnet);
     server.begin();
@@ -431,7 +444,7 @@ void ReceiveNetwork(EthernetClient client)
 
     if (networkBuffer.length() > 0) {
         computerBuffer = String(networkBuffer);
-        ProcessSerialCommand(true);
+        ProcessCommand(true);
     }
 
 }
@@ -445,7 +458,7 @@ void ReceiveComputer()
         if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
             // End of message
             if (computerBuffer.length() > 0) {
-                ProcessSerialCommand(false);
+                ProcessCommand(false);
                 computerBuffer = "";
             }
         }
@@ -455,7 +468,7 @@ void ReceiveComputer()
     }
 }
 
-void ProcessSerialCommand(bool bFromNetwork)
+void ProcessCommand(bool bFromNetwork)
 {
     float fTmp;
     char command;
@@ -481,7 +494,7 @@ void ProcessSerialCommand(bool bFromNetwork)
     wirelessMessage = "";
 #endif
 
-    DBPrint("\nProcessSerialCommand");
+    DBPrint("\nProcessCommand");
     DBPrint("Command = \"" + String(command) +"\"");
     DBPrint("Value = \"" + String(value) +"\"");
     DBPrint("bFromNetwork = \"" + String(bFromNetwork?"Yes":"No") +"\"");
@@ -828,7 +841,8 @@ void ProcessSerialCommand(bool bFromNetwork)
         else {
             if(client.connected()) {
                 DBPrint("Network serialMessage = " + serialMessage);
-                server.print(serialMessage + "#");
+                // server.print(serialMessage + "#");
+                client.print(serialMessage + "#");
             }
             else
                 client.stop();
