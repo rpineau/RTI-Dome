@@ -49,7 +49,8 @@ IPAddress gateway;
 IPAddress subnet;
 
 EthernetServer server(2323);
-EthernetClient client;
+EthernetClient domeClient;
+int nbEthernetClient;
 
 // As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
 // This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
@@ -198,6 +199,7 @@ void setup()
     myDns.fromString("192.168.254.2");
     gateway.fromString("192.168.254.1");
     subnet.fromString("255.255.255.0");
+    nbEthernetClient = 0;
     Ethernet.init(52);  // use pin 52 for Ethernet CS
     Ethernet.begin(mac, ip, myDns, gateway, subnet);
     server.begin();
@@ -205,6 +207,8 @@ void setup()
 
 void loop()
 {
+    checkForNewTCPClient();
+
 #ifndef STANDALONE
     if (!XbeeStarted) {
         if (!Rotator->isRadioConfigured() && !isConfiguringWireless) {
@@ -238,6 +242,25 @@ void loop()
         }
     }
 #endif
+}
+
+void checkForNewTCPClient()
+{
+    EthernetClient newClient = server.accept();
+    if(newClient) {
+        if(nbEthernetClient>0) { // we only accept 1 client
+            newClient.stop();
+        }
+        else {
+            nbEthernetClient++;
+            domeClient = newClient;
+        }
+    }
+
+    if(domeClient && !domeClient.connected()) {
+        domeClient.stop();
+        nbEthernetClient--;
+    }
 }
 
 void homeIntHandler()
@@ -363,11 +386,8 @@ void CheckForCommands()
         ReceiveWireless();
     }
 #endif
-    client = server.available();
-    if(client && client.connected())
-        ReceiveNetwork(client);
-    else if(client) // client has disconencted
-        client.stop();
+    if(domeClient && domeClient.connected())
+        ReceiveNetwork(domeClient);
 }
 
 //<SUMMARY>Tells shutter the rain sensor status</SUMMARY>
@@ -410,7 +430,6 @@ void ReceiveNetwork(EthernetClient client)
     DBPrint("[ReceiveNetwork]");
 
     if(!client.connected()) {
-        client.stop();
         return;
     }
 
@@ -839,13 +858,11 @@ void ProcessCommand(bool bFromNetwork)
             Computer.print(serialMessage + "#");
             }
         else {
-            if(client.connected()) {
+            if(domeClient.connected()) {
                 DBPrint("Network serialMessage = " + serialMessage);
                 // server.print(serialMessage + "#");
-                client.print(serialMessage + "#");
+                domeClient.print(serialMessage + "#");
             }
-            else
-                client.stop();
         }
     }
 }
