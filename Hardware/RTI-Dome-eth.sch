@@ -1448,6 +1448,12 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 <text x="-2.54" y="-2.54" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
 <pin name="VCC" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
 </symbol>
+<symbol name="+3V3">
+<wire x1="1.27" y1="-1.905" x2="0" y2="0" width="0.254" layer="94"/>
+<wire x1="0" y1="0" x2="-1.27" y2="-1.905" width="0.254" layer="94"/>
+<text x="-2.54" y="-5.08" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
+<pin name="+3V3" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="GND" prefix="GND">
@@ -1467,6 +1473,19 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="VCC" symbol="VCC" x="0" y="0"/>
+</gates>
+<devices>
+<device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="+3V3" prefix="+3V3">
+<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
+<gates>
+<gate name="G$1" symbol="+3V3" x="0" y="0"/>
 </gates>
 <devices>
 <device name="">
@@ -10441,6 +10460,19 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <hole x="5.715" y="-6.35" drill="3.3"/>
 <hole x="-5.715" y="-6.35" drill="3.3"/>
 </package>
+<package name="CB3">
+<smd name="1" x="-2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
+<smd name="2" x="2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
+<smd name="3" x="2.54" y="2.54" dx="1.397" dy="1.1938" layer="1"/>
+<smd name="4" x="-2.54" y="2.54" dx="1.397" dy="1.1938" layer="1"/>
+<wire x1="-3.175" y1="3.175" x2="3.175" y2="3.175" width="0.127" layer="21"/>
+<wire x1="3.175" y1="3.175" x2="3.175" y2="-1.905" width="0.127" layer="21"/>
+<wire x1="3.175" y1="-1.905" x2="-3.175" y2="-1.905" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="-1.905" x2="-3.175" y2="3.175" width="0.127" layer="21"/>
+<text x="-2.54" y="3.81" size="1.27" layer="25">&gt;NAME</text>
+<text x="-3.175" y="0.635" size="1.27" layer="27">&gt;VALUE</text>
+<circle x="-1.905" y="-0.635" radius="0.4490125" width="0.127" layer="21"/>
+</package>
 </packages>
 <symbols>
 <symbol name="LOGO">
@@ -13225,6 +13257,44 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <vertex x="17.907" y="-52.451"/>
 </polygon>
 </symbol>
+<symbol name="QG1LV">
+<wire x1="-7.62" y1="7.62" x2="-7.62" y2="-7.62" width="0.4064" layer="94"/>
+<wire x1="7.62" y1="-7.62" x2="-7.62" y2="-7.62" width="0.4064" layer="94"/>
+<wire x1="7.62" y1="-7.62" x2="7.62" y2="0" width="0.4064" layer="94"/>
+<wire x1="7.62" y1="0" x2="7.62" y2="5.08" width="0.4064" layer="94"/>
+<wire x1="7.62" y1="5.08" x2="7.62" y2="7.62" width="0.4064" layer="94"/>
+<wire x1="-7.62" y1="7.62" x2="7.62" y2="7.62" width="0.4064" layer="94"/>
+<wire x1="-1.27" y1="5.08" x2="2.54" y2="2.54" width="0.4064" layer="94"/>
+<wire x1="2.54" y1="2.54" x2="6.35" y2="0" width="0.4064" layer="94"/>
+<wire x1="6.35" y1="0" x2="-1.27" y2="-5.08" width="0.4064" layer="94"/>
+<wire x1="-1.27" y1="-5.08" x2="-1.27" y2="-3.175" width="0.4064" layer="94"/>
+<wire x1="-1.27" y1="-3.175" x2="-1.27" y2="3.175" width="0.4064" layer="94"/>
+<wire x1="-1.27" y1="3.175" x2="-1.27" y2="5.08" width="0.4064" layer="94"/>
+<wire x1="-3.81" y1="3.175" x2="-1.27" y2="3.175" width="0.1524" layer="94"/>
+<wire x1="-3.81" y1="-3.175" x2="-1.27" y2="-3.175" width="0.1524" layer="94"/>
+<wire x1="6.35" y1="0" x2="7.62" y2="0" width="0.1524" layer="94"/>
+<wire x1="7.62" y1="5.08" x2="2.54" y2="5.08" width="0.1524" layer="94"/>
+<wire x1="2.54" y1="5.08" x2="2.54" y2="2.54" width="0.1524" layer="94"/>
+<wire x1="-4.826" y1="-0.381" x2="-4.826" y2="0.381" width="0.254" layer="94"/>
+<wire x1="-4.826" y1="0.381" x2="-2.794" y2="0.381" width="0.254" layer="94"/>
+<wire x1="-2.794" y1="0.381" x2="-2.794" y2="-0.381" width="0.254" layer="94"/>
+<wire x1="-4.826" y1="-0.381" x2="-2.794" y2="-0.381" width="0.254" layer="94"/>
+<wire x1="-5.08" y1="-1.016" x2="-3.81" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="-1.016" x2="-2.54" y2="-1.016" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="1.016" x2="-3.81" y2="3.175" width="0.1524" layer="94"/>
+<wire x1="-3.81" y1="-3.175" x2="-3.81" y2="-1.016" width="0.1524" layer="94"/>
+<wire x1="-5.08" y1="1.016" x2="-2.54" y2="1.016" width="0.254" layer="94"/>
+<text x="-7.62" y="8.255" size="1.778" layer="95">&gt;NAME</text>
+<text x="-7.62" y="-10.16" size="1.778" layer="96">&gt;VALUE</text>
+<text x="-6.985" y="-5.842" size="1.524" layer="95">GND</text>
+<text x="-6.985" y="4.318" size="1.524" layer="95">VCC</text>
+<text x="4.064" y="-3.556" size="1.524" layer="95">FO</text>
+<text x="3.81" y="5.588" size="1.524" layer="95">OE</text>
+<pin name="GND" x="-12.7" y="-5.08" visible="pad" length="middle" direction="pwr"/>
+<pin name="VDD" x="-12.7" y="5.08" visible="pad" length="middle" direction="pwr"/>
+<pin name="FO" x="12.7" y="0" visible="pad" length="middle" direction="out" rot="R180"/>
+<pin name="OE" x="12.7" y="5.08" visible="pad" length="middle" direction="in" rot="R180"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="RTI-LOGO">
@@ -13389,6 +13459,24 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <attribute name="OC_FARNELL" value="" constant="no"/>
 <attribute name="OC_NEWARK" value="" constant="no"/>
 </technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="CB3LV-OSCILATOR">
+<gates>
+<gate name="G$1" symbol="QG1LV" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="CB3">
+<connects>
+<connect gate="G$1" pin="FO" pad="3"/>
+<connect gate="G$1" pin="GND" pad="2"/>
+<connect gate="G$1" pin="OE" pad="1"/>
+<connect gate="G$1" pin="VDD" pad="4"/>
+</connects>
+<technologies>
+<technology name=""/>
 </technologies>
 </device>
 </devices>
@@ -16451,7 +16539,6 @@ using ameteur radio standard layout</description>
 <part name="R27" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%"/>
 <part name="X9" library="rti" deviceset="J1011F" device="" technology="21PNL" value="J1011F21PNL"/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
-<part name="R30" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="R31" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="R32" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="R33" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
@@ -16462,9 +16549,7 @@ using ameteur radio standard layout</description>
 <part name="R38" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="C11" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="C12" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="C13" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="C14" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="C15" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="C16" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="C17" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
@@ -16475,6 +16560,11 @@ using ameteur radio standard layout</description>
 <part name="R39" library="rti" deviceset="R-EU" device="'0805'" value="12.4K 1%"/>
 <part name="R40" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
+<part name="GND15" library="supply1" deviceset="GND" device=""/>
+<part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device=""/>
+<part name="+3V15" library="supply1" deviceset="+3V3" device=""/>
+<part name="C20" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
+<part name="GND17" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16575,7 +16665,6 @@ using ameteur radio standard layout</description>
 <instance part="R27" gate="G$1" x="500.38" y="299.72" rot="R90"/>
 <instance part="X9" gate="G$1" x="568.96" y="269.24"/>
 <instance part="GND16" gate="1" x="548.64" y="233.68"/>
-<instance part="R30" gate="G$1" x="469.9" y="127" rot="R270"/>
 <instance part="R31" gate="G$1" x="472.44" y="132.08" rot="R270"/>
 <instance part="R32" gate="G$1" x="474.98" y="132.08" rot="R270"/>
 <instance part="R33" gate="G$1" x="477.52" y="132.08" rot="R270"/>
@@ -16586,9 +16675,7 @@ using ameteur radio standard layout</description>
 <instance part="R38" gate="G$1" x="490.22" y="132.08" rot="R270"/>
 <instance part="C11" gate="G$1" x="462.28" y="78.74"/>
 <instance part="C12" gate="G$1" x="469.9" y="78.74"/>
-<instance part="C13" gate="G$1" x="485.14" y="78.74"/>
 <instance part="C14" gate="G$1" x="508" y="78.74"/>
-<instance part="C15" gate="G$1" x="477.52" y="78.74"/>
 <instance part="C16" gate="G$1" x="492.76" y="78.74"/>
 <instance part="C17" gate="G$1" x="500.38" y="78.74"/>
 <instance part="GND14" gate="1" x="485.14" y="60.96"/>
@@ -16599,6 +16686,11 @@ using ameteur radio standard layout</description>
 <instance part="R39" gate="G$1" x="530.86" y="177.8"/>
 <instance part="R40" gate="G$1" x="472.44" y="205.74" rot="R270"/>
 <instance part="J1" gate="G$1" x="378.46" y="83.82"/>
+<instance part="GND15" gate="1" x="591.82" y="132.08"/>
+<instance part="25MHZ" gate="G$1" x="576.58" y="132.08" rot="R180"/>
+<instance part="+3V15" gate="G$1" x="596.9" y="139.7"/>
+<instance part="C20" gate="G$1" x="596.9" y="114.3"/>
+<instance part="GND17" gate="1" x="596.9" y="104.14"/>
 </instances>
 <busses>
 </busses>
@@ -16964,12 +17056,7 @@ using ameteur radio standard layout</description>
 <pinref part="C16" gate="G$1" pin="2"/>
 <wire x1="492.76" y1="73.66" x2="492.76" y2="68.58" width="0.1524" layer="91"/>
 <junction x="492.76" y="68.58"/>
-<pinref part="C13" gate="G$1" pin="2"/>
-<wire x1="485.14" y1="73.66" x2="485.14" y2="68.58" width="0.1524" layer="91"/>
 <junction x="485.14" y="68.58"/>
-<pinref part="C15" gate="G$1" pin="2"/>
-<wire x1="477.52" y1="73.66" x2="477.52" y2="68.58" width="0.1524" layer="91"/>
-<junction x="477.52" y="68.58"/>
 <pinref part="C12" gate="G$1" pin="2"/>
 <wire x1="469.9" y1="73.66" x2="469.9" y2="68.58" width="0.1524" layer="91"/>
 <junction x="469.9" y="68.58"/>
@@ -17017,6 +17104,17 @@ using ameteur radio standard layout</description>
 <wire x1="469.9" y1="213.36" x2="472.44" y2="213.36" width="0.1524" layer="91"/>
 <wire x1="472.44" y1="213.36" x2="472.44" y2="210.82" width="0.1524" layer="91"/>
 <label x="469.9" y="213.36" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<wire x1="589.28" y1="137.16" x2="591.82" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="591.82" y1="137.16" x2="591.82" y2="134.62" width="0.1524" layer="91"/>
+<pinref part="GND15" gate="1" pin="GND"/>
+<pinref part="25MHZ" gate="G$1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C20" gate="G$1" pin="2"/>
+<wire x1="596.9" y1="106.68" x2="596.9" y2="109.22" width="0.1524" layer="91"/>
+<pinref part="GND17" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="+12V" class="1">
@@ -17261,11 +17359,6 @@ using ameteur radio standard layout</description>
 <pinref part="C12" gate="G$1" pin="1"/>
 <wire x1="469.9" y1="81.28" x2="469.9" y2="83.82" width="0.1524" layer="91"/>
 <junction x="469.9" y="83.82"/>
-<pinref part="C15" gate="G$1" pin="1"/>
-<wire x1="477.52" y1="81.28" x2="477.52" y2="83.82" width="0.1524" layer="91"/>
-<junction x="477.52" y="83.82"/>
-<pinref part="C13" gate="G$1" pin="1"/>
-<wire x1="485.14" y1="81.28" x2="485.14" y2="83.82" width="0.1524" layer="91"/>
 <junction x="485.14" y="83.82"/>
 <pinref part="C16" gate="G$1" pin="1"/>
 <wire x1="492.76" y1="81.28" x2="492.76" y2="83.82" width="0.1524" layer="91"/>
@@ -17288,12 +17381,6 @@ using ameteur radio standard layout</description>
 <wire x1="485.14" y1="127" x2="485.14" y2="124.46" width="0.1524" layer="91"/>
 <wire x1="487.68" y1="124.46" x2="487.68" y2="121.92" width="0.1524" layer="91"/>
 <label x="487.68" y="121.92" size="1.016" layer="95" rot="R270" xref="yes"/>
-</segment>
-<segment>
-<pinref part="R30" gate="G$1" pin="2"/>
-<wire x1="469.9" y1="121.92" x2="469.9" y2="119.38" width="0.1524" layer="91"/>
-<wire x1="469.9" y1="119.38" x2="464.82" y2="119.38" width="0.1524" layer="91"/>
-<label x="464.82" y="119.38" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="RG-11-IN_5V" class="0">
@@ -18065,6 +18152,11 @@ using ameteur radio standard layout</description>
 <wire x1="452.12" y1="170.18" x2="454.66" y2="170.18" width="0.1524" layer="91"/>
 <label x="452.12" y="170.18" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<wire x1="563.88" y1="132.08" x2="561.34" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="25MHZ" gate="G$1" pin="FO"/>
+<label x="561.34" y="132.08" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="XO" class="0">
 <segment>
@@ -18076,11 +18168,8 @@ using ameteur radio standard layout</description>
 <net name="RESET" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="RST_N"/>
-<wire x1="469.9" y1="132.08" x2="469.9" y2="137.16" width="0.1524" layer="91"/>
-<pinref part="R30" gate="G$1" pin="1"/>
 <wire x1="469.9" y1="137.16" x2="469.9" y2="139.7" width="0.1524" layer="91"/>
 <wire x1="469.9" y1="137.16" x2="464.82" y2="137.16" width="0.1524" layer="91"/>
-<junction x="469.9" y="137.16"/>
 <label x="464.82" y="137.16" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
@@ -18177,6 +18266,23 @@ using ameteur radio standard layout</description>
 <pinref part="U1" gate="G$1" pin="RSVD@1"/>
 <wire x1="472.44" y1="200.66" x2="472.44" y2="198.12" width="0.1524" layer="91"/>
 <pinref part="R40" gate="G$1" pin="2"/>
+</segment>
+</net>
+<net name="+3V3" class="3">
+<segment>
+<wire x1="589.28" y1="127" x2="596.9" y2="127" width="0.1524" layer="91"/>
+<wire x1="596.9" y1="127" x2="596.9" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="596.9" y1="119.38" x2="596.9" y2="127" width="0.1524" layer="91"/>
+<junction x="596.9" y="127"/>
+<pinref part="+3V15" gate="G$1" pin="+3V3"/>
+<pinref part="25MHZ" gate="G$1" pin="VDD"/>
+<pinref part="25MHZ" gate="G$1" pin="OE"/>
+<wire x1="563.88" y1="127" x2="561.34" y2="127" width="0.1524" layer="91"/>
+<wire x1="561.34" y1="127" x2="561.34" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="561.34" y1="119.38" x2="596.9" y2="119.38" width="0.1524" layer="91"/>
+<pinref part="C20" gate="G$1" pin="1"/>
+<wire x1="596.9" y1="119.38" x2="596.9" y2="116.84" width="0.1524" layer="91"/>
+<junction x="596.9" y="119.38"/>
 </segment>
 </net>
 </nets>
