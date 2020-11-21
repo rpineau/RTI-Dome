@@ -154,8 +154,8 @@
 <text x="49.8475" y="50.8" size="0.6096" layer="21" rot="R90">West / Close</text>
 <text x="57.15" y="69.88175" size="0.6096" layer="22" rot="MR0">East / Open</text>
 <text x="58.42" y="69.85" size="0.6096" layer="21">GND</text>
-<text x="72.39" y="20.32" size="1.778" layer="21">GND</text>
-<text x="72.0725" y="4.34975" size="1.778" layer="21">+12V</text>
+<text x="53.34" y="35.56" size="1.778" layer="21">GND</text>
+<text x="53.0225" y="28.47975" size="1.778" layer="21">+12V</text>
 <wire x1="1.905" y1="22.86" x2="1.905" y2="12.7" width="0" layer="20"/>
 <text x="36.703" y="69.9135" size="0.6096" layer="21">Home/Closed</text>
 <text x="27.94" y="69.85" size="0.6096" layer="21">Opened</text>
@@ -3634,6 +3634,107 @@ package type ST</description>
 </package>
 </packages>
 </library>
+<library name="powerpoles">
+<description>Anderson Powerpole footprints</description>
+<packages>
+<package name="POWERPOLE_PAIR_45A">
+<pad name="RED" x="-3.93" y="0.02" drill="1.27" diameter="3.5" shape="long" thermals="no"/>
+<pad name="BLACK" x="3.97" y="0.02" drill="1.27" diameter="3.5" shape="long" thermals="no"/>
+<wire x1="-7.5" y1="4" x2="-5.5" y2="4" width="0.127" layer="21"/>
+<text x="-4.405" y="8.81" size="2.54" layer="21" font="vector">+</text>
+<hole x="-1.95" y="0.02" drill="1.27"/>
+<hole x="-5.91" y="0.02" drill="1.27"/>
+<hole x="1.99" y="0.02" drill="1.27"/>
+<hole x="5.95" y="0.02" drill="1.27"/>
+<hole x="-4.64" y="0.02" drill="1.27"/>
+<hole x="-3.37" y="0.02" drill="1.27"/>
+<hole x="3.26" y="0.02" drill="1.27"/>
+<hole x="4.68" y="0.02" drill="1.27"/>
+<hole x="-5.656" y="0.02" drill="1.27"/>
+<hole x="-5.783" y="0.02" drill="1.27"/>
+<hole x="-5.529" y="0.02" drill="1.27"/>
+<hole x="-5.402" y="0.02" drill="1.27"/>
+<hole x="-5.275" y="0.02" drill="1.27"/>
+<hole x="-5.148" y="0.02" drill="1.27"/>
+<hole x="-5.021" y="0.02" drill="1.27"/>
+<hole x="-4.894" y="0.02" drill="1.27"/>
+<hole x="-4.767" y="0.02" drill="1.27"/>
+<hole x="-2.077" y="0.02" drill="1.27"/>
+<hole x="-2.204" y="0.02" drill="1.27"/>
+<hole x="-2.331" y="0.02" drill="1.27"/>
+<hole x="-2.458" y="0.02" drill="1.27"/>
+<hole x="-2.585" y="0.02" drill="1.27"/>
+<hole x="-2.712" y="0.02" drill="1.27"/>
+<hole x="-2.966" y="0.02" drill="1.27"/>
+<hole x="-2.839" y="0.02" drill="1.27"/>
+<hole x="-3.093" y="0.02" drill="1.27"/>
+<hole x="-3.22" y="0.02" drill="1.27"/>
+<hole x="-3.497" y="0.02" drill="1.27"/>
+<hole x="-3.624" y="0.02" drill="1.27"/>
+<hole x="-3.751" y="0.02" drill="1.27"/>
+<hole x="-3.878" y="0.02" drill="1.27"/>
+<hole x="-4.005" y="0.02" drill="1.27"/>
+<hole x="-4.132" y="0.02" drill="1.27"/>
+<hole x="-4.259" y="0.02" drill="1.27"/>
+<hole x="-4.386" y="0.02" drill="1.27"/>
+<hole x="-4.513" y="0.02" drill="1.27"/>
+<hole x="5.823" y="0.02" drill="1.27"/>
+<hole x="5.696" y="0.02" drill="1.27"/>
+<hole x="5.569" y="0.02" drill="1.27"/>
+<hole x="5.442" y="0.02" drill="1.27"/>
+<hole x="5.315" y="0.02" drill="1.27"/>
+<hole x="5.188" y="0.02" drill="1.27"/>
+<hole x="5.061" y="0.02" drill="1.27"/>
+<hole x="4.934" y="0.02" drill="1.27"/>
+<hole x="4.807" y="0.02" drill="1.27"/>
+<hole x="4.553" y="0.02" drill="1.27"/>
+<hole x="4.426" y="0.02" drill="1.27"/>
+<hole x="4.299" y="0.02" drill="1.27"/>
+<hole x="4.045" y="0.02" drill="1.27"/>
+<hole x="4.045" y="0.02" drill="1.27"/>
+<hole x="4.172" y="0.02" drill="1.27"/>
+<hole x="3.918" y="0.02" drill="1.27"/>
+<hole x="3.791" y="0.02" drill="1.27"/>
+<hole x="3.791" y="0.02" drill="1.27"/>
+<hole x="3.664" y="0.02" drill="1.27"/>
+<hole x="3.664" y="0.02" drill="1.27"/>
+<hole x="3.664" y="0.02" drill="1.27"/>
+<hole x="3.537" y="0.02" drill="1.27"/>
+<hole x="3.537" y="0.02" drill="1.27"/>
+<hole x="3.41" y="0.02" drill="1.27"/>
+<hole x="3.133" y="0.02" drill="1.27"/>
+<hole x="3.006" y="0.02" drill="1.27"/>
+<hole x="2.879" y="0.02" drill="1.27"/>
+<hole x="2.752" y="0.02" drill="1.27"/>
+<hole x="2.625" y="0.02" drill="1.27"/>
+<hole x="2.498" y="0.02" drill="1.27"/>
+<hole x="2.371" y="0.02" drill="1.27"/>
+<hole x="2.244" y="0.02" drill="1.27"/>
+<hole x="2.117" y="0.02" drill="1.27"/>
+<wire x1="-5.5" y1="4" x2="-2.5" y2="4" width="0.127" layer="21"/>
+<wire x1="-2.5" y1="4" x2="0" y2="4" width="0.127" layer="21"/>
+<wire x1="0" y1="4" x2="2.5" y2="4" width="0.127" layer="21"/>
+<wire x1="2.5" y1="4" x2="5.5" y2="4" width="0.127" layer="21"/>
+<wire x1="5.5" y1="4" x2="7.5" y2="4" width="0.127" layer="21"/>
+<wire x1="-7.5" y1="4" x2="-7.5" y2="17" width="0.127" layer="21"/>
+<wire x1="-7.1" y1="29" x2="0" y2="29" width="0.127" layer="21"/>
+<wire x1="0" y1="29" x2="7.1" y2="29" width="0.127" layer="21"/>
+<wire x1="7.5" y1="17" x2="7.5" y2="4" width="0.127" layer="21"/>
+<wire x1="0" y1="29" x2="0" y2="4" width="0.127" layer="21"/>
+<wire x1="-7.1" y1="19" x2="7.1" y2="19" width="0.127" layer="21"/>
+<wire x1="-7.1" y1="19" x2="-7.5" y2="17" width="0.127" layer="21" curve="-180"/>
+<wire x1="7.1" y1="19" x2="7.5" y2="17" width="0.127" layer="21" curve="180"/>
+<wire x1="-7.1" y1="19" x2="-7.1" y2="29" width="0.127" layer="21"/>
+<wire x1="7.1" y1="19" x2="7.1" y2="29" width="0.127" layer="21"/>
+<wire x1="-5.5" y1="4" x2="-5.5" y2="0" width="0.127" layer="21"/>
+<wire x1="-5.5" y1="0" x2="-2.5" y2="0" width="0.127" layer="21"/>
+<wire x1="-2.5" y1="0" x2="-2.5" y2="4" width="0.127" layer="21"/>
+<wire x1="2.5" y1="4" x2="2.5" y2="0" width="0.127" layer="21"/>
+<wire x1="2.5" y1="0" x2="5.5" y2="0" width="0.127" layer="21"/>
+<wire x1="5.5" y1="0" x2="5.5" y2="4" width="0.127" layer="21"/>
+</package>
+</packages>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -3830,12 +3931,6 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="X2" library="con-ptr500" package="AK500/2" value="" x="74.93" y="13.97" rot="R90">
-<attribute name="OC_FARNELL" value="unknown" x="74.93" y="13.97" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="OC_NEWARK" value="unknown" x="74.93" y="13.97" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="MF" value="" x="74.93" y="13.97" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="MPN" value="" x="74.93" y="13.97" size="1.778" layer="27" rot="R90" display="off"/>
-</element>
 <element name="X4" library="con-ptr500" package="AK500/3" value="" x="54.61" y="66.04" rot="R180">
 <attribute name="OC_FARNELL" value="unknown" x="54.61" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_NEWARK" value="unknown" x="54.61" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
@@ -3863,8 +3958,8 @@ design rules under a new name.</description>
 <element name="R4" library="rti" package="R0805" value="4.7K" x="40.10025" y="28.829" rot="R270"/>
 <element name="C1" library="rti" package="C0805" value="10uF" x="30.734" y="54.61" rot="R90"/>
 <element name="R5" library="rti" package="R0805" value="100" x="33.02" y="54.61" rot="R90"/>
-<element name="U$4" library="rti" package="LOGO_BIG" value="RTI-LOGO_BIG" x="36.195" y="19.812"/>
-<element name="C2" library="rti" package="UD-10X10_NICHICON" value="100uF" x="64.77" y="13.97" rot="R270"/>
+<element name="U$4" library="rti" package="LOGO_BIG" value="RTI-LOGO_BIG" x="72.898" y="3.175" rot="R90"/>
+<element name="C2" library="rti" package="UD-10X10_NICHICON" value="100uF" x="71.12" y="33.02" rot="R270"/>
 <element name="R13" library="rti" package="R0805" value="4.7K" x="5.08" y="20.3835" rot="R180"/>
 <element name="R14" library="rti" package="R0805" value="4.7K" x="5.08" y="16.256"/>
 <element name="R15" library="rti" package="R0805" value="4.7K" x="35.8775" y="28.829" rot="R90"/>
@@ -3898,11 +3993,11 @@ design rules under a new name.</description>
 <attribute name="OC_NEWARK" value="unknown" x="6.35" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="6.35" y="66.04" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="X11" library="con-ptr500" package="AK500/2" value="" x="60.96" y="3.81">
-<attribute name="MPN" value="" x="60.96" y="3.81" size="1.778" layer="27" display="off"/>
-<attribute name="MF" value="" x="60.96" y="3.81" size="1.778" layer="27" display="off"/>
-<attribute name="OC_NEWARK" value="unknown" x="60.96" y="3.81" size="1.778" layer="27" display="off"/>
-<attribute name="OC_FARNELL" value="unknown" x="60.96" y="3.81" size="1.778" layer="27" display="off"/>
+<element name="X11" library="con-ptr500" package="AK500/2" value="" x="59.69" y="3.81">
+<attribute name="MPN" value="" x="59.69" y="3.81" size="1.778" layer="27" display="off"/>
+<attribute name="MF" value="" x="59.69" y="3.81" size="1.778" layer="27" display="off"/>
+<attribute name="OC_NEWARK" value="unknown" x="59.69" y="3.81" size="1.778" layer="27" display="off"/>
+<attribute name="OC_FARNELL" value="unknown" x="59.69" y="3.81" size="1.778" layer="27" display="off"/>
 </element>
 <element name="IC1" library="microchip" package="TSSOP8" value="24AA128ST" x="4.6355" y="43.21175">
 <attribute name="MPN" value="24AA128-I/ST" x="-2.9845" y="55.91175" size="1.778" layer="27" display="off"/>
@@ -3913,12 +4008,6 @@ design rules under a new name.</description>
 <element name="R1" library="rti" package="R0805" value="1K" x="7.58825" y="44.45" rot="R270"/>
 <element name="R3" library="rti" package="R0805" value="1K" x="1.93675" y="44.45" rot="R270"/>
 <element name="C5" library="rti" package="C0805" value="100nF" x="1.93675" y="40.22725" rot="R270"/>
-<element name="X12" library="con-ptr500" package="AK500/2" value="" x="43.18" y="3.81">
-<attribute name="OC_NEWARK" value="unknown" x="43.18" y="3.81" size="1.778" layer="27" display="off"/>
-<attribute name="OC_FARNELL" value="unknown" x="43.18" y="3.81" size="1.778" layer="27" display="off"/>
-<attribute name="MF" value="" x="43.18" y="3.81" size="1.778" layer="27" display="off"/>
-<attribute name="MPN" value="" x="43.18" y="3.81" size="1.778" layer="27" display="off"/>
-</element>
 <element name="C6" library="rti" package="C0805" value="100nF" x="8.509" y="13.335" rot="R270"/>
 <element name="R12" library="rti" package="R0805" value="4.7K" x="5.08" y="22.44725" rot="R180"/>
 <element name="R20" library="rti" package="R0805" value="4.7K" x="44.323" y="28.829" rot="R270"/>
@@ -3932,6 +4021,7 @@ design rules under a new name.</description>
 <element name="IC5" library="rti" package="TSSOP20" value="74LVC245" x="36.83" y="36.83" rot="R90"/>
 <element name="IC6" library="rti" package="TSSOP20" value="74ABT245" x="11.43" y="19.05" rot="R180"/>
 <element name="R22" library="rti" package="R0805" value="4.7K" x="32.385" y="41.62425"/>
+<element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="62.23" y="33.02" rot="MR90"/>
 </elements>
 <signals>
 <signal name="VPIN">
@@ -4019,7 +4109,6 @@ design rules under a new name.</description>
 <contactref element="X3" pad="1"/>
 <contactref element="R6" pad="1"/>
 <contactref element="C4" pad="2"/>
-<contactref element="X2" pad="2"/>
 <via x="41.91" y="34.29" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="26.67" y="38.1" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="43.18" y="48.26" extent="1-16" drill="0.6" diameter="1.27"/>
@@ -4032,13 +4121,12 @@ design rules under a new name.</description>
 <contactref element="XB1" pad="10"/>
 <via x="21.59" y="43.18" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="17.78" y="34.29" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="66.2305" y="40.16375" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="75.1205" y="51.59375" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="12.7" y="50.8" extent="1-16" drill="0.6" diameter="1.27"/>
 <contactref element="PCB1" pad="GND"/>
 <contactref element="PCB1" pad="GND."/>
 <contactref element="PCB1" pad="GND.."/>
 <contactref element="C3" pad="2"/>
-<via x="62.23" y="16.51" extent="1-16" drill="0.6" diameter="1.27"/>
 <contactref element="X7" pad="1"/>
 <contactref element="X8" pad="1"/>
 <contactref element="X11" pad="1"/>
@@ -4050,36 +4138,27 @@ design rules under a new name.</description>
 <contactref element="C6" pad="2"/>
 <via x="11.43" y="21.59" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="62.23" y="39.37" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="60.96" y="20.32" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="50.8" y="17.78" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="34.29" y="21.59" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="54.61" y="33.02" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="64.77" y="21.59" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="67.31" y="20.32" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="69.85" y="20.32" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="72.39" y="20.32" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="43.18" y="54.61" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="34.95675" y="38.227" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="46.99" y="40.64" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="48.26" y="41.91" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="49.53" y="55.88" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="21.59" y="34.29" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="3.81" y="34.29" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="31.75" y="34.29" extent="1-16" drill="0.6" diameter="1.27"/>
-<contactref element="X12" pad="1"/>
-<via x="66.04" y="31.75" extent="1-16" drill="0.6" diameter="1.27"/>
-<contactref element="X12" pad="2"/>
 <via x="11.43" y="24.13" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="13.97" y="12.7" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="25.93975" y="16.60525" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="6.35" y="8.89" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="10.38225" y="15.90675" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="33.02" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="35.56" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="50.8" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="53.34" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="36.83" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="40.64" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="44.45" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="48.26" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="2.54" y="50.8" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="6.35" y="55.88" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="67.31" y="16.51" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="36.83" y="11.43" extent="1-16" drill="0.6" diameter="1.27"/>
 <contactref element="IC5" pad="P$10"/>
 <contactref element="IC6" pad="P$10"/>
@@ -4090,72 +4169,39 @@ design rules under a new name.</description>
 <contactref element="IC6" pad="P$9"/>
 <contactref element="IC6" pad="P$19"/>
 <via x="37.17925" y="35.052" extent="1-16" drill="0.3" diameter="0.254"/>
+<contactref element="J1" pad="BLACK"/>
+<wire x1="62.25" y1="36.99" x2="62.23" y2="39.37" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="+12V" class="1">
 <contactref element="X5" pad="1"/>
 <contactref element="C2" pad="+"/>
 <polygon width="0.3048" layer="1" thermals="no">
-<vertex x="61.31" y="13.843"/>
-<vertex x="79.883" y="13.843"/>
+<vertex x="60.04" y="32.893"/>
+<vertex x="79.883" y="32.893"/>
 <vertex x="79.883" y="0"/>
-<vertex x="61.31" y="0"/>
+<vertex x="60.04" y="0"/>
 </polygon>
 <contactref element="R10" pad="2"/>
-<contactref element="X2" pad="1"/>
-<wire x1="34.925" y1="11.1125" x2="34.925" y2="10.795" width="1.4224" layer="1"/>
-<wire x1="34.925" y1="10.795" x2="36.83" y2="8.89" width="1.4224" layer="1"/>
-<wire x1="36.83" y1="8.89" x2="62.23" y2="8.89" width="1.4224" layer="1"/>
 <wire x1="25.4" y1="69.85" x2="76.2" y2="69.85" width="1.27" layer="1"/>
-<wire x1="78.74" y1="67.31" x2="78.74" y2="34.29" width="1.27" layer="1"/>
+<wire x1="78.74" y1="67.31" x2="78.74" y2="31.75" width="1.27" layer="1"/>
 <contactref element="PCB1" pad="VIN"/>
-<wire x1="78.74" y1="34.29" x2="78.74" y2="10.668" width="1.27" layer="1"/>
 <contactref element="C3" pad="1"/>
 <wire x1="23.9268" y1="66.04" x2="23.9268" y2="68.3768" width="1.27" layer="1"/>
 <contactref element="X11" pad="2"/>
 <wire x1="76.2" y1="69.85" x2="78.74" y2="67.31" width="1.27" layer="1" curve="-90"/>
 <wire x1="25.4" y1="69.85" x2="23.9268" y2="68.3768" width="1.27" layer="1" curve="90"/>
-<wire x1="34.95425" y1="11.14175" x2="34.925" y2="11.1125" width="0.8128" layer="1"/>
 <polygon width="0.254" layer="16" thermals="no">
-<vertex x="61.31" y="13.843"/>
-<vertex x="79.883" y="13.843"/>
+<vertex x="60.04" y="32.893"/>
+<vertex x="79.883" y="32.893"/>
 <vertex x="79.883" y="0"/>
-<vertex x="61.31" y="0"/>
+<vertex x="60.04" y="0"/>
 </polygon>
-<via x="66.04" y="8.89" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="68.58" y="8.89" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="71.12" y="8.89" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="73.66" y="8.89" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="76.2" y="8.89" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="78.74" y="8.89" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="78.74" y="6.35" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="76.2" y="6.35" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="73.66" y="6.35" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="71.12" y="6.35" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="68.58" y="6.35" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="66.04" y="6.35" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="66.04" y="3.81" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="68.58" y="3.81" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="71.12" y="3.81" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="73.66" y="3.81" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="76.2" y="3.81" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="78.74" y="3.81" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="66.04" y="1.27" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="68.58" y="1.27" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="71.12" y="1.27" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="73.66" y="1.27" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="76.2" y="1.27" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="78.74" y="1.27" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="68.58" y="11.43" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="71.12" y="11.43" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="78.74" y="11.43" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="66.04" y="11.43" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="63.5" y="6.35" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="63.5" y="8.89" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="63.5" y="11.43" extent="1-16" drill="0.4" diameter="1.27"/>
-<via x="63.5" y="1.27" extent="1-16" drill="0.4" diameter="1.27"/>
 <wire x1="34.9225" y1="13.5255" x2="34.925" y2="13.5255" width="0.8128" layer="1"/>
 <wire x1="34.925" y1="13.5255" x2="34.925" y2="11.1125" width="0.8128" layer="1"/>
-<wire x1="34.925" y1="8.697" x2="34.925" y2="11.1125" width="0.8128" layer="1"/>
+<contactref element="J1" pad="RED"/>
+<wire x1="34.925" y1="11.1125" x2="36.83" y2="7.62" width="1.27" layer="1"/>
+<wire x1="36.83" y1="7.62" x2="60.96" y2="7.62" width="1.27" layer="1"/>
+<wire x1="34.925" y1="8.697" x2="34.925" y2="11.1125" width="1.27" layer="1"/>
 </signal>
 <signal name="SHUTTER_OPENED">
 <contactref element="PCB1" pad="3"/>
