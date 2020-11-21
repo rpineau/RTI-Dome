@@ -15,7 +15,7 @@ DueFlashStorage dueFlashStorage;
 // stepper controller
 #define STEP_TYPE 8
 
-// #define DEBUG
+#define DEBUG
 #ifdef DEBUG
 #define DBPrint(x) if(DebugPort) DebugPort.println(x)
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)

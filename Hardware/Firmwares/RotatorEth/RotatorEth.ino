@@ -43,6 +43,8 @@ IPAddress ip;
 IPAddress myDns;
 IPAddress gateway;
 IPAddress subnet;
+byte MAC_Address[6];
+uint32_t uidBuffer[4];
 
 EthernetServer server(2323);
 EthernetClient domeClient;
@@ -189,13 +191,10 @@ void ReceiveComputer(void);
 void ProcessCommand(bool);
 int ReceiveWireless(void);
 void ProcessWireless(void);
-void ReadUniqueID( uint32_t* );
-
 
 void setup()
 {
-    byte mac[6];
-    getMacAddress(mac);
+    getMacAddress(MAC_Address, uidBuffer);
     resetEthernet(ETHERNET_RESET);
 
     Computer.begin(115200);
@@ -221,13 +220,14 @@ void setup()
     gateway.fromString("192.168.254.1");
     subnet.fromString("255.255.255.0");
     nbEthernetClient = 0;
-    Ethernet.init(ETHERNET_CS);  // use pin 52 for Ethernet CS
-    Ethernet.begin(mac, ip, myDns, gateway, subnet);
+    Ethernet.init(ETHERNET_CS);
+    Ethernet.begin(MAC_Address, ip, myDns, gateway, subnet);
     server.begin();
 }
 
 void loop()
 {
+
     checkForNewTCPClient();
 
 #ifndef STANDALONE
@@ -249,7 +249,6 @@ void loop()
     Rotator->Run();
     CheckForCommands();
     CheckForRain();
-
 #ifndef STANDALONE
     if(XbeeStarted) {
         if(!SentHello)
