@@ -26,12 +26,15 @@
 #include <iostream>
 
 // SB includes
+#include "../../licensedinterfaces/driverrootinterface.h"
 #include "../../licensedinterfaces/sberrorx.h"
 #include "../../licensedinterfaces/serxinterface.h"
 #include "../../licensedinterfaces/sleeperinterface.h"
 #include "../../licensedinterfaces/loggerinterface.h"
 
 #include "StopWatch.h"
+
+#define MAKE_ERR_CODE(P_ID, DTYPE, ERR_CODE)  (((P_ID<<24) & 0xff000000) | ((DTYPE<<16) & 0x00ff0000)  | (ERR_CODE & 0x0000ffff))
 
 #define SERIAL_BUFFER_SIZE 256
 #define MAX_TIMEOUT 5000
@@ -41,10 +44,12 @@
 
 #define PLUGIN_DEBUG 2
 #define DRIVER_VERSION      2.65
+#define PLUGIN_ID   1
+
 
 // error codes
 // Error code
-enum RTIDomeErrors {ND_OK=0, NOT_CONNECTED, ND_CANT_CONNECT, ND_BAD_CMD_RESPONSE, COMMAND_FAILED};
+enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, ND_CANT_CONNECT, ND_BAD_CMD_RESPONSE, COMMAND_FAILED};
 enum RTIDomeShutterState {OPEN = 0, CLOSED, OPENING, CLOSING, SHUTTER_ERROR };
 enum HomeStatuses {NEVER_HOMED = 0, HOMED, ATHOME};
 enum RainActions {DO_NOTHING=0, HOME, PARK};

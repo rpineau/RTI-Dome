@@ -37,12 +37,8 @@
 #include <SPI.h>
 #include <Ethernet.h>
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-/*
-IPAddress ip(192, 168, 254, 99);
-IPAddress myDns(192, 168, 254, 2);
-IPAddress gateway(192, 168, 254, 1);
-IPAddress subnet(255, 255, 255, 0);
-*/
+#define ETHERNET_CS     52
+#define ETHERNET_RESET  53
 IPAddress ip;
 IPAddress myDns;
 IPAddress gateway;
@@ -174,9 +170,30 @@ const char VERSION_SHUTTER_GET          = 'V'; // Get version string
 const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed status
 #endif
 
+// function prototypes
+void checkForNewTCPClient(void);
+void homeIntHandler(void);
+void rainIntHandler(void);
+void buttonHandler(void);
+void resetEthernet(int);
+void StartWirelessConfig(void);
+void ConfigXBee(String);
+void setPANID(String);
+void SendHello(void);
+void requestShutterData(void);
+void CheckForCommands(void);
+void CheckForRain(void);
+void PingShutter(void);
+void ReceiveNetwork(EthernetClient);
+void ReceiveComputer(void);
+void ProcessCommand(bool);
+int ReceiveWireless(void);
+void ProcessWireless(void);
 
 void setup()
 {
+    resetEthernet(ETHERNET_RESET);
+
     Computer.begin(115200);
 #ifndef STANDALONE
     Wireless.begin(9600);
@@ -200,7 +217,7 @@ void setup()
     gateway.fromString("192.168.254.1");
     subnet.fromString("255.255.255.0");
     nbEthernetClient = 0;
-    Ethernet.init(52);  // use pin 52 for Ethernet CS
+    Ethernet.init(ETHERNET_CS);  // use pin 52 for Ethernet CS
     Ethernet.begin(mac, ip, myDns, gateway, subnet);
     server.begin();
 }
@@ -281,6 +298,15 @@ void buttonHandler()
         Rotator->ButtonCheck();
 }
 
+void resetEthernet(int nPin) {
+
+    pinMode(nPin, OUTPUT);
+    digitalWrite(nPin, 0);
+    delay(2);
+    digitalWrite(nPin, 1);
+    delay(10);
+}
+
 #ifndef STANDALONE
 void StartWirelessConfig()
 {
@@ -323,7 +349,6 @@ inline void ConfigXBee(String result)
     }
     delay(100);
 }
-
 
 void setPANID(String value)
 {

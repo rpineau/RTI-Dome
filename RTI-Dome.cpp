@@ -83,7 +83,7 @@ CRTIDome::CRTIDome()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CRTIDome] Version %3.2f build 2019_12_06_1810.\n", timestamp, DRIVER_VERSION);
+    fprintf(Logfile, "[%s] [CRTIDome] Version %3.2f build 2020_11_16_1810.\n", timestamp, DRIVER_VERSION);
     fprintf(Logfile, "[%s] [CRTIDome] Constructor Called.\n", timestamp);
     fprintf(Logfile, "[%s] [CRTIDome] Rains status file : '%s'.\n", timestamp, m_sRainStatusfilePath.c_str());
     fflush(Logfile);
@@ -229,7 +229,7 @@ void CRTIDome::Disconnect()
 
 int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode, int nResultMaxLen, int nTimeout)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
     unsigned long  ulBytesWrite;
 
@@ -284,7 +284,7 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
 
 int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     unsigned long ulBytesRead = 0;
     unsigned long ulTotalBytesRead = 0;
     char *pszBufPtr;
@@ -329,7 +329,7 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
 
 int CRTIDome::getDomeAz(double &dDomeAz)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -362,7 +362,7 @@ int CRTIDome::getDomeAz(double &dDomeAz)
 
 int CRTIDome::getDomeEl(double &dDomeEl)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     // char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -406,7 +406,7 @@ int CRTIDome::getDomeEl(double &dDomeEl)
 
 int CRTIDome::getDomeHomeAz(double &dAz)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -435,7 +435,7 @@ int CRTIDome::getDomeHomeAz(double &dAz)
 
 int CRTIDome::getDomeParkAz(double &dAz)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -473,7 +473,7 @@ int CRTIDome::getDomeParkAz(double &dAz)
 
 int CRTIDome::getShutterState(int &nState)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
     std::vector<std::string> shutterStateFileds;
 
@@ -527,7 +527,7 @@ int CRTIDome::getShutterState(int &nState)
 
 int CRTIDome::getDomeStepPerRev(int &nStepPerRev)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -552,7 +552,7 @@ int CRTIDome::getDomeStepPerRev(int &nStepPerRev)
 
 int CRTIDome::setDomeStepPerRev(int nStepPerRev)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -569,7 +569,7 @@ int CRTIDome::setDomeStepPerRev(int nStepPerRev)
 
 int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &dShutterVolts, double &dShutterCutOff)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     int rc = 0;
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -683,7 +683,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 
 int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
     int nRotCutOff, nShutCutOff;
@@ -741,7 +741,7 @@ bool CRTIDome::isDomeMoving()
 {
     bool bIsMoving;
     int nTmp;
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -789,7 +789,7 @@ bool CRTIDome::isDomeAtHome()
 {
     bool bAthome;
     int nTmp;
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -832,7 +832,7 @@ bool CRTIDome::isDomeAtHome()
 
 int CRTIDome::syncDome(double dAz, double dEl)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -859,7 +859,7 @@ int CRTIDome::syncDome(double dAz, double dEl)
 
 int CRTIDome::parkDome()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
@@ -898,7 +898,7 @@ int CRTIDome::unparkDome()
 
 int CRTIDome::gotoAzimuth(double dNewAz)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -929,7 +929,7 @@ int CRTIDome::gotoAzimuth(double dNewAz)
 
 int CRTIDome::openShutter()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     bool bDummy;
     char szResp[SERIAL_BUFFER_SIZE];
     double domeVolts;
@@ -983,14 +983,14 @@ int CRTIDome::openShutter()
         fprintf(Logfile, "[%s] [CRTIDome::openShutter] Voltage too low to open\n", timestamp);
         fflush(Logfile);
 #endif
-        nErr = ERR_CMDFAILED;
+        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
     return nErr;
 }
 
 int CRTIDome::closeShutter()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     bool bDummy;
     char szResp[SERIAL_BUFFER_SIZE];
     double domeVolts;
@@ -1040,7 +1040,8 @@ int CRTIDome::closeShutter()
     }
 
     if(szResp[0] == 'L') { // batteryb LOW.. can't open
-        nErr = ERR_CMDFAILED;
+        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+;
     }
 
     return nErr;
@@ -1048,7 +1049,7 @@ int CRTIDome::closeShutter()
 
 int CRTIDome::getFirmwareVersion(char *szVersion, int nStrMaxLen)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     int i;
     char szResp[SERIAL_BUFFER_SIZE];
     std::vector<std::string> firmwareFields;
@@ -1077,7 +1078,7 @@ int CRTIDome::getFirmwareVersion(char *szVersion, int nStrMaxLen)
     if(nErr) {
         strncpy(szVersion, szResp, nStrMaxLen);
         m_fVersion = atof(szResp);
-        return ND_OK;
+        return PLUGIN_OK;
     }
 
     nErr = parseFields(firmwareFields[0].c_str(),versionFields, '.');
@@ -1098,7 +1099,7 @@ int CRTIDome::getFirmwareVersion(char *szVersion, int nStrMaxLen)
 
 int CRTIDome::getFirmwareVersion(float &fVersion)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
 
     if(m_fVersion == 0.0f) {
         nErr = getFirmwareVersion(m_szFirmwareVersion, SERIAL_BUFFER_SIZE);
@@ -1113,7 +1114,7 @@ int CRTIDome::getFirmwareVersion(float &fVersion)
 
 int CRTIDome::getShutterFirmwareVersion(char *szVersion, int nStrMaxLen)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
     std::vector<std::string> firmwareFields;
     std::vector<std::string> versionFields;
@@ -1141,7 +1142,7 @@ int CRTIDome::getShutterFirmwareVersion(char *szVersion, int nStrMaxLen)
     if(nErr) {
         strncpy(szVersion, szResp, nStrMaxLen);
         m_fVersion = atof(szResp);
-        return ND_OK;
+        return PLUGIN_OK;
     }
 
     strncpy(szVersion, szResp, nStrMaxLen);
@@ -1151,7 +1152,7 @@ int CRTIDome::getShutterFirmwareVersion(char *szVersion, int nStrMaxLen)
 
 int CRTIDome::goHome()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1162,7 +1163,7 @@ int CRTIDome::goHome()
     }
     else if(isDomeAtHome()){
             m_bHomed = true;
-            return ND_OK;
+            return PLUGIN_OK;
     }
 #ifdef PLUGIN_DEBUG
     ltime = time(NULL);
@@ -1190,7 +1191,7 @@ int CRTIDome::goHome()
 
 int CRTIDome::calibrate()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1215,7 +1216,7 @@ int CRTIDome::calibrate()
 
 int CRTIDome::isGoToComplete(bool &bComplete)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     double dDomeAz = 0;
 
     if(!m_bIsConnected)
@@ -1266,7 +1267,7 @@ int CRTIDome::isGoToComplete(bool &bComplete)
         }
         else {
             m_nGotoTries = 0;
-            nErr = ERR_CMDFAILED;
+            nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
         }
     }
 
@@ -1275,7 +1276,7 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 
 int CRTIDome::isOpenComplete(bool &bComplete)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     int nState;
     bool bDummy;
     if(!m_bIsConnected)
@@ -1289,7 +1290,7 @@ int CRTIDome::isOpenComplete(bool &bComplete)
 
     nErr = getShutterState(nState);
     if(nErr)
-        return ERR_CMDFAILED;
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     if(nState == OPEN){
         m_bShutterOpened = true;
         bComplete = true;
@@ -1314,7 +1315,7 @@ int CRTIDome::isOpenComplete(bool &bComplete)
 
 int CRTIDome::isCloseComplete(bool &bComplete)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     int nState;
     bool bDummy;
     
@@ -1329,7 +1330,7 @@ int CRTIDome::isCloseComplete(bool &bComplete)
 
     nErr = getShutterState(nState);
     if(nErr)
-        return ERR_CMDFAILED;
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     if(nState == CLOSED){
         m_bShutterOpened = false;
         bComplete = true;
@@ -1355,7 +1356,7 @@ int CRTIDome::isCloseComplete(bool &bComplete)
 
 int CRTIDome::isParkComplete(bool &bComplete)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     double dDomeAz=0;
     bool bFoundHome;
 
@@ -1405,7 +1406,7 @@ int CRTIDome::isParkComplete(bool &bComplete)
         bComplete = false;
         m_bHomed = false;
         m_bParked = false;
-        nErr = ERR_CMDFAILED;
+        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1421,7 +1422,7 @@ int CRTIDome::isParkComplete(bool &bComplete)
 
 int CRTIDome::isUnparkComplete(bool &bComplete)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
 
     bComplete = false;
 
@@ -1471,7 +1472,7 @@ int CRTIDome::isUnparkComplete(bool &bComplete)
 
 int CRTIDome::isFindHomeComplete(bool &bComplete)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
@@ -1531,7 +1532,7 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
             m_nHomingTries = 1;
             goHome();
         }
-        return ERR_CMDFAILED;
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
 
     return nErr;
@@ -1540,7 +1541,7 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
 
 int CRTIDome::isCalibratingComplete(bool &bComplete)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     double dDomeAz = 0;
 
     if(!m_bIsConnected)
@@ -1584,7 +1585,7 @@ int CRTIDome::isCalibratingComplete(bool &bComplete)
 
 int CRTIDome::abortCurrentCommand()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1607,7 +1608,7 @@ int CRTIDome::abortCurrentCommand()
 
 int CRTIDome::sendShutterHello()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1627,7 +1628,7 @@ int CRTIDome::sendShutterHello()
 
 int CRTIDome::getShutterPresent(bool &bShutterPresent)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     nErr = domeCommand("o#", szResp, 'o', SERIAL_BUFFER_SIZE);
@@ -1679,7 +1680,7 @@ int CRTIDome::getNbTicksPerRev()
 
 int CRTIDome::setNbTicksPerRev(int nSteps)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
 
     if(m_bIsConnected)
         nErr = setDomeStepPerRev(nSteps);
@@ -1695,7 +1696,7 @@ double CRTIDome::getHomeAz()
 
 int CRTIDome::setHomeAz(double dAz)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -1721,7 +1722,7 @@ double CRTIDome::getParkAz()
 
 int CRTIDome::setParkAz(double dAz)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -1764,7 +1765,7 @@ int CRTIDome::getCurrentShutterState()
 
 int CRTIDome::getDefaultDir(bool &bNormal)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     bNormal = true;
@@ -1788,7 +1789,7 @@ int CRTIDome::getDefaultDir(bool &bNormal)
 
 int CRTIDome::setDefaultDir(bool bNormal)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -1813,7 +1814,7 @@ int CRTIDome::setDefaultDir(bool bNormal)
 
 int CRTIDome::getRainSensorStatus(int &nStatus)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     nStatus = NOT_RAINING;
@@ -1838,7 +1839,7 @@ int CRTIDome::getRainSensorStatus(int &nStatus)
 
 int CRTIDome::getRotationSpeed(int &nSpeed)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1863,7 +1864,7 @@ int CRTIDome::getRotationSpeed(int &nSpeed)
 
 int CRTIDome::setRotationSpeed(int nSpeed)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -1878,7 +1879,7 @@ int CRTIDome::setRotationSpeed(int nSpeed)
 
 int CRTIDome::getRotationAcceleration(int &nAcceleration)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1903,7 +1904,7 @@ int CRTIDome::getRotationAcceleration(int &nAcceleration)
 
 int CRTIDome::setRotationAcceleration(int nAcceleration)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -1918,7 +1919,7 @@ int CRTIDome::setRotationAcceleration(int nAcceleration)
 
 int CRTIDome::getShutterSpeed(int &nSpeed)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1949,7 +1950,7 @@ int CRTIDome::getShutterSpeed(int &nSpeed)
 
 int CRTIDome::setShutterSpeed(int nSpeed)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -1969,7 +1970,7 @@ int CRTIDome::setShutterSpeed(int nSpeed)
 
 int CRTIDome::getShutterAcceleration(int &nAcceleration)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -1999,7 +2000,7 @@ int CRTIDome::getShutterAcceleration(int &nAcceleration)
 
 int CRTIDome::setShutterAcceleration(int nAcceleration)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -2028,7 +2029,7 @@ void CRTIDome::setHomeOnUnpark(const bool bEnabled)
 
 int	CRTIDome::getSutterWatchdogTimerValue(int &nValue)
 {
-	int nErr = ND_OK;
+	int nErr = PLUGIN_OK;
 	char szResp[SERIAL_BUFFER_SIZE];
 
 	if(!m_bIsConnected)
@@ -2058,7 +2059,7 @@ int	CRTIDome::getSutterWatchdogTimerValue(int &nValue)
 
 int	CRTIDome::setSutterWatchdogTimerValue(const int &nValue)
 {
-	int nErr = ND_OK;
+	int nErr = PLUGIN_OK;
 	char szBuf[SERIAL_BUFFER_SIZE];
 	char szResp[SERIAL_BUFFER_SIZE];
 
@@ -2077,7 +2078,7 @@ int	CRTIDome::setSutterWatchdogTimerValue(const int &nValue)
 
 int CRTIDome::getRainAction(int &nAction)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -2102,7 +2103,7 @@ int CRTIDome::getRainAction(int &nAction)
 
 int CRTIDome::setRainAction(const int &nAction)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -2117,7 +2118,7 @@ int CRTIDome::setRainAction(const int &nAction)
 
 int CRTIDome::getPanId(int &nPanId)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -2143,7 +2144,7 @@ int CRTIDome::getPanId(int &nPanId)
 
 int CRTIDome::setPanId(const int nPanId)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
@@ -2158,7 +2159,7 @@ int CRTIDome::setPanId(const int nPanId)
 
 int CRTIDome::getShutterPanId(int &nPanId)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -2183,7 +2184,7 @@ int CRTIDome::getShutterPanId(int &nPanId)
 }
 int CRTIDome::isPanIdSet(const int nPanId, bool &bSet)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     int nCtrlPanId;
     
     bSet = false;
@@ -2199,7 +2200,7 @@ int CRTIDome::isPanIdSet(const int nPanId, bool &bSet)
 
 int CRTIDome::restoreDomeMotorSettings()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
@@ -2221,7 +2222,7 @@ int CRTIDome::restoreDomeMotorSettings()
 
 int CRTIDome::restoreShutterMotorSettings()
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
     int nDummy;
     
@@ -2293,7 +2294,7 @@ void CRTIDome::writeRainStatus()
 
 int CRTIDome::parseFields(const char *pszResp, std::vector<std::string> &svFields, char cSeparator)
 {
-    int nErr = ND_OK;
+    int nErr = PLUGIN_OK;
     std::string sSegment;
     if(!pszResp) {
 #ifdef PLUGIN_DEBUG
@@ -2303,7 +2304,7 @@ int CRTIDome::parseFields(const char *pszResp, std::vector<std::string> &svField
         fprintf(Logfile, "[%s] [CRTIDome::setDefaultDir] pszResp is NULL\n", timestamp);
         fflush(Logfile);
 #endif
-        return ERR_CMDFAILED;
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
 
     if(!strlen(pszResp)) {
@@ -2314,7 +2315,7 @@ int CRTIDome::parseFields(const char *pszResp, std::vector<std::string> &svField
         fprintf(Logfile, "[%s] [CRTIDome::setDefaultDir] pszResp is enpty\n", timestamp);
         fflush(Logfile);
 #endif
-        return ERR_CMDFAILED;
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
     std::stringstream ssTmp(pszResp);
 
@@ -2326,7 +2327,7 @@ int CRTIDome::parseFields(const char *pszResp, std::vector<std::string> &svField
     }
 
     if(svFields.size()==0) {
-        nErr = ERR_CMDFAILED;
+        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
     return nErr;
 }

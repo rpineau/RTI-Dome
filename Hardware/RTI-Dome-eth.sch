@@ -899,7 +899,7 @@
 <pin name="SCL1" x="27.94" y="43.18" length="short" rot="R180"/>
 <pin name="SDA1" x="27.94" y="40.64" length="short" rot="R180"/>
 <pin name="AREF" x="27.94" y="38.1" length="short" rot="R180"/>
-<pin name="GND" x="27.94" y="35.56" length="short" rot="R180"/>
+<pin name="GND" x="27.94" y="35.56" length="short" direction="pwr" rot="R180"/>
 <pin name="13" x="27.94" y="33.02" length="short" rot="R180"/>
 <pin name="12" x="27.94" y="30.48" length="short" rot="R180"/>
 <pin name="11" x="27.94" y="27.94" length="short" rot="R180"/>
@@ -920,14 +920,14 @@
 <pin name="A2" x="-30.48" y="2.54" length="short"/>
 <pin name="A1" x="-30.48" y="5.08" length="short"/>
 <pin name="A0" x="-30.48" y="7.62" length="short"/>
-<pin name="VIN" x="-30.48" y="15.24" length="short"/>
-<pin name="GND." x="-30.48" y="17.78" length="short"/>
-<pin name="GND.." x="-30.48" y="20.32" length="short"/>
-<pin name="5V" x="-30.48" y="22.86" length="short"/>
-<pin name="3.3V" x="-30.48" y="25.4" length="short"/>
+<pin name="VIN" x="-30.48" y="15.24" length="short" direction="pwr"/>
+<pin name="GND@2" x="-30.48" y="17.78" length="short" direction="pwr"/>
+<pin name="GND@3" x="-30.48" y="20.32" length="short" direction="pwr"/>
+<pin name="5V" x="-30.48" y="22.86" length="short" direction="pwr"/>
+<pin name="3.3V" x="-30.48" y="25.4" length="short" direction="pwr"/>
 <pin name="RESET" x="-30.48" y="27.94" length="short"/>
 <pin name="IOREF" x="-30.48" y="30.48" length="short"/>
-<pin name="(N/C)" x="-30.48" y="33.02" length="short"/>
+<pin name="(N/C)" x="-30.48" y="33.02" length="short" direction="nc"/>
 <wire x1="25.4" y1="45.72" x2="25.4" y2="-68.58" width="0.254" layer="94"/>
 <wire x1="25.4" y1="-68.58" x2="7.62" y2="-68.58" width="0.254" layer="94"/>
 <wire x1="7.62" y1="-68.58" x2="5.08" y2="-71.12" width="0.254" layer="94"/>
@@ -953,7 +953,7 @@
 <pin name="A8" x="-30.48" y="-17.78" length="short"/>
 <pin name="A6" x="-30.48" y="-7.62" length="short"/>
 <pin name="A7" x="-30.48" y="-10.16" length="short"/>
-<pin name="+5V.." x="20.32" y="-66.04" visible="pin" length="short" rot="R90"/>
+<pin name="+5V@4" x="20.32" y="-66.04" visible="pin" length="short" direction="pwr" rot="R90"/>
 <pin name="23" x="17.78" y="-66.04" visible="pin" length="short" rot="R90"/>
 <pin name="25" x="15.24" y="-66.04" visible="pin" length="short" rot="R90"/>
 <pin name="27" x="12.7" y="-66.04" visible="pin" length="short" rot="R90"/>
@@ -970,8 +970,8 @@
 <pin name="49" x="-15.24" y="-66.04" visible="pin" length="short" rot="R90"/>
 <pin name="51" x="-17.78" y="-66.04" visible="pin" length="short" rot="R90"/>
 <pin name="53" x="-20.32" y="-66.04" visible="pin" length="short" rot="R90"/>
-<pin name="GND...." x="-22.86" y="-66.04" visible="pin" length="short" rot="R90"/>
-<pin name="GND..." x="-22.86" y="-43.18" visible="pin" length="short" rot="R270"/>
+<pin name="GND@5" x="-22.86" y="-66.04" visible="pin" length="short" direction="pwr" rot="R90"/>
+<pin name="GND@4" x="-22.86" y="-43.18" visible="pin" length="short" direction="pwr" rot="R270"/>
 <pin name="52" x="-20.32" y="-43.18" visible="pin" length="short" rot="R270"/>
 <pin name="50" x="-17.78" y="-43.18" visible="pin" length="short" rot="R270"/>
 <pin name="48" x="-15.24" y="-43.18" visible="pin" length="short" rot="R270"/>
@@ -988,10 +988,10 @@
 <pin name="26" x="12.7" y="-43.18" visible="pin" length="short" rot="R270"/>
 <pin name="24" x="15.24" y="-43.18" visible="pin" length="short" rot="R270"/>
 <pin name="22" x="17.78" y="-43.18" visible="pin" length="short" rot="R270"/>
-<pin name="+5V." x="20.32" y="-43.18" visible="pin" length="short" rot="R270"/>
-<pin name="+5V_" x="-2.54" y="-17.78" visible="pin" length="short"/>
+<pin name="+5V@3" x="20.32" y="-43.18" visible="pin" length="short" direction="pwr" rot="R270"/>
+<pin name="+5V@2" x="-2.54" y="-17.78" visible="pin" length="short" direction="pwr"/>
 <pin name="SDO" x="-2.54" y="-20.32" visible="pin" length="short"/>
-<pin name="GND__" x="-2.54" y="-22.86" visible="pin" length="short"/>
+<pin name="GND@6" x="-2.54" y="-22.86" visible="pin" length="short" direction="pwr"/>
 <pin name="RESET." x="-2.54" y="-15.24" visible="pin" length="short"/>
 <pin name="SCK" x="-2.54" y="-12.7" visible="pin" length="short"/>
 <pin name="SDI" x="-2.54" y="-10.16" visible="pin" length="short"/>
@@ -1007,9 +1007,9 @@
 <device name="" package="ARDUINO_DUE_SHIELD_FULL">
 <connects>
 <connect gate="G$1" pin="(N/C)" pad="N/C"/>
-<connect gate="G$1" pin="+5V." pad="5V."/>
-<connect gate="G$1" pin="+5V.." pad="5V.."/>
-<connect gate="G$1" pin="+5V_" pad="+5V_"/>
+<connect gate="G$1" pin="+5V@2" pad="+5V_"/>
+<connect gate="G$1" pin="+5V@3" pad="5V."/>
+<connect gate="G$1" pin="+5V@4" pad="5V.."/>
 <connect gate="G$1" pin="0(RX)" pad="0"/>
 <connect gate="G$1" pin="1(TX)" pad="1"/>
 <connect gate="G$1" pin="10" pad="10"/>
@@ -1084,11 +1084,11 @@
 <connect gate="G$1" pin="DAC0" pad="A12"/>
 <connect gate="G$1" pin="DAC1" pad="A13"/>
 <connect gate="G$1" pin="GND" pad="GND"/>
-<connect gate="G$1" pin="GND." pad="GND."/>
-<connect gate="G$1" pin="GND.." pad="GND.."/>
-<connect gate="G$1" pin="GND..." pad="GND..."/>
-<connect gate="G$1" pin="GND...." pad="GND...."/>
-<connect gate="G$1" pin="GND__" pad="GND__"/>
+<connect gate="G$1" pin="GND@2" pad="GND."/>
+<connect gate="G$1" pin="GND@3" pad="GND.."/>
+<connect gate="G$1" pin="GND@4" pad="GND..."/>
+<connect gate="G$1" pin="GND@5" pad="GND...."/>
+<connect gate="G$1" pin="GND@6" pad="GND__"/>
 <connect gate="G$1" pin="IOREF" pad="I/OREF"/>
 <connect gate="G$1" pin="RESET" pad="RESET"/>
 <connect gate="G$1" pin="RESET." pad="RESET."/>
@@ -1448,12 +1448,6 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 <text x="-2.54" y="-2.54" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
 <pin name="VCC" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
 </symbol>
-<symbol name="+3V3">
-<wire x1="1.27" y1="-1.905" x2="0" y2="0" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="-1.27" y2="-1.905" width="0.254" layer="94"/>
-<text x="-2.54" y="-5.08" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
-<pin name="+3V3" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
-</symbol>
 </symbols>
 <devicesets>
 <deviceset name="GND" prefix="GND">
@@ -1473,19 +1467,6 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="VCC" symbol="VCC" x="0" y="0"/>
-</gates>
-<devices>
-<device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="+3V3" prefix="+3V3">
-<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
-<gates>
-<gate name="G$1" symbol="+3V3" x="0" y="0"/>
 </gates>
 <devices>
 <device name="">
@@ -16505,7 +16486,6 @@ using ameteur radio standard layout</description>
 <part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
 <part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
 <part name="C5" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="X12" library="con-ptr500" deviceset="AK500/2" device=""/>
 <part name="IC3" library="ftdichip" deviceset="FT232R" device="L"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="R9" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
@@ -16562,9 +16542,9 @@ using ameteur radio standard layout</description>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device=""/>
-<part name="+3V15" library="supply1" deviceset="+3V3" device=""/>
 <part name="C20" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
+<part name="R30" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 </parts>
 <sheets>
 <sheet>
@@ -16622,8 +16602,6 @@ using ameteur radio standard layout</description>
 <instance part="R1" gate="G$1" x="76.2" y="241.3" rot="R90"/>
 <instance part="R3" gate="G$1" x="40.64" y="248.92" rot="R90"/>
 <instance part="C5" gate="G$1" x="114.3" y="180.34"/>
-<instance part="X12" gate="-1" x="378.46" y="129.54" rot="R180"/>
-<instance part="X12" gate="-2" x="378.46" y="134.62" rot="R180"/>
 <instance part="IC3" gate="1" x="289.56" y="149.86"/>
 <instance part="GND10" gate="1" x="274.32" y="111.76"/>
 <instance part="R9" gate="G$1" x="256.54" y="172.72" rot="R270"/>
@@ -16688,9 +16666,9 @@ using ameteur radio standard layout</description>
 <instance part="J1" gate="G$1" x="378.46" y="83.82"/>
 <instance part="GND15" gate="1" x="591.82" y="132.08"/>
 <instance part="25MHZ" gate="G$1" x="576.58" y="132.08" rot="R180"/>
-<instance part="+3V15" gate="G$1" x="596.9" y="139.7"/>
 <instance part="C20" gate="G$1" x="596.9" y="114.3"/>
 <instance part="GND17" gate="1" x="596.9" y="104.14"/>
+<instance part="R30" gate="G$1" x="469.9" y="129.54" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -16760,8 +16738,8 @@ using ameteur radio standard layout</description>
 <wire x1="93.98" y1="106.68" x2="101.6" y2="106.68" width="0.1524" layer="91"/>
 <wire x1="93.98" y1="106.68" x2="93.98" y2="104.14" width="0.1524" layer="91"/>
 <junction x="93.98" y="104.14"/>
-<pinref part="U$1" gate="G$1" pin="GND."/>
-<pinref part="U$1" gate="G$1" pin="GND.."/>
+<pinref part="U$1" gate="G$1" pin="GND@2"/>
+<pinref part="U$1" gate="G$1" pin="GND@3"/>
 </segment>
 <segment>
 <pinref part="C1" gate="G$1" pin="2"/>
@@ -16932,11 +16910,6 @@ using ameteur radio standard layout</description>
 <pinref part="IC6" gate="P" pin="GND"/>
 </segment>
 <segment>
-<pinref part="X12" gate="-1" pin="KL"/>
-<wire x1="370.84" y1="129.54" x2="373.38" y2="129.54" width="0.1524" layer="91"/>
-<label x="370.84" y="129.54" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <wire x1="116.84" y1="243.84" x2="119.38" y2="243.84" width="0.1524" layer="91"/>
 <label x="116.84" y="243.84" size="0.8128" layer="95" rot="R180" xref="yes"/>
 <pinref part="IC5" gate="G$1" pin="A4"/>
@@ -16962,26 +16935,21 @@ using ameteur radio standard layout</description>
 <pinref part="IC6" gate="G$1" pin="A7"/>
 </segment>
 <segment>
-<pinref part="X12" gate="-2" pin="KL"/>
-<wire x1="370.84" y1="134.62" x2="373.38" y2="134.62" width="0.1524" layer="91"/>
-<label x="370.84" y="134.62" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <pinref part="IC6" gate="G$1" pin="*OE"/>
 <wire x1="190.5" y1="231.14" x2="187.96" y2="231.14" width="0.1524" layer="91"/>
 <wire x1="187.96" y1="231.14" x2="187.96" y2="228.6" width="0.1524" layer="91"/>
 <pinref part="GND7" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="GND__"/>
+<pinref part="U$1" gate="G$1" pin="GND@6"/>
 <wire x1="127" y1="63.5" x2="129.54" y2="63.5" width="0.1524" layer="91"/>
 <label x="127" y="63.5" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="GND...."/>
+<pinref part="U$1" gate="G$1" pin="GND@5"/>
 <wire x1="109.22" y1="20.32" x2="109.22" y2="17.78" width="0.1524" layer="91"/>
 <pinref part="GND9" gate="1" pin="GND"/>
-<pinref part="U$1" gate="G$1" pin="GND..."/>
+<pinref part="U$1" gate="G$1" pin="GND@4"/>
 <wire x1="109.22" y1="17.78" x2="109.22" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="106.68" y1="45.72" x2="109.22" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="109.22" y1="45.72" x2="109.22" y2="43.18" width="0.1524" layer="91"/>
@@ -17382,6 +17350,26 @@ using ameteur radio standard layout</description>
 <wire x1="487.68" y1="124.46" x2="487.68" y2="121.92" width="0.1524" layer="91"/>
 <label x="487.68" y="121.92" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
+<segment>
+<pinref part="R30" gate="G$1" pin="2"/>
+<wire x1="469.9" y1="121.92" x2="469.9" y2="124.46" width="0.1524" layer="91"/>
+<label x="469.9" y="121.92" size="1.016" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="25MHZ" gate="G$1" pin="OE"/>
+<wire x1="563.88" y1="127" x2="561.34" y2="127" width="0.1524" layer="91"/>
+<wire x1="561.34" y1="127" x2="561.34" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="561.34" y1="119.38" x2="596.9" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="596.9" y1="119.38" x2="596.9" y2="127" width="0.1524" layer="91"/>
+<pinref part="25MHZ" gate="G$1" pin="VDD"/>
+<wire x1="596.9" y1="127" x2="589.28" y2="127" width="0.1524" layer="91"/>
+<pinref part="C20" gate="G$1" pin="1"/>
+<wire x1="596.9" y1="119.38" x2="596.9" y2="116.84" width="0.1524" layer="91"/>
+<junction x="596.9" y="119.38"/>
+<wire x1="596.9" y1="127" x2="599.44" y2="127" width="0.1524" layer="91"/>
+<junction x="596.9" y="127"/>
+<label x="599.44" y="127" size="1.016" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="RG-11-IN_5V" class="0">
 <segment>
@@ -17627,11 +17615,11 @@ using ameteur radio standard layout</description>
 <label x="187.96" y="233.68" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U$1" gate="G$1" pin="+5V."/>
+<pinref part="U$1" gate="G$1" pin="+5V@3"/>
 <wire x1="152.4" y1="45.72" x2="152.4" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="45.72" x2="154.94" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="154.94" y1="45.72" x2="154.94" y2="30.48" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="+5V.."/>
+<pinref part="U$1" gate="G$1" pin="+5V@4"/>
 <wire x1="154.94" y1="30.48" x2="154.94" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="20.32" x2="152.4" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="154.94" y1="15.24" x2="152.4" y2="15.24" width="0.1524" layer="91"/>
@@ -18132,6 +18120,11 @@ using ameteur radio standard layout</description>
 <wire x1="452.12" y1="154.94" x2="454.66" y2="154.94" width="0.1524" layer="91"/>
 <label x="452.12" y="154.94" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="32"/>
+<wire x1="137.16" y1="45.72" x2="137.16" y2="43.18" width="0.1524" layer="91"/>
+<label x="137.16" y="45.72" size="1.016" layer="95" rot="R90" xref="yes"/>
+</segment>
 </net>
 <net name="N$17" class="0">
 <segment>
@@ -18163,19 +18156,6 @@ using ameteur radio standard layout</description>
 <pinref part="U1" gate="G$1" pin="XO"/>
 <wire x1="452.12" y1="167.64" x2="454.66" y2="167.64" width="0.1524" layer="91"/>
 <label x="452.12" y="167.64" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="RESET" class="0">
-<segment>
-<pinref part="U1" gate="G$1" pin="RST_N"/>
-<wire x1="469.9" y1="137.16" x2="469.9" y2="139.7" width="0.1524" layer="91"/>
-<wire x1="469.9" y1="137.16" x2="464.82" y2="137.16" width="0.1524" layer="91"/>
-<label x="464.82" y="137.16" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="U$1" gate="G$1" pin="RESET."/>
-<wire x1="127" y1="71.12" x2="129.54" y2="71.12" width="0.1524" layer="91"/>
-<label x="127" y="71.12" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$22" class="0">
@@ -18268,21 +18248,21 @@ using ameteur radio standard layout</description>
 <pinref part="R40" gate="G$1" pin="2"/>
 </segment>
 </net>
-<net name="+3V3" class="3">
+<net name="ETH_RESET" class="0">
 <segment>
-<wire x1="589.28" y1="127" x2="596.9" y2="127" width="0.1524" layer="91"/>
-<wire x1="596.9" y1="127" x2="596.9" y2="137.16" width="0.1524" layer="91"/>
-<wire x1="596.9" y1="119.38" x2="596.9" y2="127" width="0.1524" layer="91"/>
-<junction x="596.9" y="127"/>
-<pinref part="+3V15" gate="G$1" pin="+3V3"/>
-<pinref part="25MHZ" gate="G$1" pin="VDD"/>
-<pinref part="25MHZ" gate="G$1" pin="OE"/>
-<wire x1="563.88" y1="127" x2="561.34" y2="127" width="0.1524" layer="91"/>
-<wire x1="561.34" y1="127" x2="561.34" y2="119.38" width="0.1524" layer="91"/>
-<wire x1="561.34" y1="119.38" x2="596.9" y2="119.38" width="0.1524" layer="91"/>
-<pinref part="C20" gate="G$1" pin="1"/>
-<wire x1="596.9" y1="119.38" x2="596.9" y2="116.84" width="0.1524" layer="91"/>
-<junction x="596.9" y="119.38"/>
+<wire x1="111.76" y1="12.7" x2="114.3" y2="12.7" width="0.1524" layer="91"/>
+<label x="114.3" y="12.7" size="1.016" layer="95" xref="yes"/>
+<pinref part="U$1" gate="G$1" pin="53"/>
+<wire x1="111.76" y1="12.7" x2="111.76" y2="20.32" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="RST_N"/>
+<pinref part="R30" gate="G$1" pin="1"/>
+<wire x1="469.9" y1="139.7" x2="469.9" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="469.9" y1="137.16" x2="469.9" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="469.9" y1="137.16" x2="467.36" y2="137.16" width="0.1524" layer="91"/>
+<junction x="469.9" y="137.16"/>
+<label x="467.36" y="137.16" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>

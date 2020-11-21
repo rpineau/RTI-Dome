@@ -5,8 +5,6 @@
 // This is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
 
-
-
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
 
@@ -102,7 +100,6 @@ enum Seeks { HOMING_NONE, // Not homing or calibrating
 };
 
 enum RainActions {DO_NOTHING=0, HOME, PARK};
-
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
