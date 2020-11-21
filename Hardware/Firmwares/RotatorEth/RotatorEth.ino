@@ -36,7 +36,7 @@
 // include and some defines for ethernet connection
 #include <SPI.h>
 #include <Ethernet.h>
-byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+#include "EtherMac.h"
 #define ETHERNET_CS     52
 #define ETHERNET_RESET  53
 IPAddress ip;
@@ -189,9 +189,13 @@ void ReceiveComputer(void);
 void ProcessCommand(bool);
 int ReceiveWireless(void);
 void ProcessWireless(void);
+void ReadUniqueID( uint32_t* );
+
 
 void setup()
 {
+    byte mac[6];
+    getMacAddress(mac);
     resetEthernet(ETHERNET_RESET);
 
     Computer.begin(115200);
@@ -245,6 +249,7 @@ void loop()
     Rotator->Run();
     CheckForCommands();
     CheckForRain();
+
 #ifndef STANDALONE
     if(XbeeStarted) {
         if(!SentHello)
@@ -259,6 +264,7 @@ void loop()
         }
     }
 #endif
+
 }
 
 void checkForNewTCPClient()
@@ -1055,8 +1061,6 @@ void ProcessWireless()
 
 }
 #endif
-
-
 
 
 

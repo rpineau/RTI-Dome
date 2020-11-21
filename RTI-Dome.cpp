@@ -2285,6 +2285,7 @@ void CRTIDome::writeRainStatus()
     if(m_bSaveRainStatus && RainStatusfile) {
         int nStatus;
         getRainSensorStatus(nStatus);
+        RainStatusfile = freopen(m_sRainStatusfilePath.c_str(), "w", RainStatusfile);
         fseek(RainStatusfile, 0, SEEK_SET);
         fprintf(RainStatusfile, "Raining:%s", nStatus == RAINING?"YES":"NO");
         fflush(RainStatusfile);
