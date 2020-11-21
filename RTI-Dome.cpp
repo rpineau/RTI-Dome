@@ -1531,9 +1531,11 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
         if(m_nHomingTries == 0) {
             m_nHomingTries = 1;
             goHome();
-            return PLUGIN_OK;
         }
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        else {
+            m_nHomingTries = 0;
+            nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        }
     }
 
     return nErr;
