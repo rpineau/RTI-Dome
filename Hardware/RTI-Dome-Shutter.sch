@@ -14555,6 +14555,79 @@ using ameteur radio standard layout</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="MCP120T-270I_TT">
+<description>&lt;Microcontroller Supervisory Circuit&lt;/b&gt;&lt;p&gt;
+&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
+<packages>
+<package name="SOT95P237X112-3N">
+<description>&lt;b&gt;SOT95P237X112-3N&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-0.9398" y="-1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
+<smd name="2" x="0.9398" y="-1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
+<smd name="3" x="0" y="1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
+<text x="0" y="3.81" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="-3.81" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-0.6858" y1="-0.7112" x2="-1.1938" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="-1.1938" y1="-0.7112" x2="-1.1938" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="-1.1938" y1="-1.3208" x2="-0.6858" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="-0.6858" y1="-1.3208" x2="-0.6858" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="1.1938" y1="-0.7112" x2="0.6858" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="0.6858" y1="-0.7112" x2="0.6858" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="0.6858" y1="-1.3208" x2="1.1938" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="1.1938" y1="-1.3208" x2="1.1938" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="-0.254" y1="0.7112" x2="0.254" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="0.254" y1="0.7112" x2="0.254" y2="1.3208" width="0.1524" layer="51"/>
+<wire x1="0.254" y1="1.3208" x2="-0.254" y2="1.3208" width="0.1524" layer="51"/>
+<wire x1="-0.254" y1="1.3208" x2="-0.254" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="-1.524" y1="-0.7112" x2="1.524" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="1.524" y1="-0.7112" x2="1.524" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="1.524" y1="0.7112" x2="-1.524" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="-1.524" y1="0.7112" x2="-1.524" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="-0.3302" y1="-0.7112" x2="0.3302" y2="-0.7112" width="0.1524" layer="21"/>
+</package>
+</packages>
+<symbols>
+<symbol name="MCP120T-270I_TT">
+<wire x1="-7.62" y1="2.54" x2="10.16" y2="2.54" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-5.08" x2="10.16" y2="2.54" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-5.08" x2="-7.62" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-7.62" y1="2.54" x2="-7.62" y2="-5.08" width="0.254" layer="94"/>
+<text x="-2.54" y="5.08" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="-2.54" y="-7.62" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="~RST" x="15.24" y="0" length="middle" rot="R180"/>
+<pin name="VDD" x="-12.7" y="0" length="middle"/>
+<pin name="VSS" x="-12.7" y="-2.54" length="middle"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="MCP120T-270I_TT" prefix="IC">
+<description>&lt;b&gt;Microcontroller Supervisory Circuit&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="MCP120T-270I_TT" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT95P237X112-3N">
+<connects>
+<connect gate="G$1" pin="VDD" pad="2"/>
+<connect gate="G$1" pin="VSS" pad="3"/>
+<connect gate="G$1" pin="~RST" pad="1"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="DESCRIPTION" value="Microcontroller Supervisory Circuit" constant="no"/>
+<attribute name="HEIGHT" value="mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="Microchip" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="MCP120T-270I/TT" constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="579-MCP120T-270I/TT" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.co.uk/ProductDetail/Microchip-Technology/MCP120T-270I-TT?qs=JaP0%252BruNJH91Pwyk6aJdSA%3D%3D" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -14625,6 +14698,8 @@ using ameteur radio standard layout</description>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="R22" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
+<part name="U$1" library="MCP120T-270I_TT" deviceset="MCP120T-270I_TT" device=""/>
+<part name="GND9" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -14704,6 +14779,8 @@ using ameteur radio standard layout</description>
 <instance part="GND7" gate="1" x="187.96" y="226.06"/>
 <instance part="R22" gate="G$1" x="147.32" y="180.34" rot="R270"/>
 <instance part="J1" gate="G$1" x="378.46" y="83.82"/>
+<instance part="U$1" gate="G$1" x="218.44" y="93.98"/>
+<instance part="GND9" gate="1" x="203.2" y="86.36"/>
 </instances>
 <busses>
 </busses>
@@ -14923,6 +15000,12 @@ using ameteur radio standard layout</description>
 <wire x1="187.96" y1="231.14" x2="187.96" y2="228.6" width="0.1524" layer="91"/>
 <pinref part="GND7" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="VSS"/>
+<wire x1="205.74" y1="91.44" x2="203.2" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="91.44" x2="203.2" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="GND9" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="+12V" class="1">
 <segment>
@@ -15072,6 +15155,12 @@ using ameteur radio standard layout</description>
 <pinref part="IC5" gate="G$1" pin="DIR"/>
 <wire x1="116.84" y1="231.14" x2="119.38" y2="231.14" width="0.1524" layer="91"/>
 <label x="116.84" y="231.14" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="VDD"/>
+<wire x1="205.74" y1="93.98" x2="203.2" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="93.98" x2="203.2" y2="99.06" width="0.1524" layer="91"/>
+<label x="203.2" y="99.06" size="1.016" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="RG-11-IN_5V" class="0">
@@ -15530,6 +15619,18 @@ using ameteur radio standard layout</description>
 <segment>
 <pinref part="IC5" gate="G$1" pin="B4"/>
 <wire x1="144.78" y1="243.84" x2="147.32" y2="243.84" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="RESET" class="0">
+<segment>
+<pinref part="PCB1" gate="G$1" pin="RESET"/>
+<wire x1="20.32" y1="66.04" x2="22.86" y2="66.04" width="0.1524" layer="91"/>
+<label x="20.32" y="66.04" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="~RST"/>
+<wire x1="236.22" y1="93.98" x2="233.68" y2="93.98" width="0.1524" layer="91"/>
+<label x="236.22" y="93.98" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 </nets>
