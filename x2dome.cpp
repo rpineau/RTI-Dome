@@ -678,7 +678,7 @@ int X2Dome::dapiGotoAzEl(double dAz, double dEl)
 
     nErr = m_RTIDome.gotoAzimuth(dAz);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
     else
         return SB_OK;
@@ -713,7 +713,7 @@ int X2Dome::dapiOpen(void)
 
     nErr = m_RTIDome.openShutter();
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
 	return SB_OK;
 }
@@ -735,7 +735,7 @@ int X2Dome::dapiClose(void)
 
     nErr = m_RTIDome.closeShutter();
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
 	return SB_OK;
 }
@@ -751,7 +751,7 @@ int X2Dome::dapiPark(void)
 
     nErr = m_RTIDome.parkDome();
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
 	return SB_OK;
 }
@@ -767,7 +767,7 @@ int X2Dome::dapiUnpark(void)
 
     nErr = m_RTIDome.unparkDome();
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
 	return SB_OK;
 }
@@ -783,7 +783,7 @@ int X2Dome::dapiFindHome(void)
 
 	nErr = m_RTIDome.goHome();
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
     return SB_OK;
 }
@@ -799,7 +799,7 @@ int X2Dome::dapiIsGotoComplete(bool* pbComplete)
 
 	nErr = m_RTIDome.isGoToComplete(*pbComplete);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
     return SB_OK;
 }
 
@@ -820,7 +820,7 @@ int X2Dome::dapiIsOpenComplete(bool* pbComplete)
 
 	nErr = m_RTIDome.isOpenComplete(*pbComplete);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
     return SB_OK;
 }
@@ -842,7 +842,7 @@ int	X2Dome::dapiIsCloseComplete(bool* pbComplete)
 
 	nErr = m_RTIDome.isCloseComplete(*pbComplete);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
     return SB_OK;
 }
@@ -858,7 +858,7 @@ int X2Dome::dapiIsParkComplete(bool* pbComplete)
 
 	nErr = m_RTIDome.isParkComplete(*pbComplete);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
     return SB_OK;
 }
@@ -874,7 +874,7 @@ int X2Dome::dapiIsUnparkComplete(bool* pbComplete)
 
 	nErr = m_RTIDome.isUnparkComplete(*pbComplete);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
     return SB_OK;
 }
@@ -890,7 +890,7 @@ int X2Dome::dapiIsFindHomeComplete(bool* pbComplete)
 
 	nErr = m_RTIDome.isFindHomeComplete(*pbComplete);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 
     return SB_OK;
 }
@@ -906,7 +906,7 @@ int X2Dome::dapiSync(double dAz, double dEl)
 
 	nErr = m_RTIDome.syncDome(dAz, dEl);
     if(nErr)
-        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
 	return SB_OK;
 }
 

@@ -201,6 +201,7 @@
 <text x="9.8425" y="68.58" size="0.6096" layer="22" rot="MR0">GND</text>
 <text x="3.175" y="69.85" size="0.6096" layer="21">D13</text>
 <text x="4.60375" y="68.61175" size="0.6096" layer="22" rot="MR0">D13</text>
+<text x="36.83" y="3.81" size="1.778" layer="51">Dome Shutter</text>
 </plain>
 <libraries>
 <library name="arduino_shield">
@@ -4193,10 +4194,10 @@ design rules under a new name.</description>
 <via x="25.93975" y="16.60525" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="6.35" y="8.89" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="10.38225" y="15.90675" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="36.83" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="40.64" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="44.45" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="48.26" y="3.81" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="36.83" y="2.54" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="40.64" y="2.54" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="44.45" y="2.54" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="48.26" y="2.54" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="2.54" y="50.8" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="6.35" y="55.88" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="36.83" y="11.43" extent="1-16" drill="0.6" diameter="1.27"/>
