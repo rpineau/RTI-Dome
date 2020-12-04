@@ -76,6 +76,15 @@ DueFlashStorage dueFlashStorage;
 #define EEPROM_LOCATION     10
 
 
+typedef struct IPCONFIG {
+    bool            bUseDHCP;
+    IPAddress       ip;
+    IPAddress       dns;
+    IPAddress       gateway;
+    IPAddress       subnet;
+} IPConfig;
+
+
 typedef struct RotatorConfiguration {
     int             signature;
     long            stepsPerRotation;
@@ -90,7 +99,9 @@ typedef struct RotatorConfiguration {
     bool            radioIsConfigured;
     int             panid;
 #endif
+    IPConfig        ipConfig;
 } Configuration;
+
 
 enum HomeStatuses { NEVER_HOMED, HOMED, ATHOME };
 enum Seeks { HOMING_NONE, // Not homing or calibrating
@@ -271,6 +282,7 @@ public:
 
     void        bufferEnable(bool bEnable);
 
+    void        getIpConfig(IPConfig &config);
 private:
     Configuration   m_Config;
 
@@ -455,6 +467,20 @@ void RotatorClass::SetDefaultConfig()
     m_Config.radioIsConfigured = false;
     m_Config.panid = 0x4242;
 #endif
+    m_Config.ipConfig.bUseDHCP = true;
+    m_Config.ipConfig.ip.fromString("192.168.254.99");
+    m_Config.ipConfig.dns.fromString("192.168.254.2");
+    m_Config.ipConfig.gateway.fromString("192.168.254.1");
+    m_Config.ipConfig.subnet.fromString("255.255.255.0");
+}
+
+void RotatorClass::getIpConfig(IPConfig &config)
+{
+    config.bUseDHCP = m_Config.ipConfig.bUseDHCP;
+    config.ip = m_Config.ipConfig.ip;
+    config.dns = m_Config.ipConfig.dns;
+    config.gateway = m_Config.ipConfig.gateway;
+    config.subnet = m_Config.ipConfig.subnet;
 }
 
 //

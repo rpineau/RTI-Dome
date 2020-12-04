@@ -9,7 +9,7 @@
 
 // if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
 // This us useful for people who only want to automate the rotation.
-// #define STANDALONE
+#define STANDALONE
 
 // I started making a PCB with the Teensy 2,5/3.6 .. work in progress.
 // #define TEENY_3_5
@@ -37,18 +37,6 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include "EtherMac.h"
-#define ETHERNET_CS     52
-#define ETHERNET_RESET  53
-IPAddress ip;
-IPAddress myDns;
-IPAddress gateway;
-IPAddress subnet;
-byte MAC_Address[6];
-uint32_t uidBuffer[4];
-
-EthernetServer server(2323);
-EthernetClient domeClient;
-int nbEthernetClient;
 
 // As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
 // This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
@@ -63,6 +51,16 @@ int nbEthernetClient;
 #ifndef STANDALONE
 #include "RemoteShutterClass.h"
 #endif
+
+#define ETHERNET_CS     52
+#define ETHERNET_RESET  53
+byte MAC_Address[6];
+uint32_t uidBuffer[4];
+
+#define SERVER_PORT 2323
+EthernetServer server(SERVER_PORT);
+EthernetClient domeClient;
+int nbEthernetClient;
 
 
 #ifndef STANDALONE
@@ -127,9 +125,13 @@ bool bShutterPresent = false;
 // global variable for rain status
 bool bIsRaining = false;
 
-
+// global varaibale to check if we detect the ethernet card
+bool ethernetPresent;
+IPConfig ServerConfig;
+// f j p u w
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
+const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
 const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
 const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor controll.
 const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
@@ -173,6 +175,7 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 #endif
 
 // function prototypes
+bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
 void checkForNewTCPClient(void);
 void homeIntHandler(void);
 void rainIntHandler(void);
@@ -195,7 +198,6 @@ void ProcessWireless(void);
 void setup()
 {
     getMacAddress(MAC_Address, uidBuffer);
-    resetEthernet(ETHERNET_RESET);
 
     Computer.begin(115200);
 #ifndef STANDALONE
@@ -214,21 +216,19 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
     // enable input buffers
     Rotator->bufferEnable(true);
-    // network configuration
-    ip.fromString("192.168.254.99");
-    myDns.fromString("192.168.254.2");
-    gateway.fromString("192.168.254.1");
-    subnet.fromString("255.255.255.0");
-    nbEthernetClient = 0;
-    Ethernet.init(ETHERNET_CS);
-    Ethernet.begin(MAC_Address, ip, myDns, gateway, subnet);
-    server.begin();
+    Rotator->getIpConfig(ServerConfig);
+    ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
+                        ServerConfig.ip,
+                        ServerConfig.dns,
+                        ServerConfig.gateway,
+                        ServerConfig.subnet);
 }
 
 void loop()
 {
 
-    checkForNewTCPClient();
+    if(ethernetPresent)
+        checkForNewTCPClient();
 
 #ifndef STANDALONE
     if (!XbeeStarted) {
@@ -266,8 +266,39 @@ void loop()
 
 }
 
+bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
+{
+    int dhcpOk;
+    server = NULL;
+
+    resetEthernet(ETHERNET_RESET);
+    // network configuration
+    nbEthernetClient = 0;
+    Ethernet.init(ETHERNET_CS);
+    // try DHCP
+    if(bUseDHCP) {
+        dhcpOk = Ethernet.begin(MAC_Address);
+        if(!dhcpOk) {
+            DBPrint("DHCP Failed!");
+            Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
+        }
+    }
+    else {
+        Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
+    }
+
+    if(Ethernet.hardwareStatus() == EthernetNoHardware)
+        return false;
+    server.begin();
+    return true;
+}
+
+
 void checkForNewTCPClient()
 {
+    if(!server)
+        return;
+
     EthernetClient newClient = server.accept();
     if(newClient) {
         if(nbEthernetClient>0) { // we only accept 1 client
@@ -416,7 +447,7 @@ void CheckForCommands()
         ReceiveWireless();
     }
 #endif
-    if(domeClient && domeClient.connected())
+    if(ethernetPresent && domeClient && domeClient.connected())
         ReceiveNetwork(domeClient);
 }
 
@@ -692,6 +723,20 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
             break;
 
+        case ETH_RECONFIG :
+            if(nbEthernetClient) {
+                domeClient.stop();
+                nbEthernetClient--;
+            }
+            Rotator->getIpConfig(ServerConfig);
+            ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
+                    ServerConfig.ip,
+                    ServerConfig.dns,
+                    ServerConfig.gateway,
+                    ServerConfig.subnet);
+            serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
+            break;
+
 #ifndef STANDALONE
         case INIT_XBEE:
             sTmpString = String(INIT_XBEE);
@@ -890,7 +935,6 @@ void ProcessCommand(bool bFromNetwork)
         else {
             if(domeClient.connected()) {
                 DBPrint("Network serialMessage = " + serialMessage);
-                // server.print(serialMessage + "#");
                 domeClient.print(serialMessage + "#");
             }
         }
