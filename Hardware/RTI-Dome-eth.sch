@@ -16788,7 +16788,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <instance part="C16" gate="G$1" x="530.86" y="78.74"/>
 <instance part="C17" gate="G$1" x="500.38" y="78.74"/>
 <instance part="GND14" gate="1" x="485.14" y="60.96"/>
-<instance part="C18" gate="G$1" x="474.98" y="226.06"/>
+<instance part="C18" gate="G$1" x="474.98" y="218.44"/>
 <instance part="R28" gate="G$1" x="525.78" y="233.68" rot="R90"/>
 <instance part="R29" gate="G$1" x="533.4" y="233.68" rot="R90"/>
 <instance part="C19" gate="G$1" x="480.06" y="226.06"/>
@@ -17173,7 +17173,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 </segment>
 <segment>
 <pinref part="C18" gate="G$1" pin="1"/>
-<wire x1="474.98" y1="231.14" x2="474.98" y2="228.6" width="0.1524" layer="91"/>
+<wire x1="474.98" y1="231.14" x2="474.98" y2="220.98" width="0.1524" layer="91"/>
 <label x="474.98" y="231.14" size="1.016" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
@@ -18320,7 +18320,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <net name="N$33" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="1V2O"/>
-<wire x1="474.98" y1="220.98" x2="474.98" y2="198.12" width="0.1524" layer="91"/>
+<wire x1="474.98" y1="213.36" x2="474.98" y2="198.12" width="0.1524" layer="91"/>
 <pinref part="C18" gate="G$1" pin="2"/>
 </segment>
 </net>

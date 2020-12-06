@@ -154,8 +154,8 @@
 <text x="49.8475" y="50.8" size="0.6096" layer="21" rot="R90">West / Close</text>
 <text x="57.15" y="69.88175" size="0.6096" layer="22" rot="MR0">East / Open</text>
 <text x="58.42" y="69.85" size="0.6096" layer="21">GND</text>
-<text x="53.34" y="35.56" size="1.778" layer="21">GND</text>
-<text x="53.0225" y="28.47975" size="1.778" layer="21">+12V</text>
+<text x="55.88" y="24.13" size="1.778" layer="21">GND</text>
+<text x="55.5625" y="39.90975" size="1.778" layer="21">+12V</text>
 <wire x1="1.905" y1="22.86" x2="1.905" y2="12.7" width="0" layer="20"/>
 <text x="36.703" y="69.9135" size="0.6096" layer="21">Home/Closed</text>
 <text x="27.94" y="69.85" size="0.6096" layer="21">Opened</text>
@@ -202,6 +202,7 @@
 <text x="3.175" y="69.85" size="0.6096" layer="21">D13</text>
 <text x="4.60375" y="68.61175" size="0.6096" layer="22" rot="MR0">D13</text>
 <text x="36.83" y="3.81" size="1.778" layer="51">Dome Shutter</text>
+<text x="60.6425" y="8.15975" size="1.778" layer="21">+12V</text>
 </plain>
 <libraries>
 <library name="arduino_shield">
@@ -3991,8 +3992,8 @@ design rules under a new name.</description>
 <element name="R4" library="rti" package="R0805" value="4.7K" x="40.10025" y="28.829" rot="R270"/>
 <element name="C1" library="rti" package="C0805" value="10uF" x="30.734" y="54.61" rot="R90"/>
 <element name="R5" library="rti" package="R0805" value="100" x="33.02" y="54.61" rot="R90"/>
-<element name="U$4" library="rti" package="LOGO_BIG" value="RTI-LOGO_BIG" x="72.898" y="3.175" rot="R90"/>
-<element name="C2" library="rti" package="UD-10X10_NICHICON" value="100uF" x="71.12" y="33.02" rot="R270"/>
+<element name="U$4" library="rti" package="LOGO_BIG" value="RTI-LOGO_BIG" x="76.708" y="3.175" rot="R90"/>
+<element name="C2" library="rti" package="UD-10X10_NICHICON" value="100uF" x="54.61" y="33.02" rot="R90"/>
 <element name="R13" library="rti" package="R0805" value="4.7K" x="5.08" y="20.3835" rot="R180"/>
 <element name="R14" library="rti" package="R0805" value="4.7K" x="5.08" y="16.256"/>
 <element name="R15" library="rti" package="R0805" value="4.7K" x="35.8775" y="28.829" rot="R90"/>
@@ -4054,7 +4055,7 @@ design rules under a new name.</description>
 <element name="IC5" library="rti" package="TSSOP20" value="74LVC245" x="36.83" y="36.83" rot="R90"/>
 <element name="IC6" library="rti" package="TSSOP20" value="74ABT245" x="11.43" y="19.05" rot="R180"/>
 <element name="R22" library="rti" package="R0805" value="4.7K" x="32.385" y="41.62425"/>
-<element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="62.23" y="33.02" rot="MR90"/>
+<element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="63.5" y="33.02" rot="R270"/>
 <element name="U$1" library="MCP120T-270I_TT" package="SOT95P237X112-3N" value="MCP120T-270I_TT" x="22.86" y="15.24">
 <attribute name="MANUFACTURER_PART_NUMBER" value="MCP120T-270I/TT" x="22.86" y="15.24" size="1.778" layer="27" display="off"/>
 <attribute name="MANUFACTURER_NAME" value="Microchip" x="22.86" y="15.24" size="1.778" layer="27" display="off"/>
@@ -4178,10 +4179,10 @@ design rules under a new name.</description>
 <contactref element="C5" pad="2"/>
 <contactref element="C6" pad="2"/>
 <via x="11.43" y="21.59" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="62.23" y="39.37" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="52.07" y="22.86" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="50.8" y="17.78" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="34.29" y="21.59" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="54.61" y="33.02" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="52.07" y="30.48" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="43.18" y="54.61" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="34.95675" y="38.227" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="48.26" y="41.91" extent="1-16" drill="0.6" diameter="1.27"/>
@@ -4212,16 +4213,19 @@ design rules under a new name.</description>
 <via x="37.17925" y="35.052" extent="1-16" drill="0.3" diameter="0.254"/>
 <contactref element="J1" pad="BLACK"/>
 <contactref element="U$1" pad="3"/>
-<wire x1="62.25" y1="36.99" x2="62.23" y2="39.37" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="+12V" class="1">
 <contactref element="X5" pad="1"/>
 <contactref element="C2" pad="+"/>
 <polygon width="0.3048" layer="1" thermals="no">
-<vertex x="60.04" y="32.893"/>
-<vertex x="79.883" y="32.893"/>
+<vertex x="53.34" y="41.783"/>
+<vertex x="79.883" y="41.783"/>
 <vertex x="79.883" y="0"/>
-<vertex x="60.04" y="0"/>
+<vertex x="59.69" y="0"/>
+<vertex x="59.69" y="24.13"/>
+<vertex x="66.04" y="24.13"/>
+<vertex x="66.04" y="33.02"/>
+<vertex x="53.34" y="33.02"/>
 </polygon>
 <contactref element="R10" pad="2"/>
 <wire x1="25.4" y1="69.85" x2="76.2" y2="69.85" width="1.27" layer="1"/>
@@ -4233,10 +4237,14 @@ design rules under a new name.</description>
 <wire x1="76.2" y1="69.85" x2="78.74" y2="67.31" width="1.27" layer="1" curve="-90"/>
 <wire x1="25.4" y1="69.85" x2="23.9268" y2="68.3768" width="1.27" layer="1" curve="90"/>
 <polygon width="0.254" layer="16" thermals="no">
-<vertex x="60.04" y="32.893"/>
-<vertex x="79.883" y="32.893"/>
+<vertex x="60.96" y="41.783"/>
+<vertex x="79.883" y="41.783"/>
 <vertex x="79.883" y="0"/>
-<vertex x="60.04" y="0"/>
+<vertex x="59.69" y="0"/>
+<vertex x="59.69" y="24.13"/>
+<vertex x="66.04" y="24.13"/>
+<vertex x="66.04" y="33.02"/>
+<vertex x="60.96" y="33.02"/>
 </polygon>
 <wire x1="34.9225" y1="13.5255" x2="34.925" y2="13.5255" width="0.8128" layer="1"/>
 <wire x1="34.925" y1="13.5255" x2="34.925" y2="11.1125" width="0.8128" layer="1"/>
@@ -4244,6 +4252,7 @@ design rules under a new name.</description>
 <wire x1="34.925" y1="11.1125" x2="36.83" y2="7.62" width="1.27" layer="1"/>
 <wire x1="36.83" y1="7.62" x2="60.96" y2="7.62" width="1.27" layer="1"/>
 <wire x1="34.925" y1="8.697" x2="34.925" y2="11.1125" width="1.27" layer="1"/>
+<wire x1="63.52" y1="37.32" x2="63.52" y2="36.95" width="2.54" layer="1"/>
 </signal>
 <signal name="SHUTTER_OPENED">
 <contactref element="PCB1" pad="3"/>
