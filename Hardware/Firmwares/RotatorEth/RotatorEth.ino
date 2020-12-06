@@ -23,7 +23,7 @@
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.
-// Also the XBee3 model XB3-24Z8PT-J should work as the S1
+// Also the XBee3 model XB3-24Z8PT-J work as the S1
 #define XBEE_S1
 // #define XBEE_S2C
 
@@ -31,7 +31,7 @@
 #define ERR_NO_DATA -1
 #define OK  0
 
-#define VERSION "2.643"
+#define VERSION "2.645"
 
 // include and some defines for ethernet connection
 #include <SPI.h>
@@ -40,11 +40,11 @@
 
 // As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
 // This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
-#define Computer Serial     // programing port
+#define Computer Serial2     // USB FTDI
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
-#define DebugPort Serial
+#define DebugPort Serial    // programing port
 
 #include "RotatorClass.h"
 
@@ -58,7 +58,7 @@ byte MAC_Address[6];
 uint32_t uidBuffer[4];
 
 #define SERVER_PORT 2323
-EthernetServer server(SERVER_PORT);
+EthernetServer domeServer(SERVER_PORT);
 EthernetClient domeClient;
 int nbEthernetClient;
 
@@ -197,6 +197,9 @@ void ProcessWireless(void);
 
 void setup()
 {
+#ifdef DEBUG
+    DebugPort.begin(115200);
+#endif
     getMacAddress(MAC_Address, uidBuffer);
 
     Computer.begin(115200);
@@ -269,13 +272,12 @@ void loop()
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
     int dhcpOk;
-    server = NULL;
 
     resetEthernet(ETHERNET_RESET);
     // network configuration
     nbEthernetClient = 0;
     Ethernet.init(ETHERNET_CS);
-    // try DHCP
+    // try DHCP if set
     if(bUseDHCP) {
         dhcpOk = Ethernet.begin(MAC_Address);
         if(!dhcpOk) {
@@ -287,30 +289,46 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
         Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
     }
 
-    if(Ethernet.hardwareStatus() == EthernetNoHardware)
+    if(Ethernet.hardwareStatus() == EthernetNoHardware) {
+         DBPrint("NO HARDWARE !!!");
         return false;
-    server.begin();
+    }
+#ifdef DEBUG
+    IPAddress aTmp = Ethernet.localIP();
+    DBPrint("DHCP IP = " + String(aTmp[0]) + String(".") +
+                          String(aTmp[1]) + String(".") +
+                          String(aTmp[2]) + String(".") +
+                          String(aTmp[3]) );
+#endif
+
+    DBPrint("Server ready, calling begin()");
+    domeServer.begin();
     return true;
 }
 
 
 void checkForNewTCPClient()
 {
-    if(!server)
-        return;
+    if(ServerConfig.bUseDHCP)
+        Ethernet.maintain();
 
-    EthernetClient newClient = server.accept();
+    EthernetClient newClient = domeServer.accept();
     if(newClient) {
+        DBPrint("new client");
         if(nbEthernetClient>0) { // we only accept 1 client
             newClient.stop();
+            DBPrint("new client rejected");
         }
         else {
             nbEthernetClient++;
             domeClient = newClient;
+            DBPrint("new client accepted");
+            DBPrint("nb client = " + String(nbEthernetClient));
         }
     }
 
     if(domeClient && !domeClient.connected()) {
+        DBPrint("client disconnected");
         domeClient.stop();
         nbEthernetClient--;
     }

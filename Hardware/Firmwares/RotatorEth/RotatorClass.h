@@ -15,7 +15,7 @@ DueFlashStorage dueFlashStorage;
 // stepper controller
 #define STEP_TYPE 8
 
-#define DEBUG
+#define DEBUG   // enable debug to DebugPort serial port
 #ifdef DEBUG
 #define DBPrint(x) if(DebugPort) DebugPort.println(x)
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
@@ -70,7 +70,7 @@ DueFlashStorage dueFlashStorage;
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
 #define STEPS_DEFAULT       440640
-#define SIGNATURE         2643
+#define SIGNATURE           2645
 
 // not used on DUE
 #define EEPROM_LOCATION     10
@@ -468,9 +468,9 @@ void RotatorClass::SetDefaultConfig()
     m_Config.panid = 0x4242;
 #endif
     m_Config.ipConfig.bUseDHCP = true;
-    m_Config.ipConfig.ip.fromString("192.168.254.99");
-    m_Config.ipConfig.dns.fromString("192.168.254.2");
-    m_Config.ipConfig.gateway.fromString("192.168.254.1");
+    m_Config.ipConfig.ip.fromString("192.168.0.99");
+    m_Config.ipConfig.dns.fromString("192.168.0.1");
+    m_Config.ipConfig.gateway.fromString("192.168.0.1");
     m_Config.ipConfig.subnet.fromString("255.255.255.0");
 }
 
