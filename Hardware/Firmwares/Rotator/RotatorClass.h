@@ -86,6 +86,8 @@ typedef struct RotatorConfiguration {
 enum HomeStatuses { NOT_AT_HOME, HOMED, ATHOME };
 enum Seeks { HOMING_NONE,           // Not homing or calibrating
             HOMING_HOME,            // Homing
+            HOMING_FINISH,          // found home
+            HOMING_BACK_HOME,       //backing out to home Az
             CALIBRATION_MOVE_OFF,    // Ignore home until we've moved off while measuring the dome.
             CALIBRATION_STEP1,      // this is the mode until we hit the home sensor on the first pass
             CALIBRATION_MOVE_OFF2,   // we need to clear the home sensor again
@@ -265,6 +267,7 @@ private:
     Configuration   m_Config;
 
     // Rotator
+    bool            wasRunning;
     bool            m_bisAtHome;
     enum Seeks      m_seekMode;
     bool            m_bSetToHomeAzimuth;
@@ -299,6 +302,14 @@ private:
 
 RotatorClass::RotatorClass()
 {
+    m_seekMode = HOMING_NONE;
+    wasRunning = false;
+    m_bisAtHome = false;
+    m_HomeFound = false;
+    m_bSetToHomeAzimuth = false;
+    m_bDoStepsPerRotation = false;
+    m_nMoveDirection = MOVE_NONE;
+
     // input
 
     pinMode(HOME_PIN, INPUT_PULLUP);
@@ -313,22 +324,8 @@ RotatorClass::RotatorClass()
     pinMode(STEPPER_ENABLE_PIN, OUTPUT);
     pinMode(BUFFERN_EN, OUTPUT);
 
-    bufferEnable(false);
-
-    m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
-
-    LoadFromEEProm();
-
-    // reset all timers
-    m_MoveOffUntilTimer.reset();
-    m_periodicReadingTimer.reset();
-
-    m_seekMode = HOMING_NONE;
-    m_bisAtHome = false;
-    m_HomeFound = false;
-    m_bSetToHomeAzimuth = false;
-    m_bDoStepsPerRotation = false;
-    m_nMoveDirection = MOVE_POSITIVE;
+    // temporary enable buffers to read raind and home sensor
+    bufferEnable(true);
 
     if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
         m_bIsRaining = true;
@@ -346,6 +343,20 @@ RotatorClass::RotatorClass()
         //if not at home on power up, assume we're at the park position
         SyncPosition(m_Config.parkAzimuth);
     }
+
+    // disable buffer until all interrupt are in place. The buffer are re-enable by the caller
+    bufferEnable(false);
+
+    m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
+
+    LoadFromEEProm();
+
+    // reset all timers
+    m_MoveOffUntilTimer.reset();
+    m_periodicReadingTimer.reset();
+
+
+
 }
 
 
@@ -803,7 +814,7 @@ void RotatorClass::Calibrate()
 
             case(CALIBRATION_MEASURE):
                 if (!stepper.isRunning()) { // we have to wait for it to have stopped
-                    m_seekMode = HOMING_NONE;
+                    m_seekMode = HOMING_FINISH;
                     m_bSetToHomeAzimuth = true;
                     m_bDoStepsPerRotation = true; // Once stopped, set SPR to stepper position and save to eeprom.
                 }
@@ -842,7 +853,7 @@ void RotatorClass::MoveRelative(const long howFar)
         m_nMoveDirection = 1; // MOVE_POSITIVE ?
     else if(howFar == 0 )
         m_nMoveDirection = 0;
-
+    m_bisAtHome = false;
     motorMoveRelative(howFar);
 }
 
@@ -870,15 +881,14 @@ void RotatorClass::bufferEnable(bool bEnable)
 
 void RotatorClass::Run()
 {
-    static bool wasRunning = false;
     long stepsFromZero;
+    long position;
+    float azimuthDelta;
 
     if (m_periodicReadingTimer.elapsed() >= m_nNextPeriodicReadingLapse) {
         m_nVolts = ReadVolts();
         m_periodicReadingTimer.reset();
     }
-
-    m_bisAtHome = false; // default not at home switch
 
     if (m_seekMode > HOMING_HOME)
         Calibrate();
@@ -887,9 +897,8 @@ void RotatorClass::Run()
         wasRunning = true;
         if (m_seekMode == HOMING_HOME && m_HomeFound) { // We're looking for home and found it
             Stop();
-            m_bSetToHomeAzimuth = true; // Need to set current az to homeaz but not until rotator is stopped;
-            m_seekMode = HOMING_NONE;
-            m_bisAtHome = true; // not quite true but we need to tell the app we have homed.
+            m_bSetToHomeAzimuth = true; // Need to set home az but not until rotator is stopped;
+            m_seekMode = HOMING_FINISH;
             return;
         }
     }
@@ -897,21 +906,32 @@ void RotatorClass::Run()
     if (stepper.isRunning())
         return;
 
-    // not moving anymore ..
-    m_nMoveDirection = MOVE_NONE;
+    if( m_seekMode == HOMING_BACK_HOME) {
+        m_bisAtHome = true; // we're back home and done homing.
+        m_seekMode = HOMING_NONE;
+    }
 
-    if (wasRunning)
-    {
+    if (m_bDoStepsPerRotation) {
+        m_bDoStepsPerRotation = false;
+        SetStepsPerRotation(m_nHomePosEdgePass2 - m_nHomePosEdgePass1);
+        SaveToEEProm();
+        position = stepper.currentPosition();
+        azimuthDelta = (float)(position - m_nHomePosEdgePass2) / (float)m_Config.stepsPerRotation * 360.0;
+        SyncPosition(azimuthDelta + m_Config.homeAzimuth);
+        m_nStepsAtHome = 0;
+    }
 
-        if (m_bDoStepsPerRotation) {
-            m_Config.stepsPerRotation  = m_nHomePosEdgePass2 - m_nHomePosEdgePass1;
-            // m_Config.stepsPerRotation = stepper.currentPosition();
-            // now we should move back to home
-            // by doing a goto to m_nStepsAtHome
-            SaveToEEProm();
-            m_bDoStepsPerRotation = false;
-        }
+    if (m_bSetToHomeAzimuth) {
+        m_bSetToHomeAzimuth = false;
+        position = stepper.currentPosition();
+        azimuthDelta = (float)(position - m_nStepsAtHome) / (float)m_Config.stepsPerRotation * 360.0;
+        SyncPosition(azimuthDelta + m_Config.homeAzimuth);
+        position = stepper.currentPosition();
+        GoToAzimuth(m_Config.homeAzimuth); // moving to home now that we know where we are
+        m_seekMode = HOMING_BACK_HOME;
+    }
 
+    if (wasRunning) {
         stepsFromZero = GetPosition();
         if (stepsFromZero < 0) {
             while (stepsFromZero < 0)
@@ -927,21 +947,12 @@ void RotatorClass::Run()
             stepper.setCurrentPosition(stepsFromZero);
         }
 
-        if (m_bSetToHomeAzimuth) {
-            long position;
-            float azimuthDelta;
-            position = stepper.currentPosition();
-            azimuthDelta = (float)(position - m_nStepsAtHome) / (float)m_Config.stepsPerRotation * 360.0;
-
-            SyncPosition(azimuthDelta + m_Config.homeAzimuth);
-            // at this point we could even move back to the home sensor,
-            // but homing is mostly to make sure you know where you are so that
-            // subsequent moves are accurate.
-            m_bSetToHomeAzimuth = false;
+        if( m_seekMode == HOMING_NONE) {
+            // not moving anymore ..
+            m_nMoveDirection = MOVE_NONE;
+            EnableMotor(false);
+            wasRunning = false;
         }
-
-        EnableMotor(false);
-        wasRunning = false;
     } // end if (wasRunning)
 }
 
@@ -951,7 +962,7 @@ void RotatorClass::Stop()
     // Use this to calculate a full step stopping position
     // Actual divisor appears to be 3.997 but this leaves a
     // few extra steps for getting to a full step position.
-
+    DBPrintln("RotatorClass::Stop");
     if (!stepper.isRunning())
         return;
 
@@ -963,12 +974,13 @@ void RotatorClass::Stop()
 
 void RotatorClass::motorStop()
 {
+    DBPrintln("RotatorClass::motorStop");
     stepper.stop();
 }
 
 void RotatorClass::stopInterrupt()
 {
-    DBPrint("Stopping interrupt");
+    DBPrintln("Stopping interrupt");
     // stop interrupt timer
     stopTimer(TC1, 0, TC3_IRQn);
 }
@@ -977,7 +989,7 @@ void RotatorClass::motorMoveTo(const long newPosition)
 {
 
     stepper.moveTo(newPosition);
-    DBPrint("Starting interrupt");
+    DBPrintln("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
@@ -989,7 +1001,7 @@ void RotatorClass::motorMoveRelative(const long howFar)
 {
 
     stepper.move(howFar);
-    DBPrint("Starting interrupt");
+    DBPrintln("Starting interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer

@@ -124,7 +124,8 @@ const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain senso
 const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
 const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
-const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
+const char SYNC_ROTATOR_CMD             = 's'; // Sync to a given position
+
 const char STEPSPER_ROTATOR_CMD         = 't'; // GetSteps per rotation
 const char VERSION_ROTATOR_GET          = 'v'; // Get Version string
 const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
@@ -185,15 +186,15 @@ void loop()
 #ifndef STANDALONE
     if (!XbeeStarted) {
         if (!Rotator->isRadioConfigured() && !isConfiguringWireless) {
-            DBPrint("Xbee reconfiguring");
+            DBPrintln("Xbee reconfiguring");
             StartWirelessConfig();
-            DBPrint("Rotator->bIsRadioIsConfigured : " + String(Rotator->isRadioConfigured()));
-            DBPrint("isConfiguringWireless : " + String(isConfiguringWireless));
+            DBPrintln("Rotator->bIsRadioIsConfigured : " + String(Rotator->isRadioConfigured()));
+            DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
         }
         else if (Rotator->isRadioConfigured()) {
             XbeeStarted = true;
             wirelessBuffer = "";
-            DBPrint("Radio configured");
+            DBPrintln("Radio configured");
             SendHello();
         }
     }
@@ -238,10 +239,10 @@ void buttonHandler()
 #ifndef STANDALONE
 void StartWirelessConfig()
 {
-    DBPrint("Xbee configuration started");
+    DBPrintln("Xbee configuration started");
     delay(1100); // guard time before and after
     isConfiguringWireless = true;
-    DBPrint("Sending +++");
+    DBPrintln("Sending +++");
     Wireless.print("+++");
     delay(1100);
 }
@@ -249,16 +250,16 @@ void StartWirelessConfig()
 inline void ConfigXBee(String result)
 {
 
-    DBPrint("Sending ");
+    DBPrintln("Sending ");
     if ( configStep == PANID_STEP) {
         String ATCmd = "ATID" + String(Rotator->GetPANID());
-        DBPrint(ATCmd);
+        DBPrintln(ATCmd);
         Wireless.println(ATCmd);
         Wireless.flush();
         configStep++;
     }
     else {
-        DBPrint(ATString[configStep]);
+        DBPrintln(ATString[configStep]);
         Wireless.println(ATString[configStep]);
         Wireless.flush();
         configStep++;
@@ -268,7 +269,7 @@ inline void ConfigXBee(String result)
         Rotator->setRadioConfigured(true);
         XbeeStarted = true;
         Rotator->SaveToEEProm();
-        DBPrint("Xbee configuration finished");
+        DBPrintln("Xbee configuration finished");
         while(Wireless.available() > 0) {
             Wireless.read();
         }
@@ -291,7 +292,7 @@ void setPANID(String value)
 // <SUMMARY>Broadcast that you exist</SUMMARY>
 void SendHello()
 {
-    DBPrint("Sending hello");
+    DBPrintln("Sending hello");
     Wireless.print(String(HELLO_CMD) + "#");
     ReceiveWireless();
     SentHello = true;
@@ -420,9 +421,9 @@ void ProcessSerialCommand()
     wirelessMessage = "";
 #endif
 
-    DBPrint("\nProcessSerialCommand");
-    DBPrint("Command = \"" + String(command) +"\"");
-    DBPrint("Value = \"" + String(value) +"\"");
+    DBPrintln("\nProcessSerialCommand");
+    DBPrintln("Command = \"" + String(command) +"\"");
+    DBPrintln("Value = \"" + String(value) +"\"");
 
 
     // Grouped by Rotator and Shutter then put in alphabetical order
@@ -578,7 +579,7 @@ void ProcessSerialCommand()
             serialMessage = sTmpString;
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
-            DBPrint("trying to reconfigure radio");
+            DBPrintln("trying to reconfigure radio");
             break;
 
         case PANID_GET:
@@ -775,7 +776,7 @@ int ReceiveWireless()
 
     wirelessBuffer = "";
     if (isConfiguringWireless) {
-        DBPrint("[ReceiveWireless] isConfiguringWireless : " + String(isConfiguringWireless));
+        DBPrintln("[ReceiveWireless] isConfiguringWireless : " + String(isConfiguringWireless));
         // read the response
         do {
             while(Wireless.available() < 1) {
@@ -793,7 +794,7 @@ int ReceiveWireless()
             }
         } while (wirelessCharacter != '\r');
 
-        DBPrint("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
+        DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
 
         ConfigXBee(wirelessBuffer);
         return OK;
@@ -813,7 +814,7 @@ int ReceiveWireless()
     do {
         if(Wireless.available() > 0 ) {
             wirelessCharacter = Wireless.read();
-            DBPrint("[ReceiveWireless] received  : '" + String(wirelessCharacter) + "' ( 0x" + String(wirelessCharacter, HEX) + " )");
+            DBPrintln("[ReceiveWireless] received  : '" + String(wirelessCharacter) + "' ( 0x" + String(wirelessCharacter, HEX) + " )");
             if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter!=0xFF && wirelessCharacter != '#') {
                 wirelessBuffer += String(wirelessCharacter);
             }
@@ -833,7 +834,7 @@ void ProcessWireless()
     bool hasValue = false;
     String value;
 
-    DBPrint("<<< Received: '" + wirelessBuffer + "'");
+    DBPrintln("<<< Received: '" + wirelessBuffer + "'");
     command = wirelessBuffer.charAt(0);
     value = wirelessBuffer.substring(1);
     if (value.length() > 0)

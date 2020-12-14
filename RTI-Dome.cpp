@@ -1590,7 +1590,6 @@ int CRTIDome::isCalibratingComplete(bool &bComplete)
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
     fprintf(Logfile, "[%s] [CRTIDome::getNbTicksPerRev] final m_nNbStepPerRev = %d\n", timestamp, m_nNbStepPerRev);
-    fprintf(Logfile, "[%s] [CRTIDome::getNbTicksPerRev] final m_bHomed = %s\n", timestamp, m_bHomed?"True":"False");
     fprintf(Logfile, "[%s] [CRTIDome::getNbTicksPerRev] final m_bCalibrating = %s\n", timestamp, m_bCalibrating?"True":"False");
     fprintf(Logfile, "[%s] [CRTIDome::getNbTicksPerRev] final bComplete = %s\n", timestamp, bComplete?"True":"False");
     fflush(Logfile);
