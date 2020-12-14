@@ -11,15 +11,6 @@
 // This us useful for people who only want to automate the rotation.
 #define STANDALONE
 
-// I started making a PCB with the Teensy 2,5/3.6 .. work in progress.
-// #define TEENY_3_5
-
-// The TB6600 is the original stepper controller used on a NexDome automation kit.
-// The ISD04 is a lot smaller and works from -40C to 85C. For now the logic between the 2
-// is inverted but with the next PCB this will no longer be necessary.
-#define TB6600
-// #define ISD0X
-
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.
@@ -38,8 +29,6 @@
 #include <Ethernet.h>
 #include "EtherMac.h"
 
-// As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
-// This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
 #define Computer Serial2     // USB FTDI
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
@@ -48,46 +37,30 @@
 
 #include "RotatorClass.h"
 
-#ifndef STANDALONE
-#include "RemoteShutterClass.h"
-#endif
-
 #define ETHERNET_CS     52
 #define ETHERNET_RESET  53
-byte MAC_Address[6];
-uint32_t uidBuffer[4];
+uint32_t uidBuffer[4];  // DUE unique ID
+byte MAC_Address[6];    // Mac address, uses part of the unique ID
 
 #define SERVER_PORT 2323
 EthernetServer domeServer(SERVER_PORT);
 EthernetClient domeClient;
 int nbEthernetClient;
 
-
-#ifndef STANDALONE
-RemoteShutterClass RemoteShutter;
-#endif
-
 String computerBuffer;
 String networkBuffer;
 
 
 #ifndef STANDALONE
+#include "RemoteShutterClass.h"
+RemoteShutterClass RemoteShutter;
 String wirelessBuffer;
+bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
+int configStep = 0;
 #endif
 
 
 RotatorClass *Rotator = NULL;
-
-
-// Flag to do XBee startup on first boot in loop(). Could do in setup but
-// serial may not be ready so debugging prints won't show. Also used
-// to make sure the XBee has started and configured itself before
-// trying to send any wireless messages.
-
-#ifndef STANDALONE
-bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
-int configStep = 0;
-#endif
 
 //
 // XBee init AT commands
@@ -125,10 +98,11 @@ bool bShutterPresent = false;
 // global variable for rain status
 bool bIsRaining = false;
 
-// global varaibale to check if we detect the ethernet card
+// global variable for the IP config and to check if we detect the ethernet card
 bool ethernetPresent;
 IPConfig ServerConfig;
-// f j p u w
+
+// available  : f j p u w
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
 const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
@@ -148,8 +122,10 @@ const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
 const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
 const char STEPSPER_ROTATOR_CMD         = 't'; // GetSteps per rotation
 const char VERSION_ROTATOR_GET          = 'v'; // Get Version string
+                                        //'x' see bellow
 const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
+
 const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
 
 #ifndef STANDALONE
@@ -160,6 +136,7 @@ const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set if shutter closes and 
 const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // restore default values for motor controll.
 const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
+                                        // 'F' see above
 //const char ELEVATION_SHUTTER_CMD      = 'G'; // Get/Set altitude TBD
 const char HELLO_CMD                    = 'H'; // Let shutter know we're here
 const char WATCHDOG_INTERVAL_SET        = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
@@ -175,6 +152,7 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 #endif
 
 // function prototypes
+void configureEthernet();
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
 void checkForNewTCPClient(void);
 void homeIntHandler(void);
@@ -219,12 +197,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
     // enable input buffers
     Rotator->bufferEnable(true);
-    Rotator->getIpConfig(ServerConfig);
-    ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
-                        ServerConfig.ip,
-                        ServerConfig.dns,
-                        ServerConfig.gateway,
-                        ServerConfig.subnet);
+    configureEthernet();
 }
 
 void loop()
@@ -236,15 +209,15 @@ void loop()
 #ifndef STANDALONE
     if (!XbeeStarted) {
         if (!Rotator->isRadioConfigured() && !isConfiguringWireless) {
-            DBPrint("Xbee reconfiguring");
+            DBPrintln("Xbee reconfiguring");
             StartWirelessConfig();
-            DBPrint("Rotator->bIsRadioIsConfigured : " + String(Rotator->isRadioConfigured()));
-            DBPrint("isConfiguringWireless : " + String(isConfiguringWireless));
+            DBPrintln("Rotator->bIsRadioIsConfigured : " + String(Rotator->isRadioConfigured()));
+            DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
         }
         else if (Rotator->isRadioConfigured()) {
             XbeeStarted = true;
             wirelessBuffer = "";
-            DBPrint("Radio configured");
+            DBPrintln("Radio configured");
             SendHello();
         }
     }
@@ -269,19 +242,34 @@ void loop()
 
 }
 
+void configureEthernet()
+{
+    Rotator->getIpConfig(ServerConfig);
+    ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
+            ServerConfig.ip,
+            ServerConfig.dns,
+            ServerConfig.gateway,
+            ServerConfig.subnet);
+}
+
+
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
     int dhcpOk;
+#ifdef DEBUG
+    IPAddress aTmp;
+#endif
 
     resetEthernet(ETHERNET_RESET);
     // network configuration
     nbEthernetClient = 0;
     Ethernet.init(ETHERNET_CS);
+
     // try DHCP if set
     if(bUseDHCP) {
         dhcpOk = Ethernet.begin(MAC_Address);
         if(!dhcpOk) {
-            DBPrint("DHCP Failed!");
+            DBPrintln("DHCP Failed!");
             Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
         }
     }
@@ -290,18 +278,18 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
     }
 
     if(Ethernet.hardwareStatus() == EthernetNoHardware) {
-         DBPrint("NO HARDWARE !!!");
+         DBPrintln("NO HARDWARE !!!");
         return false;
     }
 #ifdef DEBUG
-    IPAddress aTmp = Ethernet.localIP();
-    DBPrint("DHCP IP = " + String(aTmp[0]) + String(".") +
+    aTmp = Ethernet.localIP();
+    DBPrintln("DHCP IP = " + String(aTmp[0]) + String(".") +
                           String(aTmp[1]) + String(".") +
                           String(aTmp[2]) + String(".") +
                           String(aTmp[3]) );
 #endif
 
-    DBPrint("Server ready, calling begin()");
+    DBPrintln("Server ready, calling begin()");
     domeServer.begin();
     return true;
 }
@@ -314,23 +302,24 @@ void checkForNewTCPClient()
 
     EthernetClient newClient = domeServer.accept();
     if(newClient) {
-        DBPrint("new client");
-        if(nbEthernetClient>0) { // we only accept 1 client
+        DBPrintln("new client");
+        if(nbEthernetClient > 0) { // we only accept 1 client
             newClient.stop();
-            DBPrint("new client rejected");
+            DBPrintln("new client rejected");
         }
         else {
             nbEthernetClient++;
             domeClient = newClient;
-            DBPrint("new client accepted");
-            DBPrint("nb client = " + String(nbEthernetClient));
+            DBPrintln("new client accepted");
+            DBPrintln("nb client = " + String(nbEthernetClient));
         }
     }
 
-    if(domeClient && !domeClient.connected()) {
-        DBPrint("client disconnected");
+    if((nbEthernetClient>0) && !domeClient.connected()) {
+        DBPrintln("client disconnected");
         domeClient.stop();
         nbEthernetClient--;
+        configureEthernet();
     }
 }
 
@@ -364,10 +353,10 @@ void resetEthernet(int nPin) {
 #ifndef STANDALONE
 void StartWirelessConfig()
 {
-    DBPrint("Xbee configuration started");
+    DBPrintln("Xbee configuration started");
     delay(1100); // guard time before and after
     isConfiguringWireless = true;
-    DBPrint("Sending +++");
+    DBPrintln("Sending +++");
     Wireless.print("+++");
     delay(1100);
 }
@@ -375,16 +364,16 @@ void StartWirelessConfig()
 inline void ConfigXBee(String result)
 {
 
-    DBPrint("Sending ");
+    DBPrintln("Sending ");
     if ( configStep == PANID_STEP) {
         String ATCmd = "ATID" + String(Rotator->GetPANID());
-        DBPrint(ATCmd);
+        DBPrintln(ATCmd);
         Wireless.println(ATCmd);
         Wireless.flush();
         configStep++;
     }
     else {
-        DBPrint(ATString[configStep]);
+        DBPrintln(ATString[configStep]);
         Wireless.println(ATString[configStep]);
         Wireless.flush();
         configStep++;
@@ -394,7 +383,7 @@ inline void ConfigXBee(String result)
         Rotator->setRadioConfigured(true);
         XbeeStarted = true;
         Rotator->SaveToEEProm();
-        DBPrint("Xbee configuration finished");
+        DBPrintln("Xbee configuration finished");
         while(Wireless.available() > 0) {
             Wireless.read();
         }
@@ -416,7 +405,7 @@ void setPANID(String value)
 // <SUMMARY>Broadcast that you exist</SUMMARY>
 void SendHello()
 {
-    DBPrint("Sending hello");
+    DBPrintln("Sending hello");
     Wireless.print(String(HELLO_CMD) + "#");
     ReceiveWireless();
     SentHello = true;
@@ -454,18 +443,14 @@ void requestShutterData()
 //<SUMMARY>Check for Serial and Wireless data</SUMMARY>
 void CheckForCommands()
 {
-    if(!Computer)
-        return;
+    ReceiveComputer();
 
-    if (Computer.available() > 0) {
-        ReceiveComputer();
-    }
 #ifndef STANDALONE
     if (Wireless.available() > 0) {
         ReceiveWireless();
     }
 #endif
-    if(ethernetPresent && domeClient && domeClient.connected())
+    if(ethernetPresent )
         ReceiveNetwork(domeClient);
 }
 
@@ -482,7 +467,7 @@ void CheckForRain()
     }
     if (bIsRaining) {
         if (Rotator->GetRainAction() == HOME)
-            Rotator->GoToAzimuth(Rotator->GetHomeAzimuth());
+            Rotator->StartHoming();
 
         if (Rotator->GetRainAction() == PARK)
             Rotator->GoToAzimuth(Rotator->GetParkAzimuth());
@@ -503,54 +488,39 @@ void PingShutter()
 
 void ReceiveNetwork(EthernetClient client)
 {
-    int timeout = 0;
     char networkCharacter;
 
-    DBPrint("[ReceiveNetwork]");
+    DBPrintln("[ReceiveNetwork]");
 
     if(!client.connected()) {
         return;
     }
 
-    networkBuffer = "";
-    // wait for response
-    timeout = 0;
-    while(client.available() < 1) {
-        delay(5);   // give time to the shutter to reply
-        timeout++;
-        if(timeout >= MAX_TIMEOUT) {
-            return;
-            }
-    }
+    if(client.available() < 1)
+        return; // no data
 
-    // read the response
-    do {
-        if(client.available() > 0 ) {
-            networkCharacter = client.read();
-            DBPrint("[ReceiveNetwork] received  : '" + String(networkCharacter) + "' ( 0x" + String(networkCharacter, HEX) + " )");
-            if(networkCharacter != ERR_NO_DATA && networkCharacter!=0xFF && networkCharacter != '#') {
-                networkBuffer += String(networkCharacter);
+    networkCharacter = client.read();
+    if (networkCharacter != ERR_NO_DATA) {
+        if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
+            // End of message
+            if (networkBuffer.length() > 0) {
+                ProcessCommand(true);
+                networkBuffer = "";
             }
-        } else {
-            delay(5);   // give time to the shutter to reply
-            timeout++;
-            if(timeout >= MAX_TIMEOUT) {
-                return;
-                }
         }
-    } while (networkCharacter != '#' && networkCharacter != '\n' && networkCharacter != '\r');
-
-    if (networkBuffer.length() > 0) {
-        computerBuffer = String(networkBuffer);
-        ProcessCommand(true);
+        else {
+            networkBuffer += String(networkCharacter);
+        }
     }
 
 }
 
 // All comms are terminated with # but left if the \r\n for XBee config
-// with other programs.
 void ReceiveComputer()
 {
+    if(Computer.available() < 1)
+        return; // no data
+
     char computerCharacter = Computer.read();
     if (computerCharacter != ERR_NO_DATA) {
         if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
@@ -580,9 +550,16 @@ void ProcessCommand(bool bFromNetwork)
 
     // Split the buffer into command char and value if present
     // Command character
-    command = computerBuffer.charAt(0);
-    // Payload
-    value = computerBuffer.substring(1);
+    if(bFromNetwork) {
+        command = networkBuffer.charAt(0);
+        // Payload
+        value = networkBuffer.substring(1);
+    }
+    else {
+        command = computerBuffer.charAt(0);
+        // Payload
+        value = computerBuffer.substring(1);
+    }
     // payload has data
     if (value.length() > 0)
         hasValue = true;
@@ -592,10 +569,10 @@ void ProcessCommand(bool bFromNetwork)
     wirelessMessage = "";
 #endif
 
-    DBPrint("\nProcessCommand");
-    DBPrint("Command = \"" + String(command) +"\"");
-    DBPrint("Value = \"" + String(value) +"\"");
-    DBPrint("bFromNetwork = \"" + String(bFromNetwork?"Yes":"No") +"\"");
+    DBPrintln("\nProcessCommand");
+    DBPrintln("Command = \"" + String(command) +"\"");
+    DBPrintln("Value = \"" + String(value) +"\"");
+    DBPrintln("bFromNetwork = \"" + String(bFromNetwork?"Yes":"No") +"\"");
 
 
     // Grouped by Rotator and Shutter then put in alphabetical order
@@ -742,16 +719,11 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case ETH_RECONFIG :
-            if(nbEthernetClient) {
+            if(nbEthernetClient > 0) {
                 domeClient.stop();
                 nbEthernetClient--;
             }
-            Rotator->getIpConfig(ServerConfig);
-            ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
-                    ServerConfig.ip,
-                    ServerConfig.dns,
-                    ServerConfig.gateway,
-                    ServerConfig.subnet);
+            configureEthernet();
             serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
             break;
 
@@ -765,7 +737,7 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString;
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
-            DBPrint("trying to reconfigure radio");
+            DBPrintln("trying to reconfigure radio");
             break;
 
         case PANID_GET:
@@ -950,11 +922,9 @@ void ProcessCommand(bool bFromNetwork)
         if(!bFromNetwork) {
             Computer.print(serialMessage + "#");
             }
-        else {
-            if(domeClient.connected()) {
-                DBPrint("Network serialMessage = " + serialMessage);
+        else if(domeClient.connected()) {
+                DBPrintln("Network serialMessage = " + serialMessage);
                 domeClient.print(serialMessage + "#");
-            }
         }
     }
 }
@@ -970,7 +940,7 @@ int ReceiveWireless()
 
     wirelessBuffer = "";
     if (isConfiguringWireless) {
-        DBPrint("[ReceiveWireless] isConfiguringWireless : " + String(isConfiguringWireless));
+        DBPrintln("[ReceiveWireless] isConfiguringWireless : " + String(isConfiguringWireless));
         // read the response
         do {
             while(Wireless.available() < 1) {
@@ -988,7 +958,7 @@ int ReceiveWireless()
             }
         } while (wirelessCharacter != '\r');
 
-        DBPrint("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
+        DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
 
         ConfigXBee(wirelessBuffer);
         return OK;
@@ -1008,7 +978,7 @@ int ReceiveWireless()
     do {
         if(Wireless.available() > 0 ) {
             wirelessCharacter = Wireless.read();
-            DBPrint("[ReceiveWireless] received  : '" + String(wirelessCharacter) + "' ( 0x" + String(wirelessCharacter, HEX) + " )");
+            DBPrintln("[ReceiveWireless] received  : '" + String(wirelessCharacter) + "' ( 0x" + String(wirelessCharacter, HEX) + " )");
             if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter!=0xFF && wirelessCharacter != '#') {
                 wirelessBuffer += String(wirelessCharacter);
             }
@@ -1028,7 +998,7 @@ void ProcessWireless()
     bool hasValue = false;
     String value;
 
-    DBPrint("<<< Received: '" + wirelessBuffer + "'");
+    DBPrintln("<<< Received: '" + wirelessBuffer + "'");
     command = wirelessBuffer.charAt(0);
     value = wirelessBuffer.substring(1);
     if (value.length() > 0)

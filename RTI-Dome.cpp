@@ -29,7 +29,6 @@ CRTIDome::CRTIDome()
     m_bShutterOpened = false;
 
     m_bParked = true;
-    m_bHomed = false;
 
     m_fVersion = 0.0;
     m_nHomingTries = 0;
@@ -44,6 +43,8 @@ CRTIDome::CRTIDome()
     m_bHomeOnUnpark = false;
 
     m_bShutterPresent = false;
+    
+    m_nRainStatus = RAIN_UNKNOWN;
 
 #ifdef    PLUGIN_DEBUG
     Logfile = NULL;
@@ -123,10 +124,12 @@ int CRTIDome::Connect(const char *pszPort)
         m_bIsConnected = false;
         return nErr;
     }
+
+    m_Port.assign(pszPort);
+    
     m_bIsConnected = true;
     m_bCalibrating = false;
     m_bUnParking = false;
-    m_bHomed = false;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -204,6 +207,26 @@ int CRTIDome::Connect(const char *pszPort)
     return SB_OK;
 }
 
+int CRTIDome::Reconnect()
+{
+    int nErr = PLUGIN_OK;
+    
+    m_pSerx->close();
+
+    m_bIsConnected = false;
+    m_bCalibrating = false;
+    m_bUnParking = false;
+
+    // 115200 8N1 DTR
+    nErr = m_pSerx->open(m_Port.c_str(), 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
+    if(nErr) {
+        m_bIsConnected = false;
+        return nErr;
+    }
+
+    m_bIsConnected = false;
+    return nErr;
+}
 
 void CRTIDome::Disconnect()
 {
@@ -215,7 +238,6 @@ void CRTIDome::Disconnect()
     m_bIsConnected = false;
     m_bCalibrating = false;
     m_bUnParking = false;
-    m_bHomed = false;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -273,7 +295,7 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
 
 
     if (szResp[0] != respCmdCode)
-        nErr = ND_BAD_CMD_RESPONSE;
+        nErr = BAD_CMD_RESPONSE;
 
     if(pszResult)
         strncpy(pszResult, &szResp[1], nResultMaxLen);
@@ -314,7 +336,7 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
             fflush(Logfile);
 #endif
 
-            nErr = ND_BAD_CMD_RESPONSE;
+            nErr = COMMAND_TIMEOUT;
             break;
         }
         ulTotalBytesRead += ulBytesRead;
@@ -1162,7 +1184,6 @@ int CRTIDome::goHome()
         return SB_OK;
     }
     else if(isDomeAtHome()){
-            m_bHomed = true;
             return PLUGIN_OK;
     }
 #ifdef PLUGIN_DEBUG
@@ -1404,7 +1425,6 @@ int CRTIDome::isParkComplete(bool &bComplete)
     else {
         // we're not moving and we're not at the final destination !!!
         bComplete = false;
-        m_bHomed = false;
         m_bParked = false;
         nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
@@ -1486,7 +1506,6 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
 #endif
 
     if(isDomeMoving()) {
-        m_bHomed = false;
         bComplete = false;
 #ifdef PLUGIN_DEBUG
         ltime = time(NULL);
@@ -1500,7 +1519,6 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
     }
 
     if(isDomeAtHome()){
-        m_bHomed = true;
         bComplete = true;
         if(m_bUnParking)
             m_bParked = false;
@@ -1524,7 +1542,6 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
         fflush(Logfile);
 #endif
         bComplete = false;
-        m_bHomed = false;
         m_bParked = false;
         // sometimes we pass the home sensor and we don't detect it.
         // so give it another try
@@ -1551,8 +1568,6 @@ int CRTIDome::isCalibratingComplete(bool &bComplete)
         return NOT_CONNECTED;
 
     if(isDomeMoving()) {
-        // getDomeAz(dDomeAz);
-        m_bHomed = false;
         bComplete = false;
         return nErr;
     }
@@ -1564,12 +1579,10 @@ int CRTIDome::isCalibratingComplete(bool &bComplete)
         // We need to resync the current position to the home position.
         m_dCurrentAzPosition = m_dHomeAz;
         syncDome(m_dCurrentAzPosition,m_dCurrentElPosition);
-        m_bHomed = true;
         bComplete = true;
     }
 
     nErr = getDomeStepPerRev(m_nNbStepPerRev);
-    m_bHomed = true;
     bComplete = true;
     m_bCalibrating = false;
 #ifdef PLUGIN_DEBUG
@@ -1594,7 +1607,6 @@ int CRTIDome::abortCurrentCommand()
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    m_bHomed = false;
     m_bParked = false;
     m_bCalibrating = false;
     m_bParking = false;
@@ -2276,6 +2288,8 @@ void CRTIDome::getRainStatusFileName(std::string &fName)
 
 void CRTIDome::writeRainStatus()
 {
+    int nStatus;
+
 #ifdef PLUGIN_DEBUG
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
@@ -2286,12 +2300,14 @@ void CRTIDome::writeRainStatus()
 #endif
 
     if(m_bSaveRainStatus && RainStatusfile) {
-        int nStatus;
         getRainSensorStatus(nStatus);
-        RainStatusfile = freopen(m_sRainStatusfilePath.c_str(), "w", RainStatusfile);
-        fseek(RainStatusfile, 0, SEEK_SET);
-        fprintf(RainStatusfile, "Raining:%s", nStatus == RAINING?"YES":"NO");
-        fflush(RainStatusfile);
+        if(m_nRainStatus != nStatus) {
+            m_nRainStatus = nStatus;
+            RainStatusfile = freopen(m_sRainStatusfilePath.c_str(), "w", RainStatusfile);
+            fseek(RainStatusfile, 0, SEEK_SET);
+            fprintf(RainStatusfile, "Raining:%s", nStatus == RAINING?"YES":"NO");
+            fflush(RainStatusfile);
+        }
     }
 }
 

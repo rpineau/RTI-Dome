@@ -17,8 +17,8 @@
 // The TB6600 is the original stepper controller used on a NexDome automation kit.
 // The ISD04 is a lot smaller and works from -40C to 85C. For now the logic between the 2
 // is inverted but with the next PCB this will no longer be necessary.
-#define TB6600
-// #define ISD0X
+// #define TB6600
+#define ISD0X
 
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
@@ -35,11 +35,11 @@
 
 // As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
 // This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
-#define Computer Serial     // programing port
+#define Computer Serial2     // USB FTDI
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
-#define DebugPort Serial
+#define DebugPort Serial    // programing port
 
 #include "RotatorClass.h"
 
@@ -156,6 +156,10 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 
 void setup()
 {
+#ifdef DEBUG
+    DebugPort.begin(115200);
+#endif
+
     Computer.begin(115200);
 #ifndef STANDALONE
     Wireless.begin(9600);

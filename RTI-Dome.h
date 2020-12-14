@@ -49,13 +49,13 @@
 
 // error codes
 // Error code
-enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, ND_CANT_CONNECT, ND_BAD_CMD_RESPONSE, COMMAND_FAILED};
+enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED, COMMAND_TIMEOUT};
 enum RTIDomeShutterState {OPEN = 0, CLOSED, OPENING, CLOSING, SHUTTER_ERROR };
-enum HomeStatuses {NEVER_HOMED = 0, HOMED, ATHOME};
+enum HomeStatuses {NOT_AT_HOME = 0, HOMED, ATHOME};
 enum RainActions {DO_NOTHING=0, HOME, PARK};
 
 // RG-11
-enum RainSensorStates {RAINING= 0, NOT_RAINING};
+enum RainSensorStates {RAINING= 0, NOT_RAINING, RAIN_UNKNOWN};
 
 class CRTIDome
 {
@@ -64,6 +64,7 @@ public:
     ~CRTIDome();
 
     int         Connect(const char *pszPort);
+    int         Reconnect();
     void        Disconnect(void);
     const bool  IsConnected(void) { return m_bIsConnected; }
 
@@ -171,8 +172,9 @@ protected:
     SerXInterface   *m_pSerx;
     SleeperInterface *m_pSleeper;
 
+    std::string     m_Port;
+
     bool            m_bIsConnected;
-    bool            m_bHomed;
     bool            m_bParked;
     bool            m_bShutterOpened;
     bool            m_bCalibrating;
@@ -206,8 +208,9 @@ protected:
     std::string     m_sRainStatusfilePath;
     FILE            *RainStatusfile;
     bool            m_bSaveRainStatus;
+    int             m_nRainStatus;
     CStopWatch      m_cRainCheckTimer;
-    
+        
 #ifdef PLUGIN_DEBUG
     std::string m_sLogfilePath;
     // timestamp for logs
