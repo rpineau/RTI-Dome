@@ -306,6 +306,7 @@ private:
 
 #ifdef USE_EXT_EEPROM
     // eeprom
+    bool m_bDoEEPromSave;
     byte m_EEPROMpageSize;
 
     byte readEEPROMByte(int deviceaddress, unsigned int eeaddress);
@@ -428,6 +429,9 @@ inline void RotatorClass::rainInterrupt()
 
 void RotatorClass::SaveToEEProm()
 {
+    if(!m_bDoEEPromSave)
+        return;
+
     m_Config.signature = SIGNATURE;
 
 #ifdef USE_EXT_EEPROM
@@ -460,6 +464,7 @@ bool RotatorClass::LoadFromEEProm()
         response = false;
     }
 
+    m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
     SetMaxSpeed(m_Config.maxSpeed);
     SetAcceleration(m_Config.acceleration);
     SetStepsPerRotation(m_Config.stepsPerRotation);
@@ -471,6 +476,7 @@ bool RotatorClass::LoadFromEEProm()
         response = false;
     }
 #endif
+    m_bDoEEPromSave = true;
     return response;
 }
 
