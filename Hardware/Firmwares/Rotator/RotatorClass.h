@@ -432,6 +432,8 @@ void RotatorClass::SaveToEEProm()
     if(!m_bDoEEPromSave)
         return;
 
+    DBPrintln("RotatorClass::SaveToEEProm");
+
     m_Config.signature = SIGNATURE;
 
 #ifdef USE_EXT_EEPROM
@@ -447,6 +449,7 @@ bool RotatorClass::LoadFromEEProm()
 {
     bool response = true;
 
+    DBPrintln("RotatorClass::LoadFromEEProm");
     //  zero the structure so currently unused parts
     //  dont end up loaded with random garbage
     memset(&m_Config, 0, sizeof(Configuration));
@@ -955,8 +958,7 @@ void RotatorClass::Run()
         SetStepsPerRotation(m_nHomePosEdgePass2 - m_nHomePosEdgePass1);
         SaveToEEProm();
         position = stepper.currentPosition();
-        // azimuthDelta = (float)(position - m_nHomePosEdgePass2) / (float)m_Config.stepsPerRotation * 360.0;
-        azimuthDelta = (float)(position - m_nHomePosEdgePass2) * m_fStepsPerDegree;
+        azimuthDelta = (float)(position - m_nHomePosEdgePass2) / m_fStepsPerDegree;
         SyncPosition(azimuthDelta + m_Config.homeAzimuth);
         m_nStepsAtHome = 0;
     }
@@ -964,8 +966,7 @@ void RotatorClass::Run()
     if (m_bSetToHomeAzimuth) {
         m_bSetToHomeAzimuth = false;
         position = stepper.currentPosition();
-        // azimuthDelta = (float)(position - m_nStepsAtHome) / (float)m_Config.stepsPerRotation * 360.0;
-        azimuthDelta = (float)(position - m_nStepsAtHome) * m_fStepsPerDegree;
+        azimuthDelta = (float)(position - m_nStepsAtHome) / m_fStepsPerDegree;
         SyncPosition(azimuthDelta + m_Config.homeAzimuth);
         position = stepper.currentPosition();
         GoToAzimuth(m_Config.homeAzimuth); // moving to home now that we know where we are
@@ -1021,7 +1022,7 @@ void RotatorClass::motorStop()
 
 void RotatorClass::stopInterrupt()
 {
-    DBPrintln("Stopping interrupt");
+    DBPrintln("Stopping motor interrupt");
     // stop interrupt timer
     stopTimer(TC1, 0, TC3_IRQn);
 }
@@ -1030,7 +1031,7 @@ void RotatorClass::motorMoveTo(const long newPosition)
 {
 
     stepper.moveTo(newPosition);
-    DBPrintln("Starting interrupt");
+    DBPrintln("Starting motor interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
@@ -1042,7 +1043,7 @@ void RotatorClass::motorMoveRelative(const long howFar)
 {
 
     stepper.move(howFar);
-    DBPrintln("Starting interrupt");
+    DBPrintln("Starting motor interrupt");
     int nFreq;
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
