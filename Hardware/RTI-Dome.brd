@@ -4271,7 +4271,7 @@ design rules under a new name.</description>
 <via x="50.8" y="17.78" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="34.29" y="21.59" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="54.61" y="33.02" extent="1-16" drill="0.6" diameter="1.27"/>
-<via x="64.77" y="21.59" extent="1-16" drill="0.6" diameter="1.27"/>
+<via x="64.4525" y="22.225" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="67.31" y="20.32" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="69.85" y="20.32" extent="1-16" drill="0.6" diameter="1.27"/>
 <via x="72.39" y="20.32" extent="1-16" drill="0.6" diameter="1.27"/>
@@ -4534,7 +4534,6 @@ design rules under a new name.</description>
 <wire x1="39.8145" y1="31.71825" x2="41.37025" y2="31.71825" width="0.254" layer="1"/>
 <wire x1="41.37025" y1="31.71825" x2="42.19575" y2="30.89275" width="0.254" layer="1"/>
 <wire x1="42.19575" y1="30.89275" x2="42.19575" y2="29.779" width="0.254" layer="1"/>
-<wire x1="33.5915" y1="63.5" x2="36.195" y2="60.8965" width="0.254" layer="1"/>
 <via x="36.195" y="60.8965" extent="1-16" drill="0.3" diameter="0.254"/>
 <wire x1="36.195" y1="60.8965" x2="36.195" y2="58.166" width="0.254" layer="16"/>
 <wire x1="36.195" y1="58.166" x2="38.608" y2="55.88" width="0.254" layer="16"/>
@@ -4549,8 +4548,10 @@ design rules under a new name.</description>
 <wire x1="38.6715" y1="43.8785" x2="39.37" y2="43.18" width="0.254" layer="16"/>
 <wire x1="39.37" y1="43.18" x2="39.37" y2="36.22675" width="0.254" layer="16"/>
 <wire x1="39.37" y1="36.22675" x2="38.481" y2="35.33775" width="0.254" layer="16"/>
-<wire x1="28.8384" y1="65.7225" x2="31.0609" y2="63.5" width="0.254" layer="1"/>
-<wire x1="31.0609" y1="63.5" x2="33.5915" y2="63.5" width="0.254" layer="1"/>
+<wire x1="36.195" y1="60.8965" x2="33.909" y2="63.1825" width="0.254" layer="1"/>
+<wire x1="33.909" y1="63.1825" x2="31.4325" y2="63.1825" width="0.254" layer="1"/>
+<wire x1="31.4325" y1="63.1825" x2="28.8925" y2="65.7225" width="0.254" layer="1"/>
+<wire x1="28.8925" y1="65.7225" x2="28.8384" y2="65.7225" width="0.254" layer="1"/>
 </signal>
 <signal name="HOME_SHUTTER_CLOSED_5V">
 <contactref element="X1" pad="2"/>

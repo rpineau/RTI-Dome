@@ -20,6 +20,7 @@
 // #define TB6600
 #define ISD0X
 
+#define USE_EXT_EEPROM
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.

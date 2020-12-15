@@ -5,8 +5,16 @@
 // This is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
 
+
+#ifdef USE_EXT_EEPROM
+#include <Wire.h>
+#define EEPROM_ADDR 0x50
+#define SPI_CHUNK_SIZE  16
+#else
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
+#endif
+
 
 #include <AccelStepper.h>
 #include "StopWatch.h"
@@ -50,10 +58,11 @@ DueFlashStorage dueFlashStorage;
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
 #define STEPS_DEFAULT       440640
-#define SIGNATURE           2645
+#define SIGNATURE           2646
 
-// not used on DUE
-#define EEPROM_LOCATION     10
+// used to offset the config location.. at some point.
+#define EEPROM_LOCATION     0
+
 
 typedef struct IPCONFIG {
     bool            bUseDHCP;
@@ -62,6 +71,7 @@ typedef struct IPCONFIG {
     IPAddress       gateway;
     IPAddress       subnet;
 } IPConfig;
+
 
 typedef struct RotatorConfiguration {
     int             signature;
@@ -294,12 +304,29 @@ private:
 
     bool            m_bIsRaining;
 
+#ifdef USE_EXT_EEPROM
+    // eeprom
+    byte m_EEPROMpageSize;
+
+    byte readEEPROMByte(int deviceaddress, unsigned int eeaddress);
+    void readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
+    void readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
+    void writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
+    void writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
+#endif
 };
 
 
 
 RotatorClass::RotatorClass()
 {
+#ifdef USE_EXT_EEPROM
+    DBPrintln("Ussing external AT24AA128 eeprom");
+    Wire1.begin();
+    // AT24AA128 page size is 64 byte
+    m_EEPROMpageSize = 64;
+#endif
+
     m_seekMode = HOMING_NONE;
     wasRunning = false;
     m_bisAtHome = false;
@@ -403,9 +430,13 @@ void RotatorClass::SaveToEEProm()
 {
     m_Config.signature = SIGNATURE;
 
+#ifdef USE_EXT_EEPROM
+    writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
+#else
     byte data[sizeof(Configuration)];
     memcpy(data, &m_Config, sizeof(Configuration));
     dueFlashStorage.write(0, data, sizeof(Configuration));
+#endif
 }
 
 bool RotatorClass::LoadFromEEProm()
@@ -415,9 +446,13 @@ bool RotatorClass::LoadFromEEProm()
     //  zero the structure so currently unused parts
     //  dont end up loaded with random garbage
     memset(&m_Config, 0, sizeof(Configuration));
+#ifdef USE_EXT_EEPROM
+    readEEPROMBuffer(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration) );
 
+#else
     byte* data = dueFlashStorage.readAddress(0);
     memcpy(&m_Config, data, sizeof(Configuration));
+#endif
 
     if (m_Config.signature != SIGNATURE) {
         SetDefaultConfig();
@@ -456,12 +491,15 @@ void RotatorClass::SetDefaultConfig()
     m_Config.radioIsConfigured = false;
     m_Config.panid = 0x4242;
 #endif
+
     m_Config.ipConfig.bUseDHCP = true;
     m_Config.ipConfig.ip.fromString("192.168.0.99");
     m_Config.ipConfig.dns.fromString("192.168.0.1");
     m_Config.ipConfig.gateway.fromString("192.168.0.1");
     m_Config.ipConfig.subnet.fromString("255.255.255.0");
+
 }
+
 
 void RotatorClass::getIpConfig(IPConfig &config)
 {
@@ -1003,6 +1041,114 @@ void RotatorClass::motorMoveRelative(const long howFar)
     // AccelStepper run() is called under a timer interrupt
     startTimer(TC1, 0, TC3_IRQn, nFreq);
 }
+
+#ifdef USE_EXT_EEPROM
+
+//
+// EEProm code to access the AT24AA128 I2C eeprom
+//
+
+// read one byte
+byte RotatorClass::readEEPROMByte(int deviceaddress, unsigned int eeaddress)
+{
+    byte rdata = 0xFF;
+
+    Wire1.beginTransmission(deviceaddress);
+    Wire1.write((int)(eeaddress >> 8)); // MSB
+    Wire1.write((int)(eeaddress & 0xFF)); // LSB
+    Wire1.endTransmission();
+    Wire1.requestFrom(deviceaddress,1);
+    if (Wire1.available()) {
+        rdata = Wire1.read();
+    }
+    return rdata;
+}
+
+// Read from EEPROM into a buffer
+// slice read into SPI_CHUNK_SIZE block read. SPI_CHUNK_SIZE <=32
+void RotatorClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length)
+{
+
+	int c = length;
+	int offD = 0;
+	int nc = 0;
+
+	// read until length bytes is read
+	while (c > 0) {
+		// read maximal SPI_CHUNK_SIZE bytes
+		nc = c;
+		if (nc > SPI_CHUNK_SIZE)
+			nc = SPI_CHUNK_SIZE;
+		readEEPROMBlock(deviceaddress, eeaddress, buffer, offD, nc);
+		eeaddress+=nc;
+		offD+=nc;
+		c-=nc;
+	}
+}
+
+// Read from eeprom into a buffer  (assuming read lenght if SPI_CHUNK_SIZE or less)
+void RotatorClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
+{
+    int r = 0;
+	Wire1.beginTransmission(deviceaddress);
+    if (Wire1.endTransmission()==0) {
+     	Wire1.beginTransmission(deviceaddress);
+    	Wire1.write(eeaddress >> 8);
+    	Wire1.write(eeaddress & 0xFF);
+    	if (Wire1.endTransmission()==0) {
+			r = 0;
+    		Wire1.requestFrom(deviceaddress, length);
+			while (Wire1.available() > 0 && r<length) {
+				data[offset+r] = (byte)Wire1.read();
+				r++;
+			}
+    	}
+    }
+}
+
+
+
+// Write a buffer to EEPROM
+// slice write into SPI_CHUNK_SIZE block write. SPI_CHUNK_SIZE <=32
+void RotatorClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *data, int length)
+{
+	int c = length;					// bytes left to write
+	int offD = 0;					// current offset in data pointer
+	int offP;						// current offset in page
+	int nc = 0;						// next n bytes to write
+
+	// write all bytes in multiple steps
+	while (c > 0) {
+		// calc offset in page
+		offP = eeaddress % m_EEPROMpageSize;
+		// maximal 30 bytes to write
+		nc = min(min(c, SPI_CHUNK_SIZE), m_EEPROMpageSize - offP);
+		writeEEPROMBlock(deviceaddress, eeaddress, data, offD, nc);
+		c-=nc;
+		offD+=nc;
+		eeaddress+=nc;
+	}
+}
+
+// Write a buffer to EEPROM (assuming it's of SPI_CHUNK_SIZE)
+void RotatorClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
+{
+
+    Wire1.beginTransmission(deviceaddress);
+    if (Wire1.endTransmission()==0) {
+     	Wire1.beginTransmission(deviceaddress);
+    	Wire1.write(eeaddress >> 8);
+    	Wire1.write(eeaddress & 0xFF);
+    	byte *adr = data+offset;
+    	Wire1.write(adr, length);
+    	Wire1.endTransmission();
+    	delay(20);
+    } else {
+        DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
+    }
+}
+
+#endif
 
 
 
