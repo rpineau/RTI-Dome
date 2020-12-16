@@ -15070,7 +15070,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
 <part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
 <part name="C5" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="X12" library="con-ptr500" deviceset="AK500/2" device=""/>
 <part name="IC3" library="ftdichip" deviceset="FT232R" device="L"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="R9" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
@@ -15154,8 +15153,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <instance part="R1" gate="G$1" x="76.2" y="241.3" rot="R90"/>
 <instance part="R3" gate="G$1" x="40.64" y="248.92" rot="R90"/>
 <instance part="C5" gate="G$1" x="114.3" y="180.34"/>
-<instance part="X12" gate="-1" x="378.46" y="129.54" rot="R180"/>
-<instance part="X12" gate="-2" x="378.46" y="134.62" rot="R180"/>
 <instance part="IC3" gate="1" x="289.56" y="149.86"/>
 <instance part="GND10" gate="1" x="274.32" y="111.76"/>
 <instance part="R9" gate="G$1" x="256.54" y="172.72" rot="R270"/>
@@ -15428,11 +15425,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <pinref part="IC6" gate="P" pin="GND"/>
 </segment>
 <segment>
-<pinref part="X12" gate="-1" pin="KL"/>
-<wire x1="370.84" y1="129.54" x2="373.38" y2="129.54" width="0.1524" layer="91"/>
-<label x="370.84" y="129.54" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
 <wire x1="116.84" y1="243.84" x2="119.38" y2="243.84" width="0.1524" layer="91"/>
 <label x="116.84" y="243.84" size="0.8128" layer="95" rot="R180" xref="yes"/>
 <pinref part="IC5" gate="G$1" pin="A4"/>
@@ -15456,11 +15448,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <wire x1="187.96" y1="238.76" x2="190.5" y2="238.76" width="0.1524" layer="91"/>
 <label x="187.96" y="238.76" size="0.8128" layer="95" rot="R180" xref="yes"/>
 <pinref part="IC6" gate="G$1" pin="A7"/>
-</segment>
-<segment>
-<pinref part="X12" gate="-2" pin="KL"/>
-<wire x1="370.84" y1="134.62" x2="373.38" y2="134.62" width="0.1524" layer="91"/>
-<label x="370.84" y="134.62" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
 <pinref part="IC6" gate="G$1" pin="*OE"/>
