@@ -13412,6 +13412,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="P" pin="VDD" pad="P$20"/>
 </connects>
 <technologies>
+<technology name="ABT"/>
 <technology name="LVC"/>
 <technology name="LVT"/>
 </technologies>
@@ -17219,8 +17220,12 @@ at 30/07/2012 11:22:31</description>
 <part name="R21" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="FRAME1" library="frames" deviceset="DINA3_L" device=""/>
 <part name="X6" library="con-ptr500" deviceset="AK500/6" device=""/>
-<part name="IC5" library="rti" deviceset="74*245" device="" technology="LVC"/>
-<part name="IC6" library="rti" deviceset="74*245" device="" technology="LVC" value="74ABT245"/>
+<part name="IC5" library="rti" deviceset="74*245" device="" technology="LVC">
+<attribute name="MPN" value="74LVC245APW,118"/>
+</part>
+<part name="IC6" library="rti" deviceset="74*245" device="" technology="ABT" value="74ABT245">
+<attribute name="MPN" value="SN74ABT245BDWR"/>
+</part>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="R22" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="U$1" library="arduino_shield" deviceset="ARDUINO_DUE_SHIELD_FULL" device=""/>
@@ -17231,16 +17236,22 @@ at 30/07/2012 11:22:31</description>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
-<part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device=""/>
+<part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device="">
+<attribute name="MPN" value="O705025MEDH4MI"/>
+</part>
 <part name="C20" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
-<part name="U$2" library="MCP120T-270I_TT" deviceset="MCP120T-270I_TT" device=""/>
+<part name="U$2" library="MCP120T-270I_TT" deviceset="MCP120T-270I_TT" device="">
+<attribute name="MPN" value="MCP120T-270I/TT"/>
+</part>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="C13" library="rti" deviceset="C-EU" device="'0805'" value="10nF"/>
 <part name="FL1" library="BLM21AG121SN1D" deviceset="BLM21AG121SN1D" device=""/>
 <part name="C11" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="R31" library="rti" deviceset="R-EU" device="'0805'" value="10K"/>
-<part name="IC4" library="burr-brown" deviceset="REG1117" device=""/>
+<part name="IC4" library="burr-brown" deviceset="REG1117" device="">
+<attribute name="MPN" value="REG1117-3.3/2K5"/>
+</part>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
 <part name="P+13" library="supply1" deviceset="VCC" device=""/>
 <part name="C25" library="rti" deviceset="C-EU" device="'1206'" value="10uF"/>
@@ -17261,7 +17272,9 @@ at 30/07/2012 11:22:31</description>
 <part name="C22" library="rti" deviceset="C-EU" device="'0805'" value="10nF"/>
 <part name="GND23" library="supply1" deviceset="GND" device=""/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
-<part name="U$5" library="Microchip_By_element14_Batch_1" deviceset="ENC424J600-I/PT" device=""/>
+<part name="U$5" library="Microchip_By_element14_Batch_1" deviceset="ENC424J600-I/PT" device="">
+<attribute name="MPN" value="ENC424J600-I/PT"/>
+</part>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="R23" library="rti" deviceset="R-EU" device="'0805'" value="10K"/>
 <part name="C10" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
@@ -17348,8 +17361,12 @@ at 30/07/2012 11:22:31</description>
 <instance part="X6" gate="-4" x="345.44" y="180.34" rot="R180"/>
 <instance part="X6" gate="-5" x="345.44" y="185.42" rot="R180"/>
 <instance part="X6" gate="-6" x="345.44" y="190.5" rot="R180"/>
-<instance part="IC5" gate="G$1" x="132.08" y="241.3"/>
-<instance part="IC6" gate="G$1" x="203.2" y="243.84"/>
+<instance part="IC5" gate="G$1" x="132.08" y="241.3">
+<attribute name="MPN" x="132.08" y="241.3" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="IC6" gate="G$1" x="203.2" y="243.84">
+<attribute name="MPN" x="203.2" y="243.84" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="IC5" gate="P" x="132.08" y="180.34" rot="R270"/>
 <instance part="IC6" gate="P" x="203.2" y="180.34" rot="R270"/>
 <instance part="GND7" gate="1" x="187.96" y="226.06"/>
@@ -17357,7 +17374,9 @@ at 30/07/2012 11:22:31</description>
 <instance part="U$1" gate="G$1" x="132.08" y="86.36"/>
 <instance part="GND9" gate="1" x="109.22" y="10.16"/>
 <instance part="J1" gate="G$1" x="378.46" y="83.82"/>
-<instance part="U$2" gate="G$1" x="53.34" y="63.5"/>
+<instance part="U$2" gate="G$1" x="53.34" y="63.5">
+<attribute name="MPN" x="53.34" y="63.5" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND18" gate="1" x="38.1" y="55.88"/>
 </instances>
 <busses>
@@ -18451,7 +18470,9 @@ at 30/07/2012 11:22:31</description>
 <instance part="C17" gate="G$1" x="134.62" y="27.94"/>
 <instance part="GND14" gate="1" x="127" y="10.16"/>
 <instance part="GND15" gate="1" x="218.44" y="81.28"/>
-<instance part="25MHZ" gate="G$1" x="203.2" y="81.28" rot="R180"/>
+<instance part="25MHZ" gate="G$1" x="203.2" y="81.28" rot="R180">
+<attribute name="MPN" x="203.2" y="81.28" size="1.778" layer="96" rot="R180" display="off"/>
+</instance>
 <instance part="C20" gate="G$1" x="223.52" y="63.5"/>
 <instance part="GND17" gate="1" x="223.52" y="53.34"/>
 <instance part="C13" gate="G$1" x="165.1" y="27.94"/>

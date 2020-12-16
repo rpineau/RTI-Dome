@@ -13412,6 +13412,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="P" pin="VDD" pad="P$20"/>
 </connects>
 <technologies>
+<technology name="ABT"/>
 <technology name="LVC"/>
 <technology name="LVT"/>
 </technologies>
@@ -16800,7 +16801,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <part name="FRAME1" library="frames" deviceset="DINA3_L" device=""/>
 <part name="X6" library="con-ptr500" deviceset="AK500/6" device=""/>
 <part name="IC5" library="rti" deviceset="74*245" device="" technology="LVC"/>
-<part name="IC6" library="rti" deviceset="74*245" device="" technology="LVC" value="74ABT245"/>
+<part name="IC6" library="rti" deviceset="74*245" device="" technology="ABT" value="74ABT245"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="R22" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="U$1" library="arduino_shield" deviceset="ARDUINO_DUE_SHIELD_FULL" device=""/>

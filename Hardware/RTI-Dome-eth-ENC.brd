@@ -4864,41 +4864,31 @@ at 30/07/2012 11:22:31</description>
 <clearance class="4" value="0.1524"/>
 </class>
 </classes>
-<designrules name="Fusion *">
-<description language="de">&lt;b&gt;EAGLE Design Rules&lt;/b&gt;
+<designrules name="jlcpcb2layer *">
+<description language="en">&lt;b&gt;JLCPCB Design Rules by Jaap de Dood&lt;/b&gt;
 &lt;p&gt;
-Die Standard-Design-Rules sind so gewÃÂÃÂ¤hlt, dass sie fÃÂÃÂ¼r 
-die meisten Anwendungen passen. Sollte ihre Platine 
-besondere Anforderungen haben, treffen Sie die erforderlichen
-Einstellungen hier und speichern die Design Rules unter 
-einem neuen Namen ab.</description>
-<description language="en">&lt;b&gt;EAGLE Design Rules&lt;/b&gt;
-&lt;p&gt;
-The default Design Rules have been set to cover
-a wide range of applications. Your particular design
-may have different requirements, so please make the
-necessary adjustments and save your customized
-design rules under a new name.</description>
+Please make sure your boards conform to these design rules.
+&lt;/p&gt;</description>
 <param name="layerSetup" value="(1*16)"/>
-<param name="mtCopper" value="0.07mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.07mm"/>
-<param name="mtIsolate" value="1.6mm 0.5mm 0.25mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.25mm 0.5mm"/>
-<param name="mdWireWire" value="6mil"/>
-<param name="mdWirePad" value="6mil"/>
-<param name="mdWireVia" value="6mil"/>
-<param name="mdPadPad" value="6mil"/>
-<param name="mdPadVia" value="6mil"/>
-<param name="mdViaVia" value="6mil"/>
-<param name="mdSmdPad" value="6mil"/>
-<param name="mdSmdVia" value="6mil"/>
-<param name="mdSmdSmd" value="6mil"/>
+<param name="mtCopper" value="0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm"/>
+<param name="mtIsolate" value="1.6mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm"/>
+<param name="mdWireWire" value="5mil"/>
+<param name="mdWirePad" value="5mil"/>
+<param name="mdWireVia" value="5mil"/>
+<param name="mdPadPad" value="5mil"/>
+<param name="mdPadVia" value="5mil"/>
+<param name="mdViaVia" value="5mil"/>
+<param name="mdSmdPad" value="5mil"/>
+<param name="mdSmdVia" value="5mil"/>
+<param name="mdSmdSmd" value="5mil"/>
 <param name="mdViaViaSameLayer" value="8mil"/>
 <param name="mnLayersViaInSmd" value="2"/>
-<param name="mdCopperDimension" value="13mil"/>
-<param name="mdDrill" value="6mil"/>
+<param name="mdCopperDimension" value="8mil"/>
+<param name="mdDrill" value="0.5mm"/>
 <param name="mdSmdStop" value="0mil"/>
-<param name="msWidth" value="6mil"/>
-<param name="msDrill" value="0.3mm"/>
-<param name="msMicroVia" value="8mil"/>
+<param name="msWidth" value="5mil"/>
+<param name="msDrill" value="0.2mm"/>
+<param name="msMicroVia" value="0.2mm"/>
 <param name="msBlindViaRatio" value="0.5"/>
 <param name="rvPadTop" value="0.25"/>
 <param name="rvPadInner" value="0.25"/>
@@ -4907,19 +4897,19 @@ design rules under a new name.</description>
 <param name="rvViaInner" value="0.25"/>
 <param name="rvMicroViaOuter" value="0.25"/>
 <param name="rvMicroViaInner" value="0.25"/>
-<param name="rlMinPadTop" value="6mil"/>
+<param name="rlMinPadTop" value="0.13mm"/>
 <param name="rlMaxPadTop" value="20mil"/>
-<param name="rlMinPadInner" value="6mil"/>
+<param name="rlMinPadInner" value="0.13mm"/>
 <param name="rlMaxPadInner" value="20mil"/>
-<param name="rlMinPadBottom" value="6mil"/>
+<param name="rlMinPadBottom" value="0.13mm"/>
 <param name="rlMaxPadBottom" value="20mil"/>
-<param name="rlMinViaOuter" value="6mil"/>
+<param name="rlMinViaOuter" value="0.13mm"/>
 <param name="rlMaxViaOuter" value="20mil"/>
-<param name="rlMinViaInner" value="6mil"/>
+<param name="rlMinViaInner" value="0.13mm"/>
 <param name="rlMaxViaInner" value="20mil"/>
-<param name="rlMinMicroViaOuter" value="6mil"/>
+<param name="rlMinMicroViaOuter" value="0.13mm"/>
 <param name="rlMaxMicroViaOuter" value="20mil"/>
-<param name="rlMinMicroViaInner" value="6mil"/>
+<param name="rlMinMicroViaInner" value="0.13mm"/>
 <param name="rlMaxMicroViaInner" value="20mil"/>
 <param name="psTop" value="-1"/>
 <param name="psBottom" value="-1"/>
@@ -4928,15 +4918,15 @@ design rules under a new name.</description>
 <param name="psElongationOffset" value="100"/>
 <param name="mvStopFrame" value="1"/>
 <param name="mvCreamFrame" value="0"/>
-<param name="mlMinStopFrame" value="0mil"/>
-<param name="mlMaxStopFrame" value="3mil"/>
-<param name="mlMinCreamFrame" value="0mil"/>
-<param name="mlMaxCreamFrame" value="3mil"/>
-<param name="mlViaStopLimit" value="130mil"/>
+<param name="mlMinStopFrame" value="0.05mm"/>
+<param name="mlMaxStopFrame" value="2.5mil"/>
+<param name="mlMinCreamFrame" value="0.05mm"/>
+<param name="mlMaxCreamFrame" value="2.5mil"/>
+<param name="mlViaStopLimit" value="40mil"/>
 <param name="srRoundness" value="0"/>
 <param name="srMinRoundness" value="0mil"/>
 <param name="srMaxRoundness" value="0mil"/>
-<param name="slThermalIsolate" value="8mil"/>
+<param name="slThermalIsolate" value="10mil"/>
 <param name="slThermalsForVias" value="0"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
@@ -4944,7 +4934,7 @@ design rules under a new name.</description>
 <param name="checkAngle" value="0"/>
 <param name="checkFont" value="1"/>
 <param name="checkRestrict" value="1"/>
-<param name="useDiameter" value="31"/>
+<param name="useDiameter" value="13"/>
 <param name="maxErrors" value="50"/>
 </designrules>
 <autorouter>
@@ -5147,15 +5137,21 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="16.51" y="3.81" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="" x="16.51" y="3.81" size="1.778" layer="27" display="off"/>
 </element>
-<element name="IC5" library="rti" package="TSSOP20" value="74LVC245" x="36.83" y="36.83" rot="R90"/>
-<element name="IC6" library="rti" package="TSSOP20" value="74ABT245" x="11.43" y="19.05" rot="R180"/>
+<element name="IC5" library="rti" package="TSSOP20" value="74LVC245" x="36.83" y="36.83" rot="R90">
+<attribute name="MPN" value="74LVC245APW,118" x="36.83" y="36.83" size="1.778" layer="27" rot="R90" display="off"/>
+</element>
+<element name="IC6" library="rti" package="TSSOP20" value="74ABT245" x="11.43" y="19.05" rot="R180">
+<attribute name="MPN" value="SN74ABT245BDWR" x="11.43" y="19.05" size="1.778" layer="27" rot="R180" display="off"/>
+</element>
 <element name="R22" library="rti" package="R0805" value="4.7K" x="32.385" y="41.62425"/>
 <element name="U$1" library="arduino_shield" package="ARDUINO_DUE_SHIELD_FULL" value="ARDUINO_DUE_SHIELD_FULL" x="38.76675" y="35.14725"/>
 <element name="C14" library="rti" package="C0805" value="100nF" x="73.08" y="22.365" rot="R270"/>
 <element name="C16" library="rti" package="C0805" value="100nF" x="59.535" y="22.05" rot="R270"/>
 <element name="C17" library="rti" package="C0805" value="100nF" x="75.285" y="22.365" rot="R270"/>
 <element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="102.87" y="8.89" rot="MR90"/>
-<element name="25MHZ" library="rti" package="CB3" value="CB3LV-OSCILATOR" x="63.945" y="21.105"/>
+<element name="25MHZ" library="rti" package="CB3" value="CB3LV-OSCILATOR" x="63.945" y="21.105">
+<attribute name="MPN" value="O705025MEDH4MI" x="63.945" y="21.105" size="1.778" layer="27" display="off"/>
+</element>
 <element name="C20" library="rti" package="C0805" value="100nF" x="68.67" y="22.365" rot="R270"/>
 <element name="U$2" library="MCP120T-270I_TT" package="SOT95P237X112-3N" value="MCP120T-270I_TT" x="22.86" y="15.24">
 <attribute name="MANUFACTURER_PART_NUMBER" value="MCP120T-270I/TT" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
@@ -5164,13 +5160,14 @@ design rules under a new name.</description>
 <attribute name="DESCRIPTION" value="Microcontroller Supervisory Circuit" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
 <attribute name="HEIGHT" value="mm" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
 <attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.co.uk/ProductDetail/Microchip-Technology/MCP120T-270I-TT?qs=JaP0%252BruNJH91Pwyk6aJdSA%3D%3D" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
+<attribute name="MPN" value="MCP120T-270I/TT" x="22.86" y="15.24" size="1.778" layer="27" display="off"/>
 </element>
 <element name="C13" library="rti" package="C0805" value="10nF" x="65.835" y="43.155" rot="R90"/>
 <element name="FL1" library="BLM21AG121SN1D" package="L0805" value="BLM21AG121SN1D" x="95.455" y="43.36"/>
 <element name="C11" library="rti" package="C0805" value="100nF" x="79.065" y="29.295"/>
 <element name="R31" library="rti" package="R0805" value="10K" x="72.45" y="43.155" rot="R90"/>
 <element name="IC4" library="burr-brown" package="SOT223" value="REG1117" x="91.665" y="51.03" rot="R180">
-<attribute name="MPN" value="REG1117" x="91.665" y="51.03" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="MPN" value="REG1117-3.3/2K5" x="91.665" y="51.03" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MF" value="" x="91.665" y="51.03" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_NEWARK" value="14P6981" x="91.665" y="51.03" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="1097566" x="91.665" y="51.03" size="1.778" layer="27" rot="R180" display="off"/>
@@ -5196,7 +5193,7 @@ design rules under a new name.</description>
 <element name="C22" library="rti" package="C0805" value="10nF" x="91.665" y="29.925"/>
 <element name="U$5" library="Microchip_By_element14_Batch_1" package="QFP50P1200X1200X120-44N" value="ENC424J600-I/PT" x="69.3" y="33.075" rot="R90">
 <attribute name="OC_NEWARK" value="07P9120" x="69.3" y="33.075" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="MPN" value="enc424j600-I/pt" x="69.3" y="33.075" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="MPN" value="ENC424J600-I/PT" x="69.3" y="33.075" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="OC_FARNELL" value="1740226" x="69.3" y="33.075" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="PACKAGE" value="TQFP-44" x="69.3" y="33.075" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="DESCRIPTION" value="Stand-Alone 10/100 Ethernet Controller" x="69.3" y="33.075" size="1.778" layer="27" rot="R90" display="off"/>
