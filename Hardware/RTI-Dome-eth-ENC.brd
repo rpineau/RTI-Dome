@@ -3812,7 +3812,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <hole x="5.715" y="-6.35" drill="3.3"/>
 <hole x="-5.715" y="-6.35" drill="3.3"/>
 </package>
-<package name="CB3">
+<package name="SMD-7050_4P">
 <smd name="1" x="-2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="2" x="2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="3" x="2.54" y="2.54" dx="1.397" dy="1.1938" layer="1"/>
@@ -5159,7 +5159,7 @@ design rules under a new name.</description>
 <element name="C16" library="rti" package="C0805" value="100nF" x="59.535" y="22.05" rot="R270"/>
 <element name="C17" library="rti" package="C0805" value="100nF" x="75.285" y="22.365" rot="R270"/>
 <element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="102.87" y="8.89" rot="MR90"/>
-<element name="25MHZ" library="rti" package="CB3" value="CB3LV-OSCILATOR" x="63.945" y="21.105">
+<element name="25MHZ" library="rti" package="SMD-7050_4P" value="CB3LV-OSCILATOR" x="63.945" y="21.105">
 <attribute name="MPN" value="O705025MEDH4MI" x="63.945" y="21.105" size="1.778" layer="27" display="off"/>
 </element>
 <element name="C20" library="rti" package="C0805" value="100nF" x="68.67" y="22.365" rot="R270"/>

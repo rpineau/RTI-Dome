@@ -10444,7 +10444,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <hole x="5.715" y="-6.35" drill="3.3"/>
 <hole x="-5.715" y="-6.35" drill="3.3"/>
 </package>
-<package name="CB3">
+<package name="SMD-7050_4P">
 <smd name="1" x="-2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="2" x="2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="3" x="2.54" y="2.54" dx="1.397" dy="1.1938" layer="1"/>
@@ -13473,7 +13473,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <gate name="G$1" symbol="QG1LV" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="CB3">
+<device name="" package="SMD-7050_4P">
 <connects>
 <connect gate="G$1" pin="FO" pad="3"/>
 <connect gate="G$1" pin="GND" pad="2"/>
