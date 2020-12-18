@@ -925,6 +925,7 @@ void ProcessCommand(bool bFromNetwork)
         else if(domeClient.connected()) {
                 DBPrintln("Network serialMessage = " + serialMessage);
                 domeClient.print(serialMessage + "#");
+                domeClient.flush();
         }
     }
 }

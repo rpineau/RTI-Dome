@@ -304,9 +304,10 @@ private:
 
     bool            m_bIsRaining;
 
+    bool m_bDoEEPromSave;
+
 #ifdef USE_EXT_EEPROM
     // eeprom
-    bool m_bDoEEPromSave;
     byte m_EEPROMpageSize;
 
     byte readEEPROMByte(int deviceaddress, unsigned int eeaddress);
