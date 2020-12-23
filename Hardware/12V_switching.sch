@@ -184,79 +184,6 @@
 </deviceset>
 </devicesets>
 </library>
-<library name="LM2576D2TR4-5G">
-<description>&lt;Voltage Regulators - Switching Regulators 5V 3A Buck PWM&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
-<packages>
-<package name="D2TSUFFIX-CASE936A-02-ISSUEC">
-<description>&lt;b&gt;D2TSUFFIX-CASE936A-02-ISSUEC&lt;/b&gt;&lt;br&gt;
-</description>
-<smd name="1" x="8.71" y="-3.474" dx="3.05" dy="1.016" layer="1"/>
-<smd name="2" x="8.71" y="-1.772" dx="3.05" dy="1.016" layer="1"/>
-<smd name="3" x="8.71" y="-0.07" dx="3.05" dy="1.016" layer="1"/>
-<smd name="4" x="8.71" y="1.632" dx="3.05" dy="1.016" layer="1"/>
-<smd name="5" x="8.71" y="3.334" dx="3.05" dy="1.016" layer="1"/>
-<smd name="6" x="-1.595" y="-0.07" dx="10.66" dy="8.38" layer="1" rot="R90"/>
-<text x="-1.23133125" y="6.92633125" size="1.27" layer="25" align="center">&gt;NAME</text>
-<text x="-1.23133125" y="-7.04366875" size="1.27" layer="27" align="center">&gt;VALUE</text>
-<wire x1="-4.445" y1="4.94" x2="4.755" y2="4.94" width="0.254" layer="51"/>
-<wire x1="4.755" y1="4.94" x2="4.755" y2="-5.08" width="0.254" layer="51"/>
-<wire x1="4.755" y1="-5.08" x2="-4.445" y2="-5.08" width="0.254" layer="51"/>
-<wire x1="-4.445" y1="-5.08" x2="-4.445" y2="4.94" width="0.254" layer="51"/>
-<wire x1="4.755" y1="4.94" x2="4.755" y2="-5.08" width="0.254" layer="21"/>
-<wire x1="4.755" y1="-5.08" x2="3.16733125" y2="-5.08" width="0.254" layer="21"/>
-<wire x1="4.755" y1="4.94" x2="3.075" y2="4.94" width="0.254" layer="21"/>
-<circle x="4.235" y="-3.905" radius="0.11566875" width="0.254" layer="25"/>
-</package>
-</packages>
-<symbols>
-<symbol name="LM2576D2TR4-5G">
-<wire x1="-15.24" y1="7.62" x2="10.16" y2="7.62" width="0.254" layer="94"/>
-<wire x1="10.16" y1="-7.62" x2="10.16" y2="7.62" width="0.254" layer="94"/>
-<wire x1="10.16" y1="-7.62" x2="-15.24" y2="-7.62" width="0.254" layer="94"/>
-<wire x1="-15.24" y1="7.62" x2="-15.24" y2="-7.62" width="0.254" layer="94"/>
-<text x="0" y="-10.16" size="1.778" layer="95" align="center-left">&gt;NAME</text>
-<text x="-12.7" y="10.16" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
-<pin name="VIN" x="-20.32" y="5.08" length="middle"/>
-<pin name="OUTPUT" x="15.24" y="-2.54" length="middle" rot="R180"/>
-<pin name="GND" x="-10.16" y="-12.7" length="middle" rot="R90"/>
-<pin name="FEEDBACK" x="15.24" y="5.08" length="middle" rot="R180"/>
-<pin name="!ON!/OFF" x="-5.08" y="-12.7" length="middle" rot="R90"/>
-<pin name="GND1" x="-12.7" y="-12.7" length="middle" rot="R90"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="LM2576D2TR4-5G" prefix="IC">
-<description>&lt;b&gt;Voltage Regulators - Switching Regulators 5V 3A Buck PWM&lt;/b&gt;&lt;p&gt;
-Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-5G.pdf"&gt; Datasheet &lt;/a&gt;</description>
-<gates>
-<gate name="G$1" symbol="LM2576D2TR4-5G" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="D2TSUFFIX-CASE936A-02-ISSUEC">
-<connects>
-<connect gate="G$1" pin="!ON!/OFF" pad="5"/>
-<connect gate="G$1" pin="FEEDBACK" pad="4"/>
-<connect gate="G$1" pin="GND" pad="3"/>
-<connect gate="G$1" pin="GND1" pad="6"/>
-<connect gate="G$1" pin="OUTPUT" pad="2"/>
-<connect gate="G$1" pin="VIN" pad="1"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="DESCRIPTION" value="Voltage Regulators - Switching Regulators 5V 3A Buck PWM" constant="no"/>
-<attribute name="HEIGHT" value="mm" constant="no"/>
-<attribute name="MANUFACTURER_NAME" value="ON Semiconductor" constant="no"/>
-<attribute name="MANUFACTURER_PART_NUMBER" value="LM2576D2TR4-5G" constant="no"/>
-<attribute name="MOUSER_PART_NUMBER" value="863-LM2576D2TR4-5G" constant="no"/>
-<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.com/Search/Refine.aspx?Keyword=863-LM2576D2TR4-5G" constant="no"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="diode">
 <description>&lt;b&gt;Diodes&lt;/b&gt;&lt;p&gt;
 Based on the following sources:
@@ -10510,6 +10437,80 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 </deviceset>
 </devicesets>
 </library>
+<library name="LM2576">
+<description>&lt;Voltage Regulators - Switching Regulators 5V 3A Buck PWM&lt;/b&gt;&lt;p&gt;
+&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
+<packages>
+<package name="D2TSUFFIX-CASE936A-02-ISSUEC">
+<description>&lt;b&gt;D2TSUFFIX-CASE936A-02-ISSUEC&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="8.71" y="-3.474" dx="3.05" dy="1.016" layer="1"/>
+<smd name="2" x="8.71" y="-1.772" dx="3.05" dy="1.016" layer="1"/>
+<smd name="3" x="8.71" y="-0.07" dx="3.05" dy="1.016" layer="1"/>
+<smd name="4" x="8.71" y="1.632" dx="3.05" dy="1.016" layer="1"/>
+<smd name="5" x="8.71" y="3.334" dx="3.05" dy="1.016" layer="1"/>
+<smd name="6" x="-1.595" y="-0.07" dx="10.66" dy="8.38" layer="1" rot="R90"/>
+<text x="-1.23133125" y="6.92633125" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="-1.23133125" y="-7.04366875" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-4.445" y1="4.94" x2="4.755" y2="4.94" width="0.254" layer="51"/>
+<wire x1="4.755" y1="4.94" x2="4.755" y2="-5.08" width="0.254" layer="51"/>
+<wire x1="4.755" y1="-5.08" x2="-4.445" y2="-5.08" width="0.254" layer="51"/>
+<wire x1="-4.445" y1="-5.08" x2="-4.445" y2="4.94" width="0.254" layer="51"/>
+<wire x1="4.755" y1="4.94" x2="4.755" y2="-5.08" width="0.254" layer="21"/>
+<wire x1="4.755" y1="-5.08" x2="3.16733125" y2="-5.08" width="0.254" layer="21"/>
+<wire x1="4.755" y1="4.94" x2="3.075" y2="4.94" width="0.254" layer="21"/>
+<circle x="4.235" y="-3.905" radius="0.11566875" width="0.254" layer="25"/>
+</package>
+</packages>
+<symbols>
+<symbol name="LM2576D2TR4-5G">
+<wire x1="-15.24" y1="7.62" x2="10.16" y2="7.62" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-7.62" x2="10.16" y2="7.62" width="0.254" layer="94"/>
+<wire x1="10.16" y1="-7.62" x2="-15.24" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="-15.24" y1="7.62" x2="-15.24" y2="-7.62" width="0.254" layer="94"/>
+<text x="0" y="-10.16" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="-12.7" y="10.16" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="VIN" x="-20.32" y="5.08" length="middle"/>
+<pin name="OUTPUT" x="15.24" y="-2.54" length="middle" rot="R180"/>
+<pin name="GND" x="-10.16" y="-12.7" length="middle" rot="R90"/>
+<pin name="FEEDBACK" x="15.24" y="5.08" length="middle" rot="R180"/>
+<pin name="!ON!/OFF" x="-5.08" y="-12.7" length="middle" rot="R90"/>
+<pin name="GND1" x="-12.7" y="-12.7" length="middle" rot="R90"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="LM2576D2TR4-012G" prefix="IC">
+<description>&lt;b&gt;Voltage Regulators - Switching Regulators 12V 3A Buck PWM&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-012G.pdf"&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="LM2576D2TR4-5G" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="D2TSUFFIX-CASE936A-02-ISSUEC">
+<connects>
+<connect gate="G$1" pin="!ON!/OFF" pad="5"/>
+<connect gate="G$1" pin="FEEDBACK" pad="4"/>
+<connect gate="G$1" pin="GND" pad="3"/>
+<connect gate="G$1" pin="GND1" pad="6"/>
+<connect gate="G$1" pin="OUTPUT" pad="2"/>
+<connect gate="G$1" pin="VIN" pad="1"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="DESCRIPTION" value="Voltage Regulators - Switching Regulators 5V 3A Buck PWM" constant="no"/>
+<attribute name="HEIGHT" value="mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="ON Semiconductor" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="LM2576D2TR4-012G " constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="863-LM2576D2TR4-012G" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.com/Search/Refine.aspx?Keyword=863-LM2576D2TR4-5G" constant="no"/>
+<attribute name="MPN" value="LM2576D2TR4-012G " constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -10527,7 +10528,7 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 </class>
 </classes>
 <parts>
-<part name="IC5" library="LM2576D2TR4-5G" deviceset="LM2576D2TR4-5G" device=""/>
+<part name="IC5" library="LM2576" deviceset="LM2576D2TR4-012G" device=""/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
 <part name="D2" library="diode" deviceset="DIODE-" device="DO-214AC" value="SAC32"/>
 <part name="L1" library="MSS1583-104KEB" deviceset="MSS1583-104KEB" device=""/>
