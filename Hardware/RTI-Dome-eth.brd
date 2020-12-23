@@ -153,7 +153,7 @@
 <plain>
 <text x="49.8475" y="50.8" size="0.6096" layer="21" rot="R90">West / Close</text>
 <text x="57.15" y="69.88175" size="0.6096" layer="22" rot="MR0">East / Open</text>
-<text x="58.42" y="69.85" size="0.6096" layer="21">GND</text>
+<text x="58.59" y="69.93" size="0.6096" layer="21">GND</text>
 <text x="107.95" y="13.97" size="1.778" layer="21">GND</text>
 <text x="106.68" y="6.35" size="1.778" layer="21">+12V</text>
 <wire x1="1.905" y1="22.86" x2="1.905" y2="12.7" width="0" layer="20"/>
@@ -192,9 +192,9 @@
 <text x="54.9275" y="52.07" size="0.6096" layer="21" rot="R90">East / Open</text>
 <text x="60.29325" y="68.54825" size="0.6096" layer="22" rot="MR0">GND</text>
 <text x="8.001" y="69.85" size="0.6096" layer="21">GND</text>
-<text x="63.021" y="69.85" size="0.6096" layer="21">GND</text>
-<text x="65.41" y="69.85" size="0.6096" layer="21">AT_PARK_PIN_EXT</text>
-<text x="70.059" y="69.0215" size="0.6096" layer="21">AT_PARK_PIN_LOOP_EXT</text>
+<text x="73.71" y="69.93" size="0.6096" layer="21">GND</text>
+<text x="64.89" y="69.93" size="0.6096" layer="21">AT_PARK_PIN_EXT</text>
+<text x="59.979" y="68.3915" size="0.6096" layer="21">AT_PARK_PIN_LOOP_EXT</text>
 <text x="78.355" y="69.85" size="0.6096" layer="22" rot="MR0">AT_PARK_PIN_LOOP_EXT</text>
 <text x="73.03" y="68.58" size="0.6096" layer="22" rot="MR0">AT_PARK_PIN_EXT</text>
 <text x="64.86" y="68.895" size="0.6096" layer="22" rot="MR0">GND</text>
@@ -4771,11 +4771,11 @@ design rules under a new name.</description>
 </element>
 <element name="R2" library="rti" package="R0805" value="100K 0.1%" x="41.49725" y="14.57325" rot="R90"/>
 <element name="C3" library="rti" package="C0805" value="10uF" x="34.9885" y="7.65175" rot="R270"/>
-<element name="X7" library="con-ptr500" package="AK500/3" value="" x="68.785" y="65.835" rot="MR180">
-<attribute name="MPN" value="" x="68.785" y="65.835" size="1.778" layer="28" rot="MR180" display="off"/>
-<attribute name="MF" value="" x="68.785" y="65.835" size="1.778" layer="28" rot="MR180" display="off"/>
-<attribute name="OC_NEWARK" value="unknown" x="68.785" y="65.835" size="1.778" layer="28" rot="MR180" display="off"/>
-<attribute name="OC_FARNELL" value="unknown" x="68.785" y="65.835" size="1.778" layer="28" rot="MR180" display="off"/>
+<element name="X7" library="con-ptr500" package="AK500/3" value="" x="68.785" y="65.835" rot="R180">
+<attribute name="MPN" value="" x="68.785" y="65.835" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="MF" value="" x="68.785" y="65.835" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="OC_NEWARK" value="unknown" x="68.785" y="65.835" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="OC_FARNELL" value="unknown" x="68.785" y="65.835" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
 <element name="X8" library="con-ptr500" package="AK500/2" value="" x="6.3" y="65.835" rot="R180">
 <attribute name="MPN" value="" x="6.3" y="65.835" size="1.778" layer="27" rot="R180" display="off"/>
@@ -5838,7 +5838,6 @@ design rules under a new name.</description>
 <wire x1="6.985" y1="22.225" x2="6.35" y2="22.86" width="0.254" layer="1"/>
 <wire x1="6.35" y1="22.86" x2="6.35" y2="22.76725" width="0.3048" layer="1"/>
 <wire x1="6.35" y1="22.76725" x2="6.03" y2="22.44725" width="0.254" layer="1"/>
-<wire x1="71.69" y1="68.58" x2="26.67" y2="68.58" width="0.254" layer="1"/>
 <via x="26.67" y="68.58" extent="1-16" drill="0.3" diameter="0.254"/>
 <wire x1="26.67" y1="68.58" x2="21.59" y2="68.58" width="0.254" layer="16"/>
 <via x="21.59" y="68.58" extent="1-16" drill="0.3" diameter="0.254"/>
@@ -5861,8 +5860,10 @@ design rules under a new name.</description>
 <wire x1="8.382" y1="26.9875" x2="8.382" y2="25.019" width="0.254" layer="1"/>
 <wire x1="8.382" y1="25.019" x2="8.382" y2="24.892" width="0.254" layer="1"/>
 <wire x1="8.382" y1="24.892" x2="6.35" y2="22.86" width="0.254" layer="1"/>
-<wire x1="73.7888" y1="65.835" x2="73.7888" y2="66.4812" width="0.254" layer="1"/>
-<wire x1="73.7888" y1="66.4812" x2="71.69" y2="68.58" width="0.254" layer="1"/>
+<wire x1="26.67" y1="68.58" x2="62.901" y2="68.58" width="0.254" layer="1"/>
+<wire x1="62.901" y1="68.58" x2="63.7875" y2="67.6935" width="0.254" layer="1"/>
+<wire x1="63.7875" y1="67.6935" x2="63.7875" y2="65.8413" width="0.254" layer="1"/>
+<wire x1="63.7875" y1="65.8413" x2="63.7812" y2="65.835" width="0.254" layer="1"/>
 </signal>
 <signal name="AT_PARK_PIN_EXT">
 <contactref element="X7" pad="2"/>
@@ -6403,8 +6404,8 @@ design rules under a new name.</description>
 <contactref element="R28" pad="2"/>
 <contactref element="R29" pad="2"/>
 <wire x1="96.07" y1="37.485" x2="96.075" y2="39.69" width="0.6096" layer="1"/>
-<wire x1="96.075" y1="39.69" x2="97.02" y2="40.635" width="0.6096" layer="1"/>
-<wire x1="97.02" y1="40.635" x2="102.87" y2="40.64" width="0.6096" layer="1"/>
+<wire x1="96.075" y1="39.69" x2="97.02" y2="40.64" width="0.6096" layer="1"/>
+<wire x1="97.02" y1="40.64" x2="102.87" y2="40.64" width="0.6096" layer="1"/>
 <wire x1="102.87" y1="40.64" x2="104.14" y2="41.91" width="0.6096" layer="1"/>
 <contactref element="U1" pad="28"/>
 <contactref element="IC3" pad="4"/>
