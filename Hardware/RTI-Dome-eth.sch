@@ -16848,8 +16848,8 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <part name="IC4" library="burr-brown" deviceset="REG1117" device=""/>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
 <part name="P+13" library="supply1" deviceset="VCC" device=""/>
-<part name="C25" library="rti" deviceset="C-EU" device="'1206'" value="10uF"/>
-<part name="C26" library="rti" deviceset="C-EU" device="'1206'" value="10uF"/>
+<part name="C25" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
+<part name="C26" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
 <part name="C15" library="rti" deviceset="C-EU" device="'0805'" value="6.8nF"/>
 <part name="C21" library="rti" deviceset="C-EU" device="'0805'" value="6.8nF"/>
@@ -18290,19 +18290,6 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <label x="45.72" y="167.64" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="SPD_100" class="0">
-<segment>
-<pinref part="X9" gate="G$1" pin="C-L"/>
-<wire x1="307.34" y1="149.86" x2="309.88" y2="149.86" width="0.1524" layer="91"/>
-<label x="307.34" y="149.86" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="U1" gate="G$1" pin="SPDLED"/>
-<wire x1="63.5" y1="203.2" x2="63.5" y2="200.66" width="0.1524" layer="91"/>
-<wire x1="63.5" y1="203.2" x2="58.42" y2="203.2" width="0.1524" layer="91"/>
-<label x="58.42" y="203.2" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
 <net name="LINK_ACK" class="0">
 <segment>
 <pinref part="X9" gate="G$1" pin="C-R"/>
@@ -18430,11 +18417,16 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <wire x1="45.72" y1="182.88" x2="48.26" y2="182.88" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$18" class="0">
+<net name="ACT_LED" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="ACTLED"/>
 <wire x1="45.72" y1="180.34" x2="48.26" y2="180.34" width="0.1524" layer="91"/>
 <label x="45.72" y="180.34" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="X9" gate="G$1" pin="C-L"/>
+<wire x1="307.34" y1="149.86" x2="309.88" y2="149.86" width="0.1524" layer="91"/>
+<label x="307.34" y="149.86" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="XI" class="0">
