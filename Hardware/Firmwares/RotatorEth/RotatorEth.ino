@@ -289,6 +289,8 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
                           String(aTmp[3]) );
 #endif
 
+    Ethernet.setRetransmissionCount(3);
+
     DBPrintln("Server ready, calling begin()");
     domeServer.begin();
     return true;

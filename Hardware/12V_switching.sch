@@ -10441,25 +10441,25 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 <description>&lt;Voltage Regulators - Switching Regulators 5V 3A Buck PWM&lt;/b&gt;&lt;p&gt;
 &lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
 <packages>
-<package name="D2TSUFFIX-CASE936A-02-ISSUEC">
+<package name="TO263-5">
 <description>&lt;b&gt;D2TSUFFIX-CASE936A-02-ISSUEC&lt;/b&gt;&lt;br&gt;
 </description>
-<smd name="1" x="8.71" y="-3.474" dx="3.05" dy="1.016" layer="1"/>
-<smd name="2" x="8.71" y="-1.772" dx="3.05" dy="1.016" layer="1"/>
-<smd name="3" x="8.71" y="-0.07" dx="3.05" dy="1.016" layer="1"/>
-<smd name="4" x="8.71" y="1.632" dx="3.05" dy="1.016" layer="1"/>
-<smd name="5" x="8.71" y="3.334" dx="3.05" dy="1.016" layer="1"/>
-<smd name="6" x="-1.595" y="-0.07" dx="10.66" dy="8.38" layer="1" rot="R90"/>
-<text x="-1.23133125" y="6.92633125" size="1.27" layer="25" align="center">&gt;NAME</text>
-<text x="-1.23133125" y="-7.04366875" size="1.27" layer="27" align="center">&gt;VALUE</text>
-<wire x1="-4.445" y1="4.94" x2="4.755" y2="4.94" width="0.254" layer="51"/>
-<wire x1="4.755" y1="4.94" x2="4.755" y2="-5.08" width="0.254" layer="51"/>
-<wire x1="4.755" y1="-5.08" x2="-4.445" y2="-5.08" width="0.254" layer="51"/>
-<wire x1="-4.445" y1="-5.08" x2="-4.445" y2="4.94" width="0.254" layer="51"/>
-<wire x1="4.755" y1="4.94" x2="4.755" y2="-5.08" width="0.254" layer="21"/>
-<wire x1="4.755" y1="-5.08" x2="3.16733125" y2="-5.08" width="0.254" layer="21"/>
-<wire x1="4.755" y1="4.94" x2="3.075" y2="4.94" width="0.254" layer="21"/>
-<circle x="4.235" y="-3.905" radius="0.11566875" width="0.254" layer="25"/>
+<smd name="1" x="-3.474" y="-8.71" dx="3.05" dy="1.016" layer="1" rot="R270"/>
+<smd name="2" x="-1.772" y="-8.71" dx="3.05" dy="1.016" layer="1" rot="R270"/>
+<smd name="3" x="-0.07" y="-8.71" dx="3.05" dy="1.016" layer="1" rot="R270"/>
+<smd name="4" x="1.632" y="-8.71" dx="3.05" dy="1.016" layer="1" rot="R270"/>
+<smd name="5" x="3.334" y="-8.71" dx="3.05" dy="1.016" layer="1" rot="R270"/>
+<smd name="6" x="-0.07" y="1.595" dx="10.66" dy="8.38" layer="1"/>
+<text x="6.92633125" y="1.23133125" size="1.27" layer="25" rot="R270" align="center">&gt;NAME</text>
+<text x="-7.04366875" y="1.23133125" size="1.27" layer="27" rot="R270" align="center">&gt;VALUE</text>
+<wire x1="4.94" y1="4.445" x2="4.94" y2="-4.755" width="0.254" layer="51"/>
+<wire x1="4.94" y1="-4.755" x2="-5.08" y2="-4.755" width="0.254" layer="51"/>
+<wire x1="-5.08" y1="-4.755" x2="-5.08" y2="4.445" width="0.254" layer="51"/>
+<wire x1="-5.08" y1="4.445" x2="4.94" y2="4.445" width="0.254" layer="51"/>
+<wire x1="4.94" y1="-4.755" x2="-5.08" y2="-4.755" width="0.254" layer="21"/>
+<wire x1="-5.08" y1="-4.755" x2="-5.08" y2="-3.16733125" width="0.254" layer="21"/>
+<wire x1="4.94" y1="-4.755" x2="4.94" y2="-3.075" width="0.254" layer="21"/>
+<circle x="-3.905" y="-4.235" radius="0.11566875" width="0.254" layer="25"/>
 </package>
 </packages>
 <symbols>
@@ -10486,7 +10486,7 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 <gate name="G$1" symbol="LM2576D2TR4-5G" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="D2TSUFFIX-CASE936A-02-ISSUEC">
+<device name="" package="TO263-5">
 <connects>
 <connect gate="G$1" pin="!ON!/OFF" pad="5"/>
 <connect gate="G$1" pin="FEEDBACK" pad="4"/>
