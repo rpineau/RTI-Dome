@@ -16744,114 +16744,276 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 </class>
 </classes>
 <parts>
-<part name="X4" library="con-ptr500" deviceset="AK500/3" device=""/>
-<part name="X1" library="con-ptr500" deviceset="AK500/2" device=""/>
-<part name="X3" library="con-ptr500" deviceset="AK500/2" device=""/>
-<part name="X5" library="con-ptr500" deviceset="AK500/3" device=""/>
-<part name="R4" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="C1" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
+<part name="X4" library="con-ptr500" deviceset="AK500/3" device="">
+<attribute name="MPN" value="691101710003"/>
+</part>
+<part name="X1" library="con-ptr500" deviceset="AK500/2" device="">
+<attribute name="MPN" value="691101710002"/>
+</part>
+<part name="X3" library="con-ptr500" deviceset="AK500/2" device="">
+<attribute name="MPN" value="691101710002"/>
+</part>
+<part name="X5" library="con-ptr500" deviceset="AK500/3" device="">
+<attribute name="MPN" value="691101710003"/>
+</part>
+<part name="R4" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="C1" library="rti" deviceset="C-EU" device="'0805'" value="10uF">
+<attribute name="MPN" value="CC0805KKX5R8BB106"/>
+</part>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="R5" library="rti" deviceset="R-EU" device="'0805'" value="100"/>
+<part name="R5" library="rti" deviceset="R-EU" device="'0805'" value="100">
+<attribute name="MPN" value="RT0805FRD07100RL"/>
+</part>
 <part name="U$4" library="rti" deviceset="RTI-LOGO" device="_BIG" value="RTI-LOGO_BIG"/>
-<part name="C2" library="rti" deviceset="CPOL-EU" device="" value="100uF"/>
+<part name="C2" library="rti" deviceset="CPOL-EU" device="" value="100uF">
+<attribute name="MPN" value="MAL215099804E3"/>
+</part>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
-<part name="R13" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R14" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R15" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R16" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R17" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R18" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R19" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R6" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%"/>
+<part name="R13" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R14" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R15" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R16" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R17" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R18" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R19" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R6" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%">
+<attribute name="MPN" value="AT0805BRD07100KL"/>
+</part>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
-<part name="R7" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%"/>
-<part name="R8" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%"/>
-<part name="R10" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%"/>
-<part name="C4" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
+<part name="R7" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%">
+<attribute name="MPN" value="AT0805BRD07100KL"/>
+</part>
+<part name="R8" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%">
+<attribute name="MPN" value="AT0805BRD07100KL"/>
+</part>
+<part name="R10" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%">
+<attribute name="MPN" value="AT0805BRD07100KL"/>
+</part>
+<part name="C4" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="XB1" library="maxstream" deviceset="XBEE" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="R2" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%"/>
-<part name="C3" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
-<part name="X7" library="con-ptr500" deviceset="AK500/3" device=""/>
+<part name="R2" library="rti" deviceset="R-EU" device="'0805'" value="100K 0.1%">
+<attribute name="MPN" value="AT0805BRD07100KL"/>
+</part>
+<part name="C3" library="rti" deviceset="C-EU" device="'0805'" value="10uF">
+<attribute name="MPN" value="CC0805KKX5R8BB106"/>
+</part>
+<part name="X7" library="con-ptr500" deviceset="AK500/3" device="">
+<attribute name="MPN" value="691101710003"/>
+</part>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
-<part name="X8" library="con-ptr500" deviceset="AK500/2" device=""/>
-<part name="X11" library="con-ptr500" deviceset="AK500/2" device=""/>
+<part name="X8" library="con-ptr500" deviceset="AK500/2" device="">
+<attribute name="MPN" value="691101710002"/>
+</part>
+<part name="X11" library="con-ptr500" deviceset="AK500/2" device="">
+<attribute name="MPN" value="691101710002"/>
+</part>
 <part name="IC1" library="microchip" deviceset="24*" device="ST" technology="AA128"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
-<part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
-<part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
-<part name="C5" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="IC3" library="ftdichip" deviceset="FT232R" device="L"/>
+<part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="1K">
+<attribute name="MPN" value="RT0805FRE071KL"/>
+</part>
+<part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="1K">
+<attribute name="MPN" value="RT0805FRE071KL"/>
+</part>
+<part name="C5" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="IC3" library="ftdichip" deviceset="FT232R" device="L">
+<attribute name="MPN" value="FT232RL-REEL"/>
+</part>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="R9" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R11" library="rti" deviceset="R-EU" device="'0805'" value="10K"/>
+<part name="R9" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R11" library="rti" deviceset="R-EU" device="'0805'" value="10K">
+<attribute name="MPN" value="RT0805FRE0710KL"/>
+</part>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
-<part name="X13" library="con-berg" deviceset="PN61729-S" device=""/>
-<part name="C8" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
+<part name="X13" library="con-berg" deviceset="PN61729-S" device="">
+<attribute name="MPN" value="SS-52300-001"/>
+</part>
+<part name="C8" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
-<part name="C6" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="R12" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R20" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="C7" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="C9" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="R21" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
+<part name="C6" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="R12" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R20" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="C7" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="C9" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="R21" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
 <part name="FRAME1" library="frames" deviceset="DINA3_L" device=""/>
-<part name="X6" library="con-ptr500" deviceset="AK500/6" device=""/>
-<part name="IC5" library="rti" deviceset="74*245" device="" technology="LVC"/>
-<part name="IC6" library="rti" deviceset="74*245" device="" technology="ABT" value="74ABT245"/>
+<part name="X6" library="con-ptr500" deviceset="AK500/6" device="">
+<attribute name="MPN" value="30.706"/>
+</part>
+<part name="IC5" library="rti" deviceset="74*245" device="" technology="LVC">
+<attribute name="MPN" value="74LVC245APW,112"/>
+</part>
+<part name="IC6" library="rti" deviceset="74*245" device="" technology="ABT" value="74ABT245">
+<attribute name="MPN" value="74ABT245PW,112"/>
+</part>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="U$1" library="arduino_shield" deviceset="ARDUINO_DUE_SHIELD_FULL" device=""/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
-<part name="U1" library="W5500" deviceset="W5500" device="" value="W5500"/>
-<part name="C10" library="rti" deviceset="C-EU" device="'0805'" value="22nF"/>
+<part name="U1" library="W5500" deviceset="W5500" device="" value="W5500">
+<attribute name="MPN" value="W5500"/>
+</part>
+<part name="C10" library="rti" deviceset="C-EU" device="'0805'" value="22nF">
+<attribute name="MPN" value="CC0805JRX7R8BB223"/>
+</part>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
-<part name="R23" library="rti" deviceset="R-EU" device="'0805'" value="10 1%"/>
-<part name="R24" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%"/>
-<part name="R25" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%"/>
-<part name="R26" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%"/>
-<part name="R27" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%"/>
-<part name="X9" library="rti" deviceset="J1011F" device="" technology="21PNL" value="J1011F21PNL"/>
-<part name="R31" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R32" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R33" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R34" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R35" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R36" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R37" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="R38" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="C11" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="C12" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="C14" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="C16" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
-<part name="C17" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
+<part name="R23" library="rti" deviceset="R-EU" device="'0805'" value="10 1%">
+<attribute name="MPN" value="RT0805FRE1310RL"/>
+</part>
+<part name="R24" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%">
+<attribute name="MPN" value="RC0805FR-0749R9L"/>
+</part>
+<part name="R25" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%">
+<attribute name="MPN" value="RC0805FR-0749R9L"/>
+</part>
+<part name="R26" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%">
+<attribute name="MPN" value="RC0805FR-0749R9L"/>
+</part>
+<part name="R27" library="rti" deviceset="R-EU" device="'0805'" value="49.9 1%">
+<attribute name="MPN" value="RC0805FR-0749R9L"/>
+</part>
+<part name="X9" library="rti" deviceset="J1011F" device="" technology="21PNL" value="J1011F21PNL">
+<attribute name="MPN" value="J1011F21PNL"/>
+</part>
+<part name="R31" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R32" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R33" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R34" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R35" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R36" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R37" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="R38" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="C11" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="C12" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="C14" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="C16" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
+<part name="C17" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
-<part name="C18" library="rti" deviceset="C-EU" device="'0805'" value="10nF"/>
-<part name="R28" library="rti" deviceset="R-EU" device="'0805'" value="330"/>
-<part name="R29" library="rti" deviceset="R-EU" device="'0805'" value="330"/>
-<part name="C19" library="rti" deviceset="C-EU" device="'0805'" value="4.7uF"/>
-<part name="R39" library="rti" deviceset="R-EU" device="'0805'" value="12.4K 1%"/>
-<part name="R40" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
+<part name="C18" library="rti" deviceset="C-EU" device="'0805'" value="10nF">
+<attribute name="MPN" value="	CC0805KRX7R9BB103"/>
+</part>
+<part name="R28" library="rti" deviceset="R-EU" device="'0805'" value="330">
+<attribute name="MPN" value="	RC0805JR-07330RL"/>
+</part>
+<part name="R29" library="rti" deviceset="R-EU" device="'0805'" value="330">
+<attribute name="MPN" value="	RC0805JR-07330RL"/>
+</part>
+<part name="C19" library="rti" deviceset="C-EU" device="'0805'" value="4.7uF">
+<attribute name="MPN" value="C0805C475J3RACTU"/>
+</part>
+<part name="R39" library="rti" deviceset="R-EU" device="'0805'" value="12.4K 1%">
+<attribute name="MPN" value="RC0805FR-0712K4L"/>
+</part>
+<part name="R40" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
-<part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device=""/>
-<part name="C20" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
+<part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device="">
+<attribute name="MPN" value="CB3LV-3I-25M0000"/>
+</part>
+<part name="C20" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
+<attribute name="MPN" value="0805YD104KAT2A"/>
+</part>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
-<part name="R30" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
-<part name="U$2" library="MCP120T-270I_TT" deviceset="MCP120T-270I_TT" device=""/>
+<part name="R30" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<attribute name="MPN" value="RT0805FRE074K7L"/>
+</part>
+<part name="U$2" library="MCP120T-270I_TT" deviceset="MCP120T-270I_TT" device="">
+<attribute name="MPN" value="MCP120T-270I/TT"/>
+</part>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
-<part name="C13" library="rti" deviceset="C-EU" device="'0805'" value="10nF"/>
-<part name="FL1" library="BLM21AG121SN1D" deviceset="BLM21AG121SN1D" device=""/>
-<part name="IC4" library="burr-brown" deviceset="REG1117" device=""/>
+<part name="C13" library="rti" deviceset="C-EU" device="'0805'" value="10nF">
+<attribute name="MPN" value="	CC0805KRX7R9BB103"/>
+</part>
+<part name="FL1" library="BLM21AG121SN1D" deviceset="BLM21AG121SN1D" device="">
+<attribute name="MPN" value="BLM21AG121SN1D"/>
+</part>
+<part name="IC4" library="burr-brown" deviceset="REG1117" device="">
+<attribute name="MPN" value="REG1117-3.3/2K5"/>
+</part>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
-<part name="C25" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
-<part name="C26" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
+<part name="C25" library="rti" deviceset="C-EU" device="'0805'" value="10uF">
+<attribute name="MPN" value="CC0805KKX5R8BB106"/>
+</part>
+<part name="C26" library="rti" deviceset="C-EU" device="'0805'" value="10uF">
+<attribute name="MPN" value="CC0805KKX5R8BB106"/>
+</part>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
-<part name="C15" library="rti" deviceset="C-EU" device="'0805'" value="6.8nF"/>
-<part name="C21" library="rti" deviceset="C-EU" device="'0805'" value="6.8nF"/>
-<part name="C22" library="rti" deviceset="C-EU" device="'0805'" value="10nF"/>
+<part name="C15" library="rti" deviceset="C-EU" device="'0805'" value="6.8nF">
+<attribute name="MPN" value="C0805C682F4HACTU"/>
+</part>
+<part name="C21" library="rti" deviceset="C-EU" device="'0805'" value="6.8nF">
+<attribute name="MPN" value="C0805C682F4HACTU"/>
+</part>
+<part name="C22" library="rti" deviceset="C-EU" device="'0805'" value="10nF">
+<attribute name="MPN" value="	CC0805KRX7R9BB103"/>
+</part>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="FRAME2" library="frames" deviceset="DINA3_L" device=""/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
@@ -16873,32 +17035,68 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <instance part="X5" gate="-1" x="378.46" y="198.12" rot="R180"/>
 <instance part="X5" gate="-2" x="378.46" y="203.2" rot="R180"/>
 <instance part="X5" gate="-3" x="378.46" y="208.28" rot="R180"/>
-<instance part="R4" gate="G$1" x="35.56" y="160.02" rot="R90"/>
-<instance part="C1" gate="G$1" x="35.56" y="147.32"/>
+<instance part="R4" gate="G$1" x="35.56" y="160.02" rot="R90">
+<attribute name="MPN" x="35.56" y="160.02" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C1" gate="G$1" x="35.56" y="147.32">
+<attribute name="MPN" x="35.56" y="147.32" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND2" gate="1" x="35.56" y="137.16"/>
-<instance part="R5" gate="G$1" x="25.4" y="152.4" rot="R180"/>
+<instance part="R5" gate="G$1" x="25.4" y="152.4" rot="R180">
+<attribute name="MPN" x="25.4" y="152.4" size="1.778" layer="96" rot="R180" display="off"/>
+</instance>
 <instance part="U$4" gate="G$1" x="294.64" y="27.94"/>
-<instance part="C2" gate="G$1" x="368.3" y="58.42"/>
+<instance part="C2" gate="G$1" x="368.3" y="58.42">
+<attribute name="MPN" x="368.3" y="58.42" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND4" gate="1" x="368.3" y="45.72"/>
 <instance part="P+4" gate="VCC" x="276.86" y="256.54"/>
-<instance part="R13" gate="G$1" x="312.42" y="241.3" rot="R90"/>
-<instance part="R14" gate="G$1" x="297.18" y="241.3" rot="R270"/>
-<instance part="R15" gate="G$1" x="281.94" y="241.3" rot="R270"/>
-<instance part="R16" gate="G$1" x="289.56" y="241.3" rot="R270"/>
-<instance part="R17" gate="G$1" x="274.32" y="241.3" rot="R270"/>
-<instance part="R18" gate="G$1" x="266.7" y="241.3" rot="R270"/>
-<instance part="R19" gate="G$1" x="304.8" y="241.3" rot="R270"/>
-<instance part="R6" gate="G$1" x="7.62" y="195.58" rot="R90"/>
+<instance part="R13" gate="G$1" x="312.42" y="241.3" rot="R90">
+<attribute name="MPN" x="312.42" y="241.3" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R14" gate="G$1" x="297.18" y="241.3" rot="R270">
+<attribute name="MPN" x="297.18" y="241.3" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R15" gate="G$1" x="281.94" y="241.3" rot="R270">
+<attribute name="MPN" x="281.94" y="241.3" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R16" gate="G$1" x="289.56" y="241.3" rot="R270">
+<attribute name="MPN" x="289.56" y="241.3" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R17" gate="G$1" x="274.32" y="241.3" rot="R270">
+<attribute name="MPN" x="274.32" y="241.3" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R18" gate="G$1" x="266.7" y="241.3" rot="R270">
+<attribute name="MPN" x="266.7" y="241.3" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R19" gate="G$1" x="304.8" y="241.3" rot="R270">
+<attribute name="MPN" x="304.8" y="241.3" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R6" gate="G$1" x="7.62" y="195.58" rot="R90">
+<attribute name="MPN" x="7.62" y="195.58" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
 <instance part="GND5" gate="1" x="7.62" y="182.88"/>
-<instance part="R7" gate="G$1" x="7.62" y="226.06" rot="R90"/>
-<instance part="R8" gate="G$1" x="7.62" y="238.76" rot="R90"/>
-<instance part="R10" gate="G$1" x="7.62" y="251.46" rot="R90"/>
-<instance part="C4" gate="G$1" x="121.92" y="180.34"/>
+<instance part="R7" gate="G$1" x="7.62" y="226.06" rot="R90">
+<attribute name="MPN" x="7.62" y="226.06" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R8" gate="G$1" x="7.62" y="238.76" rot="R90">
+<attribute name="MPN" x="7.62" y="238.76" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R10" gate="G$1" x="7.62" y="251.46" rot="R90">
+<attribute name="MPN" x="7.62" y="251.46" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C4" gate="G$1" x="121.92" y="180.34">
+<attribute name="MPN" x="121.92" y="180.34" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND1" gate="1" x="127" y="165.1"/>
 <instance part="XB1" gate="G$1" x="236.22" y="63.5"/>
 <instance part="GND6" gate="1" x="218.44" y="30.48"/>
-<instance part="R2" gate="G$1" x="7.62" y="213.36" rot="R90"/>
-<instance part="C3" gate="G$1" x="378.46" y="58.42"/>
+<instance part="R2" gate="G$1" x="7.62" y="213.36" rot="R90">
+<attribute name="MPN" x="7.62" y="213.36" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C3" gate="G$1" x="378.46" y="58.42">
+<attribute name="MPN" x="378.46" y="58.42" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="X7" gate="-1" x="35.56" y="116.84" rot="R180"/>
 <instance part="X7" gate="-2" x="35.56" y="121.92" rot="R180"/>
 <instance part="X7" gate="-3" x="35.56" y="127" rot="R180"/>
@@ -16909,23 +17107,45 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <instance part="X11" gate="-2" x="378.46" y="104.14" rot="R180"/>
 <instance part="IC1" gate="G$1" x="55.88" y="233.68"/>
 <instance part="GND8" gate="1" x="63.5" y="215.9"/>
-<instance part="R1" gate="G$1" x="76.2" y="241.3" rot="R90"/>
-<instance part="R3" gate="G$1" x="40.64" y="248.92" rot="R90"/>
-<instance part="C5" gate="G$1" x="114.3" y="180.34"/>
+<instance part="R1" gate="G$1" x="76.2" y="241.3" rot="R90">
+<attribute name="MPN" x="76.2" y="241.3" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R3" gate="G$1" x="40.64" y="248.92" rot="R90">
+<attribute name="MPN" x="40.64" y="248.92" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C5" gate="G$1" x="114.3" y="180.34">
+<attribute name="MPN" x="114.3" y="180.34" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="IC3" gate="1" x="289.56" y="149.86"/>
 <instance part="GND10" gate="1" x="274.32" y="111.76"/>
-<instance part="R9" gate="G$1" x="256.54" y="172.72" rot="R270"/>
-<instance part="R11" gate="G$1" x="256.54" y="157.48" rot="R270"/>
+<instance part="R9" gate="G$1" x="256.54" y="172.72" rot="R270">
+<attribute name="MPN" x="256.54" y="172.72" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R11" gate="G$1" x="256.54" y="157.48" rot="R270">
+<attribute name="MPN" x="256.54" y="157.48" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
 <instance part="GND11" gate="1" x="256.54" y="147.32"/>
 <instance part="X13" gate="G$1" x="231.14" y="127" rot="R180"/>
-<instance part="C8" gate="G$1" x="261.62" y="127"/>
+<instance part="C8" gate="G$1" x="261.62" y="127">
+<attribute name="MPN" x="261.62" y="127" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND12" gate="1" x="205.74" y="165.1"/>
 <instance part="P+1" gate="VCC" x="205.74" y="195.58"/>
-<instance part="C6" gate="G$1" x="193.04" y="182.88"/>
-<instance part="R12" gate="G$1" x="320.04" y="241.3" rot="R90"/>
-<instance part="R20" gate="G$1" x="327.66" y="241.3" rot="R90"/>
-<instance part="C7" gate="G$1" x="182.88" y="182.88"/>
-<instance part="R21" gate="G$1" x="259.08" y="241.3" rot="R270"/>
+<instance part="C6" gate="G$1" x="193.04" y="182.88">
+<attribute name="MPN" x="193.04" y="182.88" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="R12" gate="G$1" x="320.04" y="241.3" rot="R90">
+<attribute name="MPN" x="320.04" y="241.3" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R20" gate="G$1" x="327.66" y="241.3" rot="R90">
+<attribute name="MPN" x="327.66" y="241.3" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C7" gate="G$1" x="182.88" y="182.88">
+<attribute name="MPN" x="182.88" y="182.88" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="R21" gate="G$1" x="259.08" y="241.3" rot="R270">
+<attribute name="MPN" x="259.08" y="241.3" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
 <instance part="FRAME1" gate="G$1" x="0" y="0"/>
 <instance part="FRAME1" gate="G$2" x="287.02" y="0"/>
 <instance part="X6" gate="-1" x="345.44" y="165.1" rot="R180"/>
@@ -16934,15 +17154,21 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <instance part="X6" gate="-4" x="345.44" y="180.34" rot="R180"/>
 <instance part="X6" gate="-5" x="345.44" y="185.42" rot="R180"/>
 <instance part="X6" gate="-6" x="345.44" y="190.5" rot="R180"/>
-<instance part="IC5" gate="G$1" x="132.08" y="241.3"/>
-<instance part="IC6" gate="G$1" x="203.2" y="243.84"/>
+<instance part="IC5" gate="G$1" x="132.08" y="241.3">
+<attribute name="MPN" x="132.08" y="241.3" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="IC6" gate="G$1" x="203.2" y="243.84">
+<attribute name="MPN" x="203.2" y="243.84" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="IC5" gate="P" x="132.08" y="180.34" rot="R270"/>
 <instance part="IC6" gate="P" x="203.2" y="180.34" rot="R270"/>
 <instance part="GND7" gate="1" x="187.96" y="226.06"/>
 <instance part="U$1" gate="G$1" x="132.08" y="86.36"/>
 <instance part="GND9" gate="1" x="109.22" y="10.16"/>
 <instance part="J1" gate="G$1" x="378.46" y="83.82"/>
-<instance part="U$2" gate="G$1" x="53.34" y="63.5"/>
+<instance part="U$2" gate="G$1" x="53.34" y="63.5">
+<attribute name="MPN" x="53.34" y="63.5" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND18" gate="1" x="38.1" y="55.88"/>
 <instance part="GND16" gate="1" x="116.84" y="223.52"/>
 </instances>
@@ -18015,51 +18241,125 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <plain>
 </plain>
 <instances>
-<instance part="C9" gate="G$1" x="175.26" y="25.4"/>
-<instance part="U1" gate="G$1" x="76.2" y="170.18" rot="R180"/>
-<instance part="C10" gate="G$1" x="304.8" y="241.3"/>
+<instance part="C9" gate="G$1" x="175.26" y="25.4">
+<attribute name="MPN" x="175.26" y="25.4" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="U1" gate="G$1" x="76.2" y="170.18" rot="R180">
+<attribute name="MPN" x="76.2" y="170.18" size="1.778" layer="96" rot="R180" display="off"/>
+</instance>
+<instance part="C10" gate="G$1" x="304.8" y="241.3">
+<attribute name="MPN" x="304.8" y="241.3" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND13" gate="1" x="304.8" y="228.6"/>
-<instance part="R23" gate="G$1" x="287.02" y="233.68" rot="R90"/>
-<instance part="R24" gate="G$1" x="279.4" y="233.68" rot="R90"/>
-<instance part="R25" gate="G$1" x="271.78" y="233.68" rot="R90"/>
-<instance part="R26" gate="G$1" x="264.16" y="177.8" rot="R270"/>
-<instance part="R27" gate="G$1" x="256.54" y="177.8" rot="R270"/>
+<instance part="R23" gate="G$1" x="287.02" y="233.68" rot="R90">
+<attribute name="MPN" x="287.02" y="233.68" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R24" gate="G$1" x="279.4" y="233.68" rot="R90">
+<attribute name="MPN" x="279.4" y="233.68" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R25" gate="G$1" x="271.78" y="233.68" rot="R90">
+<attribute name="MPN" x="271.78" y="233.68" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R26" gate="G$1" x="264.16" y="177.8" rot="R270">
+<attribute name="MPN" x="264.16" y="177.8" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R27" gate="G$1" x="256.54" y="177.8" rot="R270">
+<attribute name="MPN" x="256.54" y="177.8" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
 <instance part="X9" gate="G$1" x="325.12" y="203.2"/>
-<instance part="R31" gate="G$1" x="66.04" y="134.62" rot="R270"/>
-<instance part="R32" gate="G$1" x="68.58" y="134.62" rot="R270"/>
-<instance part="R33" gate="G$1" x="71.12" y="134.62" rot="R270"/>
-<instance part="R34" gate="G$1" x="73.66" y="134.62" rot="R270"/>
-<instance part="R35" gate="G$1" x="76.2" y="134.62" rot="R270"/>
-<instance part="R36" gate="G$1" x="78.74" y="134.62" rot="R270"/>
-<instance part="R37" gate="G$1" x="81.28" y="134.62" rot="R270"/>
-<instance part="R38" gate="G$1" x="83.82" y="134.62" rot="R270"/>
-<instance part="C11" gate="G$1" x="88.9" y="25.4"/>
-<instance part="C12" gate="G$1" x="96.52" y="25.4"/>
-<instance part="C14" gate="G$1" x="134.62" y="25.4"/>
-<instance part="C16" gate="G$1" x="157.48" y="25.4"/>
-<instance part="C17" gate="G$1" x="127" y="25.4"/>
+<instance part="R31" gate="G$1" x="66.04" y="134.62" rot="R270">
+<attribute name="MPN" x="66.04" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R32" gate="G$1" x="68.58" y="134.62" rot="R270">
+<attribute name="MPN" x="68.58" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R33" gate="G$1" x="71.12" y="134.62" rot="R270">
+<attribute name="MPN" x="71.12" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R34" gate="G$1" x="73.66" y="134.62" rot="R270">
+<attribute name="MPN" x="73.66" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R35" gate="G$1" x="76.2" y="134.62" rot="R270">
+<attribute name="MPN" x="76.2" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R36" gate="G$1" x="78.74" y="134.62" rot="R270">
+<attribute name="MPN" x="78.74" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R37" gate="G$1" x="81.28" y="134.62" rot="R270">
+<attribute name="MPN" x="81.28" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="R38" gate="G$1" x="83.82" y="134.62" rot="R270">
+<attribute name="MPN" x="83.82" y="134.62" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="C11" gate="G$1" x="88.9" y="25.4">
+<attribute name="MPN" x="88.9" y="25.4" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="C12" gate="G$1" x="96.52" y="25.4">
+<attribute name="MPN" x="96.52" y="25.4" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="C14" gate="G$1" x="134.62" y="25.4">
+<attribute name="MPN" x="134.62" y="25.4" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="C16" gate="G$1" x="157.48" y="25.4">
+<attribute name="MPN" x="157.48" y="25.4" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="C17" gate="G$1" x="127" y="25.4">
+<attribute name="MPN" x="127" y="25.4" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND14" gate="1" x="111.76" y="7.62"/>
-<instance part="C18" gate="G$1" x="68.58" y="220.98"/>
-<instance part="R28" gate="G$1" x="281.94" y="167.64" rot="R90"/>
-<instance part="R29" gate="G$1" x="289.56" y="167.64" rot="R90"/>
-<instance part="C19" gate="G$1" x="73.66" y="228.6"/>
-<instance part="R39" gate="G$1" x="124.46" y="180.34"/>
-<instance part="R40" gate="G$1" x="66.04" y="208.28" rot="R270"/>
+<instance part="C18" gate="G$1" x="68.58" y="220.98">
+<attribute name="MPN" x="68.58" y="220.98" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="R28" gate="G$1" x="281.94" y="167.64" rot="R90">
+<attribute name="MPN" x="281.94" y="167.64" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="R29" gate="G$1" x="289.56" y="167.64" rot="R90">
+<attribute name="MPN" x="289.56" y="167.64" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C19" gate="G$1" x="73.66" y="228.6">
+<attribute name="MPN" x="73.66" y="228.6" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="R39" gate="G$1" x="124.46" y="180.34">
+<attribute name="MPN" x="124.46" y="180.34" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="R40" gate="G$1" x="66.04" y="208.28" rot="R270">
+<attribute name="MPN" x="66.04" y="208.28" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
 <instance part="GND15" gate="1" x="218.44" y="162.56"/>
-<instance part="25MHZ" gate="G$1" x="203.2" y="162.56" rot="R180"/>
-<instance part="C20" gate="G$1" x="223.52" y="144.78"/>
+<instance part="25MHZ" gate="G$1" x="203.2" y="162.56" rot="R180">
+<attribute name="MPN" x="203.2" y="162.56" size="1.778" layer="96" rot="R180" display="off"/>
+</instance>
+<instance part="C20" gate="G$1" x="223.52" y="144.78">
+<attribute name="MPN" x="223.52" y="144.78" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND17" gate="1" x="223.52" y="134.62"/>
-<instance part="R30" gate="G$1" x="63.5" y="132.08" rot="R270"/>
-<instance part="C13" gate="G$1" x="165.1" y="25.4"/>
-<instance part="FL1" gate="G$1" x="139.7" y="134.62"/>
+<instance part="R30" gate="G$1" x="63.5" y="132.08" rot="R270">
+<attribute name="MPN" x="63.5" y="132.08" size="1.778" layer="96" rot="R270" display="off"/>
+</instance>
+<instance part="C13" gate="G$1" x="165.1" y="25.4">
+<attribute name="MPN" x="165.1" y="25.4" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="FL1" gate="G$1" x="139.7" y="134.62">
+<attribute name="MPN" x="139.7" y="134.62" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="IC4" gate="G$1" x="58.42" y="27.94"/>
 <instance part="+3V1" gate="G$1" x="73.66" y="35.56"/>
-<instance part="C25" gate="G$1" x="43.18" y="20.32"/>
-<instance part="C26" gate="G$1" x="73.66" y="20.32"/>
+<instance part="C25" gate="G$1" x="43.18" y="20.32">
+<attribute name="MPN" x="43.18" y="20.32" size="1.778" layer="96" display="off"/>
+</instance>
+<instance part="C26" gate="G$1" x="73.66" y="20.32">
+<attribute name="MPN" x="73.66" y="20.32" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND20" gate="1" x="58.42" y="10.16"/>
-<instance part="C15" gate="G$1" x="294.64" y="200.66" rot="R90"/>
-<instance part="C21" gate="G$1" x="294.64" y="185.42" rot="R90"/>
-<instance part="C22" gate="G$1" x="264.16" y="157.48"/>
+<instance part="C15" gate="G$1" x="294.64" y="200.66" rot="R90">
+<attribute name="MPN" x="294.64" y="200.66" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C21" gate="G$1" x="294.64" y="185.42" rot="R90">
+<attribute name="MPN" x="294.64" y="185.42" size="1.778" layer="96" rot="R90" display="off"/>
+</instance>
+<instance part="C22" gate="G$1" x="264.16" y="157.48">
+<attribute name="MPN" x="264.16" y="157.48" size="1.778" layer="96" display="off"/>
+</instance>
 <instance part="GND19" gate="1" x="264.16" y="147.32"/>
 <instance part="FRAME2" gate="G$1" x="0" y="0"/>
 <instance part="FRAME2" gate="G$2" x="287.02" y="0"/>
