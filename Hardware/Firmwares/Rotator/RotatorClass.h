@@ -30,6 +30,7 @@ DueFlashStorage dueFlashStorage;
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
 #else
 #define DBPrint(x)
+#define DBPrintln(x)
 #define DBPrintHex(x)
 #endif // DEBUG
 
