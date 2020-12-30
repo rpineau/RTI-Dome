@@ -151,12 +151,12 @@
 </layers>
 <board>
 <plain>
-<text x="46.305" y="70.245" size="0.6096" layer="21">West / Close</text>
-<text x="56.385" y="69.93" size="0.6096" layer="22" rot="MR0">East / Open</text>
+<text x="47.565" y="70.245" size="0.6096" layer="21">West</text>
+<text x="54.495" y="69.93" size="0.6096" layer="22" rot="MR0">East</text>
 <text x="57.96" y="70.245" size="0.6096" layer="21">GND</text>
-<text x="107.95" y="13.97" size="1.778" layer="21">GND</text>
-<text x="106.68" y="6.35" size="1.778" layer="21">+12V</text>
-<text x="36.54" y="70.245" size="0.6096" layer="21">Home/Closed</text>
+<text x="108.675" y="13.545" size="1.778" layer="21">GND</text>
+<text x="108.675" y="5.355" size="1.778" layer="21">+12V</text>
+<text x="37.485" y="70.245" size="0.6096" layer="21">Home</text>
 <text x="27.405" y="70.245" size="0.6096" layer="21">Opened</text>
 <text x="17.64" y="70.245" size="0.6096" layer="21">RG-11</text>
 <text x="12.915" y="70.245" size="0.6096" layer="21">GND</text>
@@ -168,10 +168,10 @@
 <text x="24.57" y="69.615" size="0.6096" layer="22" rot="MR0">12V</text>
 <text x="30.24" y="69.615" size="0.6096" layer="22" rot="MR0">Opened</text>
 <text x="34.965" y="69.615" size="0.6096" layer="22" rot="MR0">GND</text>
-<text x="41.58" y="69.93" size="0.6096" layer="22" rot="MR0">Home/Closed</text>
+<text x="39.69" y="69.93" size="0.6096" layer="22" rot="MR0">Home</text>
 <text x="44.73" y="69.93" size="0.6096" layer="22" rot="MR0">GND</text>
-<text x="51.345" y="69.93" size="0.6096" layer="22" rot="MR0">West / Close</text>
-<text x="51.975" y="70.245" size="0.6096" layer="21">East / Open</text>
+<text x="49.455" y="69.93" size="0.6096" layer="22" rot="MR0">West</text>
+<text x="52.92" y="70.245" size="0.6096" layer="21">East</text>
 <text x="59.85" y="69.93" size="0.6096" layer="22" rot="MR0">GND</text>
 <text x="8.001" y="70.165" size="0.6096" layer="21">GND</text>
 <text x="73.71" y="70.245" size="0.6096" layer="21">GND</text>
@@ -202,6 +202,18 @@
 <wire x1="119.385" y1="1.26" x2="118.125" y2="0" width="0" layer="20" curve="-90"/>
 <wire x1="118.125" y1="0" x2="1.26" y2="0" width="0" layer="20"/>
 <wire x1="1.26" y1="0" x2="0" y2="1.26" width="0" layer="20" curve="-90"/>
+<text x="8.215" y="8.11" size="0.6096" layer="21">+5V</text>
+<text x="18.295" y="8.11" size="0.6096" layer="21">+5V</text>
+<text x="28.375" y="8.11" size="0.6096" layer="21">+5V</text>
+<text x="4.75" y="8.11" size="0.6096" layer="21">EN</text>
+<text x="23.335" y="8.11" size="0.6096" layer="21">STEP</text>
+<text x="12.94" y="8.11" size="0.6096" layer="21">DIR</text>
+<text x="4.435" y="0.55" size="0.6096" layer="22" rot="MR0">EN</text>
+<text x="9.79" y="0.55" size="0.6096" layer="22" rot="MR0">+5V</text>
+<text x="14.515" y="0.55" size="0.6096" layer="22" rot="MR0">DIR</text>
+<text x="19.555" y="0.55" size="0.6096" layer="22" rot="MR0">+5V</text>
+<text x="25.225" y="0.55" size="0.6096" layer="22" rot="MR0">STEP</text>
+<text x="29.635" y="0.55" size="0.6096" layer="22" rot="MR0">+5V</text>
 </plain>
 <libraries>
 <library name="arduino_shield">
