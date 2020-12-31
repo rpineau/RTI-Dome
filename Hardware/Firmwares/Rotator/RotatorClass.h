@@ -53,6 +53,15 @@ DueFlashStorage dueFlashStorage;
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
 
+#ifdef CommonAnode
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
+#else
+#define M_ENABLE    HIGH
+#define M_DISABLE   LOW
+#endif
+
+
 #define M_ENABLE    HIGH
 #define M_DISABLE   LOW
 

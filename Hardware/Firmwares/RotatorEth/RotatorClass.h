@@ -53,8 +53,13 @@ DueFlashStorage dueFlashStorage;
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
 
+#ifdef CommonAnode
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
+#else
 #define M_ENABLE    HIGH
 #define M_DISABLE   LOW
+#endif
 
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
@@ -272,6 +277,15 @@ public:
     void        bufferEnable(bool bEnable);
 
     void        getIpConfig(IPConfig &config);
+    bool        getDHCPFlag();
+    void        setDHCPFlag(bool bUseDHCP);
+    String      getIPAddress();
+    void        setIPAddress(String ipAddress);
+    String      getIPSubnet();
+    void        setIPSubnet(String ipSubnet);
+    String      getIPGateway();
+    void        setIPGateway(String ipGateway);
+    String      IpAddress2String(const IPAddress& ipAddress);
 private:
     Configuration   m_Config;
 
@@ -300,21 +314,21 @@ private:
 
 
     // Utility
-    bool            LoadFromEEProm();
-    void            SetDefaultConfig();
+    bool        LoadFromEEProm();
+    void        SetDefaultConfig();
 
-    bool            m_bIsRaining;
+    bool        m_bIsRaining;
 
-    bool m_bDoEEPromSave;
+    bool        m_bDoEEPromSave;
 #ifdef USE_EXT_EEPROM
     // eeprom
-    byte m_EEPROMpageSize;
+    byte        m_EEPROMpageSize;
 
-    byte readEEPROMByte(int deviceaddress, unsigned int eeaddress);
-    void readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
-    void readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
-    void writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
-    void writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
+    byte        readEEPROMByte(int deviceaddress, unsigned int eeaddress);
+    void        readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
+    void        readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
+    void        writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
+    void        writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
 #endif
 };
 
@@ -507,7 +521,6 @@ void RotatorClass::SetDefaultConfig()
     m_Config.ipConfig.dns.fromString("192.168.0.1");
     m_Config.ipConfig.gateway.fromString("192.168.0.1");
     m_Config.ipConfig.subnet.fromString("255.255.255.0");
-
 }
 
 
@@ -518,6 +531,58 @@ void RotatorClass::getIpConfig(IPConfig &config)
     config.dns = m_Config.ipConfig.dns;
     config.gateway = m_Config.ipConfig.gateway;
     config.subnet = m_Config.ipConfig.subnet;
+}
+
+
+bool RotatorClass::getDHCPFlag()
+{
+    return m_Config.ipConfig.bUseDHCP;
+}
+
+void RotatorClass::setDHCPFlag(bool bUseDHCP)
+{
+    m_Config.ipConfig.bUseDHCP = bUseDHCP;
+    SaveToEEProm();
+}
+
+String RotatorClass::getIPAddress()
+{
+    return IpAddress2String(m_Config.ipConfig.ip);
+}
+
+void RotatorClass::setIPAddress(String ipAddress)
+{
+    m_Config.ipConfig.ip.fromString(ipAddress);
+    SaveToEEProm();
+}
+
+String RotatorClass::getIPSubnet()
+{
+    return IpAddress2String(m_Config.ipConfig.subnet);
+}
+
+void RotatorClass::setIPSubnet(String ipSubnet)
+{
+    m_Config.ipConfig.subnet.fromString(ipSubnet);
+    SaveToEEProm();
+}
+
+String RotatorClass::getIPGateway()
+{
+    return IpAddress2String(m_Config.ipConfig.gateway);
+}
+
+void RotatorClass::setIPGateway(String ipGateway)
+{
+    m_Config.ipConfig.gateway.fromString(ipGateway);
+    // setting DNS IP to gateway IP as we don't use it and this is probably correct for most home users
+    m_Config.ipConfig.dns.fromString(ipGateway);
+    SaveToEEProm();
+}
+
+String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
+{
+    return String() + ipAddress[0] + "." + ipAddress[1] + "." + ipAddress[2] + "." + ipAddress[3];;
 }
 
 //

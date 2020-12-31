@@ -14,11 +14,9 @@
 // I started making a PCB with the Teensy 2,5/3.6 .. work in progress.
 // #define TEENY_3_5
 
-// The TB6600 is the original stepper controller used on a NexDome automation kit.
-// The ISD04 is a lot smaller and works from -40C to 85C. For now the logic between the 2
-// is inverted but with the next PCB this will no longer be necessary.
-// #define TB6600
-#define ISD0X
+#define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08 or TB6600 wired in Common Anode mode
+// #define CommonCathode   // EN, DIR, STEP active HIGH like TB6600 wired in Common Cathode mode
+
 
 #define USE_EXT_EEPROM
 // The Xbee S1 were the original one used on the NexDome controller.

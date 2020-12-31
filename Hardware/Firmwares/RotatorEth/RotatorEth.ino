@@ -18,6 +18,12 @@
 #define XBEE_S1
 // #define XBEE_S2C
 
+// Stepper controller connection type :
+
+#define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08 or TB6600 wired in Common Anode mode
+// #define CommonCathode   // EN, DIR, STEP active HIGH like TB6600 wired in Common Cathode mode
+
+
 #define MAX_TIMEOUT 100
 #define ERR_NO_DATA -1
 #define OK  0
@@ -109,19 +115,24 @@ const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
 const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
 const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor controll.
 const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
+const char ETH_MAC_ADDRESS              = 'f'; // get the MAC adress.
 const char GOTO_ROTATOR_CMD             = 'g'; // Get/set dome azimuth
 const char HOME_ROTATOR_CMD             = 'h'; // Home the dome
 const char HOMEAZ_ROTATOR_CMD           = 'i'; // Get/Set home position
+const char IP_ADDRESS                   = 'j'; // get/set the IP address
 const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
 const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered none, home, park
 const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
+const char IP_SUBNET                    = 'p'; // get/set the ip subnet
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
 const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
 const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
 const char STEPSPER_ROTATOR_CMD         = 't'; // GetSteps per rotation
+const char IP_GATEWAY                   = 'u'; // get/set IP default gateway
 const char VERSION_ROTATOR_GET          = 'v'; // Get Version string
+const char IP_DHCP                       = 'w'; // get/set IP DNS ... might not be needed.
                                         //'x' see bellow
 const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
@@ -136,7 +147,7 @@ const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set if shutter closes and 
 const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // restore default values for motor controll.
 const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
-                                        // 'F' see above
+                                       // 'F' see above
 //const char ELEVATION_SHUTTER_CMD      = 'G'; // Get/Set altitude TBD
 const char HELLO_CMD                    = 'H'; // Let shutter know we're here
 const char WATCHDOG_INTERVAL_SET        = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
@@ -246,10 +257,10 @@ void configureEthernet()
 {
     Rotator->getIpConfig(ServerConfig);
     ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
-            ServerConfig.ip,
-            ServerConfig.dns,
-            ServerConfig.gateway,
-            ServerConfig.subnet);
+                                    ServerConfig.ip,
+                                    ServerConfig.dns,
+                                    ServerConfig.gateway,
+                                    ServerConfig.subnet);
 }
 
 
@@ -577,7 +588,6 @@ void ProcessCommand(bool bFromNetwork)
     DBPrintln("bFromNetwork = \"" + String(bFromNetwork?"Yes":"No") +"\"");
 
 
-    // Grouped by Rotator and Shutter then put in alphabetical order
     switch (command) {
         case ABORT_MOVE_CMD:
             sTmpString = String(ABORT_MOVE_CMD);
@@ -728,6 +738,51 @@ void ProcessCommand(bool bFromNetwork)
             configureEthernet();
             serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
             break;
+
+        case ETH_MAC_ADDRESS:
+            char macBuffer[20];
+            snprintf(macBuffer,20,"%02x:%02x:%02x:%02x:%02x:%02x",
+                    MAC_Address[0],
+                    MAC_Address[1],
+                    MAC_Address[2],
+                    MAC_Address[3],
+                    MAC_Address[4],
+                    MAC_Address[5]);
+
+            serialMessage = String(ETH_MAC_ADDRESS) + String(macBuffer);
+            break;
+
+        case IP_DHCP:
+            if (hasValue) {
+                Rotator->setDHCPFlag(value.toInt() == 0 ? false : true);
+            }
+            serialMessage = String(IP_DHCP) + String( Rotator->getDHCPFlag()? "1" : "0");
+            break;
+
+        case IP_ADDRESS:
+            if (hasValue) {
+                Rotator->setIPAddress(value);
+                Rotator->getIpConfig(ServerConfig);
+            }
+            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->getIPAddress());
+            break;
+
+        case IP_SUBNET:
+            if (hasValue) {
+                Rotator->setIPSubnet(value);
+                Rotator->getIpConfig(ServerConfig);
+            }
+            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->getIPSubnet());
+            break;
+
+        case IP_GATEWAY:
+            if (hasValue) {
+                Rotator->setIPGateway(value);
+                Rotator->getIpConfig(ServerConfig);
+            }
+            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->getIPGateway());
+            break;
+
 
 #ifndef STANDALONE
         case INIT_XBEE:

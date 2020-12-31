@@ -152,6 +152,23 @@ public:
     void enableRainStatusFile(bool bEnable);
     void getRainStatusFileName(std::string &fName);
     void writeRainStatus();
+
+    // network config
+    int getMACAddress(std::string &MACAddress);
+    int reconfigureNetwork();
+
+    int getUseDHCP(bool &bUseDHCP);
+    int setUseDHCP(bool bUseDHCP);
+
+    int getIpAddress(std::string &IpAddress);
+    int setIpAddress(std::string IpAddress);
+
+    int getSubnetMask(std::string &subnetMask);
+    int setSubnet(std::string subnetMask);
+
+    int getIPGateway(std::string &IpAddress);
+    int setIPGateway(std::string IpAddress);
+
     
 protected:
 
@@ -173,6 +190,7 @@ protected:
     SleeperInterface *m_pSleeper;
 
     std::string     m_Port;
+    bool            m_bNetworkConnected;
 
     bool            m_bIsConnected;
     bool            m_bParked;

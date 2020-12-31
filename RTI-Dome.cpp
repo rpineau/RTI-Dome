@@ -46,6 +46,9 @@ CRTIDome::CRTIDome()
     
     m_nRainStatus = RAIN_UNKNOWN;
 
+    m_Port.clear();
+    m_bNetworkConnected = false;
+    
 #ifdef    PLUGIN_DEBUG
     Logfile = NULL;
 #endif
@@ -139,9 +142,11 @@ int CRTIDome::Connect(const char *pszPort)
     fflush(Logfile);
 #endif
 
-    // the arduino take over a second to start as it need to init the XBee and there is 1100 ms pause in the code :(
-    if(m_pSleeper)
-        m_pSleeper->sleep(2000);
+    if(m_Port.find("TCP")!= -1)  {
+        m_bNetworkConnected = true;
+    }
+    else
+        m_bNetworkConnected = false;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -2309,6 +2314,198 @@ void CRTIDome::writeRainStatus()
         }
     }
 }
+
+/*
+ ETH_RECONFIG 'b'
+ ETH_MAC_ADDRESS 'f'
+ IP_ADDRESS 'j'
+ IP_SUBNET 'p'
+ IP_GATEWAY 'u'
+ */
+
+int CRTIDome::getMACAddress(std::string &MACAddress)
+{
+    int nErr = PLUGIN_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    nErr = domeCommand("f#", szResp, 'f', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::getMACAddress] ERROR = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
+    }
+    MACAddress.assign(szResp);
+    return nErr;
+}
+
+int CRTIDome::reconfigureNetwork()
+{
+    int nErr = PLUGIN_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    if(m_bNetworkConnected)
+        nErr = domeCommand("b#", szResp, 0x00, SERIAL_BUFFER_SIZE); // we won't get an answer as reconfiguring the network will disconnect us.
+    else
+        nErr = domeCommand("b#", szResp, 'b', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::reconfigureNetwork] ERROR = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
+    }
+    return nErr;
+}
+
+int CRTIDome::getUseDHCP(bool &bUseDHCP)
+{
+    int nErr = PLUGIN_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    nErr = domeCommand("w#", szResp, 'w', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::getUseDHCP] ERROR = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
+    }
+    bUseDHCP = (szResp[0] == '0'? false: true);
+    return nErr;
+}
+
+int CRTIDome::setUseDHCP(bool bUseDHCP)
+{
+    int nErr = PLUGIN_OK;
+    return nErr;
+}
+
+int CRTIDome::getIpAddress(std::string &IpAddress)
+{
+    int nErr = PLUGIN_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    nErr = domeCommand("j#", szResp, 'j', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::getIpAddress] ERROR = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
+    }
+    IpAddress.assign(szResp);
+    return nErr;
+}
+
+int CRTIDome::setIpAddress(std::string IpAddress)
+{
+    int nErr = PLUGIN_OK;
+    char szBuf[SERIAL_BUFFER_SIZE];
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    snprintf(szBuf, SERIAL_BUFFER_SIZE, "j%s#", IpAddress.c_str());
+    nErr = domeCommand(szBuf, szResp, 'j', SERIAL_BUFFER_SIZE);
+    return nErr;
+}
+
+int CRTIDome::getSubnetMask(std::string &subnetMask)
+{
+    int nErr = PLUGIN_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    nErr = domeCommand("p#", szResp, 'p', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::getSubnetMask] ERROR = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
+    }
+    subnetMask.assign(szResp);
+    return nErr;
+
+}
+
+int CRTIDome::setSubnet(std::string subnetMask)
+{
+    int nErr = PLUGIN_OK;
+    char szBuf[SERIAL_BUFFER_SIZE];
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    snprintf(szBuf, SERIAL_BUFFER_SIZE, "p%s#", subnetMask.c_str());
+    nErr = domeCommand(szBuf, szResp, 'p', SERIAL_BUFFER_SIZE);
+    return nErr;
+}
+
+int CRTIDome::getIPGateway(std::string &IpAddress)
+{
+    int nErr = PLUGIN_OK;
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    nErr = domeCommand("u#", szResp, 'u', SERIAL_BUFFER_SIZE);
+    if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::getIPGateway] ERROR = %d\n", timestamp, nErr);
+        fflush(Logfile);
+#endif
+    }
+    IpAddress.assign(szResp);
+    return nErr;
+}
+
+int CRTIDome::setIPGateway(std::string IpAddress)
+{
+    int nErr = PLUGIN_OK;
+    char szBuf[SERIAL_BUFFER_SIZE];
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    snprintf(szBuf, SERIAL_BUFFER_SIZE, "u%s#", IpAddress.c_str());
+    nErr = domeCommand(szBuf, szResp, 'u', SERIAL_BUFFER_SIZE);
+    return nErr;
+}
+
 
 
 int CRTIDome::parseFields(const char *pszResp, std::vector<std::string> &svFields, char cSeparator)
