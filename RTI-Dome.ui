@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>712</width>
-    <height>574</height>
+    <height>660</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>712</width>
-    <height>574</height>
+    <height>660</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>712</width>
-    <height>574</height>
+    <height>660</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
        <rect>
         <x>16</x>
         <y>96</y>
-        <width>298</width>
+        <width>296</width>
         <height>216</height>
        </rect>
       </property>
@@ -548,8 +548,8 @@
      <widget class="QPushButton" name="pushButtonCancel">
       <property name="geometry">
        <rect>
-        <x>104</x>
-        <y>504</y>
+        <x>472</x>
+        <y>600</y>
         <width>80</width>
         <height>24</height>
        </rect>
@@ -561,8 +561,8 @@
      <widget class="QPushButton" name="pushButtonOK">
       <property name="geometry">
        <rect>
-        <x>208</x>
-        <y>504</y>
+        <x>576</x>
+        <y>600</y>
         <width>80</width>
         <height>24</height>
        </rect>
@@ -577,9 +577,9 @@
      <widget class="QGroupBox" name="ControllerStatus">
       <property name="geometry">
        <rect>
-        <x>16</x>
-        <y>320</y>
-        <width>298</width>
+        <x>336</x>
+        <y>432</y>
+        <width>336</width>
         <height>152</height>
        </rect>
       </property>
@@ -709,10 +709,10 @@
      <widget class="QGroupBox" name="PanIDParams">
       <property name="geometry">
        <rect>
-        <x>336</x>
-        <y>432</y>
-        <width>336</width>
-        <height>80</height>
+        <x>16</x>
+        <y>320</y>
+        <width>296</width>
+        <height>104</height>
        </rect>
       </property>
       <property name="title">
@@ -762,7 +762,7 @@
       <widget class="QPushButton" name="pushButton_2">
        <property name="geometry">
         <rect>
-         <x>216</x>
+         <x>208</x>
          <y>32</y>
          <width>80</width>
          <height>24</height>
@@ -776,13 +776,186 @@
        <property name="geometry">
         <rect>
          <x>16</x>
-         <y>56</y>
+         <y>64</y>
          <width>192</width>
-         <height>16</height>
+         <height>24</height>
         </rect>
        </property>
        <property name="text">
         <string>Shutter Present</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="geometry">
+       <rect>
+        <x>16</x>
+        <y>432</y>
+        <width>296</width>
+        <height>200</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Network settings</string>
+      </property>
+      <widget class="QLineEdit" name="IPAddress">
+       <property name="geometry">
+        <rect>
+         <x>128</x>
+         <y>80</y>
+         <width>113</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="inputMask">
+        <string>000.000.000.000</string>
+       </property>
+       <property name="text">
+        <string>192.168.0.99</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_6">
+       <property name="geometry">
+        <rect>
+         <x>16</x>
+         <y>80</y>
+         <width>96</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>IP Address :</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_16">
+       <property name="geometry">
+        <rect>
+         <x>16</x>
+         <y>48</y>
+         <width>96</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>MAC Address :</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="MACAddress">
+       <property name="geometry">
+        <rect>
+         <x>128</x>
+         <y>48</y>
+         <width>136</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>00:11:22:33:44:55</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_19">
+       <property name="geometry">
+        <rect>
+         <x>16</x>
+         <y>112</y>
+         <width>96</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Subnet mask :</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="SubnetMask">
+       <property name="geometry">
+        <rect>
+         <x>128</x>
+         <y>112</y>
+         <width>113</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="inputMask">
+        <string>000.000.000.000</string>
+       </property>
+       <property name="text">
+        <string>255.255.255.0</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_20">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>144</y>
+         <width>72</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Gateway :</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="GatewayIP">
+       <property name="geometry">
+        <rect>
+         <x>128</x>
+         <y>144</y>
+         <width>113</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="inputMask">
+        <string>000.000.000.000</string>
+       </property>
+       <property name="text">
+        <string>192.168.0.1</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkBox_2">
+       <property name="geometry">
+        <rect>
+         <x>32</x>
+         <y>24</y>
+         <width>96</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Use DHCP</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_5">
+       <property name="geometry">
+        <rect>
+         <x>8</x>
+         <y>168</y>
+         <width>113</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Apply</string>
        </property>
       </widget>
      </widget>

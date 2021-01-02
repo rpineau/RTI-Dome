@@ -488,10 +488,8 @@ bool RotatorClass::LoadFromEEProm()
     SetStepsPerRotation(m_Config.stepsPerRotation);
     SetReversed(m_Config.reversed);
 #ifndef STANDALONE
-    if(m_Config.panid < 0) { // set to default.. there was something bad in eeprom.
-        SetDefaultConfig();
-        SaveToEEProm();
-        response = false;
+    if(m_Config.panid <= 0) { // set to default.. there was something bad in eeprom.
+        m_Config.panid = 0x4242;
     }
 #endif
     m_bDoEEPromSave = true;
@@ -542,6 +540,7 @@ bool RotatorClass::getDHCPFlag()
 void RotatorClass::setDHCPFlag(bool bUseDHCP)
 {
     m_Config.ipConfig.bUseDHCP = bUseDHCP;
+    DBPrintln("New bUseDHCP : " + bUseDHCP?"Yes":"No");
     SaveToEEProm();
 }
 
@@ -553,6 +552,7 @@ String RotatorClass::getIPAddress()
 void RotatorClass::setIPAddress(String ipAddress)
 {
     m_Config.ipConfig.ip.fromString(ipAddress);
+    DBPrintln("New IP address : " + IpAddress2String(m_Config.ipConfig.ip));
     SaveToEEProm();
 }
 
@@ -564,6 +564,7 @@ String RotatorClass::getIPSubnet()
 void RotatorClass::setIPSubnet(String ipSubnet)
 {
     m_Config.ipConfig.subnet.fromString(ipSubnet);
+    DBPrintln("New subnet mask : " + IpAddress2String(m_Config.ipConfig.subnet));
     SaveToEEProm();
 }
 
@@ -575,6 +576,8 @@ String RotatorClass::getIPGateway()
 void RotatorClass::setIPGateway(String ipGateway)
 {
     m_Config.ipConfig.gateway.fromString(ipGateway);
+    DBPrintln("New gateway : " + IpAddress2String(m_Config.ipConfig.gateway));
+
     // setting DNS IP to gateway IP as we don't use it and this is probably correct for most home users
     m_Config.ipConfig.dns.fromString(ipGateway);
     SaveToEEProm();

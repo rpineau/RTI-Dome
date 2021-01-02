@@ -164,7 +164,7 @@ public:
     int setIpAddress(std::string IpAddress);
 
     int getSubnetMask(std::string &subnetMask);
-    int setSubnet(std::string subnetMask);
+    int setSubnetMask(std::string subnetMask);
 
     int getIPGateway(std::string &IpAddress);
     int setIPGateway(std::string IpAddress);
@@ -228,7 +228,13 @@ protected:
     bool            m_bSaveRainStatus;
     int             m_nRainStatus;
     CStopWatch      m_cRainCheckTimer;
-        
+    
+    std::string     m_IpAddress;
+    std::string     m_SubnetMask;
+    std::string     m_GatewayIP;
+    bool            m_bUseDHCP;
+    
+
 #ifdef PLUGIN_DEBUG
     std::string m_sLogfilePath;
     // timestamp for logs

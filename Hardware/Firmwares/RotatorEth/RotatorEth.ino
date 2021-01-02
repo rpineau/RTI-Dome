@@ -108,7 +108,6 @@ bool bIsRaining = false;
 bool ethernetPresent;
 IPConfig ServerConfig;
 
-// available  : f j p u w
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
 const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
@@ -132,7 +131,7 @@ const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
 const char STEPSPER_ROTATOR_CMD         = 't'; // GetSteps per rotation
 const char IP_GATEWAY                   = 'u'; // get/set IP default gateway
 const char VERSION_ROTATOR_GET          = 'v'; // Get Version string
-const char IP_DHCP                       = 'w'; // get/set IP DNS ... might not be needed.
+const char IP_DHCP                       = 'w'; // get/set DHCP mode
                                         //'x' see bellow
 const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
@@ -282,6 +281,8 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
         if(!dhcpOk) {
             DBPrintln("DHCP Failed!");
             Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
+        } else {
+
         }
     }
     else {
@@ -294,10 +295,10 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
     }
 #ifdef DEBUG
     aTmp = Ethernet.localIP();
-    DBPrintln("DHCP IP = " + String(aTmp[0]) + String(".") +
-                          String(aTmp[1]) + String(".") +
-                          String(aTmp[2]) + String(".") +
-                          String(aTmp[3]) );
+    DBPrintln("IP = " + String(aTmp[0]) + String(".") +
+                        String(aTmp[1]) + String(".") +
+                        String(aTmp[2]) + String(".") +
+                        String(aTmp[3]) );
 #endif
 
     Ethernet.setRetransmissionCount(3);
@@ -502,8 +503,6 @@ void PingShutter()
 void ReceiveNetwork(EthernetClient client)
 {
     char networkCharacter;
-
-    DBPrintln("[ReceiveNetwork]");
 
     if(!client.connected()) {
         return;
@@ -764,7 +763,11 @@ void ProcessCommand(bool bFromNetwork)
                 Rotator->setIPAddress(value);
                 Rotator->getIpConfig(ServerConfig);
             }
-            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->getIPAddress());
+            if(!ServerConfig.bUseDHCP)
+                serialMessage = String(IP_ADDRESS) + String(Rotator->getIPAddress());
+            else {
+                serialMessage = String(IP_ADDRESS) + String(Rotator->IpAddress2String(Ethernet.localIP()));
+            }
             break;
 
         case IP_SUBNET:
@@ -772,7 +775,11 @@ void ProcessCommand(bool bFromNetwork)
                 Rotator->setIPSubnet(value);
                 Rotator->getIpConfig(ServerConfig);
             }
-            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->getIPSubnet());
+            if(!ServerConfig.bUseDHCP)
+                serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
+            else {
+                serialMessage = String(IP_SUBNET) + String(Rotator->IpAddress2String(Ethernet.subnetMask()));
+            }
             break;
 
         case IP_GATEWAY:
@@ -780,7 +787,11 @@ void ProcessCommand(bool bFromNetwork)
                 Rotator->setIPGateway(value);
                 Rotator->getIpConfig(ServerConfig);
             }
-            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->getIPGateway());
+            if(!ServerConfig.bUseDHCP)
+                serialMessage = String(IP_GATEWAY) + String(Rotator->getIPGateway());
+            else {
+                serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
+            }
             break;
 
 

@@ -49,6 +49,11 @@ CRTIDome::CRTIDome()
     m_Port.clear();
     m_bNetworkConnected = false;
     
+    m_IpAddress.clear();
+    m_SubnetMask.clear();
+    m_GatewayIP.clear();
+    m_bUseDHCP = false;
+    
 #ifdef    PLUGIN_DEBUG
     Logfile = NULL;
 #endif
@@ -147,6 +152,11 @@ int CRTIDome::Connect(const char *pszPort)
     }
     else
         m_bNetworkConnected = false;
+
+    getIpAddress(m_IpAddress);
+    getSubnetMask(m_SubnetMask);
+    getIPGateway(m_GatewayIP);
+    getUseDHCP(m_bUseDHCP);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -2394,6 +2404,14 @@ int CRTIDome::getUseDHCP(bool &bUseDHCP)
 int CRTIDome::setUseDHCP(bool bUseDHCP)
 {
     int nErr = PLUGIN_OK;
+    char szBuf[SERIAL_BUFFER_SIZE];
+    char szResp[SERIAL_BUFFER_SIZE];
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    snprintf(szBuf, SERIAL_BUFFER_SIZE, "w%d#", bUseDHCP?1:0);
+    nErr = domeCommand(szBuf, szResp, 'w', SERIAL_BUFFER_SIZE);
     return nErr;
 }
 
@@ -2456,7 +2474,7 @@ int CRTIDome::getSubnetMask(std::string &subnetMask)
 
 }
 
-int CRTIDome::setSubnet(std::string subnetMask)
+int CRTIDome::setSubnetMask(std::string subnetMask)
 {
     int nErr = PLUGIN_OK;
     char szBuf[SERIAL_BUFFER_SIZE];

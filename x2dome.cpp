@@ -125,21 +125,26 @@ int X2Dome::execModalSettingsDialog()
     bool bPressedOK = false;
     char szTmpBuf[SERIAL_BUFFER_SIZE];
     std::string fName;
-    double dHomeAz;
-    double dParkAz;
-    double dDomeBattery, dDomeCutOff;
-    double dShutterBattery, dShutterCutOff;
-    bool nReverseDir;
-    int n_nbStepPerRev;
+    double dHomeAz = 0;
+    double dParkAz = 0;
+    double dDomeBattery = 0 , dDomeCutOff = 0;
+    double dShutterBattery =0 , dShutterCutOff = 0;
+    bool nReverseDir = false;
+    int n_nbStepPerRev = 0;
     int nRainSensorStatus = NOT_RAINING;
-    int nRSpeed;
-    int nRAcc;
-    int nSSpeed;
-    int nSAcc;
-	int nWatchdog;
-    int nRainAction;
-    double  batRotCutOff;
-    double  batShutCutOff;
+    int nRSpeed = 0;
+    int nRAcc = 0;
+    int nSSpeed = 0;
+    int nSAcc = 0;
+	int nWatchdog = 0;
+    int nRainAction = 0;
+    double  batRotCutOff = 0;
+    double  batShutCutOff = 0;
+    std::string sDummy;
+    bool bUseDHCP = false;
+    std::string sIpAddress;
+    std::string sSubnetMask;
+    std::string sGatewayIP;
     
     if (NULL == ui)
         return ERR_POINTER;
@@ -288,6 +293,29 @@ int X2Dome::execModalSettingsDialog()
             dx->setPropertyString("rainStatus","text", szTmpBuf);
         }
 
+        nErr = m_RTIDome.getMACAddress(sDummy);
+        dx->setPropertyString("MACAddress", "text", sDummy.c_str());
+
+        nErr = m_RTIDome.getUseDHCP(bUseDHCP);
+        dx->setChecked("checkBox_2", bUseDHCP);
+        if(bUseDHCP) {
+            dx->setEnabled("IPAddress", false);
+            dx->setEnabled("SubnetMask", false);
+            dx->setEnabled("GatewayIP", false);
+        }
+        else { // not using dhcp so the field are editable
+            dx->setEnabled("IPAddress", true);
+            dx->setEnabled("SubnetMask", true);
+            dx->setEnabled("GatewayIP", true);
+        }
+
+        m_RTIDome.getIpAddress(sIpAddress);
+        dx->setPropertyString("IPAddress", "text", sIpAddress.c_str());
+        m_RTIDome.getSubnetMask(sSubnetMask);
+        dx->setPropertyString("SubnetMask", "text", sSubnetMask.c_str());
+        m_RTIDome.getIPGateway(sGatewayIP);
+        dx->setPropertyString("GatewayIP", "text", sGatewayIP.c_str());
+        
         dx->setEnabled("pushButton",true);
     }
     else {
@@ -306,12 +334,22 @@ int X2Dome::execModalSettingsDialog()
         dx->setPropertyString("domeBatteryLevel", "text", "--");
         dx->setPropertyString("shutterBatteryLevel", "text", "--");
         dx->setEnabled("panID", false);
+        dx->setPropertyInt("panID", "value", 0);
         dx->setEnabled("pushButton_2", false);
         dx->setEnabled("pushButton", false);
         dx->setEnabled("pushButton_3", false);
         dx->setEnabled("pushButton_4", false);
         dx->setPropertyString("domePointingError", "text", "--");
         dx->setPropertyString("rainStatus","text", "--");
+    
+        dx->setEnabled("checkBox_2", false);
+        dx->setPropertyString("MACAddress", "text", "");
+        dx->setEnabled("IPAddress", false);
+        dx->setPropertyString("IPAddress", "text", "");
+        dx->setEnabled("SubnetMask", false);
+        dx->setPropertyString("SubnetMask", "text", "");
+        dx->setEnabled("GatewayIP", false);
+        dx->setPropertyString("GatewayIP", "text", "");
     }
     dx->setPropertyDouble("homePosition","value", m_RTIDome.getHomeAz());
     dx->setPropertyDouble("parkPosition","value", m_RTIDome.getParkAz());
@@ -379,6 +417,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     char szTmpBuf[SERIAL_BUFFER_SIZE];
     char szErrorMessage[LOG_BUFFER_SIZE];
     std::string fName;
+    std::string sDummy;
     int nRainSensorStatus = NOT_RAINING;
     bool bShutterPresent;
     int nPanId;
@@ -592,6 +631,53 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         else {
             uiex->setPropertyString("filePath","text", "");
         }
+    }
+
+    
+    if (!strcmp(pszEvent, "on_pushButton_5_clicked")) {
+        if(uiex->isChecked("checkBox_2")) {
+            m_RTIDome.setUseDHCP(true);
+            m_RTIDome.reconfigureNetwork();
+            m_RTIDome.getIpAddress(sDummy);
+            uiex->setPropertyString("IPAddress", "text", sDummy.c_str());
+            m_RTIDome.getSubnetMask(sDummy);
+            uiex->setPropertyString("SubnetMask", "text", sDummy.c_str());
+            m_RTIDome.getIPGateway(sDummy);
+            uiex->setPropertyString("GatewayIP", "text", sDummy.c_str());
+        }
+        else {
+            m_RTIDome.setUseDHCP(false);
+            uiex->propertyString("IPAddress", "text", szTmpBuf, SERIAL_BUFFER_SIZE);
+            m_RTIDome.setIpAddress(std::string(szTmpBuf));
+
+            uiex->propertyString("SubnetMask", "text", szTmpBuf, SERIAL_BUFFER_SIZE);
+            m_RTIDome.setSubnetMask(std::string(szTmpBuf));
+
+            uiex->propertyString("GatewayIP", "text", szTmpBuf, SERIAL_BUFFER_SIZE);
+            m_RTIDome.setIPGateway(std::string(szTmpBuf));
+            m_RTIDome.reconfigureNetwork();
+            // re-read thenm.. just to be sure :)
+            m_RTIDome.getIpAddress(sDummy);
+            uiex->setPropertyString("IPAddress", "text", sDummy.c_str());
+            m_RTIDome.getSubnetMask(sDummy);
+            uiex->setPropertyString("SubnetMask", "text", sDummy.c_str());
+            m_RTIDome.getIPGateway(sDummy);
+            uiex->setPropertyString("GatewayIP", "text", sDummy.c_str());
+            }
+        }
+
+    if (!strcmp(pszEvent, "on_checkBox_2_stateChanged")) {
+        if(uiex->isChecked("checkBox_2")) {
+            uiex->setEnabled("IPAddress", false);
+            uiex->setEnabled("SubnetMask", false);
+            uiex->setEnabled("GatewayIP", false);
+        }
+        else {
+            uiex->setEnabled("IPAddress", true);
+            uiex->setEnabled("SubnetMask", true);
+            uiex->setEnabled("GatewayIP", true);
+        }
+
     }
 
 }
