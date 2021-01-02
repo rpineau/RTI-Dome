@@ -861,6 +861,9 @@
        <property name="text">
         <string>00:11:22:33:44:55</string>
        </property>
+       <property name="textInteractionFlags">
+        <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+       </property>
       </widget>
       <widget class="QLabel" name="label_19">
        <property name="geometry">

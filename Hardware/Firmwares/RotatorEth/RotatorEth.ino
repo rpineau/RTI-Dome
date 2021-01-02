@@ -9,7 +9,7 @@
 
 // if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
 // This us useful for people who only want to automate the rotation.
-#define STANDALONE
+// #define STANDALONE
 
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
