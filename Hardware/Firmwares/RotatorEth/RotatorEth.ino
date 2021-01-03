@@ -20,9 +20,8 @@
 
 // Stepper controller connection type :
 
-#define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08 or TB6600 wired in Common Anode mode
-// #define CommonCathode   // EN, DIR, STEP active HIGH like TB6600 wired in Common Cathode mode
-
+// #define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08
+#define CommonCathode   // EN, DIR, STEP active HIGH like TB6600
 
 #define MAX_TIMEOUT 100
 #define ERR_NO_DATA -1
@@ -36,6 +35,7 @@
 #include "EtherMac.h"
 
 #define Computer Serial2     // USB FTDI
+#define RESET_FTDI  23
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
@@ -131,7 +131,7 @@ const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
 const char STEPSPER_ROTATOR_CMD         = 't'; // GetSteps per rotation
 const char IP_GATEWAY                   = 'u'; // get/set IP default gateway
 const char VERSION_ROTATOR_GET          = 'v'; // Get Version string
-const char IP_DHCP                       = 'w'; // get/set DHCP mode
+const char IP_DHCP                      = 'w'; // get/set DHCP mode
                                         //'x' see bellow
 const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
@@ -139,7 +139,7 @@ const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
 const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
 
 #ifndef STANDALONE
-const char INIT_XBEE                    = 'x'; // force a ConfigXBee
+const char INIT_XBEE                    = 'x'; // force a XBee reconfig
 
 // Shutter commands
 const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set if shutter closes and rotator homes on shutter low voltage
@@ -185,6 +185,9 @@ void ProcessWireless(void);
 
 void setup()
 {
+
+    resetFTDI(RESET_FTDI);
+
 #ifdef DEBUG
     DebugPort.begin(115200);
 #endif
@@ -205,7 +208,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-    // enable input buffers
+    // enable input buffers on older prototype
     Rotator->bufferEnable(true);
     configureEthernet();
 }
@@ -364,6 +367,15 @@ void resetEthernet(int nPin) {
     delay(10);
 }
 
+void resetFTDI(int nPin) {
+    //reset FTDI chip
+    pinMode(nPin, OUTPUT);
+    digitalWrite(nPin,0);
+    delay(500);
+    digitalWrite(nPin,1);
+    delay(10);
+}
+
 #ifndef STANDALONE
 void StartWirelessConfig()
 {
@@ -416,7 +428,6 @@ void setPANID(String value)
     configStep = 0;
 }
 
-// <SUMMARY>Broadcast that you exist</SUMMARY>
 void SendHello()
 {
     DBPrintln("Sending hello");
@@ -454,7 +465,6 @@ void requestShutterData()
 
 #endif
 
-//<SUMMARY>Check for Serial and Wireless data</SUMMARY>
 void CheckForCommands()
 {
     ReceiveComputer();
@@ -468,7 +478,6 @@ void CheckForCommands()
         ReceiveNetwork(domeClient);
 }
 
-//<SUMMARY>Tells shutter the rain sensor status</SUMMARY>
 void CheckForRain()
 {
 
@@ -527,7 +536,7 @@ void ReceiveNetwork(EthernetClient client)
 
 }
 
-// All comms are terminated with # but left if the \r\n for XBee config
+// All comms are terminated with '#' but the '\r' and '\n' are for XBee config
 void ReceiveComputer()
 {
     if(Computer.available() < 1)
@@ -645,7 +654,6 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case PARKAZ_ROTATOR_CMD:
-            // Get/Set Park Azumith
             sTmpString = String(PARKAZ_ROTATOR_CMD);
             if (hasValue) {
                 fTmp = value.toFloat();
@@ -714,7 +722,6 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case VOLTS_ROTATOR_CMD:
-            // value only needs infrequent updating.
             if (hasValue) {
                 Rotator->SetLowVoltageCutoff(value.toInt());
             }
@@ -932,7 +939,6 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case VERSION_SHUTTER_GET:
-            // Rotator gets this upon Hello and it's not going to change so don't ask for it wirelessly
             sTmpString = String(VERSION_SHUTTER_GET);
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
@@ -982,7 +988,6 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = "Unknown command:" + String(command);
             break;
     }
-
 
 
     // Send messages if they aren't empty.
@@ -1101,7 +1106,7 @@ void ProcessWireless()
                 RemoteShutter.reversed = value;
             break;
 
-        case STATE_SHUTTER_GET: // Dome status
+        case STATE_SHUTTER_GET:
             if (hasValue)
                 RemoteShutter.state = value;
             break;
@@ -1123,7 +1128,7 @@ void ProcessWireless()
                 RemoteShutter.version = value;
             break;
 
-        case VOLTS_SHUTTER_CMD: // battery voltage and cutoff
+        case VOLTS_SHUTTER_CMD:
             if (hasValue)
                 RemoteShutter.volts = value;
             break;

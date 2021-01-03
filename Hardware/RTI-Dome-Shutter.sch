@@ -14697,10 +14697,10 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <part name="IC5" library="rti" deviceset="74*245" device="" technology="LVC"/>
 <part name="IC6" library="rti" deviceset="74*245" device="" technology="ABT" value="74ABT245"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
-<part name="R22" library="rti" deviceset="R-EU" device="'0805'" value="4.7K"/>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
 <part name="U$1" library="MCP120T-270I_TT" deviceset="MCP120T-270I_TT" device=""/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
+<part name="GND10" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -14778,10 +14778,10 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <instance part="IC5" gate="P" x="132.08" y="180.34" rot="R270"/>
 <instance part="IC6" gate="P" x="203.2" y="180.34" rot="R270"/>
 <instance part="GND7" gate="1" x="187.96" y="226.06"/>
-<instance part="R22" gate="G$1" x="147.32" y="180.34" rot="R270"/>
 <instance part="J1" gate="G$1" x="378.46" y="83.82"/>
 <instance part="U$1" gate="G$1" x="218.44" y="93.98"/>
 <instance part="GND9" gate="1" x="203.2" y="86.36"/>
+<instance part="GND10" gate="1" x="114.3" y="223.52"/>
 </instances>
 <busses>
 </busses>
@@ -15007,6 +15007,12 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <wire x1="203.2" y1="91.44" x2="203.2" y2="88.9" width="0.1524" layer="91"/>
 <pinref part="GND9" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="IC5" gate="G$1" pin="*OE"/>
+<wire x1="119.38" y1="228.6" x2="114.3" y2="228.6" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="228.6" x2="114.3" y2="226.06" width="0.1524" layer="91"/>
+<pinref part="GND10" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="+12V" class="1">
 <segment>
@@ -15126,10 +15132,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <wire x1="114.3" y1="190.5" x2="114.3" y2="182.88" width="0.1524" layer="91"/>
 <junction x="121.92" y="190.5"/>
 <pinref part="IC5" gate="P" pin="VDD"/>
-<pinref part="R22" gate="G$1" pin="1"/>
-<wire x1="134.62" y1="190.5" x2="147.32" y2="190.5" width="0.1524" layer="91"/>
-<wire x1="147.32" y1="190.5" x2="147.32" y2="185.42" width="0.1524" layer="91"/>
-<junction x="134.62" y="190.5"/>
 </segment>
 <segment>
 <wire x1="144.78" y1="83.82" x2="144.78" y2="81.28" width="0.1524" layer="91"/>
@@ -15596,24 +15598,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <pinref part="R21" gate="G$1" pin="2"/>
 <wire x1="259.08" y1="233.68" x2="259.08" y2="236.22" width="0.1524" layer="91"/>
 <label x="259.08" y="233.68" size="1.016" layer="95" rot="R270" xref="yes"/>
-</segment>
-</net>
-<net name="BUF_EN" class="0">
-<segment>
-<pinref part="IC5" gate="G$1" pin="*OE"/>
-<wire x1="116.84" y1="228.6" x2="119.38" y2="228.6" width="0.1524" layer="91"/>
-<label x="116.84" y="228.6" size="1.016" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="R22" gate="G$1" pin="2"/>
-<wire x1="152.4" y1="172.72" x2="147.32" y2="172.72" width="0.1524" layer="91"/>
-<wire x1="147.32" y1="172.72" x2="147.32" y2="175.26" width="0.1524" layer="91"/>
-<label x="152.4" y="172.72" size="1.016" layer="95" xref="yes"/>
-</segment>
-<segment>
-<pinref part="PCB1" gate="G$1" pin="A3"/>
-<wire x1="20.32" y1="38.1" x2="22.86" y2="38.1" width="0.1524" layer="91"/>
-<label x="20.32" y="38.1" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$4" class="0">

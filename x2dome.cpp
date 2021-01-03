@@ -350,6 +350,7 @@ int X2Dome::execModalSettingsDialog()
         dx->setPropertyString("SubnetMask", "text", "");
         dx->setEnabled("GatewayIP", false);
         dx->setPropertyString("GatewayIP", "text", "");
+        dx->setEnabled("pushButton_5", false);
     }
     dx->setPropertyDouble("homePosition","value", m_RTIDome.getHomeAz());
     dx->setPropertyDouble("parkPosition","value", m_RTIDome.getParkAz());
@@ -677,7 +678,6 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
             uiex->setEnabled("SubnetMask", true);
             uiex->setEnabled("GatewayIP", true);
         }
-
     }
 
 }

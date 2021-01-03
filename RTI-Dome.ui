@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>712</width>
-    <height>660</height>
+    <height>680</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>712</width>
-    <height>660</height>
+    <height>680</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>712</width>
-    <height>660</height>
+    <height>680</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -549,7 +549,7 @@
       <property name="geometry">
        <rect>
         <x>472</x>
-        <y>600</y>
+        <y>608</y>
         <width>80</width>
         <height>24</height>
        </rect>
@@ -562,7 +562,7 @@
       <property name="geometry">
        <rect>
         <x>576</x>
-        <y>600</y>
+        <y>608</y>
         <width>80</width>
         <height>24</height>
        </rect>
@@ -792,7 +792,7 @@
         <x>16</x>
         <y>432</y>
         <width>296</width>
-        <height>200</height>
+        <height>216</height>
        </rect>
       </property>
       <property name="title">
@@ -951,8 +951,8 @@
       <widget class="QPushButton" name="pushButton_5">
        <property name="geometry">
         <rect>
-         <x>8</x>
-         <y>168</y>
+         <x>128</x>
+         <y>176</y>
          <width>113</width>
          <height>24</height>
         </rect>

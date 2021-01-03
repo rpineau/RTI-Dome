@@ -16955,13 +16955,13 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 </part>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="C18" library="rti" deviceset="C-EU" device="'0805'" value="10nF">
-<attribute name="MPN" value="	CC0805KRX7R9BB103"/>
+<attribute name="MPN" value=" CC0805KRX7R9BB103"/>
 </part>
 <part name="R28" library="rti" deviceset="R-EU" device="'0805'" value="330">
-<attribute name="MPN" value="	RC0805JR-07330RL"/>
+<attribute name="MPN" value=" RC0805JR-07330RL"/>
 </part>
 <part name="R29" library="rti" deviceset="R-EU" device="'0805'" value="330">
-<attribute name="MPN" value="	RC0805JR-07330RL"/>
+<attribute name="MPN" value=" RC0805JR-07330RL"/>
 </part>
 <part name="C19" library="rti" deviceset="C-EU" device="'0805'" value="4.7uF">
 <attribute name="MPN" value="C0805C475J3RACTU"/>
@@ -16989,7 +16989,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 </part>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="C13" library="rti" deviceset="C-EU" device="'0805'" value="10nF">
-<attribute name="MPN" value="	CC0805KRX7R9BB103"/>
+<attribute name="MPN" value=" CC0805KRX7R9BB103"/>
 </part>
 <part name="FL1" library="BLM21AG121SN1D" deviceset="BLM21AG121SN1D" device="">
 <attribute name="MPN" value="BLM21AG121SN1D"/>
@@ -17012,7 +17012,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <attribute name="MPN" value="C0805C682F4HACTU"/>
 </part>
 <part name="C22" library="rti" deviceset="C-EU" device="'0805'" value="10nF">
-<attribute name="MPN" value="	CC0805KRX7R9BB103"/>
+<attribute name="MPN" value=" CC0805KRX7R9BB103"/>
 </part>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="FRAME2" library="frames" deviceset="DINA3_L" device=""/>
