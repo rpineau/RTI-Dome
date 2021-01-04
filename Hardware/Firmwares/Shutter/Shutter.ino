@@ -86,6 +86,9 @@ int XbeeResets = 0;
 
 void setup()
 {
+    digitalWrite(XBEE_RESET_PIN, 0);
+    pinMode(XBEE_RESET_PIN, OUTPUT);
+
 #ifdef DEBUG
 	DebugPort.begin(115200);
 #endif
@@ -93,8 +96,6 @@ void setup()
     XbeeStarted = false;
 	XbeeResets = 0;
 	isConfiguringWireless = false;
-    pinMode(XBEE_RESET_PIN, OUTPUT);
-    digitalWrite(XBEE_RESET_PIN, 1);
     Shutter = new ShutterClass();
 	watchdogTimer.reset();
     Shutter->EnableMotor(false);
@@ -104,6 +105,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
     // enable input buffers
     Shutter->bufferEnable(true);
+    ResetXbee();
 }
 
 void loop()

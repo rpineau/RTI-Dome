@@ -19,7 +19,6 @@
 // #define XBEE_S2C
 
 // Stepper controller connection type :
-
 // #define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08
 #define CommonCathode   // EN, DIR, STEP active HIGH like TB6600
 
@@ -29,13 +28,15 @@
 
 #define VERSION "2.645"
 
+#define USE_EXT_EEPROM
+
 // include and some defines for ethernet connection
 #include <SPI.h>
 #include <Ethernet.h>
 #include "EtherMac.h"
 
 #define Computer Serial2     // USB FTDI
-#define RESET_FTDI  23
+#define FTDI_RESET  23
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
@@ -58,6 +59,7 @@ String networkBuffer;
 
 
 #ifndef STANDALONE
+#define XBEE_RESET  8
 #include "RemoteShutterClass.h"
 RemoteShutterClass RemoteShutter;
 String wirelessBuffer;
@@ -168,7 +170,8 @@ void checkForNewTCPClient(void);
 void homeIntHandler(void);
 void rainIntHandler(void);
 void buttonHandler(void);
-void resetEthernet(int);
+void resetChip(int);
+void resetFTDI(int);
 void StartWirelessConfig(void);
 void ConfigXBee(String);
 void setPANID(String);
@@ -185,8 +188,18 @@ void ProcessWireless(void);
 
 void setup()
 {
+    // set reset pins to output and low
+    digitalWrite(XBEE_RESET, 0);
+    pinMode(XBEE_RESET, OUTPUT);
 
-    resetFTDI(RESET_FTDI);
+    digitalWrite(FTDI_RESET, 0);
+    pinMode(FTDI_RESET, OUTPUT);
+
+    digitalWrite(ETHERNET_RESET, 0);
+    pinMode(ETHERNET_RESET, OUTPUT);
+
+    resetChip(XBEE_RESET);
+    resetFTDI(FTDI_RESET);
 
 #ifdef DEBUG
     DebugPort.begin(115200);
@@ -273,7 +286,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
     IPAddress aTmp;
 #endif
 
-    resetEthernet(ETHERNET_RESET);
+    resetChip(ETHERNET_RESET);
     // network configuration
     nbEthernetClient = 0;
     Ethernet.init(ETHERNET_CS);
@@ -358,18 +371,19 @@ void buttonHandler()
         Rotator->ButtonCheck();
 }
 
-void resetEthernet(int nPin) {
 
-    pinMode(nPin, OUTPUT);
+// reset chip with /reset connected to nPin
+void resetChip(int nPin)
+{
     digitalWrite(nPin, 0);
     delay(2);
     digitalWrite(nPin, 1);
     delay(10);
 }
 
-void resetFTDI(int nPin) {
-    //reset FTDI chip
-    pinMode(nPin, OUTPUT);
+//reset FTDI FT232 usb to serial chip
+void resetFTDI(int nPin)
+{
     digitalWrite(nPin,0);
     delay(500);
     digitalWrite(nPin,1);
