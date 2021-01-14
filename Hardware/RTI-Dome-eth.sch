@@ -16843,10 +16843,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <attribute name="MPN" value="FT232RL-REEL"/>
 </part>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="R9" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
-<attribute name="MPN" value="RT0805FRE074K7L"/>
-</part>
-<part name="R11" library="rti" deviceset="R-EU" device="'0805'" value="10K">
+<part name="R11" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
 <attribute name="MPN" value="RT0805FRE0710KL"/>
 </part>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
@@ -17118,9 +17115,6 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 </instance>
 <instance part="IC3" gate="1" x="289.56" y="149.86"/>
 <instance part="GND10" gate="1" x="274.32" y="111.76"/>
-<instance part="R9" gate="G$1" x="256.54" y="172.72" rot="R270">
-<attribute name="MPN" x="256.54" y="172.72" size="1.778" layer="96" rot="R270" display="off"/>
-</instance>
 <instance part="R11" gate="G$1" x="256.54" y="157.48" rot="R270">
 <attribute name="MPN" x="256.54" y="157.48" size="1.778" layer="96" rot="R270" display="off"/>
 </instance>
@@ -18012,28 +18006,11 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <pinref part="IC5" gate="G$1" pin="B0"/>
 </segment>
 </net>
-<net name="N$1" class="0">
-<segment>
-<pinref part="R9" gate="G$1" pin="2"/>
-<pinref part="R11" gate="G$1" pin="1"/>
-<wire x1="256.54" y1="167.64" x2="256.54" y2="165.1" width="0.1524" layer="91"/>
-<pinref part="IC3" gate="1" pin="!RESET"/>
-<wire x1="256.54" y1="165.1" x2="256.54" y2="162.56" width="0.1524" layer="91"/>
-<wire x1="276.86" y1="165.1" x2="256.54" y2="165.1" width="0.1524" layer="91"/>
-<junction x="256.54" y="165.1"/>
-</segment>
-</net>
 <net name="USB_VCC" class="0">
 <segment>
 <pinref part="X13" gate="G$1" pin="1"/>
 <wire x1="236.22" y1="121.92" x2="233.68" y2="121.92" width="0.1524" layer="91"/>
 <label x="236.22" y="121.92" size="1.016" layer="95" xref="yes"/>
-</segment>
-<segment>
-<pinref part="R9" gate="G$1" pin="1"/>
-<wire x1="248.92" y1="180.34" x2="256.54" y2="180.34" width="0.1524" layer="91"/>
-<wire x1="256.54" y1="180.34" x2="256.54" y2="177.8" width="0.1524" layer="91"/>
-<label x="248.92" y="180.34" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="USBDP" class="0">
@@ -18233,6 +18210,23 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <wire x1="276.86" y1="170.18" x2="264.16" y2="170.18" width="0.1524" layer="91"/>
 <wire x1="264.16" y1="170.18" x2="264.16" y2="175.26" width="0.1524" layer="91"/>
 <label x="264.16" y="175.26" size="1.016" layer="95" rot="R90" xref="yes"/>
+</segment>
+</net>
+<net name="FTDI_RESET" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="23"/>
+<wire x1="149.86" y1="20.32" x2="149.86" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="10.16" x2="160.02" y2="10.16" width="0.1524" layer="91"/>
+<label x="160.02" y="10.16" size="1.016" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="R11" gate="G$1" pin="1"/>
+<pinref part="IC3" gate="1" pin="!RESET"/>
+<wire x1="256.54" y1="165.1" x2="256.54" y2="162.56" width="0.1524" layer="91"/>
+<wire x1="276.86" y1="165.1" x2="256.54" y2="165.1" width="0.1524" layer="91"/>
+<wire x1="251.46" y1="165.1" x2="256.54" y2="165.1" width="0.1524" layer="91"/>
+<junction x="256.54" y="165.1"/>
+<label x="251.46" y="165.1" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
