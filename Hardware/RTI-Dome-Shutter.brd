@@ -200,7 +200,7 @@
 <text x="9.8425" y="68.58" size="0.6096" layer="22" rot="MR0">GND</text>
 <text x="0.9525" y="69.85" size="0.6096" layer="21">D13_EXT_IN</text>
 <text x="6.50875" y="68.61175" size="0.6096" layer="22" rot="MR0">D13_EXT_IN</text>
-<text x="35.56" y="3.4925" size="1.778" layer="21">Dome Shutter</text>
+<text x="34.925" y="3.4925" size="1.778" layer="51">Dome Shutter</text>
 <text x="60.6425" y="8.15975" size="1.778" layer="21">+12V</text>
 <text x="62.23" y="69.85" size="0.6096" layer="21">A4_OUT</text>
 </plain>
