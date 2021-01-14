@@ -11,32 +11,30 @@
 // This us useful for people who only want to automate the rotation.
 // #define STANDALONE
 
+// I started making a PCB with the Teensy 2,5/3.6 .. work in progress.
+// #define TEENY_3_5
+
+#define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08 or TB6600 wired in Common Anode mode
+// #define CommonCathode   // EN, DIR, STEP active HIGH like TB6600 wired in Common Cathode mode
+
+
+#define USE_EXT_EEPROM
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.
-// Also the XBee3 model XB3-24Z8PT-J work as the S1
+// Also the XBee3 model XB3-24Z8PT-J should work as the S1
 #define XBEE_S1
 // #define XBEE_S2C
-
-// Stepper controller connection type :
-// #define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08
-#define CommonCathode   // EN, DIR, STEP active HIGH like TB6600
 
 #define MAX_TIMEOUT 100
 #define ERR_NO_DATA -1
 #define OK  0
 
-#define VERSION "2.645"
+#define VERSION "2.643"
 
-#define USE_EXT_EEPROM
-
-// include and some defines for ethernet connection
-#include <SPI.h>
-#include <Ethernet.h>
-#include "EtherMac.h"
-
+// As from time to time I still test new code on the old AVR Arduino I have a few define for the DUE.
+// This might go away at some point when I retrofit my test rig with the 2 DUE that are on my desk :)
 #define Computer Serial2     // USB FTDI
-#define FTDI_RESET  23
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
 #endif
@@ -44,31 +42,34 @@
 
 #include "RotatorClass.h"
 
-#define ETHERNET_CS     52
-#define ETHERNET_RESET  53
-uint32_t uidBuffer[4];  // DUE unique ID
-byte MAC_Address[6];    // Mac address, uses part of the unique ID
-
-#define SERVER_PORT 2323
-EthernetServer domeServer(SERVER_PORT);
-EthernetClient domeClient;
-int nbEthernetClient;
-
-String computerBuffer;
-String networkBuffer;
+#ifndef STANDALONE
+#include "RemoteShutterClass.h"
+#endif
 
 
 #ifndef STANDALONE
-#define XBEE_RESET  8
-#include "RemoteShutterClass.h"
 RemoteShutterClass RemoteShutter;
+#endif
+
+String computerBuffer;
+
+#ifndef STANDALONE
 String wirelessBuffer;
-bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
-int configStep = 0;
 #endif
 
 
 RotatorClass *Rotator = NULL;
+
+
+// Flag to do XBee startup on first boot in loop(). Could do in setup but
+// serial may not be ready so debugging prints won't show. Also used
+// to make sure the XBee has started and configured itself before
+// trying to send any wireless messages.
+
+#ifndef STANDALONE
+bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
+int configStep = 0;
+#endif
 
 //
 // XBee init AT commands
@@ -106,49 +107,38 @@ bool bShutterPresent = false;
 // global variable for rain status
 bool bIsRaining = false;
 
-// global variable for the IP config and to check if we detect the ethernet card
-bool ethernetPresent;
-IPConfig ServerConfig;
 
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
-const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
 const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
-const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor control.
+const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor controll.
 const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
-const char ETH_MAC_ADDRESS              = 'f'; // get the MAC address.
 const char GOTO_ROTATOR_CMD             = 'g'; // Get/set dome azimuth
 const char HOME_ROTATOR_CMD             = 'h'; // Home the dome
 const char HOMEAZ_ROTATOR_CMD           = 'i'; // Get/Set home position
-const char IP_ADDRESS                   = 'j'; // get/set the IP address
 const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
-const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered (do nothing, home, park)
+const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered none, home, park
 const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
-const char IP_SUBNET                    = 'p'; // get/set the ip subnet
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
 const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
-const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
+const char SYNC_ROTATOR_CMD             = 's'; // Sync to a given position
+
 const char STEPSPER_ROTATOR_CMD         = 't'; // GetSteps per rotation
-const char IP_GATEWAY                   = 'u'; // get/set IP default gateway
 const char VERSION_ROTATOR_GET          = 'v'; // Get Version string
-const char IP_DHCP                      = 'w'; // get/set DHCP mode
-                                        //'x' see bellow
 const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
-
 const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
 
 #ifndef STANDALONE
-const char INIT_XBEE                    = 'x'; // force a XBee reconfig
+const char INIT_XBEE                    = 'x'; // force a ConfigXBee
 
 // Shutter commands
-const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set shutter low voltage, if the voltage drop bellow that value the shutter will close
+const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set if shutter closes and rotator homes on shutter low voltage
 const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // restore default values for motor controll.
 const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
-                                       // 'F' see above
 //const char ELEVATION_SHUTTER_CMD      = 'G'; // Get/Set altitude TBD
 const char HELLO_CMD                    = 'H'; // Let shutter know we're here
 const char WATCHDOG_INTERVAL_SET        = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
@@ -163,48 +153,12 @@ const char VERSION_SHUTTER_GET          = 'V'; // Get version string
 const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed status
 #endif
 
-// function prototypes
-void configureEthernet();
-bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
-void checkForNewTCPClient(void);
-void homeIntHandler(void);
-void rainIntHandler(void);
-void buttonHandler(void);
-void resetChip(int);
-void resetFTDI(int);
-void StartWirelessConfig(void);
-void ConfigXBee(String);
-void setPANID(String);
-void SendHello(void);
-void requestShutterData(void);
-void CheckForCommands(void);
-void CheckForRain(void);
-void PingShutter(void);
-void ReceiveNetwork(EthernetClient);
-void ReceiveComputer(void);
-void ProcessCommand(bool);
-int ReceiveWireless(void);
-void ProcessWireless(void);
 
 void setup()
 {
-    // set reset pins to output and low
-    digitalWrite(XBEE_RESET, 0);
-    pinMode(XBEE_RESET, OUTPUT);
-
-    digitalWrite(FTDI_RESET, 0);
-    pinMode(FTDI_RESET, OUTPUT);
-
-    digitalWrite(ETHERNET_RESET, 0);
-    pinMode(ETHERNET_RESET, OUTPUT);
-
-    resetChip(XBEE_RESET);
-    resetFTDI(FTDI_RESET);
-
 #ifdef DEBUG
     DebugPort.begin(115200);
 #endif
-    getMacAddress(MAC_Address, uidBuffer);
 
     Computer.begin(115200);
 #ifndef STANDALONE
@@ -221,17 +175,13 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-    // enable input buffers on older prototype
+    // enable input buffers
     Rotator->bufferEnable(true);
-    configureEthernet();
+
 }
 
 void loop()
 {
-
-    if(ethernetPresent)
-        checkForNewTCPClient();
-
 #ifndef STANDALONE
     if (!XbeeStarted) {
         if (!Rotator->isRadioConfigured() && !isConfiguringWireless) {
@@ -265,92 +215,6 @@ void loop()
         }
     }
 #endif
-
-}
-
-void configureEthernet()
-{
-    Rotator->getIpConfig(ServerConfig);
-    ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
-                                    ServerConfig.ip,
-                                    ServerConfig.dns,
-                                    ServerConfig.gateway,
-                                    ServerConfig.subnet);
-}
-
-
-bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
-{
-    int dhcpOk;
-#ifdef DEBUG
-    IPAddress aTmp;
-#endif
-
-    resetChip(ETHERNET_RESET);
-    // network configuration
-    nbEthernetClient = 0;
-    Ethernet.init(ETHERNET_CS);
-
-    // try DHCP if set
-    if(bUseDHCP) {
-        dhcpOk = Ethernet.begin(MAC_Address);
-        if(!dhcpOk) {
-            DBPrintln("DHCP Failed!");
-            Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
-        } else {
-
-        }
-    }
-    else {
-        Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
-    }
-
-    if(Ethernet.hardwareStatus() == EthernetNoHardware) {
-         DBPrintln("NO HARDWARE !!!");
-        return false;
-    }
-#ifdef DEBUG
-    aTmp = Ethernet.localIP();
-    DBPrintln("IP = " + String(aTmp[0]) + String(".") +
-                        String(aTmp[1]) + String(".") +
-                        String(aTmp[2]) + String(".") +
-                        String(aTmp[3]) );
-#endif
-
-    Ethernet.setRetransmissionCount(3);
-
-    DBPrintln("Server ready, calling begin()");
-    domeServer.begin();
-    return true;
-}
-
-
-void checkForNewTCPClient()
-{
-    if(ServerConfig.bUseDHCP)
-        Ethernet.maintain();
-
-    EthernetClient newClient = domeServer.accept();
-    if(newClient) {
-        DBPrintln("new client");
-        if(nbEthernetClient > 0) { // we only accept 1 client
-            newClient.stop();
-            DBPrintln("new client rejected");
-        }
-        else {
-            nbEthernetClient++;
-            domeClient = newClient;
-            DBPrintln("new client accepted");
-            DBPrintln("nb client = " + String(nbEthernetClient));
-        }
-    }
-
-    if((nbEthernetClient>0) && !domeClient.connected()) {
-        DBPrintln("client disconnected");
-        domeClient.stop();
-        nbEthernetClient--;
-        configureEthernet();
-    }
 }
 
 void homeIntHandler()
@@ -369,24 +233,6 @@ void buttonHandler()
 {
     if(Rotator)
         Rotator->ButtonCheck();
-}
-
-
-// reset chip with /reset connected to nPin
-void resetChip(int nPin)
-{
-    digitalWrite(nPin, 0);
-    delay(2);
-    digitalWrite(nPin, 1);
-    delay(10);
-}
-
-//reset FTDI FT232 usb to serial chip
-void resetFTDI(int nPin)
-{
-    digitalWrite(nPin,0);
-    delay(500);
-    digitalWrite(nPin,1);
 }
 
 #ifndef STANDALONE
@@ -432,6 +278,7 @@ inline void ConfigXBee(String result)
     delay(100);
 }
 
+
 void setPANID(String value)
 {
     Rotator->setPANID(value);
@@ -441,6 +288,7 @@ void setPANID(String value)
     configStep = 0;
 }
 
+// <SUMMARY>Broadcast that you exist</SUMMARY>
 void SendHello()
 {
     DBPrintln("Sending hello");
@@ -478,19 +326,24 @@ void requestShutterData()
 
 #endif
 
+//<SUMMARY>Check for Serial and Wireless data</SUMMARY>
 void CheckForCommands()
 {
-    ReceiveComputer();
+    if(!Computer)
+        return;
 
+    if (Computer.available() > 0) {
+        ReceiveComputer();
+    }
 #ifndef STANDALONE
     if (Wireless.available() > 0) {
         ReceiveWireless();
     }
 #endif
-    if(ethernetPresent )
-        ReceiveNetwork(domeClient);
+
 }
 
+//<SUMMARY>Tells shutter the rain sensor status</SUMMARY>
 void CheckForRain()
 {
 
@@ -503,7 +356,7 @@ void CheckForRain()
     }
     if (bIsRaining) {
         if (Rotator->GetRainAction() == HOME)
-            Rotator->StartHoming();
+            Rotator->GoToAzimuth(Rotator->GetHomeAzimuth());
 
         if (Rotator->GetRainAction() == PARK)
             Rotator->GoToAzimuth(Rotator->GetParkAzimuth());
@@ -522,45 +375,17 @@ void PingShutter()
 }
 #endif
 
-void ReceiveNetwork(EthernetClient client)
-{
-    char networkCharacter;
 
-    if(!client.connected()) {
-        return;
-    }
-
-    if(client.available() < 1)
-        return; // no data
-
-    networkCharacter = client.read();
-    if (networkCharacter != ERR_NO_DATA) {
-        if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
-            // End of message
-            if (networkBuffer.length() > 0) {
-                ProcessCommand(true);
-                networkBuffer = "";
-            }
-        }
-        else {
-            networkBuffer += String(networkCharacter);
-        }
-    }
-
-}
-
-// All comms are terminated with '#' but the '\r' and '\n' are for XBee config
+// All comms are terminated with # but left if the \r\n for XBee config
+// with other programs.
 void ReceiveComputer()
 {
-    if(Computer.available() < 1)
-        return; // no data
-
     char computerCharacter = Computer.read();
     if (computerCharacter != ERR_NO_DATA) {
         if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
             // End of message
             if (computerBuffer.length() > 0) {
-                ProcessCommand(false);
+                ProcessSerialCommand();
                 computerBuffer = "";
             }
         }
@@ -570,12 +395,11 @@ void ReceiveComputer()
     }
 }
 
-void ProcessCommand(bool bFromNetwork)
+void ProcessSerialCommand()
 {
     float fTmp;
     char command;
     String value;
-
 #ifndef STANDALONE
     String wirelessMessage;
 #endif
@@ -584,16 +408,9 @@ void ProcessCommand(bool bFromNetwork)
 
     // Split the buffer into command char and value if present
     // Command character
-    if(bFromNetwork) {
-        command = networkBuffer.charAt(0);
-        // Payload
-        value = networkBuffer.substring(1);
-    }
-    else {
-        command = computerBuffer.charAt(0);
-        // Payload
-        value = computerBuffer.substring(1);
-    }
+    command = computerBuffer.charAt(0);
+    // Payload
+    value = computerBuffer.substring(1);
     // payload has data
     if (value.length() > 0)
         hasValue = true;
@@ -603,12 +420,12 @@ void ProcessCommand(bool bFromNetwork)
     wirelessMessage = "";
 #endif
 
-    DBPrintln("\nProcessCommand");
+    DBPrintln("\nProcessSerialCommand");
     DBPrintln("Command = \"" + String(command) +"\"");
     DBPrintln("Value = \"" + String(value) +"\"");
-    DBPrintln("bFromNetwork = \"" + String(bFromNetwork?"Yes":"No") +"\"");
 
 
+    // Grouped by Rotator and Shutter then put in alphabetical order
     switch (command) {
         case ABORT_MOVE_CMD:
             sTmpString = String(ABORT_MOVE_CMD);
@@ -667,6 +484,7 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case PARKAZ_ROTATOR_CMD:
+            // Get/Set Park Azumith
             sTmpString = String(PARKAZ_ROTATOR_CMD);
             if (hasValue) {
                 fTmp = value.toFloat();
@@ -735,6 +553,7 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case VOLTS_ROTATOR_CMD:
+            // value only needs infrequent updating.
             if (hasValue) {
                 Rotator->SetLowVoltageCutoff(value.toInt());
             }
@@ -748,72 +567,6 @@ void ProcessCommand(bool bFromNetwork)
         case IS_SHUTTER_PRESENT:
             serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
             break;
-
-        case ETH_RECONFIG :
-            if(nbEthernetClient > 0) {
-                domeClient.stop();
-                nbEthernetClient--;
-            }
-            configureEthernet();
-            serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
-            break;
-
-        case ETH_MAC_ADDRESS:
-            char macBuffer[20];
-            snprintf(macBuffer,20,"%02x:%02x:%02x:%02x:%02x:%02x",
-                    MAC_Address[0],
-                    MAC_Address[1],
-                    MAC_Address[2],
-                    MAC_Address[3],
-                    MAC_Address[4],
-                    MAC_Address[5]);
-
-            serialMessage = String(ETH_MAC_ADDRESS) + String(macBuffer);
-            break;
-
-        case IP_DHCP:
-            if (hasValue) {
-                Rotator->setDHCPFlag(value.toInt() == 0 ? false : true);
-            }
-            serialMessage = String(IP_DHCP) + String( Rotator->getDHCPFlag()? "1" : "0");
-            break;
-
-        case IP_ADDRESS:
-            if (hasValue) {
-                Rotator->setIPAddress(value);
-                Rotator->getIpConfig(ServerConfig);
-            }
-            if(!ServerConfig.bUseDHCP)
-                serialMessage = String(IP_ADDRESS) + String(Rotator->getIPAddress());
-            else {
-                serialMessage = String(IP_ADDRESS) + String(Rotator->IpAddress2String(Ethernet.localIP()));
-            }
-            break;
-
-        case IP_SUBNET:
-            if (hasValue) {
-                Rotator->setIPSubnet(value);
-                Rotator->getIpConfig(ServerConfig);
-            }
-            if(!ServerConfig.bUseDHCP)
-                serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
-            else {
-                serialMessage = String(IP_SUBNET) + String(Rotator->IpAddress2String(Ethernet.subnetMask()));
-            }
-            break;
-
-        case IP_GATEWAY:
-            if (hasValue) {
-                Rotator->setIPGateway(value);
-                Rotator->getIpConfig(ServerConfig);
-            }
-            if(!ServerConfig.bUseDHCP)
-                serialMessage = String(IP_GATEWAY) + String(Rotator->getIPGateway());
-            else {
-                serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
-            }
-            break;
-
 
 #ifndef STANDALONE
         case INIT_XBEE:
@@ -952,6 +705,7 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case VERSION_SHUTTER_GET:
+            // Rotator gets this upon Hello and it's not going to change so don't ask for it wirelessly
             sTmpString = String(VERSION_SHUTTER_GET);
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
@@ -1003,16 +757,10 @@ void ProcessCommand(bool bFromNetwork)
     }
 
 
+
     // Send messages if they aren't empty.
     if (serialMessage.length() > 0) {
-        if(!bFromNetwork) {
-            Computer.print(serialMessage + "#");
-            }
-        else if(domeClient.connected()) {
-                DBPrintln("Network serialMessage = " + serialMessage);
-                domeClient.print(serialMessage + "#");
-                domeClient.flush();
-        }
+        Computer.print(serialMessage + "#");
     }
 }
 
@@ -1119,7 +867,7 @@ void ProcessWireless()
                 RemoteShutter.reversed = value;
             break;
 
-        case STATE_SHUTTER_GET:
+        case STATE_SHUTTER_GET: // Dome status
             if (hasValue)
                 RemoteShutter.state = value;
             break;
@@ -1141,7 +889,7 @@ void ProcessWireless()
                 RemoteShutter.version = value;
             break;
 
-        case VOLTS_SHUTTER_CMD:
+        case VOLTS_SHUTTER_CMD: // battery voltage and cutoff
             if (hasValue)
                 RemoteShutter.volts = value;
             break;
@@ -1179,6 +927,8 @@ void ProcessWireless()
 
 }
 #endif
+
+
 
 
 
