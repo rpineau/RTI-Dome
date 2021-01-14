@@ -365,6 +365,8 @@ RotatorClass::RotatorClass()
     pinMode(STEPPER_ENABLE_PIN, OUTPUT);
     pinMode(BUFFERN_EN, OUTPUT);
 
+    LoadFromEEProm();
+
     // temporary enable buffers to read raind and home sensor
     bufferEnable(true);
 
@@ -390,7 +392,6 @@ RotatorClass::RotatorClass()
 
     m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
 
-    LoadFromEEProm();
 
     // reset all timers
     m_MoveOffUntilTimer.reset();
@@ -654,20 +655,21 @@ long RotatorClass::GetPosition()
 
 float RotatorClass::GetAzimuth()
 {
-    float azimuth = 0;
+    double azimuth = 0.0;
     long currentPosition = 0;
 
     currentPosition = GetPosition();
     if (currentPosition != 0)
-        azimuth = (float)GetPosition() / (float)m_Config.stepsPerRotation * 360.0;
+        azimuth = (double)currentPosition / (double)m_Config.stepsPerRotation * 360.0;
 
-    while (azimuth < 0)
+    while (azimuth < 0.0)
         azimuth += 360.0;
 
-    while (azimuth >= 360.0)
+    while (azimuth >= 360.0) {
         azimuth -= 360.0;
+    }
 
-    return azimuth;
+    return float(azimuth);
 }
 
 long RotatorClass::GetAzimuthToPosition(const float azimuth)

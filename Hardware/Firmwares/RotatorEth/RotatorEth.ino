@@ -114,9 +114,9 @@ IPConfig ServerConfig;
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
 const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
 const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
-const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor controll.
+const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor control.
 const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
-const char ETH_MAC_ADDRESS              = 'f'; // get the MAC adress.
+const char ETH_MAC_ADDRESS              = 'f'; // get the MAC address.
 const char GOTO_ROTATOR_CMD             = 'g'; // Get/set dome azimuth
 const char HOME_ROTATOR_CMD             = 'h'; // Home the dome
 const char HOMEAZ_ROTATOR_CMD           = 'i'; // Get/Set home position
@@ -124,7 +124,7 @@ const char IP_ADDRESS                   = 'j'; // get/set the IP address
 const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
-const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered none, home, park
+const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered (do nothing, home, park)
 const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
 const char IP_SUBNET                    = 'p'; // get/set the ip subnet
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
@@ -144,7 +144,7 @@ const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) 
 const char INIT_XBEE                    = 'x'; // force a XBee reconfig
 
 // Shutter commands
-const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set if shutter closes and rotator homes on shutter low voltage
+const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set shutter low voltage, if the voltage drop bellow that value the shutter will close
 const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // restore default values for motor controll.
 const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
@@ -387,7 +387,6 @@ void resetFTDI(int nPin)
     digitalWrite(nPin,0);
     delay(800);
     digitalWrite(nPin,1);
-    delay(10);
 }
 
 #ifndef STANDALONE
