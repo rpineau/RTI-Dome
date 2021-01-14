@@ -14,7 +14,7 @@
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.
-// Also the XBee3 model XB3-24Z8PT-J work as the S1
+// Also the XBee3 model XB3-24Z8PT-J works usning the same config as the S1
 #define XBEE_S1
 // #define XBEE_S2C
 
@@ -35,7 +35,7 @@
 #include <Ethernet.h>
 #include "EtherMac.h"
 
-#define Computer Serial2     // USB FTDI
+#define Computer Serial2     // USB-Serial FTDI FT323RL
 #define FTDI_RESET  23
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
@@ -385,7 +385,7 @@ void resetChip(int nPin)
 void resetFTDI(int nPin)
 {
     digitalWrite(nPin,0);
-    delay(500);
+    delay(800);
     digitalWrite(nPin,1);
     delay(10);
 }

@@ -184,7 +184,7 @@
 <text x="3.175" y="70.165" size="0.6096" layer="21">D13</text>
 <text x="4.725" y="69.615" size="0.6096" layer="22" rot="MR0">D13</text>
 <hole x="100.99" y="66.04" drill="3.2"/>
-<text x="48.26" y="3.81" size="1.778" layer="51">Dome Rotator</text>
+<text x="48.26" y="3.81" size="1.778" layer="21">Dome Rotator</text>
 <hole x="100.99" y="19.105" drill="3.2"/>
 <wire x1="0" y1="1.26" x2="0" y2="11.34" width="0" layer="20"/>
 <wire x1="0" y1="11.34" x2="0.63" y2="11.97" width="0" layer="20" curve="-90"/>
@@ -3823,7 +3823,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <hole x="5.715" y="-6.35" drill="3.3"/>
 <hole x="-5.715" y="-6.35" drill="3.3"/>
 </package>
-<package name="CB3">
+<package name="SMD-7050_4P">
 <smd name="1" x="-2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="2" x="2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="3" x="2.54" y="2.54" dx="1.397" dy="1.1938" layer="1"/>
@@ -4438,38 +4438,6 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 </package>
 </packages>
 </library>
-<library name="MCP120T-270I_TT">
-<description>&lt;Microcontroller Supervisory Circuit&lt;/b&gt;&lt;p&gt;
-&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
-<packages>
-<package name="SOT95P237X112-3N">
-<description>&lt;b&gt;SOT95P237X112-3N&lt;/b&gt;&lt;br&gt;
-</description>
-<smd name="1" x="-0.9398" y="-1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
-<smd name="2" x="0.9398" y="-1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
-<smd name="3" x="0" y="1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
-<text x="0" y="3.81" size="1.27" layer="25" align="center">&gt;NAME</text>
-<text x="0" y="-3.81" size="1.27" layer="27" align="center">&gt;VALUE</text>
-<wire x1="-0.6858" y1="-0.7112" x2="-1.1938" y2="-0.7112" width="0.1524" layer="51"/>
-<wire x1="-1.1938" y1="-0.7112" x2="-1.1938" y2="-1.3208" width="0.1524" layer="51"/>
-<wire x1="-1.1938" y1="-1.3208" x2="-0.6858" y2="-1.3208" width="0.1524" layer="51"/>
-<wire x1="-0.6858" y1="-1.3208" x2="-0.6858" y2="-0.7112" width="0.1524" layer="51"/>
-<wire x1="1.1938" y1="-0.7112" x2="0.6858" y2="-0.7112" width="0.1524" layer="51"/>
-<wire x1="0.6858" y1="-0.7112" x2="0.6858" y2="-1.3208" width="0.1524" layer="51"/>
-<wire x1="0.6858" y1="-1.3208" x2="1.1938" y2="-1.3208" width="0.1524" layer="51"/>
-<wire x1="1.1938" y1="-1.3208" x2="1.1938" y2="-0.7112" width="0.1524" layer="51"/>
-<wire x1="-0.254" y1="0.7112" x2="0.254" y2="0.7112" width="0.1524" layer="51"/>
-<wire x1="0.254" y1="0.7112" x2="0.254" y2="1.3208" width="0.1524" layer="51"/>
-<wire x1="0.254" y1="1.3208" x2="-0.254" y2="1.3208" width="0.1524" layer="51"/>
-<wire x1="-0.254" y1="1.3208" x2="-0.254" y2="0.7112" width="0.1524" layer="51"/>
-<wire x1="-1.524" y1="-0.7112" x2="1.524" y2="-0.7112" width="0.1524" layer="51"/>
-<wire x1="1.524" y1="-0.7112" x2="1.524" y2="0.7112" width="0.1524" layer="51"/>
-<wire x1="1.524" y1="0.7112" x2="-1.524" y2="0.7112" width="0.1524" layer="51"/>
-<wire x1="-1.524" y1="0.7112" x2="-1.524" y2="-0.7112" width="0.1524" layer="51"/>
-<wire x1="-0.3302" y1="-0.7112" x2="0.3302" y2="-0.7112" width="0.1524" layer="21"/>
-</package>
-</packages>
-</library>
 <library name="BLM21AG121SN1D">
 <description>&lt;BLM21_N1D Series EMI Suppression Filter 120+/-25% at 100MHz 1A @85&lt;/b&gt;&lt;p&gt;
 &lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
@@ -4512,6 +4480,38 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 <rectangle x1="-2.667" y1="-3.302" x2="-1.905" y2="-1.778" layer="51"/>
 <rectangle x1="1.905" y1="-3.302" x2="2.667" y2="-1.778" layer="51"/>
 <rectangle x1="-0.381" y1="-3.302" x2="0.381" y2="-1.778" layer="51"/>
+</package>
+</packages>
+</library>
+<library name="MCP120T">
+<description>&lt;Microcontroller Supervisory Circuit&lt;/b&gt;&lt;p&gt;
+&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
+<packages>
+<package name="SOT95P237X112-3N">
+<description>&lt;b&gt;SOT95P237X112-3N&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-0.9398" y="-1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
+<smd name="2" x="0.9398" y="-1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
+<smd name="3" x="0" y="1.0414" dx="1.27" dy="0.5588" layer="1" rot="R90"/>
+<text x="0" y="3.81" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="-3.81" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-0.6858" y1="-0.7112" x2="-1.1938" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="-1.1938" y1="-0.7112" x2="-1.1938" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="-1.1938" y1="-1.3208" x2="-0.6858" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="-0.6858" y1="-1.3208" x2="-0.6858" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="1.1938" y1="-0.7112" x2="0.6858" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="0.6858" y1="-0.7112" x2="0.6858" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="0.6858" y1="-1.3208" x2="1.1938" y2="-1.3208" width="0.1524" layer="51"/>
+<wire x1="1.1938" y1="-1.3208" x2="1.1938" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="-0.254" y1="0.7112" x2="0.254" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="0.254" y1="0.7112" x2="0.254" y2="1.3208" width="0.1524" layer="51"/>
+<wire x1="0.254" y1="1.3208" x2="-0.254" y2="1.3208" width="0.1524" layer="51"/>
+<wire x1="-0.254" y1="1.3208" x2="-0.254" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="-1.524" y1="-0.7112" x2="1.524" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="1.524" y1="-0.7112" x2="1.524" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="1.524" y1="0.7112" x2="-1.524" y2="0.7112" width="0.1524" layer="51"/>
+<wire x1="-1.524" y1="0.7112" x2="-1.524" y2="-0.7112" width="0.1524" layer="51"/>
+<wire x1="-0.3302" y1="-0.7112" x2="0.3302" y2="-0.7112" width="0.1524" layer="21"/>
 </package>
 </packages>
 </library>
@@ -4972,7 +4972,7 @@ design rules under a new name.</description>
 <attribute name="MPN" value="RT0805FRE074K7L" x="63.1825" y="41.91" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="102.87" y="8.89" rot="MR90"/>
-<element name="25MHZ" library="rti" package="CB3" value="CB3LV-OSCILATOR" x="58.42" y="27.94">
+<element name="25MHZ" library="rti" package="SMD-7050_4P" value="CB3LV-OSCILATOR" x="58.42" y="27.94">
 <attribute name="MPN" value="CB3LV-3I-25M0000" x="58.42" y="27.94" size="1.778" layer="27" display="off"/>
 </element>
 <element name="C20" library="rti" package="C0805" value="100nF" x="53.34" y="27.94" rot="R90">
@@ -4981,14 +4981,14 @@ design rules under a new name.</description>
 <element name="R30" library="rti" package="R0805" value="4.7K" x="58.83275" y="22.86" rot="R270">
 <attribute name="MPN" value="RT0805FRE074K7L" x="58.83275" y="22.86" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
-<element name="U$2" library="MCP120T-270I_TT" package="SOT95P237X112-3N" value="MCP120T-270I_TT" x="22.86" y="15.24">
-<attribute name="MANUFACTURER_PART_NUMBER" value="MCP120T-270I/TT" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
+<element name="U$2" library="MCP120T" package="SOT95P237X112-3N" value="MCP120T-315_TT" x="22.86" y="15.24">
+<attribute name="MANUFACTURER_PART_NUMBER" value="MCP120T-315I/TT" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
 <attribute name="MANUFACTURER_NAME" value="Microchip" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
-<attribute name="MOUSER_PART_NUMBER" value="579-MCP120T-270I/TT" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
+<attribute name="MOUSER_PART_NUMBER" value="579-MCP120T-315I/TT" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
 <attribute name="DESCRIPTION" value="Microcontroller Supervisory Circuit" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
 <attribute name="HEIGHT" value="mm" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
-<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.co.uk/ProductDetail/Microchip-Technology/MCP120T-270I-TT?qs=JaP0%252BruNJH91Pwyk6aJdSA%3D%3D" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
-<attribute name="MPN" value="MCP120T-270I/TT" x="22.86" y="15.24" size="1.778" layer="27" display="off"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.com/ProductDetail/Microchip-Technology/MCP120T-315I-TT/?qs=6pREnGtJ7gEI3DoW5cf%2FYQ%3D%3D" x="10.16" y="25.4" size="1.778" layer="27" display="off"/>
+<attribute name="MPN" value="MCP120T-315I/TT" x="22.86" y="15.24" size="1.778" layer="27" display="off"/>
 </element>
 <element name="C13" library="rti" package="C0805" value="10nF" x="59.65825" y="36.322" rot="R180">
 <attribute name="MPN" value=" CC0805KRX7R9BB103" x="59.65825" y="36.322" size="1.778" layer="27" rot="R180" display="off"/>
