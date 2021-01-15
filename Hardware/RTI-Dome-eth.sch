@@ -16843,7 +16843,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <attribute name="MPN" value="FT232RL-REEL"/>
 </part>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="R11" library="rti" deviceset="R-EU" device="'0805'" value="4.7K">
+<part name="R11" library="rti" deviceset="R-EU" device="'0805'" value="10K">
 <attribute name="MPN" value="RT0805FRE0710KL"/>
 </part>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
