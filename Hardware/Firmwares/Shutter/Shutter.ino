@@ -32,7 +32,7 @@ String serialBuffer;
 #endif
 String wirelessBuffer;
 
-const String version = "2.642";
+const String version = "2.645";
 
 const char ABORT_CMD				= 'a';
 const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
@@ -122,10 +122,10 @@ void loop()
 		ReceiveWireless();
 
 	if (!XbeeStarted) {
-		if (!Shutter->isRadioConfigured() && !isConfiguringWireless) {
+		if (!isConfiguringWireless) {
 			StartWirelessConfig();
 		}
-		else if (Shutter->isRadioConfigured()) {
+		else {
 			XbeeStarted = true;
 			wirelessBuffer = "";
 			DBPrintln("Radio configured");
@@ -140,7 +140,6 @@ void loop()
 	            XbeeResets++;
 	            isResetingXbee = true;
                 ResetXbee();
-                Shutter->setRadioConfigured(false);
                 isConfiguringWireless = false;
                 XbeeStarted = false;
                 configStep = 0;
@@ -209,7 +208,6 @@ inline void ConfigXBee(String result)
     }
 	if (configStep > NB_AT_OK) {
 		isConfiguringWireless = false;
-		Shutter->setRadioConfigured(true);
 		XbeeStarted = true;
 		Shutter->SaveToEEProm();
         DBPrintln("Xbee configuration finished");
@@ -233,7 +231,6 @@ void ResetXbee()
 void setPANID(String value)
 {
     Shutter->setPANID(value);
-    Shutter->setRadioConfigured(false);
     isConfiguringWireless = false;
     XbeeStarted = false;
     configStep = 0;
@@ -446,7 +443,6 @@ void ProcessMessages(String buffer)
 			break;
 
 		case INIT_XBEE:
-			Shutter->setRadioConfigured(false);
 			isConfiguringWireless = false;
 			XbeeStarted = false;
 			configStep = 0;

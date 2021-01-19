@@ -64,7 +64,7 @@ DueFlashStorage dueFlashStorage;
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
 #define STEPS_DEFAULT       440640
-#define SIGNATURE           2646
+#define SIGNATURE           2645
 
 // used to offset the config location.. at some point.
 #define EEPROM_LOCATION     0
@@ -90,7 +90,6 @@ typedef struct RotatorConfiguration {
     int             cutOffVolts;
     int             rainAction;
 #ifndef STANDALONE
-    bool            radioIsConfigured;
     int             panid;
 #endif
     IPConfig        ipConfig;
@@ -251,8 +250,6 @@ public:
     // Xbee
     String      GetPANID();
     void        setPANID(const String panID);
-    bool        isRadioConfigured();
-    void        setRadioConfigured(bool bConfigured);
 #endif
 
     // Homing and Calibration
@@ -511,7 +508,6 @@ void RotatorClass::SetDefaultConfig()
     m_Config.cutOffVolts = 1150;
     m_Config.rainAction = DO_NOTHING;
 #ifndef STANDALONE
-    m_Config.radioIsConfigured = false;
     m_Config.panid = 0x4242;
 #endif
 
@@ -854,15 +850,6 @@ void RotatorClass::setPANID(const String panID)
     SaveToEEProm();
 }
 
-bool RotatorClass::isRadioConfigured()
-{
-    return m_Config.radioIsConfigured;
-}
-
-void RotatorClass::setRadioConfigured(bool bConfigured)
-{
-    m_Config.radioIsConfigured = bConfigured;
-}
 #endif
 
 

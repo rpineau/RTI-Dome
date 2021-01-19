@@ -47,7 +47,7 @@ DueFlashStorage dueFlashStorage;
 #endif
 
 #define     EEPROM_LOCATION        100  // not used with Arduino Due
-#define     EEPROM_SIGNATURE      2642
+#define     EEPROM_SIGNATURE      2645
 
 #define MIN_WATCHDOG_INTERVAL    60000
 #define MAX_WATCHDOG_INTERVAL   300000
@@ -78,7 +78,6 @@ typedef struct ShutterConfiguration {
     int             cutoffVolts;
     int             voltsClose;
     unsigned long   watchdogInterval;
-    bool            radioIsConfigured;
     int             panid;
 } Configuration;
 
@@ -208,8 +207,6 @@ public:
 
     String      GetPANID();
     void        setPANID(const String panID);
-    bool        isRadioConfigured();
-    void        setRadioConfigured(bool bConfigured);
 
     unsigned long   getWatchdogInterval();
     void            SetWatchdogInterval(const unsigned long);
@@ -327,7 +324,6 @@ void ShutterClass::SetDefaultConfig()
     m_Config.cutoffVolts = 1150;
     m_Config.voltsClose = 0;
     m_Config.watchdogInterval = 90000;
-    m_Config.radioIsConfigured = false;
     m_Config.panid = 0x4242;
 }
 
@@ -542,15 +538,6 @@ void ShutterClass::setPANID(const String panID)
     SaveToEEProm();
 }
 
-bool ShutterClass::isRadioConfigured()
-{
-    return m_Config.radioIsConfigured;
-}
-
-void ShutterClass::setRadioConfigured(bool bConfigured)
-{
-    m_Config.radioIsConfigured = bConfigured;
-}
 
 unsigned long ShutterClass::getWatchdogInterval()
 {

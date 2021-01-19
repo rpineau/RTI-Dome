@@ -173,7 +173,7 @@ void buttonHandler(void);
 void resetChip(int);
 void resetFTDI(int);
 void StartWirelessConfig(void);
-void ConfigXBee(String);
+void ConfigXBee();
 void setPANID(String);
 void SendHello(void);
 void requestShutterData(void);
@@ -234,13 +234,12 @@ void loop()
 
 #ifndef STANDALONE
     if (!XbeeStarted) {
-        if (!Rotator->isRadioConfigured() && !isConfiguringWireless) {
+        if (!isConfiguringWireless) {
             DBPrintln("Xbee reconfiguring");
             StartWirelessConfig();
-            DBPrintln("Rotator->bIsRadioIsConfigured : " + String(Rotator->isRadioConfigured()));
             DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
         }
-        else if (Rotator->isRadioConfigured()) {
+        else {
             XbeeStarted = true;
             wirelessBuffer = "";
             DBPrintln("Radio configured");
@@ -400,7 +399,7 @@ void StartWirelessConfig()
     delay(1100);
 }
 
-inline void ConfigXBee(String result)
+inline void ConfigXBee()
 {
 
     DBPrintln("Sending ");
@@ -419,7 +418,6 @@ inline void ConfigXBee(String result)
     }
     if (configStep > NB_AT_OK) {
         isConfiguringWireless = false;
-        Rotator->setRadioConfigured(true);
         XbeeStarted = true;
         Rotator->SaveToEEProm();
         DBPrintln("Xbee configuration finished");
@@ -435,7 +433,6 @@ inline void ConfigXBee(String result)
 void setPANID(String value)
 {
     Rotator->setPANID(value);
-    Rotator->setRadioConfigured(false);
     isConfiguringWireless = false;
     XbeeStarted = false;
     configStep = 0;
@@ -818,7 +815,6 @@ void ProcessCommand(bool bFromNetwork)
 #ifndef STANDALONE
         case INIT_XBEE:
             sTmpString = String(INIT_XBEE);
-            Rotator->setRadioConfigured(false);
             isConfiguringWireless = false;
             XbeeStarted = false;
             configStep = 0;
@@ -1047,7 +1043,7 @@ int ReceiveWireless()
 
         DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
 
-        ConfigXBee(wirelessBuffer);
+        ConfigXBee();
         return OK;
     }
 
