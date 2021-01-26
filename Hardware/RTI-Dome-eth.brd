@@ -186,15 +186,6 @@
 <hole x="100.99" y="66.04" drill="3.2"/>
 <text x="48.26" y="3.81" size="1.778" layer="51">Dome Rotator</text>
 <hole x="100.99" y="19.105" drill="3.2"/>
-<wire x1="0" y1="1.26" x2="0" y2="11.34" width="0" layer="20"/>
-<wire x1="0" y1="11.34" x2="0.63" y2="11.97" width="0" layer="20" curve="-90"/>
-<wire x1="0.63" y1="11.97" x2="1.26" y2="11.97" width="0" layer="20"/>
-<wire x1="1.26" y1="11.97" x2="1.89" y2="12.6" width="0" layer="20" curve="90"/>
-<wire x1="1.89" y1="12.6" x2="1.89" y2="24.255" width="0" layer="20"/>
-<wire x1="1.89" y1="24.255" x2="1.26" y2="24.885" width="0" layer="20" curve="90"/>
-<wire x1="1.26" y1="24.885" x2="0.63" y2="24.885" width="0" layer="20"/>
-<wire x1="0.63" y1="24.885" x2="0" y2="25.515" width="0" layer="20" curve="-90"/>
-<wire x1="0" y1="25.515" x2="0" y2="69.93" width="0" layer="20"/>
 <wire x1="0" y1="69.93" x2="1.26" y2="71.19" width="0" layer="20" curve="-90"/>
 <wire x1="1.26" y1="71.19" x2="118.125" y2="71.19" width="0" layer="20"/>
 <wire x1="118.125" y1="71.19" x2="119.385" y2="69.93" width="0" layer="20" curve="-90"/>
@@ -214,6 +205,7 @@
 <text x="19.555" y="0.55" size="0.6096" layer="22" rot="MR0">+5V</text>
 <text x="25.225" y="0.55" size="0.6096" layer="22" rot="MR0">STEP</text>
 <text x="29.635" y="0.55" size="0.6096" layer="22" rot="MR0">+5V</text>
+<wire x1="0" y1="1.26" x2="0" y2="69.93" width="0" layer="20"/>
 </plain>
 <libraries>
 <library name="arduino_shield">

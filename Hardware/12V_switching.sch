@@ -10397,13 +10397,15 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 </class>
 </classes>
 <parts>
-<part name="IC5" library="LM2576" deviceset="LM2576D2TR4-012G" device=""/>
+<part name="IC5" library="LM2576" deviceset="LM2576D2TR4-012G" device="" value="LM2576HVSX-12/NOPB">
+<attribute name="MOUSER_PART_NUMBER" value=" LM2576HVSX-12/NOPB"/>
+<attribute name="MPN" value=" LM2576HVSX-12/NOPB"/>
+</part>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
-<part name="D2" library="diode" deviceset="DIODE-" device="DO-214AC" value="SAC32"/>
+<part name="D2" library="diode" deviceset="DIODE-" device="DO-214AC" value="SAC34"/>
 <part name="L1" library="MSS1583-104KEB" deviceset="MSS1583-104KEB" device=""/>
-<part name="C10" library="rcl" deviceset="CPOL-EU" device="UD-10X10" value="100uF"/>
+<part name="C10" library="rcl" deviceset="CPOL-EU" device="UD-10X10" value="100uF 100V"/>
 <part name="C11" library="rcl" deviceset="CPOL-EU" device="UD-10X10" value="1000uF"/>
-<part name="U$1" library="rti" deviceset="C-EU" device="'0805'" value="47uF"/>
 <part name="U$2" library="rti" deviceset="C-EU" device="'1206'" value="47uF"/>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
 <part name="J2" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
@@ -10418,9 +10420,8 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 <instance part="GND12" gate="1" x="55.88" y="17.78"/>
 <instance part="D2" gate="G$1" x="83.82" y="27.94" rot="R90"/>
 <instance part="L1" gate="G$1" x="96.52" y="35.56"/>
-<instance part="C10" gate="G$1" x="35.56" y="35.56"/>
+<instance part="C10" gate="G$1" x="35.56" y="33.02"/>
 <instance part="C11" gate="G$1" x="114.3" y="30.48"/>
-<instance part="U$1" gate="G$1" x="43.18" y="35.56"/>
 <instance part="U$2" gate="G$1" x="124.46" y="30.48"/>
 <instance part="J1" gate="G$1" x="10.16" y="48.26" rot="R180"/>
 <instance part="J2" gate="G$1" x="157.48" y="30.48"/>
@@ -10447,7 +10448,6 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 <pinref part="C10" gate="G$1" pin="-"/>
 <wire x1="43.18" y1="22.86" x2="35.56" y2="22.86" width="0.1524" layer="91"/>
 <wire x1="35.56" y1="22.86" x2="35.56" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="35.56" y1="27.94" x2="35.56" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="60.96" y1="22.86" x2="83.82" y2="22.86" width="0.1524" layer="91"/>
 <junction x="60.96" y="22.86"/>
 <pinref part="D2" gate="G$1" pin="A"/>
@@ -10459,9 +10459,6 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 <wire x1="114.3" y1="22.86" x2="124.46" y2="22.86" width="0.1524" layer="91"/>
 <junction x="114.3" y="22.86"/>
 <wire x1="124.46" y1="22.86" x2="137.16" y2="22.86" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$1" pin="2"/>
-<wire x1="43.18" y1="30.48" x2="43.18" y2="22.86" width="0.1524" layer="91"/>
-<junction x="43.18" y="22.86"/>
 <pinref part="U$2" gate="G$1" pin="2"/>
 <wire x1="124.46" y1="25.4" x2="124.46" y2="22.86" width="0.1524" layer="91"/>
 <junction x="124.46" y="22.86"/>
@@ -10487,11 +10484,8 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 <wire x1="20.32" y1="43.18" x2="35.56" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="35.56" y1="43.18" x2="43.18" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="43.18" x2="45.72" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="35.56" y1="43.18" x2="35.56" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="43.18" x2="35.56" y2="35.56" width="0.1524" layer="91"/>
 <junction x="35.56" y="43.18"/>
-<pinref part="U$1" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="43.18" x2="43.18" y2="38.1" width="0.1524" layer="91"/>
-<junction x="43.18" y="43.18"/>
 <pinref part="J1" gate="G$1" pin="V+"/>
 </segment>
 <segment>

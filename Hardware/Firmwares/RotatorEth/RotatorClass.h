@@ -350,10 +350,10 @@ RotatorClass::RotatorClass()
 
     // input
 
-    pinMode(HOME_PIN, INPUT_PULLUP);
-    pinMode(BUTTON_CCW, INPUT_PULLUP);
-    pinMode(BUTTON_CW, INPUT_PULLUP);
-    pinMode(RAIN_SENSOR_PIN, INPUT_PULLUP);
+    pinMode(HOME_PIN, INPUT);
+    pinMode(BUTTON_CCW, INPUT);
+    pinMode(BUTTON_CW, INPUT);
+    pinMode(RAIN_SENSOR_PIN, INPUT);
     pinMode(VOLTAGE_MONITOR_PIN, INPUT);
 
     // output

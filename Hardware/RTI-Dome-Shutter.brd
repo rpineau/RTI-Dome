@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.3175" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.03175" altunitdist="mm" altunit="mm"/>
+<grid distance="0.635" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.03175" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -156,26 +156,8 @@
 <text x="58.42" y="69.85" size="0.6096" layer="21">GND</text>
 <text x="55.88" y="24.13" size="1.778" layer="21">GND</text>
 <text x="55.5625" y="39.90975" size="1.778" layer="21">+12V</text>
-<wire x1="1.905" y1="22.86" x2="1.905" y2="12.7" width="0" layer="20"/>
 <text x="37.6555" y="69.9135" size="0.6096" layer="21">Closed</text>
 <text x="27.94" y="69.85" size="0.6096" layer="21">Opened</text>
-<wire x1="0.508" y1="11.938" x2="1.27" y2="11.938" width="0" layer="20"/>
-<wire x1="0" y1="1.27" x2="0" y2="11.43" width="0" layer="20"/>
-<wire x1="1.905" y1="12.7" x2="1.905" y2="22.86" width="0" layer="20"/>
-<wire x1="0" y1="25.4" x2="0" y2="69.85" width="0" layer="20"/>
-<wire x1="1.27" y1="71.12" x2="78.74" y2="71.12" width="0" layer="20"/>
-<wire x1="80.01" y1="69.85" x2="80.01" y2="1.27" width="0" layer="20"/>
-<wire x1="78.74" y1="0" x2="1.27" y2="0" width="0" layer="20"/>
-<wire x1="1.905" y1="12.7" x2="1.27" y2="11.938" width="0" layer="20" curve="-90"/>
-<wire x1="78.74" y1="0" x2="80.01" y2="1.27" width="0" layer="20" curve="90"/>
-<wire x1="80.01" y1="69.85" x2="78.74" y2="71.12" width="0" layer="20" curve="90"/>
-<wire x1="1.27" y1="71.12" x2="0" y2="69.85" width="0" layer="20" curve="90"/>
-<wire x1="1.27" y1="0" x2="0" y2="1.27" width="0" layer="20" curve="-90"/>
-<wire x1="1.905" y1="24.257" x2="1.905" y2="22.86" width="0" layer="20"/>
-<wire x1="0.508" y1="24.892" x2="1.27" y2="24.892" width="0" layer="20"/>
-<wire x1="1.27" y1="24.892" x2="1.905" y2="24.257" width="0" layer="20" curve="-90"/>
-<wire x1="0.508" y1="24.892" x2="0" y2="25.4" width="0" layer="20" curve="-90"/>
-<wire x1="0" y1="11.43" x2="0.508" y2="11.938" width="0" layer="20" curve="-90"/>
 <text x="16.5735" y="69.85" size="0.6096" layer="21">D7_EXT_IN</text>
 <text x="13.081" y="69.85" size="0.6096" layer="21">GND</text>
 <text x="23.368" y="69.85" size="0.6096" layer="21">12V</text>
@@ -203,6 +185,14 @@
 <text x="34.925" y="3.4925" size="1.778" layer="51">Dome Shutter</text>
 <text x="60.6425" y="8.15975" size="1.778" layer="21">+12V</text>
 <text x="62.23" y="69.85" size="0.6096" layer="21">A4_OUT</text>
+<wire x1="0" y1="1.27" x2="0" y2="69.85" width="0" layer="20"/>
+<wire x1="0" y1="69.85" x2="1.27" y2="71.12" width="0" layer="20" curve="-90"/>
+<wire x1="1.27" y1="71.12" x2="78.74" y2="71.12" width="0" layer="20"/>
+<wire x1="78.74" y1="71.12" x2="80.01" y2="69.85" width="0" layer="20" curve="-90"/>
+<wire x1="80.01" y1="69.85" x2="80.01" y2="1.27" width="0" layer="20"/>
+<wire x1="80.01" y1="1.27" x2="78.74" y2="0" width="0" layer="20" curve="-90"/>
+<wire x1="78.74" y1="0" x2="1.27" y2="0" width="0" layer="20"/>
+<wire x1="1.27" y1="0" x2="0" y2="1.27" width="0" layer="20" curve="-90"/>
 </plain>
 <libraries>
 <library name="arduino_shield">
