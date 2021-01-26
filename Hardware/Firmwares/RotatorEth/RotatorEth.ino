@@ -18,10 +18,6 @@
 #define XBEE_S1
 // #define XBEE_S2C
 
-// Stepper controller connection type :
-// #define CommonAnode     // EN, DIR, STEP active LOW like ISD02/04/08
-#define CommonCathode   // EN, DIR, STEP active HIGH like TB6600
-
 #define MAX_TIMEOUT 100
 #define ERR_NO_DATA -1
 #define OK  0

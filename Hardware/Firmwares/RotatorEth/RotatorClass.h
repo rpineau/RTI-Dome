@@ -53,21 +53,16 @@ DueFlashStorage dueFlashStorage;
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
 
-#ifdef CommonAnode
-#define M_ENABLE    LOW
-#define M_DISABLE   HIGH
-#else
 #define M_ENABLE    HIGH
 #define M_DISABLE   LOW
-#endif
 
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
 #define STEPS_DEFAULT       440640
-#define SIGNATURE           2645
 
 // used to offset the config location.. at some point.
-#define EEPROM_LOCATION     0
+#define EEPROM_LOCATION     0  // not used with Arduino Due flash
+#define EEPROM_SIGNATURE    2645
 
 
 typedef struct IPCONFIG {
@@ -350,19 +345,32 @@ RotatorClass::RotatorClass()
 
     // input
 
-    pinMode(HOME_PIN, INPUT);
-    pinMode(BUTTON_CCW, INPUT);
-    pinMode(BUTTON_CW, INPUT);
-    pinMode(RAIN_SENSOR_PIN, INPUT);
-    pinMode(VOLTAGE_MONITOR_PIN, INPUT);
+    pinMode(HOME_PIN,               INPUT);
+    pinMode(BUTTON_CCW,             INPUT);
+    pinMode(BUTTON_CW,              INPUT);
+    pinMode(RAIN_SENSOR_PIN,        INPUT);
+    pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
 
     // output
-    pinMode(STEP_PIN, OUTPUT);
-    pinMode(DIRECTION_PIN, OUTPUT);
-    pinMode(STEPPER_ENABLE_PIN, OUTPUT);
-    pinMode(BUFFERN_EN, OUTPUT);
+    pinMode(STEP_PIN,               OUTPUT);
+    pinMode(DIRECTION_PIN,          OUTPUT);
+    pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
+    pinMode(BUFFERN_EN,             OUTPUT);
 
     LoadFromEEProm();
+
+    m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
+    SetMaxSpeed(m_Config.maxSpeed);
+    SetAcceleration(m_Config.acceleration);
+    SetStepsPerRotation(m_Config.stepsPerRotation);
+    SetReversed(m_Config.reversed);
+#ifndef STANDALONE
+    if(m_Config.panid <= 0) { // set to default.. there was something bad in eeprom.
+        m_Config.panid = 0x4242;
+    }
+#endif
+    m_bDoEEPromSave = true;
+
 
     // enable buffers to read raind and home sensor, only needed on old protype board
     bufferEnable(true);
@@ -446,7 +454,7 @@ void RotatorClass::SaveToEEProm()
 
     DBPrintln("RotatorClass::SaveToEEProm");
 
-    m_Config.signature = SIGNATURE;
+    m_Config.signature = EEPROM_SIGNATURE;
 
 #ifdef USE_EXT_EEPROM
     writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
@@ -473,23 +481,11 @@ bool RotatorClass::LoadFromEEProm()
     memcpy(&m_Config, data, sizeof(Configuration));
 #endif
 
-    if (m_Config.signature != SIGNATURE) {
+    if (m_Config.signature != EEPROM_SIGNATURE) {
         SetDefaultConfig();
         SaveToEEProm();
         response = false;
     }
-
-    m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
-    SetMaxSpeed(m_Config.maxSpeed);
-    SetAcceleration(m_Config.acceleration);
-    SetStepsPerRotation(m_Config.stepsPerRotation);
-    SetReversed(m_Config.reversed);
-#ifndef STANDALONE
-    if(m_Config.panid <= 0) { // set to default.. there was something bad in eeprom.
-        m_Config.panid = 0x4242;
-    }
-#endif
-    m_bDoEEPromSave = true;
     return response;
 }
 
@@ -497,7 +493,7 @@ void RotatorClass::SetDefaultConfig()
 {
     memset(&m_Config, 0, sizeof(Configuration));
 
-    m_Config.signature = SIGNATURE;
+    m_Config.signature = EEPROM_SIGNATURE;
     m_Config.maxSpeed = MAX_SPEED;
     m_Config.acceleration = ACCELERATION;
     m_Config.stepsPerRotation = STEPS_DEFAULT;

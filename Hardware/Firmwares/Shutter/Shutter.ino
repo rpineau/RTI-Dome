@@ -23,6 +23,8 @@
 #define Wireless Serial1    // XBEE
 
 #define ERR_NO_DATA	-1
+#define USE_EXT_EEPROM
+
 
 #include "ShutterClass.h"
 
@@ -31,6 +33,7 @@
 String serialBuffer;
 #endif
 String wirelessBuffer;
+
 
 const String version = "2.645";
 

@@ -5,8 +5,15 @@
 // This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
 
+#ifdef USE_EXT_EEPROM
+#include <Wire.h>
+#define EEPROM_ADDR 0x50
+#define SPI_CHUNK_SIZE  16
+#else
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
+#endif
+
 
 #include <AccelStepper.h>
 
@@ -46,28 +53,20 @@ DueFlashStorage dueFlashStorage;
 
 #endif
 
-#define     EEPROM_LOCATION        100  // not used with Arduino Due
-#define     EEPROM_SIGNATURE      2645
+#define     EEPROM_LOCATION         0  // not used with Arduino Due flash
+#define     EEPROM_SIGNATURE        2645
 
-#define MIN_WATCHDOG_INTERVAL    60000
-#define MAX_WATCHDOG_INTERVAL   300000
+#define MIN_WATCHDOG_INTERVAL       60000
+#define MAX_WATCHDOG_INTERVAL       300000
 
-#define BATTERY_CHECK_INTERVAL   60000   // check battery once a minute
+#define BATTERY_CHECK_INTERVAL      60000   // check battery once a minute
 
 #define VOLTAGE_MONITOR_PIN A0
 #define AD_REF      3.3
 #define RES_MULT    5.0 // resistor voltage divider on the shield
 
-#if defined(TB6600)
-#define M_ENABLE    LOW
-#define M_DISABLE   HIGH
-#elif defined(ISD0X)
 #define M_ENABLE    HIGH
 #define M_DISABLE   LOW
-#else
-#define M_ENABLE    LOW
-#define M_DISABLE   HIGH
-#endif
 
 typedef struct ShutterConfiguration {
     int             signature;
@@ -244,6 +243,19 @@ private:
 
     int             MeasureVoltage();
     void            SetDefaultConfig();
+
+    bool        m_bDoEEPromSave;
+#ifdef USE_EXT_EEPROM
+    // eeprom
+    byte        m_EEPROMpageSize;
+
+    byte        readEEPROMByte(int deviceaddress, unsigned int eeaddress);
+    void        readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
+    void        readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
+    void        writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
+    void        writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
+#endif
+
 };
 
 
@@ -253,19 +265,20 @@ ShutterClass::ShutterClass()
     m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
 
     // Input pins
-    pinMode(CLOSED_PIN, INPUT_PULLUP);
-    pinMode(OPENED_PIN, INPUT_PULLUP);
-    pinMode(BUTTON_OPEN, INPUT_PULLUP);
-    pinMode(BUTTON_CLOSE, INPUT_PULLUP);
-    pinMode(VOLTAGE_MONITOR_PIN, INPUT);
+    pinMode(CLOSED_PIN,             INPUT);
+    pinMode(OPENED_PIN,             INPUT);
+    pinMode(BUTTON_OPEN,            INPUT);
+    pinMode(BUTTON_CLOSE,           INPUT);
+    pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
 
     // Ouput pins
-    pinMode(STEPPER_STEP_PIN, OUTPUT);
-    pinMode(STEPPER_DIRECTION_PIN, OUTPUT);
-    pinMode(STEPPER_ENABLE_PIN, OUTPUT);
+    pinMode(STEPPER_STEP_PIN,       OUTPUT);
+    pinMode(STEPPER_DIRECTION_PIN,  OUTPUT);
+    pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
     LoadFromEEProm();
 
+    m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
     stepper.setEnablePin(STEPPER_ENABLE_PIN);
     SetAcceleration(m_Config.acceleration);
     SetMaxSpeed(m_Config.maxSpeed);
@@ -288,6 +301,7 @@ ShutterClass::ShutterClass()
 
     m_bButtonUsed = false;
     m_nVolts = MeasureVoltage();
+    m_bDoEEPromSave = true;
 }
 
 void ShutterClass::ClosedInterrupt()
@@ -341,8 +355,16 @@ int ShutterClass::restoreDefaultMotorSettings()
 
 void ShutterClass::LoadFromEEProm()
 {
+    //  zero the structure so currently unused parts
+    //  dont end up loaded with random garbage
+    memset(&m_Config, 0, sizeof(Configuration));
+#ifdef USE_EXT_EEPROM
+    readEEPROMBuffer(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration) );
+
+#else
     byte* data = dueFlashStorage.readAddress(0);
     memcpy(&m_Config, data, sizeof(Configuration));
+#endif
 
     if (m_Config.signature != EEPROM_SIGNATURE) {
         SetDefaultConfig();
@@ -359,9 +381,18 @@ void ShutterClass::LoadFromEEProm()
 void ShutterClass::SaveToEEProm()
 {
 
+    if(!m_bDoEEPromSave)
+        return;
+
+    m_Config.signature = EEPROM_SIGNATURE;
+
+#ifdef USE_EXT_EEPROM
+    writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
+#else
     byte data[sizeof(Configuration)];
     memcpy(data, &m_Config, sizeof(Configuration));
     dueFlashStorage.write(0, data, sizeof(Configuration));
+#endif
 
 }
 
@@ -715,3 +746,113 @@ void ShutterClass::motorMoveRelative(const long amount)
     // AccelStepper run() is called under a timer interrupt
     startTimer(TC1, 0, TC3_IRQn, nFreq);
 }
+
+
+#ifdef USE_EXT_EEPROM
+
+//
+// EEProm code to access the AT24AA128 I2C eeprom
+//
+
+// read one byte
+byte ShutterClass::readEEPROMByte(int deviceaddress, unsigned int eeaddress)
+{
+    byte rdata = 0xFF;
+
+    Wire1.beginTransmission(deviceaddress);
+    Wire1.write((int)(eeaddress >> 8)); // MSB
+    Wire1.write((int)(eeaddress & 0xFF)); // LSB
+    Wire1.endTransmission();
+    Wire1.requestFrom(deviceaddress,1);
+    if (Wire1.available()) {
+        rdata = Wire1.read();
+    }
+    return rdata;
+}
+
+// Read from EEPROM into a buffer
+// slice read into SPI_CHUNK_SIZE block read. SPI_CHUNK_SIZE <=32
+void ShutterClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length)
+{
+
+	int c = length;
+	int offD = 0;
+	int nc = 0;
+
+	// read until length bytes is read
+	while (c > 0) {
+		// read maximal SPI_CHUNK_SIZE bytes
+		nc = c;
+		if (nc > SPI_CHUNK_SIZE)
+			nc = SPI_CHUNK_SIZE;
+		readEEPROMBlock(deviceaddress, eeaddress, buffer, offD, nc);
+		eeaddress+=nc;
+		offD+=nc;
+		c-=nc;
+	}
+}
+
+// Read from eeprom into a buffer  (assuming read lenght if SPI_CHUNK_SIZE or less)
+void ShutterClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
+{
+    int r = 0;
+	Wire1.beginTransmission(deviceaddress);
+    if (Wire1.endTransmission()==0) {
+     	Wire1.beginTransmission(deviceaddress);
+    	Wire1.write(eeaddress >> 8);
+    	Wire1.write(eeaddress & 0xFF);
+    	if (Wire1.endTransmission()==0) {
+			r = 0;
+    		Wire1.requestFrom(deviceaddress, length);
+			while (Wire1.available() > 0 && r<length) {
+				data[offset+r] = (byte)Wire1.read();
+				r++;
+			}
+    	}
+    }
+}
+
+
+
+// Write a buffer to EEPROM
+// slice write into SPI_CHUNK_SIZE block write. SPI_CHUNK_SIZE <=32
+void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *data, int length)
+{
+	int c = length;					// bytes left to write
+	int offD = 0;					// current offset in data pointer
+	int offP;						// current offset in page
+	int nc = 0;						// next n bytes to write
+
+	// write all bytes in multiple steps
+	while (c > 0) {
+		// calc offset in page
+		offP = eeaddress % m_EEPROMpageSize;
+		// maximal 30 bytes to write
+		nc = min(min(c, SPI_CHUNK_SIZE), m_EEPROMpageSize - offP);
+		writeEEPROMBlock(deviceaddress, eeaddress, data, offD, nc);
+		c-=nc;
+		offD+=nc;
+		eeaddress+=nc;
+	}
+}
+
+// Write a buffer to EEPROM (assuming it's of SPI_CHUNK_SIZE)
+void ShutterClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
+{
+
+    Wire1.beginTransmission(deviceaddress);
+    if (Wire1.endTransmission()==0) {
+     	Wire1.beginTransmission(deviceaddress);
+    	Wire1.write(eeaddress >> 8);
+    	Wire1.write(eeaddress & 0xFF);
+    	byte *adr = data+offset;
+    	Wire1.write(adr, length);
+    	Wire1.endTransmission();
+    	delay(20);
+    } else {
+        DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
+    }
+}
+
+#endif
+
