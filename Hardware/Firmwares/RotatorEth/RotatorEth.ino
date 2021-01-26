@@ -217,8 +217,6 @@ void setup()
 #endif
     Rotator = new RotatorClass();
     Rotator->EnableMotor(false);
-    // enable input buffers on older prototype
-    Rotator->bufferEnable(true);
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);

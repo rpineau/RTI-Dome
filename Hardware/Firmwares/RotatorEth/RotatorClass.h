@@ -334,7 +334,7 @@ private:
 RotatorClass::RotatorClass()
 {
 #ifdef USE_EXT_EEPROM
-    DBPrintln("Ussing external AT24AA128 eeprom");
+    DBPrintln("Using external AT24AA128 eeprom");
     Wire1.begin();
     // AT24AA128 page size is 64 byte
     m_EEPROMpageSize = 64;
@@ -364,7 +364,7 @@ RotatorClass::RotatorClass()
 
     LoadFromEEProm();
 
-    // temporary enable buffers to read raind and home sensor
+    // enable buffers to read raind and home sensor, only needed on old protype board
     bufferEnable(true);
 
     if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
@@ -378,14 +378,13 @@ RotatorClass::RotatorClass()
         // we're at the home position
         m_bisAtHome = true;
         SyncPosition(m_Config.homeAzimuth);
+        DBPrintln("At home on startup");
     }
     else {
         //if not at home on power up, assume we're at the park position
         SyncPosition(m_Config.parkAzimuth);
+        DBPrintln("At park on startup");
     }
-
-    // disable buffer until all interrupt are in place. The buffer are re-enable by the caller
-    bufferEnable(false);
 
     m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
 
