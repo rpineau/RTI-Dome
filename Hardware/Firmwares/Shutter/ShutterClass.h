@@ -85,7 +85,7 @@ AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_P
 
 // need to make this global so we can access it in the interrupt
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, ERROR };
-ShutterStates   shutterState = ERROR;
+volatile ShutterStates   shutterState = ERROR;
 
 StopWatch watchdogTimer;
 
@@ -229,7 +229,7 @@ public:
     // interrupts
     void     ClosedInterrupt();
     void     OpenInterrupt();
-    bool     m_bButtonUsed;
+    volatile bool     m_bButtonUsed;
 
     void        bufferEnable(bool bEnable);
 

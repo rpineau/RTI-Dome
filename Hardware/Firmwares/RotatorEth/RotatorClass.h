@@ -262,7 +262,7 @@ public:
     void        motorMoveRelative(const long howFar);
     void        stopInterrupt();
     void        homeInterrupt();
-    long        m_nStepsAtHome;
+    volatile long        m_nStepsAtHome;
 
     void            ButtonCheck();
 
@@ -284,16 +284,16 @@ private:
     // Rotator
     bool            wasRunning;
     bool            m_bisAtHome;
-    enum Seeks      m_seekMode;
+    volatile enum Seeks      m_seekMode;
     bool            m_bSetToHomeAzimuth;
     bool            m_bDoStepsPerRotation;
     float           m_fStepsPerDegree;
     StopWatch       m_MoveOffUntilTimer;
     unsigned long   m_nMOVE_OFFUntilLapse = 2000;
     int             m_nMoveDirection;
-    long            m_nHomePosEdgePass1;
-    long            m_nHomePosEdgePass2;
-    bool            m_HomeFound;
+    volatile long            m_nHomePosEdgePass1;
+    volatile long            m_nHomePosEdgePass2;
+    volatile bool            m_HomeFound;
 
     // Power values
     float           m_fAdcConvert;
@@ -309,7 +309,7 @@ private:
     bool        LoadFromEEProm();
     void        SetDefaultConfig();
 
-    bool        m_bIsRaining;
+    volatile bool        m_bIsRaining;
 
     bool        m_bDoEEPromSave;
 #ifdef USE_EXT_EEPROM
