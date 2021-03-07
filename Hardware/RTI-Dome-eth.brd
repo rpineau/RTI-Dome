@@ -130,7 +130,6 @@
 <layer number="219" name="219bmp" color="20" fill="1" visible="no" active="no"/>
 <layer number="220" name="220bmp" color="21" fill="1" visible="no" active="no"/>
 <layer number="221" name="221bmp" color="22" fill="1" visible="no" active="no"/>
-<layer number="222" name="222bmp" color="23" fill="1" visible="no" active="no"/>
 <layer number="223" name="223bmp" color="24" fill="1" visible="no" active="no"/>
 <layer number="224" name="224bmp" color="25" fill="1" visible="no" active="no"/>
 <layer number="225" name="225bmp" color="7" fill="1" visible="yes" active="yes"/>
@@ -3751,7 +3750,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <vertex x="-4.05" y="-2.825"/>
 </polygon>
 </package>
-<package name="J1">
+<package name="J1011F21PNL">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -3815,7 +3814,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <hole x="5.715" y="-6.35" drill="3.3"/>
 <hole x="-5.715" y="-6.35" drill="3.3"/>
 </package>
-<package name="CB3">
+<package name="SMD-7050_4P">
 <smd name="1" x="-2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="2" x="2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="3" x="2.54" y="2.54" dx="1.397" dy="1.1938" layer="1"/>
@@ -4897,7 +4896,7 @@ design rules under a new name.</description>
 <element name="R27" library="rti" package="R0805" value="49.9 1%" x="91.35" y="29.295" rot="R180">
 <attribute name="MPN" value="RC0805FR-0749R9L" x="91.35" y="29.295" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="X9" library="rti" package="J1" value="J1011F21PNL" x="107.95" y="31.75" rot="R90">
+<element name="X9" library="rti" package="J1011F21PNL" value="J1011F21PNL" x="107.95" y="31.75" rot="R90">
 <attribute name="MF" value="" x="140.97" y="31.75" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="MPN" value="J1011F21PNL" x="140.97" y="31.75" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="OC_FARNELL" value="" x="140.97" y="31.75" size="1.778" layer="27" rot="R90" display="off"/>
@@ -4961,7 +4960,7 @@ design rules under a new name.</description>
 <attribute name="MPN" value="RT0805FRE074K7L" x="63.1825" y="41.91" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="102.87" y="8.89" rot="MR90"/>
-<element name="25MHZ" library="rti" package="CB3" value="CB3LV-OSCILATOR" x="58.42" y="27.94">
+<element name="25MHZ" library="rti" package="SMD-7050_4P" value="CB3LV-OSCILATOR" x="58.42" y="27.94">
 <attribute name="MPN" value="CB3LV-3I-25M0000" x="58.42" y="27.94" size="1.778" layer="27" display="off"/>
 </element>
 <element name="C20" library="rti" package="C0805" value="100nF" x="53.34" y="27.94" rot="R90">

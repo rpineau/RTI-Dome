@@ -139,6 +139,7 @@ const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) 
 #ifndef STANDALONE
 const char INIT_XBEE                    = 'x'; // force a XBee reconfig
 
+// available A J N S U W X Z
 // Shutter commands
 const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set shutter low voltage, if the voltage drop bellow that value the shutter will close
 const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
@@ -152,6 +153,7 @@ const char VOLTS_SHUTTER_CMD            = 'K'; // Get volts and get/set cutoff
 const char SHUTTER_PING                 = 'L'; // use to reset watchdong timer.
 const char STATE_SHUTTER_GET            = 'M'; // Get shutter state
 const char OPEN_SHUTTER_CMD             = 'O'; // Open the shutter
+const char POSITION_SHUTTER_GET		    = 'P'; // Get step position
 const char SHUTTER_PANID_GET            = 'Q'; // get and set the XBEE PAN ID
 const char SPEED_SHUTTER_CMD            = 'R'; // Get/Set step rate (speed)
 const char STEPSPER_SHUTTER_CMD         = 'T'; // Get/Set steps per stroke

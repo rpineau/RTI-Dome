@@ -92,7 +92,7 @@ CRTIDome::CRTIDome()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CRTIDome] Version %3.2f build 2020_11_16_1810.\n", timestamp, DRIVER_VERSION);
+    fprintf(Logfile, "[%s] [CRTIDome] Version %3.2f build 2020_11_16_1810.\n", timestamp, PLUGIN_VERSION);
     fprintf(Logfile, "[%s] [CRTIDome] Constructor Called.\n", timestamp);
     fprintf(Logfile, "[%s] [CRTIDome] Rains status file : '%s'.\n", timestamp, m_sRainStatusfilePath.c_str());
     fflush(Logfile);
@@ -641,15 +641,8 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
         return COMMAND_FAILED;
     }
 
-    // do a proper conversion as for some reason the value is scaled weirdly ( it's multiplied by 3/2)
-    // Arduino ADC convert 0-5V to 0-1023 which is 0.0049V per unit
-    if(m_fVersion < 2.0f) {
-        domeVolts = (domeVolts*2) * 0.0049f;
-        dDomeCutOff = (dDomeCutOff*2) * 0.0049f;
-    } else { // hopefully we can fix this in the next firmware and report proper values.
-        domeVolts = domeVolts / 100.0;
-        dDomeCutOff = dDomeCutOff / 100.0;
-    }
+    domeVolts = domeVolts / 100.0;
+    dDomeCutOff = dDomeCutOff / 100.0;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -696,15 +689,8 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
         #endif
                 return COMMAND_FAILED;
             }
-            // do a proper conversion as for some reason the value is scaled weirdly ( it's multiplied by 3/2)
-            // Arduino ADC convert 0-5V to 0-1023 which is 0.0049V per unit
-            if(m_fVersion < 2.0f) {
-                dShutterVolts = (dShutterVolts*2) * 0.0049f;
-                dShutterCutOff = (dShutterCutOff*2) * 0.0049f;
-            } else { // hopefully we can fix this in the next firmware and report proper values.
-                dShutterVolts = dShutterVolts / 100.0;
-                dShutterCutOff = dShutterCutOff / 100.0;
-            }
+            dShutterVolts = dShutterVolts / 100.0;
+            dShutterCutOff = dShutterCutOff / 100.0;
         #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));

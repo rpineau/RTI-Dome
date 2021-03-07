@@ -39,8 +39,11 @@ DueFlashStorage dueFlashStorage;
 #define     STEPPER_ENABLE_PIN      10
 #define     STEPPER_DIRECTION_PIN   11
 #define     STEPPER_STEP_PIN        12
-#define     BUFFERN_EN              57  // Digital output to enable 74LVC245 buffer
-
+#define     DROPOUT_OPEN_PIN        13
+#define     BOTTOM_CLOSE_PIN         7
+#define     BOTTOM_PWM_PIN           9
+#define     BOTTOM_DIR_PIN          A4
+#define     BUFFERN_EN              57  // Digital output to enable 74LVC245 buffer on prototypes
 #else
 // Teensy boards > 3.5
 #define     CLOSED_PIN               4
@@ -50,7 +53,6 @@ DueFlashStorage dueFlashStorage;
 #define     STEPPER_ENABLE_PIN       9
 #define     STEPPER_DIRECTION_PIN   10
 #define     STEPPER_STEP_PIN         6
-
 #endif
 
 #define     EEPROM_LOCATION         0  // not used with Arduino Due flash
@@ -78,13 +80,15 @@ typedef struct ShutterConfiguration {
     int             voltsClose;
     unsigned long   watchdogInterval;
     int             panid;
+    bool            bHasDropShutter;
+    bool            bTopShutterFirst;
 } Configuration;
 
 
 AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_PIN);
 
 // need to make this global so we can access it in the interrupt
-enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, ERROR };
+enum ShutterStates { OPEN, CLOSED, OPENING, BOTTOM_OPENING, BOTTOM_CLOSING, CLOSING, ERROR };
 volatile ShutterStates   shutterState = ERROR;
 
 StopWatch watchdogTimer;
@@ -339,6 +343,8 @@ void ShutterClass::SetDefaultConfig()
     m_Config.voltsClose = 0;
     m_Config.watchdogInterval = 90000;
     m_Config.panid = 0x4242;
+    m_Config.bHasDropShutter = false;
+    m_Config.bTopShutterFirst = true;
 }
 
 int ShutterClass::restoreDefaultMotorSettings()

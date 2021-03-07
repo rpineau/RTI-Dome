@@ -5,17 +5,11 @@
 // This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
 
-// I started making a PCB with the Teensy 2,5/3.6 .. work in progress.
-// #define TEENY_3_5
-
-// The TB6600 is the original stepper controller used on a NexDome automation kit.
-// I also want to test the ISD04 (or other) with more powerfull stepper.
-#define TB6600
-// #define ISD0X
 
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.
+// Also the XBee3 model XB3-24Z8PT-J work as the S1
 #define XBEE_S1
 // #define XBEE_S2C
 
@@ -37,6 +31,7 @@ String wirelessBuffer;
 
 const String version = "2.645";
 
+// available A J N S U W X Z
 const char ABORT_CMD				= 'a';
 const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
 const char CLOSE_SHUTTER_CMD		= 'C'; // Close shutter

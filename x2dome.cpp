@@ -355,9 +355,6 @@ int X2Dome::execModalSettingsDialog()
     dx->setPropertyDouble("homePosition","value", m_RTIDome.getHomeAz());
     dx->setPropertyDouble("parkPosition","value", m_RTIDome.getParkAz());
 
-
-    m_nBattRequest = 0;
-
     //Display the user interface
     if ((nErr = ui->exec(bPressedOK)))
         return nErr;
@@ -522,27 +519,21 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 }
             }
             else if(m_bHasShutterControl && !m_bCalibratingDome) {
-                // don't ask to often
-                if (!(m_nBattRequest%4)) {
+                m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
+                if(dShutterCutOff < 1.0f) // not right.. ask again
                     m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
-                    if(dShutterCutOff < 1.0f) // not right.. ask again
-                        m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
-                    snprintf(szTmpBuf,16,"%2.2f V",dDomeBattery);
-                    uiex->setPropertyString("domeBatteryLevel","text", szTmpBuf);
-                    if(m_bHasShutterControl) {
-                        if(dShutterBattery>=0.0f)
-                            snprintf(szTmpBuf,16,"%2.2f V",dShutterBattery);
-                        else
-                            snprintf(szTmpBuf,16,"--");
-                        uiex->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
-                        uiex->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
-                    }
-                    else {
-                        snprintf(szTmpBuf,16,"NA");
-                        uiex->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
-                    }
+                snprintf(szTmpBuf,16,"%2.2f V",dDomeBattery);
+                uiex->setPropertyString("domeBatteryLevel","text", szTmpBuf);
+                if(m_bHasShutterControl) {
+                    if(dShutterBattery>=0.0f)
+                        snprintf(szTmpBuf,16,"%2.2f V",dShutterBattery);
+                    else
+                        snprintf(szTmpBuf,16,"--");
+                    uiex->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
                 }
-                m_nBattRequest++;
+                else {
+                    uiex->setPropertyString("shutterBatteryLevel","text", "NA");
+                }
                 nErr = m_RTIDome.getRainSensorStatus(nRainSensorStatus);
                 if(nErr)
                     uiex->setPropertyString("rainStatus","text", "--");
@@ -733,7 +724,7 @@ void X2Dome::deviceInfoModel(BasicStringInterface& str)
 
 double	X2Dome::driverInfoVersion(void) const
 {
-	return DRIVER_VERSION;
+	return PLUGIN_VERSION;
 }
 
 //

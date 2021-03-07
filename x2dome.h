@@ -155,7 +155,6 @@ private:
     bool        m_bOpenUpperShutterOnly;
     bool        m_bCalibratingDome;
     char        m_szLogBuffer[LOG_BUFFER_SIZE];
-    int         m_nBattRequest;
 	int			m_nSavedTicksPerRev;
     int         m_nPanId;
     bool        m_bSettingPanID;

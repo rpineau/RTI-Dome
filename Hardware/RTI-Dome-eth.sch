@@ -10380,7 +10380,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <vertex x="-4.05" y="-2.825"/>
 </polygon>
 </package>
-<package name="J1">
+<package name="J1011F21PNL">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -10444,7 +10444,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <hole x="5.715" y="-6.35" drill="3.3"/>
 <hole x="-5.715" y="-6.35" drill="3.3"/>
 </package>
-<package name="CB3">
+<package name="SMD-7050_4P">
 <smd name="1" x="-2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="2" x="2.54" y="-1.27" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="3" x="2.54" y="2.54" dx="1.397" dy="1.1938" layer="1"/>
@@ -13428,7 +13428,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <gate name="G$1" symbol="J1011F" x="0" y="0" addlevel="always"/>
 </gates>
 <devices>
-<device name="" package="J1">
+<device name="" package="J1011F21PNL">
 <connects>
 <connect gate="G$1" pin="4/NC" pad="4"/>
 <connect gate="G$1" pin="5/NC" pad="5"/>
@@ -13473,7 +13473,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <gate name="G$1" symbol="QG1LV" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="CB3">
+<device name="" package="SMD-7050_4P">
 <connects>
 <connect gate="G$1" pin="FO" pad="3"/>
 <connect gate="G$1" pin="GND" pad="2"/>
