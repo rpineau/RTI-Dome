@@ -380,7 +380,7 @@ void resetChip(int nPin)
 void resetFTDI(int nPin)
 {
     digitalWrite(nPin,0);
-    delay(500);
+    delay(1000);
     digitalWrite(nPin,1);
 }
 
