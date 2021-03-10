@@ -270,6 +270,14 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
     char szResp[SERIAL_BUFFER_SIZE];
     unsigned long  ulBytesWrite;
 
+    if(!m_pSerx->isConnected()) {
+        nErr = Reconnect();
+        if(nErr) {
+            Disconnect();
+            return nErr;
+        }
+    }
+    
     m_pSerx->purgeTxRx();
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2

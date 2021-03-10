@@ -22,7 +22,6 @@ X2Dome::X2Dome(const char* pszSelection, const int& nISIndex,
 
 	m_bLinked = false;
     m_bCalibratingDome = false;
-    m_nBattRequest = 0;
     m_bSettingPanID = false;
     m_bHasShutterControl = false;
     

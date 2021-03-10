@@ -266,7 +266,7 @@ private:
 ShutterClass::ShutterClass()
 {
     int sw1, sw2;
-    m_fAdcConvert = RES_MULT * (AD_REF / 1024.0) * 100;
+    m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
 
     // Input pins
     pinMode(CLOSED_PIN,             INPUT);
