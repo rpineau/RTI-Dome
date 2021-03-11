@@ -130,8 +130,8 @@ void loop()
 		}
 	}
 
-
-	if((watchdogTimer.elapsed() >= Shutter->getWatchdogInterval()) && (Shutter->GetState() != CLOSED) && (Shutter->GetState() != CLOSING)) {
+    // if we lost 3 pings and had no coms for that long.. reset XBee close oif we've already reset the XBee
+	if((watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) && (Shutter->GetState() != CLOSED) && (Shutter->GetState() != CLOSING)) {
             DBPrintln("watchdogTimer triggered");
             // lets try to recover
 	        if(!isResetingXbee && XbeeResets == 0) {

@@ -113,7 +113,7 @@ CRTIDome::~CRTIDome()
     }
 }
 
-int CRTIDome::Connect(const char *pszPort)
+int CRTIDome::Connect(const char *pszPort, char *IpAddr, char *IpPort)
 {
     int nErr;
     bool bDummy;
@@ -144,6 +144,8 @@ int CRTIDome::Connect(const char *pszPort)
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
     fprintf(Logfile, "[%s] CRTIDome::Connect connected to %s\n", timestamp, pszPort);
+    fprintf(Logfile, "[%s] CRTIDome::Connect connected to IP %s\n", timestamp, IpAddr);
+    fprintf(Logfile, "[%s] CRTIDome::Connect connected to Port %s\n", timestamp, IpPort);
     fflush(Logfile);
 #endif
 

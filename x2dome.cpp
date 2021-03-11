@@ -64,12 +64,20 @@ int X2Dome::establishLink(void)
 {
     int nErr;
     char szPort[SERIAL_BUFFER_SIZE];
-
+    char IpAddr[64];
+    char IpPort[64];
     X2MutexLocker ml(GetMutex());
 
-    // get serial port device name
+    // get serial port device name, and IP and port if the connection is over TCP.
     portNameOnToCharPtr(szPort,SERIAL_BUFFER_SIZE);
-    nErr = m_RTIDome.Connect(szPort);
+    if(strstr(szPort,"TCP")) {
+        m_pIniUtil->readString(DOME0_DATA, DOME0_IP_ADDR, "", IpAddr, 64);
+        m_pIniUtil->readString(DOME0_DATA, DOME0_IP_PORT, "", IpPort, 64);
+    } else {
+        memset(IpAddr,0,64);
+        memset(IpPort,0,64);
+    }
+    nErr = m_RTIDome.Connect(szPort, IpAddr, IpPort);
     if(nErr) {
         m_bLinked = false;
         // nErr = ERR_COMMOPENING;
@@ -1005,7 +1013,6 @@ void X2Dome::setPortName(const char* szPort)
 {
     if (m_pIniUtil)
         m_pIniUtil->writeString(PARENT_KEY, CHILD_KEY_PORTNAME, szPort);
-
 }
 
 

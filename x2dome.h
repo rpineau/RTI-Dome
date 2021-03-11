@@ -20,18 +20,22 @@
 #include "RTI-Dome.h"
 #include "StopWatch.h"
 
-#define PARENT_KEY			"RTI-Dome"
-#define CHILD_KEY_PORTNAME	"PortName"
-#define CHILD_KEY_HOME_ON_PARK "HomeOnPark"
-#define CHILD_KEY_HOME_ON_UNPARK "HomeOnUnpark"
-#define CHILD_KEY_LOG_RAIN_STATUS "LogRainStatus"
+#define DOME0_DATA                  "Dome0"
+#define DOME0_IP_ADDR               "RTI-Dome\\SerXTCPHost"
+#define DOME0_IP_PORT               "RTI-Dome\\SerXTCPPort"
+
+#define PARENT_KEY			        "RTI-Dome"
+#define CHILD_KEY_PORTNAME	        "PortName"
+#define CHILD_KEY_HOME_ON_PARK      "HomeOnPark"
+#define CHILD_KEY_HOME_ON_UNPARK    "HomeOnUnpark"
+#define CHILD_KEY_LOG_RAIN_STATUS   "LogRainStatus"
 
 #if defined(SB_WIN_BUILD)
-#define DEF_PORT_NAME					"COM1"
+#define DEF_PORT_NAME				"COM1"
 #elif defined(SB_MAC_BUILD)
-#define DEF_PORT_NAME					"/dev/cu.Bluetooth-Incoming-Port"
+#define DEF_PORT_NAME				"/dev/cu.Bluetooth-Incoming-Port"
 #elif defined(SB_LINUX_BUILD)
-#define DEF_PORT_NAME					"/dev/ttyUSB0"
+#define DEF_PORT_NAME				"/dev/ttyUSB0"
 #endif
 
 #define LOG_BUFFER_SIZE 256
