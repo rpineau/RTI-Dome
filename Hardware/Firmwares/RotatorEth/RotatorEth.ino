@@ -85,7 +85,7 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
 // This allows us to change the Pan ID and store it in the EEPROM/Flash
 #define PANID_STEP 4
 
-static const unsigned long pingInterval = 30000; // 30 seconds, can't be changed
+static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed
 
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
@@ -251,7 +251,7 @@ void loop()
         if(!SentHello)
             SendHello();
         PingShutter();
-        if(ShutterWatchdog.elapsed() > (pingInterval*3)) {
+        if(ShutterWatchdog.elapsed() > (pingInterval*6)) {
             bShutterPresent = false;
         }
         if(gotHelloFromShutter) {
@@ -834,12 +834,19 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString + String(Rotator->GetPANID());
             break;
 
-
         case SHUTTER_PANID_GET:
             wirelessMessage = SHUTTER_PANID_GET;
             Wireless.print(wirelessMessage + "#");
             ReceiveWireless();
             serialMessage = SHUTTER_PANID_GET + RemoteShutter.panid ;
+            break;
+
+
+        case SHUTTER_PING:
+            wirelessMessage = SHUTTER_PING;
+            Wireless.print(wirelessMessage + "#");
+            ReceiveWireless();
+            serialMessage = SHUTTER_PING + "#";
             break;
 
         case ACCELERATION_SHUTTER_CMD:
