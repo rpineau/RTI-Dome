@@ -467,6 +467,9 @@ void requestShutterData()
 
         Wireless.print(String(VOLTSCLOSE_SHUTTER_CMD) + "#");
         ReceiveWireless();
+
+        Wireless.print(String(SHUTTER_PANID_GET) + "#");
+        ReceiveWireless();
 }
 
 #endif

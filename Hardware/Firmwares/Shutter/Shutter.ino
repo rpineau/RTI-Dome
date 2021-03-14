@@ -475,7 +475,7 @@ void ProcessMessages(String buffer)
 				setPANID(value);
 			}
 			else {
-                wirelessMessage = String(PANID_GET) + String(Shutter->GetPANID());
+                wirelessMessage = String(PANID_GET) + Shutter->GetPANID();
             }
             DBPrintln("PAN ID '" + String(Shutter->GetPANID()) + "'");
 			break;
