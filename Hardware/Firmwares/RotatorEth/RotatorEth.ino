@@ -186,17 +186,20 @@ void ProcessWireless(void);
 
 void setup()
 {
+#ifndef STANDALONE
     // set reset pins to output and low
     digitalWrite(XBEE_RESET, 0);
     pinMode(XBEE_RESET, OUTPUT);
-
+#endif
     digitalWrite(FTDI_RESET, 0);
     pinMode(FTDI_RESET, OUTPUT);
 
     digitalWrite(ETHERNET_RESET, 0);
     pinMode(ETHERNET_RESET, OUTPUT);
 
+#ifndef STANDALONE
     resetChip(XBEE_RESET);
+#endif
     resetFTDI(FTDI_RESET);
 
 #ifdef DEBUG

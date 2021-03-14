@@ -14,14 +14,13 @@
 // #define XBEE_S2C
 
 #define DebugPort Serial    // programming port
-#define Wireless Serial1    // XBEE
+// #define Wireless Serial1    // XBEE
+#define Wireless SerialUSB   // XBEE
 
 #define ERR_NO_DATA	-1
-// #define USE_EXT_EEPROM
-
+#define USE_EXT_EEPROM
 
 #include "ShutterClass.h"
-
 
 #ifdef DEBUG
 String serialBuffer;

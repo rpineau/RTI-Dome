@@ -8,15 +8,13 @@
 #ifdef USE_EXT_EEPROM
 #include <Wire.h>
 #define EEPROM_ADDR 0x50
-#define SPI_CHUNK_SIZE  16
+#define I2C_CHUNK_SIZE  16
 #else
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
 #endif
 
-
 #include <AccelStepper.h>
-
 #include "StopWatch.h"
 
 // Debug printing, uncomment #define DEBUG to enable
@@ -266,6 +264,14 @@ private:
 ShutterClass::ShutterClass()
 {
     int sw1, sw2;
+
+#ifdef USE_EXT_EEPROM
+    DBPrintln("Using external AT24AA128 eeprom");
+    Wire1.begin();
+    // AT24AA128 page size is 64 byte
+    m_EEPROMpageSize = 64;
+#endif
+
     m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
 
     // Input pins
@@ -777,7 +783,7 @@ byte ShutterClass::readEEPROMByte(int deviceaddress, unsigned int eeaddress)
 }
 
 // Read from EEPROM into a buffer
-// slice read into SPI_CHUNK_SIZE block read. SPI_CHUNK_SIZE <=32
+// slice read into I2C_CHUNK_SIZE block read. I2C_CHUNK_SIZE <=16
 void ShutterClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length)
 {
 
@@ -787,10 +793,10 @@ void ShutterClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, b
 
 	// read until length bytes is read
 	while (c > 0) {
-		// read maximal SPI_CHUNK_SIZE bytes
+		// read maximal I2C_CHUNK_SIZE bytes
 		nc = c;
-		if (nc > SPI_CHUNK_SIZE)
-			nc = SPI_CHUNK_SIZE;
+		if (nc > I2C_CHUNK_SIZE)
+			nc = I2C_CHUNK_SIZE;
 		readEEPROMBlock(deviceaddress, eeaddress, buffer, offD, nc);
 		eeaddress+=nc;
 		offD+=nc;
@@ -798,7 +804,7 @@ void ShutterClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, b
 	}
 }
 
-// Read from eeprom into a buffer  (assuming read lenght if SPI_CHUNK_SIZE or less)
+// Read from eeprom into a buffer  (assuming read lenght if I2C_CHUNK_SIZE or less)
 void ShutterClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
 {
     int r = 0;
@@ -821,7 +827,7 @@ void ShutterClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, by
 
 
 // Write a buffer to EEPROM
-// slice write into SPI_CHUNK_SIZE block write. SPI_CHUNK_SIZE <=32
+// slice write into I2C_CHUNK_SIZE block write. I2C_CHUNK_SIZE <=16
 void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *data, int length)
 {
 	int c = length;					// bytes left to write
@@ -834,7 +840,7 @@ void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *
 		// calc offset in page
 		offP = eeaddress % m_EEPROMpageSize;
 		// maximal 30 bytes to write
-		nc = min(min(c, SPI_CHUNK_SIZE), m_EEPROMpageSize - offP);
+		nc = min(min(c, I2C_CHUNK_SIZE), m_EEPROMpageSize - offP);
 		writeEEPROMBlock(deviceaddress, eeaddress, data, offD, nc);
 		c-=nc;
 		offD+=nc;
@@ -842,7 +848,7 @@ void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *
 	}
 }
 
-// Write a buffer to EEPROM (assuming it's of SPI_CHUNK_SIZE)
+// Write a buffer to EEPROM
 void ShutterClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
 {
 
