@@ -17,7 +17,7 @@
 #define Wireless Serial1    // XBEE
 
 #define ERR_NO_DATA	-1
-#define USE_EXT_EEPROM
+// #define USE_EXT_EEPROM
 
 
 #include "ShutterClass.h"
@@ -470,8 +470,7 @@ void ProcessMessages(String buffer)
 
         case PANID_GET:
 			if (hasValue) {
-				wirelessMessage = String(PANID_GET) + value;
-    			Wireless.print(wirelessMessage + "#");
+				wirelessMessage = String(PANID_GET);
 				setPANID(value);
 			}
 			else {
