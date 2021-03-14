@@ -511,7 +511,7 @@ void CheckForRain()
 void PingShutter()
 {
     if(PingTimer.elapsed() >= pingInterval) {
-        Wireless.print(String(SHUTTER_PING )+ "#");
+        Wireless.print(String(SHUTTER_PING) + "#");
         ReceiveWireless();
         PingTimer.reset();
         }
@@ -827,7 +827,7 @@ void ProcessCommand(bool bFromNetwork)
             sTmpString = String(PANID_GET);
             if (hasValue) {
                 RemoteShutter.panid = "0000";
-                wirelessMessage = SHUTTER_PANID_GET + value;
+                wirelessMessage = String(SHUTTER_PANID_GET) + value;
                 Wireless.print(wirelessMessage + "#");
                 setPANID(value); // shutter XBee should be doing the same thing
             }
@@ -835,18 +835,18 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case SHUTTER_PANID_GET:
-            wirelessMessage = SHUTTER_PANID_GET;
+            wirelessMessage = String(SHUTTER_PANID_GET);
             Wireless.print(wirelessMessage + "#");
             ReceiveWireless();
-            serialMessage = SHUTTER_PANID_GET + RemoteShutter.panid ;
+            serialMessage = String(SHUTTER_PANID_GET) + RemoteShutter.panid ;
             break;
 
 
         case SHUTTER_PING:
-            wirelessMessage = SHUTTER_PING;
+            wirelessMessage = String(SHUTTER_PING);
             Wireless.print(wirelessMessage + "#");
             ReceiveWireless();
-            serialMessage = SHUTTER_PING + "#";
+            serialMessage = String(SHUTTER_PING);
             break;
 
         case ACCELERATION_SHUTTER_CMD:
@@ -874,10 +874,8 @@ void ProcessCommand(bool bFromNetwork)
             sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
             Wireless.print(sTmpString+ "#");
             ReceiveWireless();
-
             Wireless.print(String(SPEED_SHUTTER_CMD)+ "#");
             ReceiveWireless();
-
             Wireless.print(String(ACCELERATION_SHUTTER_CMD)+ "#");
             ReceiveWireless();
             serialMessage = sTmpString;
