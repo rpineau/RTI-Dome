@@ -80,6 +80,7 @@ bool XbeeStarted, isConfiguringWireless;
 bool isRaining = false;
 bool isResetingXbee = false;
 int XbeeResets = 0;
+bool needFirstPing = true;
 
 void setup()
 {
@@ -103,6 +104,7 @@ void setup()
     // enable input buffers
     Shutter->bufferEnable(true);
     ResetXbee();
+    needFirstPing = true;
 }
 
 void loop()
@@ -121,6 +123,7 @@ void loop()
 	if (!XbeeStarted) {
 		if (!isConfiguringWireless) {
 			StartWirelessConfig();
+            needFirstPing = true;
 		}
 		else {
 			XbeeStarted = true;
@@ -154,7 +157,9 @@ void loop()
 		delay(1000);
 	}
 
-
+    if(needFirstPing && XbeeStarted) {
+        PingRotator();
+    }
 	if(Shutter->m_bButtonUsed)
 	    watchdogTimer.reset();
 
@@ -233,6 +238,18 @@ void setPANID(String value)
     configStep = 0;
 }
 
+void PingRotator()
+{
+    String wirelessMessage="";
+    wirelessMessage = String(SHUTTER_PING);
+    // make sure the rotator knows as soon as possible
+    if (Shutter->GetVoltsAreLow()) {
+        wirelessMessage += "L"; // low voltage detected
+    }
+
+    Wireless.print(wirelessMessage + "#");
+}
+
 #ifdef DEBUG
 void ReceiveSerial()
 {
@@ -261,6 +278,7 @@ void ReceiveWireless()
 		character = Wireless.read();
 		if (character != ERR_NO_DATA) {
 			watchdogTimer.reset(); // communication are working
+			needFirstPing = false; // if we're getting messages from the rotator we don't need to ping
 			if (character == '\r' || character == '#') {
 				if (wirelessBuffer.length() > 0) {
 					if (isConfiguringWireless) {
