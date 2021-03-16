@@ -101,6 +101,7 @@ bool bShutterPresent = false;
 
 // global variable for rain status
 bool bIsRaining = false;
+// global variable for shutter voltage state
 bool bLowShutterVoltage = false;
 
 // global variable for the IP config and to check if we detect the ethernet card

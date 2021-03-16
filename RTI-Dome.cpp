@@ -934,13 +934,23 @@ int CRTIDome::unparkDome()
 int CRTIDome::gotoAzimuth(double dNewAz)
 {
     int nErr = PLUGIN_OK;
+    double domeVolts;
+    double dDomeCutOff;
+    double dShutterVolts;
+    double dShutterCutOff;
+    bool bDummy;
     char szBuf[SERIAL_BUFFER_SIZE];
     char szResp[SERIAL_BUFFER_SIZE];
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-
+    getShutterPresent(bDummy);
+    if(m_bShutterPresent) {
+        getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
+        if(dShutterVolts < dShutterCutOff)
+            return ERR_DEVICEPARKED; // dome has parked to charge the shutter battery, don't move !
+    }
     while(dNewAz >= 360)
         dNewAz = dNewAz - 360;
 
