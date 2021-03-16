@@ -63,7 +63,7 @@ public:
     CRTIDome();
     ~CRTIDome();
 
-    int         Connect(const char *pszPort, char *IpAddr="", char *IpPort="");
+    int         Connect(const char *pszPort, char *IpAddr=NULL, char *IpPort=NULL);
     int         Reconnect();
     void        Disconnect(void);
     const bool  IsConnected(void) { return m_bIsConnected; }

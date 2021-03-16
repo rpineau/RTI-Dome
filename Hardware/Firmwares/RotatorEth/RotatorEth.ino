@@ -101,6 +101,7 @@ bool bShutterPresent = false;
 
 // global variable for rain status
 bool bIsRaining = false;
+bool bLowShutterVoltage = false;
 
 // global variable for the IP config and to check if we detect the ethernet card
 bool ethernetPresent;
@@ -249,6 +250,7 @@ void loop()
     Rotator->Run();
     CheckForCommands();
     CheckForRain();
+    checkShuterLowVoltage();
 #ifndef STANDALONE
     if(XbeeStarted) {
         if(!SentHello)
@@ -511,6 +513,13 @@ void CheckForRain()
 
 #ifndef STANDALONE
 
+void checkShuterLowVoltage()
+{
+    bLowShutterVoltage = (RemoteShutter.lowVoltStateOrRaining.equals("L"));
+    if(bLowShutterVoltage)
+         Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge tge shutter battery
+}
+
 void PingShutter()
 {
     if(PingTimer.elapsed() >= pingInterval) {
@@ -633,7 +642,7 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case GOTO_ROTATOR_CMD:
-            if (hasValue) {
+            if (hasValue && !bLowShutterVoltage) {
                 fTmp = value.toFloat();
                 if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
                     Rotator->GoToAzimuth(fTmp);

@@ -14,8 +14,7 @@
 // #define XBEE_S2C
 
 #define DebugPort Serial    // programming port
-// #define Wireless Serial1    // XBEE
-#define Wireless SerialUSB   // XBEE
+#define Wireless Serial1    // XBEE
 
 #define ERR_NO_DATA	-1
 #define USE_EXT_EEPROM

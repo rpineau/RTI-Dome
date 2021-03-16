@@ -144,8 +144,10 @@ int CRTIDome::Connect(const char *pszPort, char *IpAddr, char *IpPort)
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
     fprintf(Logfile, "[%s] CRTIDome::Connect connected to %s\n", timestamp, pszPort);
-    fprintf(Logfile, "[%s] CRTIDome::Connect connected to IP %s\n", timestamp, IpAddr);
-    fprintf(Logfile, "[%s] CRTIDome::Connect connected to Port %s\n", timestamp, IpPort);
+    if(IpAddr)
+        fprintf(Logfile, "[%s] CRTIDome::Connect connected to IP %s\n", timestamp, IpAddr);
+    if(IpPort)
+        fprintf(Logfile, "[%s] CRTIDome::Connect connected to Port %s\n", timestamp, IpPort);
     fflush(Logfile);
 #endif
 
