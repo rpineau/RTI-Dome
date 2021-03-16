@@ -509,6 +509,8 @@ void CheckForRain()
 
         if (Rotator->GetRainAction() == PARK)
             Rotator->GoToAzimuth(Rotator->GetParkAzimuth());
+        // keep telling the shutter that it's raining
+        Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
     }
 }
 
@@ -643,7 +645,7 @@ void ProcessCommand(bool bFromNetwork)
             break;
 
         case GOTO_ROTATOR_CMD:
-            if (hasValue && !bLowShutterVoltage) {
+            if (hasValue && !bLowShutterVoltage) { // stay at park if shutter voltage is low.
                 fTmp = value.toFloat();
                 if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
                     Rotator->GoToAzimuth(fTmp);
@@ -1125,6 +1127,7 @@ void ProcessWireless()
             break;
 
         case RAIN_SHUTTER_GET:
+            Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
             break;
 
         case REVERSED_SHUTTER_CMD:

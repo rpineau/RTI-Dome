@@ -131,7 +131,7 @@ void loop()
 		}
 	}
 
-    // if we lost 3 pings and had no coms for that long.. reset XBee close oif we've already reset the XBee
+    // if we lost 3 pings and had no coms for that long.. reset XBee close if we've already reset the XBee
 	if((watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) && (Shutter->GetState() != CLOSED) && (Shutter->GetState() != CLOSING)) {
             DBPrintln("watchdogTimer triggered");
             // lets try to recover
@@ -247,6 +247,11 @@ void PingRotator()
     }
 
     Wireless.print(wirelessMessage + "#");
+    // ask if it's raining
+    Wireless.print( String(RAIN_ROTATOR_GET) + "#");
+
+    // say hello :)
+    Wireless.print( String(HELLO_CMD) + "#");
 }
 
 #ifdef DEBUG
@@ -394,7 +399,6 @@ void ProcessMessages(String buffer)
                     isRaining = false;
                     DBPrintln("It's not raining");
                 }
-                wirelessMessage = String(RAIN_ROTATOR_GET);
 		    }
 			break;
 
