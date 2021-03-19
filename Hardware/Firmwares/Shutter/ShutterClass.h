@@ -459,12 +459,12 @@ void ShutterClass::GotoPosition(const unsigned long newPos)
 
     // Check if this actually changes position, then move if necessary.
     if (newPos > currentPos) {
-    DBPrintln("shutterState = OPENING");
+        DBPrintln("shutterState = OPENING");
         shutterState = OPENING;
         doMove = true;
     }
     else if (newPos < currentPos) {
-    DBPrintln("shutterState = CLOSING");
+        DBPrintln("shutterState = CLOSING");
         shutterState = CLOSING;
         doMove = true;
     }
@@ -708,7 +708,7 @@ void ShutterClass::Run()
             DBPrintln("Stopped at closed position");
     }
 
-    if (m_bWasRunning) { // So this bit only runs once after stopping.
+    if (m_bWasRunning) { // This only runs once after stopping.
         DBPrintln("m_bWasRunning " + String(shutterState) + " Hitswitch " + String(hitSwitch));
         m_bWasRunning = false;
         hitSwitch = false;
