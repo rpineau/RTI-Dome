@@ -399,8 +399,10 @@ void ShutterClass::SaveToEEProm()
     m_Config.signature = EEPROM_SIGNATURE;
 
 #ifdef USE_EXT_EEPROM
+	DBPrintln("Saving config to external AT24AA128 eeprom");
     writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
 #else
+	DBPrintln("Saving config to DUE flash");
     byte data[sizeof(Configuration)];
     memcpy(data, &m_Config, sizeof(Configuration));
     dueFlashStorage.write(0, data, sizeof(Configuration));
@@ -760,6 +762,7 @@ void ShutterClass::motorMoveRelative(const long amount)
 }
 
 
+
 #ifdef USE_EXT_EEPROM
 
 //
@@ -827,7 +830,7 @@ void ShutterClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, by
 
 
 // Write a buffer to EEPROM
-// slice write into I2C_CHUNK_SIZE block write. I2C_CHUNK_SIZE <=16
+// slice write into CHUNK_SIZE block write. I2C_CHUNK_SIZE <=16
 void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *data, int length)
 {
 	int c = length;					// bytes left to write
@@ -867,4 +870,6 @@ void ShutterClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, b
 }
 
 #endif
+
+
 

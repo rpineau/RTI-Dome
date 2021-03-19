@@ -252,6 +252,7 @@ void PingRotator()
 
     // say hello :)
     Wireless.print( String(HELLO_CMD) + "#");
+    needFirstPing = false;
 }
 
 #ifdef DEBUG
