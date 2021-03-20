@@ -54,8 +54,6 @@ CRTIDome::CRTIDome()
     m_GatewayIP.clear();
     m_bUseDHCP = false;
     
-    m_nShutterCheckPeriod = 10;
-    m_ShutterStateTimer.Reset();
     m_nShutterState = CLOSED;
     
 #ifdef    PLUGIN_DEBUG
@@ -227,9 +225,7 @@ int CRTIDome::Connect(const char *pszPort, char *IpAddr, char *IpPort)
     m_pSleeper->sleep(250);
     getShutterPresent(bDummy);
     // we need to get the initial state
-    m_nShutterCheckPeriod = 0;
     getShutterState(m_nShutterState);
-    m_nShutterCheckPeriod = 10;
 
     return SB_OK;
 }
@@ -545,20 +541,6 @@ int CRTIDome::getShutterState(int &nState)
     if(m_bCalibrating)
         return nErr;
 
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-    ltime = time(NULL);
-    timestamp = asctime(localtime(&ltime));
-    timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CRTIDome::getShutterState] m_nShutterCheckPeriod = %f\n", timestamp, m_nShutterCheckPeriod);
-    fprintf(Logfile, "[%s] [CRTIDome::getShutterState] GetElapsedSeconds()   = %f\n", timestamp, GetElapsedSeconds());
-    fflush(Logfile);
-#endif
-    if(m_ShutterStateTimer.GetElapsedSeconds() > m_nShutterCheckPeriod) {
-        nState = m_nShutterState;
-        return nErr;
-    }
-
-    m_ShutterStateTimer.Reset();
     nErr = domeCommand("M#", szResp, 'M', SERIAL_BUFFER_SIZE);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1020,8 +1002,6 @@ int CRTIDome::openShutter()
         return SB_OK;
     }
 
-    m_nShutterCheckPeriod = 1;
-
     getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -1083,7 +1063,6 @@ int CRTIDome::closeShutter()
     if(!m_bShutterPresent) {
         return SB_OK;
     }
-    m_nShutterCheckPeriod = 1;
     getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1138,7 +1117,7 @@ int CRTIDome::getFirmwareVersion(char *szVersion, int nStrMaxLen)
         fprintf(Logfile, "[%s] [CRTIDome::getFirmwareVersion] ERROR = %s\n", timestamp, szResp);
         fflush(Logfile);
 #endif
-        return nErr;
+        return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
 
     nErr = parseFields(szResp,firmwareFields, 'v');
@@ -1316,7 +1295,6 @@ int CRTIDome::isGoToComplete(bool &bComplete)
     if ((ceil(m_dGotoAz) <= ceil(dDomeAz)+3) && (ceil(m_dGotoAz) >= ceil(dDomeAz)-3)) {
         bComplete = true;
         m_nGotoTries = 0;
-        m_nShutterCheckPeriod = 10;
     }
     else {
         // we're not moving and we're not at the final destination !!!
@@ -1344,7 +1322,6 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 int CRTIDome::isOpenComplete(bool &bComplete)
 {
     int nErr = PLUGIN_OK;
-    int nState;
     bool bDummy;
     if(!m_bIsConnected)
         return NOT_CONNECTED;
@@ -1355,14 +1332,13 @@ int CRTIDome::isOpenComplete(bool &bComplete)
         return SB_OK;
     }
 
-    nErr = getShutterState(nState);
+    nErr = getShutterState(m_nShutterState);
     if(nErr)
         return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
-    if(nState == OPEN){
+    if(m_nShutterState == OPEN){
         m_bShutterOpened = true;
         bComplete = true;
         m_dCurrentElPosition = 90.0;
-        m_nShutterCheckPeriod = 10;
     }
     else {
         m_bShutterOpened = false;
@@ -1384,7 +1360,6 @@ int CRTIDome::isOpenComplete(bool &bComplete)
 int CRTIDome::isCloseComplete(bool &bComplete)
 {
     int nErr = PLUGIN_OK;
-    int nState;
     bool bDummy;
     
     if(!m_bIsConnected)
@@ -1396,10 +1371,10 @@ int CRTIDome::isCloseComplete(bool &bComplete)
         return SB_OK;
     }
 
-    nErr = getShutterState(nState);
+    nErr = getShutterState(m_nShutterState);
     if(nErr)
         return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
-    if(nState == CLOSED){
+    if(m_nShutterState == CLOSED){
         m_bShutterOpened = false;
         bComplete = true;
         m_dCurrentElPosition = 0.0;
