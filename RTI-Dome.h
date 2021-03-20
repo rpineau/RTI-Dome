@@ -235,7 +235,7 @@ protected:
     bool            m_bUseDHCP;
     
     CStopWatch      m_ShutterStateTimer;
-    int             m_nShutterCheckPeriod;
+    float           m_nShutterCheckPeriod;
 
 #ifdef PLUGIN_DEBUG
     std::string m_sLogfilePath;

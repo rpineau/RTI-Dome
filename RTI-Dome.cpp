@@ -545,6 +545,14 @@ int CRTIDome::getShutterState(int &nState)
     if(m_bCalibrating)
         return nErr;
 
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::getShutterState] m_nShutterCheckPeriod = %f\n", timestamp, m_nShutterCheckPeriod);
+    fprintf(Logfile, "[%s] [CRTIDome::getShutterState] GetElapsedSeconds()   = %f\n", timestamp, GetElapsedSeconds());
+    fflush(Logfile);
+#endif
     if(m_ShutterStateTimer.GetElapsedSeconds() > m_nShutterCheckPeriod) {
         nState = m_nShutterState;
         return nErr;
