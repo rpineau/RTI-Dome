@@ -54,11 +54,6 @@ CRTIDome::CRTIDome()
     m_GatewayIP.clear();
     m_bUseDHCP = false;
     
-    m_shutterTimeCheck = 10;
-    m_shutterPresentCheck = 10;
-    
-    m_shutterCheckTimer.Reset();
-    m_shutterPresentTimer.Reset();
 #ifdef    PLUGIN_DEBUG
     Logfile = NULL;
 #endif
@@ -542,11 +537,7 @@ int CRTIDome::getShutterState(int &nState)
     if(m_bCalibrating)
         return nErr;
 
-    if(m_shutterCheckTimer.GetElapsedSeconds() < m_shutterTimeCheck ) {
-        return m_nShutterState;;
-    }
-    
-    m_shutterCheckTimer.Reset();
+	
 
     nErr = domeCommand("M#", szResp, 'M', SERIAL_BUFFER_SIZE);
     if(nErr) {
@@ -558,7 +549,6 @@ int CRTIDome::getShutterState(int &nState)
         fflush(Logfile);
 #endif
         nState = SHUTTER_ERROR;
-        m_nShutterState = nState;
         return nErr;
     }
 
@@ -579,7 +569,6 @@ int CRTIDome::getShutterState(int &nState)
     fprintf(Logfile, "[%s] [CRTIDome::getShutterState] nState = '%d'\n", timestamp, nState);
     fflush(Logfile);
 #endif
-    m_nShutterState = nState;
 
     return nErr;
 }
@@ -999,7 +988,6 @@ int CRTIDome::openShutter()
     if(m_bCalibrating)
         return SB_OK;
 
-    m_shutterTimeCheck = 1;
     getShutterPresent(bDummy);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -1061,7 +1049,6 @@ int CRTIDome::closeShutter()
     if(m_bCalibrating)
         return SB_OK;
 
-    m_shutterTimeCheck = 1;
     getShutterPresent(bDummy);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -1681,10 +1668,6 @@ int CRTIDome::getShutterPresent(bool &bShutterPresent)
     int nErr = PLUGIN_OK;
     char szResp[SERIAL_BUFFER_SIZE];
 
-    if(m_shutterPresentTimer.GetElapsedSeconds()<m_shutterPresentCheck)
-        return m_bShutterPresent;
-    
-    m_shutterPresentTimer.Reset();
     nErr = domeCommand("o#", szResp, 'o', SERIAL_BUFFER_SIZE);
     if(nErr) {
         return nErr;
