@@ -184,6 +184,7 @@ protected:
 
     bool            isDomeMoving();
     bool            isDomeAtHome();
+    
     int             parseFields(const char *pszResp, std::vector<std::string> &svFields, char cSeparator);
 
     SerXInterface   *m_pSerx;
@@ -228,8 +229,12 @@ protected:
     bool            m_bSaveRainStatus;
     int             m_nRainStatus;
     CStopWatch      m_cRainCheckTimer;
-    
-    std::string     m_IpAddress;
+    CStopWatch      m_shutterCheckTimer;
+    CStopWatch      m_shutterPresentTimer;
+
+    int             m_shutterTimeCheck;
+    int             m_shutterPresentCheck;
+    std::string     m_IpAddress ;
     std::string     m_SubnetMask;
     std::string     m_GatewayIP;
     bool            m_bUseDHCP;
