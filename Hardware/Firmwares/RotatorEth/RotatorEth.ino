@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
 // fix most of the known issues. I also added some feature related to XBee init and reset.
 // This is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
@@ -85,11 +85,11 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
 // This allows us to change the Pan ID and store it in the EEPROM/Flash
 #define PANID_STEP 4
 
-static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed
+static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed with command
 
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
-// the shutter will send a hello when it's booted up.
+// the shutter will send a hello when it boots.
 bool SentHello = false;
 
 // Timer to periodically ping the shutter.
@@ -141,9 +141,8 @@ const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) 
 #ifndef STANDALONE
 const char INIT_XBEE                    = 'x'; // force a XBee reconfig
 
-// available A J N S U W X Z
+// available A B J N S U W X Z
 // Shutter commands
-const char VOLTSCLOSE_SHUTTER_CMD       = 'B'; // Get/Set shutter low voltage, if the voltage drop bellow that value the shutter will close
 const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // restore default values for motor controll.
 const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
@@ -469,9 +468,6 @@ void requestShutterData()
         ReceiveWireless();
 
         Wireless.print(String(VOLTS_SHUTTER_CMD) + "#");
-        ReceiveWireless();
-
-        Wireless.print(String(VOLTSCLOSE_SHUTTER_CMD) + "#");
         ReceiveWireless();
 
         Wireless.print(String(SHUTTER_PANID_GET) + "#");
@@ -984,20 +980,6 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString + RemoteShutter.volts;
             break;
 
-        case VOLTSCLOSE_SHUTTER_CMD:
-            sTmpString = String(VOLTSCLOSE_SHUTTER_CMD);
-            if (value.length() > 0) {
-                RemoteShutter.voltsClose = value;
-                wirelessMessage = sTmpString+ value;
-            }
-            else {
-                wirelessMessage = sTmpString;
-            }
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.voltsClose;
-            break;
-
         case WATCHDOG_INTERVAL_SET:
             sTmpString = String(WATCHDOG_INTERVAL_SET);
             if (value.length() > 0) {
@@ -1162,10 +1144,6 @@ void ProcessWireless()
                 RemoteShutter.volts = value;
             break;
 
-        case VOLTSCLOSE_SHUTTER_CMD:
-            if (hasValue)
-                RemoteShutter.voltsClose = value;
-            break;
 
         case WATCHDOG_INTERVAL_SET:
             if (hasValue)

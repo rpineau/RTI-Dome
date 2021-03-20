@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
 // fix most of the known issues. I also added some feature related to XBee init and reset.
 // This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
@@ -8,7 +8,7 @@
 #ifdef USE_EXT_EEPROM
 #include <Wire.h>
 #define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  16
+#define I2C_CHUNK_SIZE  8
 #else
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;
@@ -26,6 +26,8 @@ DueFlashStorage dueFlashStorage;
 #define DBPrint(x)
 #define DBPrintln(x)
 #endif // DEBUG
+
+#define DEFAULT_PANID   0x4242
 
 // Pin configuration
 #ifndef TEENY_3_5
@@ -75,7 +77,6 @@ typedef struct ShutterConfiguration {
     int             maxSpeed;
     bool            reversed;
     int             cutoffVolts;
-    int             voltsClose;
     unsigned long   watchdogInterval;
     int             panid;
     bool            bHasDropShutter;
@@ -202,8 +203,6 @@ public:
 
     bool        GetVoltsAreLow();
     String      GetVoltString();
-    int         GetVoltsClose();
-    void        SetVoltsClose(const int);
     void        SetVoltsFromString(const String);
 
     String      GetPANID();
@@ -346,9 +345,8 @@ void ShutterClass::SetDefaultConfig()
     m_Config.maxSpeed = 6400;
     m_Config.reversed = false;
     m_Config.cutoffVolts = 1150;
-    m_Config.voltsClose = 0;
     m_Config.watchdogInterval = 90000;
-    m_Config.panid = 0x4242;
+    m_Config.panid = DEFAULT_PANID;
     m_Config.bHasDropShutter = false;
     m_Config.bTopShutterFirst = true;
 }
@@ -378,21 +376,40 @@ void ShutterClass::LoadFromEEProm()
     memcpy(&m_Config, data, sizeof(Configuration));
 #endif
 
+    DBPrintln("ShutterClass::LoadFromEEProm expected signature          : " + String(EEPROM_SIGNATURE));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.signature          : " + String(m_Config.signature));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.stepsPerStroke     : " + String(m_Config.stepsPerStroke));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.acceleration       : " + String(m_Config.acceleration));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.maxSpeed           : " + String(m_Config.maxSpeed));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.reversed           : " + String(m_Config.reversed?"Yes":"No"));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.cutoffVolts        : " + String(m_Config.cutoffVolts));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.watchdogInterval   : " + String(m_Config.watchdogInterval));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.panid              : 0x" + String(m_Config.panid, HEX));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.bHasDropShutter    : " + String(m_Config.bHasDropShutter?"Yes":"No"));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.bTopShutterFirst   : " + String(m_Config.bTopShutterFirst?"Yes":"No"));
+
     if (m_Config.signature != EEPROM_SIGNATURE) {
         SetDefaultConfig();
         SaveToEEProm();
         return;
     }
 
+    if(m_Config.panid == 0x0000) {// this is not valid, something is wrong
+        m_Config.panid = DEFAULT_PANID;
+        SaveToEEProm();
+    }
     if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL)
         m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
     if(m_Config.watchdogInterval < MIN_WATCHDOG_INTERVAL)
         m_Config.watchdogInterval = MIN_WATCHDOG_INTERVAL;
+
+
 }
 
 void ShutterClass::SaveToEEProm()
 {
 
+    DBPrintln("ShutterClass::SaveToEEProm : " + String(m_bDoEEPromSave?"Yes":"No"));
     if(!m_bDoEEPromSave)
         return;
 
@@ -544,16 +561,6 @@ String ShutterClass::GetVoltString()
     return String(m_nVolts) + "," + String(m_Config.cutoffVolts);
 }
 
-inline int ShutterClass::GetVoltsClose()
-{
-    return m_Config.voltsClose;
-}
-
-inline void ShutterClass::SetVoltsClose(const int value)
-{
-    m_Config.voltsClose = value;
-    SaveToEEProm();
-}
 
 void ShutterClass::SetVoltsFromString(const String value)
 {
@@ -579,7 +586,12 @@ String ShutterClass::GetPANID()
 
 void ShutterClass::setPANID(const String panID)
 {
-    m_Config.panid = strtol(panID.c_str(), 0, 16);
+    int newPanID = int(strtol(panID.c_str(), 0, 16));
+    if(newPanID == 0)
+        m_Config.panid = DEFAULT_PANID;
+    else
+        m_Config.panid = newPanID;
+
     SaveToEEProm();
 }
 
@@ -842,7 +854,7 @@ void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *
 	while (c > 0) {
 		// calc offset in page
 		offP = eeaddress % m_EEPROMpageSize;
-		// maximal 30 bytes to write
+		// maximal I2C_CHUNK_SIZE bytes to write
 		nc = min(min(c, I2C_CHUNK_SIZE), m_EEPROMpageSize - offP);
 		writeEEPROMBlock(deviceaddress, eeaddress, data, offD, nc);
 		c-=nc;

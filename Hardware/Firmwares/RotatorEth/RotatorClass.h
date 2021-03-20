@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
 // fix most of the known issues. I also added some feature related to XBee init and reset.
 // This is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
@@ -9,7 +9,7 @@
 #ifdef USE_EXT_EEPROM
 #include <Wire.h>
 #define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  16
+#define I2C_CHUNK_SIZE  8
 #else
 #include <DueFlashStorage.h>
 DueFlashStorage dueFlashStorage;

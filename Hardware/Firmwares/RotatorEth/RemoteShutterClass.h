@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
 // fix most of the known issues. I also added some feature related to XBee init and reset.
 // This is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
@@ -25,7 +25,6 @@ public:
 	// ASCOM checks version and if it's blank then shutter doesn't exist
 	String	version = "";
 	String	volts = "";
-	String 	voltsClose = "";
 	String	watchdogInterval = "90"; // set proper default.. just in case.
 	String  panid = "0000";
 	String  lowVoltStateOrRaining = "";

@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed to the "old" 2,x firmware and was somewhat falilier with it I decided to reuse it and
+// As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
 // fix most of the known issues. I also added some feature related to XBee init and reset.
 // This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
 //
@@ -29,9 +29,8 @@ String wirelessBuffer;
 
 const String version = "2.645";
 
-// available A J N S U W X Z
+// available A B J N S U W X Z
 const char ABORT_CMD				= 'a';
-const char VOLTSCLOSE_SHUTTER_CMD	= 'B';
 const char CLOSE_SHUTTER_CMD		= 'C'; // Close shutter
 const char RESTORE_MOTOR_DEFAULT    = 'D'; // restore default values for motor controll.
 const char ACCELERATION_SHUTTER_CMD = 'E'; // Get/Set stepper acceleration
@@ -210,7 +209,6 @@ inline void ConfigXBee(String result)
 	if (configStep > NB_AT_OK) {
 		isConfiguringWireless = false;
 		XbeeStarted = true;
-		Shutter->SaveToEEProm();
         DBPrintln("Xbee configuration finished");
 
         isResetingXbee = false;
@@ -450,15 +448,6 @@ void ProcessMessages(String buffer)
 			}
 			wirelessMessage = "K" + Shutter->GetVoltString();
 			DBPrintln(wirelessMessage);
-			break;
-
-		case VOLTSCLOSE_SHUTTER_CMD:
-			if (hasValue) {
-				DBPrintln("Close on low voltage value inn" + String(value));
-				Shutter->SetVoltsClose(value.toInt());
-			}
-			wirelessMessage = String(VOLTSCLOSE_SHUTTER_CMD) + String(Shutter->GetVoltsClose());
-			DBPrintln("Close on low voltage " + String(Shutter->GetVoltsClose()));
 			break;
 
 		case INIT_XBEE:
