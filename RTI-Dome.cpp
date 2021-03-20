@@ -54,6 +54,10 @@ CRTIDome::CRTIDome()
     m_GatewayIP.clear();
     m_bUseDHCP = false;
     
+    m_nShutterCheckPeriod = 10;
+    m_ShutterStateTimer.Reset();
+    m_nShutterState = CLOSED;
+    
 #ifdef    PLUGIN_DEBUG
     Logfile = NULL;
 #endif
@@ -222,6 +226,10 @@ int CRTIDome::Connect(const char *pszPort, char *IpAddr, char *IpPort)
     sendShutterHello();
     m_pSleeper->sleep(250);
     getShutterPresent(bDummy);
+    // we need to get the initial state
+    m_nShutterCheckPeriod = 0;
+    getShutterState(m_nShutterState);
+    m_nShutterCheckPeriod = 10;
 
     return SB_OK;
 }
@@ -430,7 +438,7 @@ int CRTIDome::getDomeEl(double &dDomeEl)
         return nErr;
     }
 
-// this doesn't work in firmware 2.x as it's not implemented yet
+// this is not implemented yet
 /*
     nErr = domeCommand("G#", szResp, 'G', SERIAL_BUFFER_SIZE);
     if(nErr) {
@@ -537,8 +545,12 @@ int CRTIDome::getShutterState(int &nState)
     if(m_bCalibrating)
         return nErr;
 
-	
+    if(m_ShutterStateTimer.GetElapsedSeconds() > m_nShutterCheckPeriod) {
+        nState = m_nShutterState;
+        return nErr;
+    }
 
+    m_ShutterStateTimer.Reset();
     nErr = domeCommand("M#", szResp, 'M', SERIAL_BUFFER_SIZE);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -987,7 +999,7 @@ int CRTIDome::openShutter()
 
     if(m_bCalibrating)
         return SB_OK;
-
+    
     getShutterPresent(bDummy);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
@@ -999,6 +1011,8 @@ int CRTIDome::openShutter()
     if(!m_bShutterPresent) {
         return SB_OK;
     }
+
+    m_nShutterCheckPeriod = 1;
 
     getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1061,7 +1075,7 @@ int CRTIDome::closeShutter()
     if(!m_bShutterPresent) {
         return SB_OK;
     }
-
+    m_nShutterCheckPeriod = 1;
     getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1294,6 +1308,7 @@ int CRTIDome::isGoToComplete(bool &bComplete)
     if ((ceil(m_dGotoAz) <= ceil(dDomeAz)+3) && (ceil(m_dGotoAz) >= ceil(dDomeAz)-3)) {
         bComplete = true;
         m_nGotoTries = 0;
+        m_nShutterCheckPeriod = 10;
     }
     else {
         // we're not moving and we're not at the final destination !!!
@@ -1339,6 +1354,7 @@ int CRTIDome::isOpenComplete(bool &bComplete)
         m_bShutterOpened = true;
         bComplete = true;
         m_dCurrentElPosition = 90.0;
+        m_nShutterCheckPeriod = 10;
     }
     else {
         m_bShutterOpened = false;

@@ -553,7 +553,6 @@ void ReceiveNetwork(EthernetClient client)
             networkBuffer += String(networkCharacter);
         }
     }
-
 }
 
 // All comms are terminated with '#' but the '\r' and '\n' are for XBee config

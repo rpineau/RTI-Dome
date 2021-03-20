@@ -234,6 +234,8 @@ protected:
     std::string     m_GatewayIP;
     bool            m_bUseDHCP;
     
+    CStopWatch      m_ShutterStateTimer;
+    int             m_nShutterCheckPeriod;
 
 #ifdef PLUGIN_DEBUG
     std::string m_sLogfilePath;
