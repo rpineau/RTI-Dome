@@ -167,13 +167,6 @@ int X2Dome::execModalSettingsDialog()
 
     memset(szTmpBuf,0,SERIAL_BUFFER_SIZE);
     // set controls state depending on the connection state
-    if(m_bHasShutterControl) {
-        dx->setChecked("hasShutterCtrl",true);
-    }
-    else {
-        dx->setChecked("hasShutterCtrl",false);
-    }
-
     if(m_bHomeOnPark) {
         dx->setChecked("homeOnPark",true);
     }
@@ -187,7 +180,11 @@ int X2Dome::execModalSettingsDialog()
     else {
         dx->setChecked("homeOnUnpark",false);
     }
-
+    // disbale these for now, these will be for the number of shuter and sequence for openging/closing
+    dx->setEnabled("checkBox_3",false);
+    dx->setEnabled("comboBox_2",false);
+    
+    
     if(m_bLogRainStatus) {
         dx->setChecked("checkBox",true);
         m_RTIDome.getRainStatusFileName(fName);
