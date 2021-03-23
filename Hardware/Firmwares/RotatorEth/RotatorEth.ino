@@ -18,7 +18,7 @@
 #define XBEE_S1
 // #define XBEE_S2C
 
-#define MAX_TIMEOUT 100
+#define MAX_TIMEOUT 10
 #define ERR_NO_DATA -1
 #define OK  0
 
@@ -182,7 +182,7 @@ void PingShutter(void);
 void ReceiveNetwork(EthernetClient);
 void ReceiveComputer(void);
 void ProcessCommand(bool);
-int ReceiveWireless(void);
+void ReceiveWireless(void);
 void ProcessWireless(void);
 
 void setup()
@@ -540,17 +540,20 @@ void ReceiveNetwork(EthernetClient client)
     if(client.available() < 1)
         return; // no data
 
-    networkCharacter = client.read();
-    if (networkCharacter != ERR_NO_DATA) {
-        if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
-            // End of message
-            if (networkBuffer.length() > 0) {
-                ProcessCommand(true);
-                networkBuffer = "";
+    while(client.available()>0) {
+        networkCharacter = client.read();
+        if (networkCharacter != ERR_NO_DATA) {
+            if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
+                // End of message
+                if (networkBuffer.length() > 0) {
+                    ProcessCommand(true);
+                    networkBuffer = "";
+                    return; // we'll read the next command on the next loop.
+                }
             }
-        }
-        else {
-            networkBuffer += String(networkCharacter);
+            else {
+                networkBuffer += String(networkCharacter);
+            }
         }
     }
 }
@@ -558,20 +561,24 @@ void ReceiveNetwork(EthernetClient client)
 // All comms are terminated with '#' but the '\r' and '\n' are for XBee config
 void ReceiveComputer()
 {
+    char computerCharacter;
     if(Computer.available() < 1)
         return; // no data
 
-    char computerCharacter = Computer.read();
-    if (computerCharacter != ERR_NO_DATA) {
-        if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
-            // End of message
-            if (computerBuffer.length() > 0) {
-                ProcessCommand(false);
-                computerBuffer = "";
+    while(Computer.available() > 0 ) {
+        computerCharacter = Computer.read();
+        if (computerCharacter != ERR_NO_DATA) {
+            if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
+                // End of message
+                if (computerBuffer.length() > 0) {
+                    ProcessCommand(false);
+                    computerBuffer = "";
+                    return; // we'll read the next command on the next loop.
+                }
             }
-        }
-        else {
-            computerBuffer += String(computerCharacter);
+            else {
+                computerBuffer += String(computerCharacter);
+            }
         }
     }
 }
@@ -1016,21 +1023,20 @@ void ProcessCommand(bool bFromNetwork)
 
 
 #ifndef STANDALONE
-int ReceiveWireless()
+void ReceiveWireless2()
 {
     int timeout = 0;
     char wirelessCharacter;
 
-    wirelessBuffer = "";
     if (isConfiguringWireless) {
-        DBPrintln("[ReceiveWireless] isConfiguringWireless : " + String(isConfiguringWireless));
+        DBPrintln("[ReceiveWireless] Configuring XBee");
         // read the response
         do {
             while(Wireless.available() < 1) {
                 delay(1);
                 timeout++;
-                if(timeout >= MAX_TIMEOUT) {
-                    return ERR_NO_DATA;
+                if(timeout >= MAX_TIMEOUT*10) {
+                    return;
                     }
             }
             wirelessCharacter = Wireless.read();
@@ -1044,7 +1050,8 @@ int ReceiveWireless()
         DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
 
         ConfigXBee();
-        return OK;
+        wirelessBuffer = "";
+        return;
     }
 
     // wait for response
@@ -1053,11 +1060,12 @@ int ReceiveWireless()
         delay(5);   // give time to the shutter to reply
         timeout++;
         if(timeout >= MAX_TIMEOUT) {
-            return ERR_NO_DATA;
+            return;
             }
     }
 
     // read the response
+    timeout = 0;
     do {
         if(Wireless.available() > 0 ) {
             wirelessCharacter = Wireless.read();
@@ -1065,14 +1073,89 @@ int ReceiveWireless()
             if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter!=0xFF && wirelessCharacter != '#') {
                 wirelessBuffer += String(wirelessCharacter);
             }
+        } else {
+            delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
+            timeout++;
         }
-        delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
+        if(timeout >= MAX_TIMEOUT) {
+            return;
+        }
     } while (wirelessCharacter != '#');
 
     if (wirelessBuffer.length() > 0) {
         ProcessWireless();
+        wirelessBuffer = "";
+
     }
-    return OK;
+    return;
+}
+
+void ReceiveWireless()
+{
+    int timeout = 0;
+    char wirelessCharacter;
+
+    if (isConfiguringWireless) {
+        DBPrintln("[ReceiveWireless] Configuring XBee");
+        // read the response
+        do {
+            while(Wireless.available() < 1) {
+                delay(1);
+                timeout++;
+                if(timeout >= MAX_TIMEOUT*10) {
+                    return;
+                    }
+            }
+            wirelessCharacter = Wireless.read();
+            if (wirelessCharacter != ERR_NO_DATA) {
+                if(wirelessCharacter != '\r' && wirelessCharacter != ERR_NO_DATA) {
+                    wirelessBuffer += String(wirelessCharacter);
+                }
+            }
+        } while (wirelessCharacter != '\r');
+
+        DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
+
+        ConfigXBee();
+        wirelessBuffer = "";
+        return;
+    }
+
+    // wait for response
+    timeout = 0;
+    while(Wireless.available() < 1) {
+        delay(5);   // give time to the shutter to reply
+        timeout++;
+        if(timeout >= MAX_TIMEOUT) {
+            return;
+            }
+    }
+
+    // read the response
+    timeout = 0;
+    while(Wireless.available() > 0) {
+        wirelessCharacter = Wireless.read();
+        if (wirelessCharacter != ERR_NO_DATA) {
+            if ( wirelessCharacter == '#') {
+                // End of message
+                if (wirelessBuffer.length() > 0) {
+                    ProcessWireless();
+                    wirelessBuffer = "";
+                    return; // we'll read the next response on the next loop.
+                }
+            }
+            if(wirelessCharacter!=0xFF) {
+                wirelessBuffer += String(wirelessCharacter);
+            }
+        } else {
+            delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
+            timeout++;
+        }
+        if(timeout >= MAX_TIMEOUT) {
+            return;
+        }
+    }
+    return;
 }
 
 void ProcessWireless()

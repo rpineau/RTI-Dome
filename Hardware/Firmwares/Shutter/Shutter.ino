@@ -101,6 +101,8 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
     // enable input buffers
     Shutter->bufferEnable(true);
+    Shutter->motorStop();
+    Shutter->EnableMotor(false);
     ResetXbee();
     needFirstPing = true;
 }
@@ -256,18 +258,24 @@ void PingRotator()
 #ifdef DEBUG
 void ReceiveSerial()
 {
-	char character = DebugPort.read();
+    char computerCharacter;
+    if(DebugPort.available() < 1)
+        return; // no data
 
-    if (character != ERR_NO_DATA) {
-        if (character == '\r' || character == '\n') {
-            // End of command
-            if (serialBuffer.length() > 0) {
-                ProcessMessages(serialBuffer);
-                serialBuffer = "";
+    while(DebugPort.available() > 0 ) {
+        computerCharacter = DebugPort.read();
+        if (computerCharacter != ERR_NO_DATA) {
+            if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
+                // End of command
+                if (serialBuffer.length() > 0) {
+                    ProcessMessages(serialBuffer);
+                    serialBuffer = "";
+                    return; // we'll read the next command on the next loop.
+                }
             }
-        }
-        else {
-            serialBuffer += String(character);
+            else {
+                serialBuffer += String(computerCharacter);
+            }
         }
     }
 }
@@ -277,7 +285,7 @@ void ReceiveWireless()
 {
 	char character;
 	// read as much as possible in one call to ReceiveWireless()
-	while(Wireless.available()) {
+	while(Wireless.available() > 0) {
 		character = Wireless.read();
 		if (character != ERR_NO_DATA) {
 			watchdogTimer.reset(); // communication are working

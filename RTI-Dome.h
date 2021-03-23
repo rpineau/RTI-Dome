@@ -37,7 +37,7 @@
 #define MAKE_ERR_CODE(P_ID, DTYPE, ERR_CODE)  (((P_ID<<24) & 0xff000000) | ((DTYPE<<16) & 0x00ff0000)  | (ERR_CODE & 0x0000ffff))
 
 #define SERIAL_BUFFER_SIZE 256
-#define MAX_TIMEOUT 1000
+#define MAX_TIMEOUT 5000
 #define ND_LOG_BUFFER_SIZE 256
 #define PANID_TIMEOUT 15    // in seconds
 #define RAIN_CHECK_INTERVAL 10
