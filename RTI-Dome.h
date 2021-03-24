@@ -47,7 +47,7 @@
 #define PLUGIN_VERSION      2.65
 #define PLUGIN_ID   1
 
-// #define PLUGIN_DEBUG 2
+// #define PLUGIN_DEBUG 3
 
 
 // error codes

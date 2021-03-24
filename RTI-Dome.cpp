@@ -348,12 +348,13 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
     pszBufPtr = szRespBuffer;
     
     do {
-        m_pSerx->bytesWaitingRx(nBytesWaiting);
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        nErr = m_pSerx->bytesWaitingRx(nBytesWaiting);
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 3
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
         fprintf(Logfile, "[%s] [CRTIDome::readResponse] nBytesWaiting = %d\n", timestamp, nBytesWaiting);
+        fprintf(Logfile, "[%s] [CRTIDome::readResponse] nBytesWaiting nErr = %d\n", timestamp, nErr);
         fflush(Logfile);
 #endif
         if(!nBytesWaiting) {
@@ -394,10 +395,11 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));
             timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] [CRTIDome::readResponse] readFile Timeout, end of data. nErr = %d\n", timestamp, nErr);
+            fprintf(Logfile, "[%s] [CRTIDome::readResponse] readFile Timeout Error\n", timestamp);
+            fprintf(Logfile, "[%s] [CRTIDome::readResponse] readFile nBytesWaiting = %d\n", timestamp, nBytesWaiting);
+            fprintf(Logfile, "[%s] [CRTIDome::readResponse] readFile ulBytesRead = %lu\n", timestamp, ulBytesRead);
             fflush(Logfile);
 #endif
-            break;
         }
         
         ulTotalBytesRead += ulBytesRead;
@@ -405,7 +407,7 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
     } while (ulTotalBytesRead < nBufferLen  && *(pszBufPtr-1) != '#');
     
     if(!ulTotalBytesRead)
-        nErr = BAD_CMD_RESPONSE;
+        nErr = COMMAND_TIMEOUT; // we didn't get an answer.. so timeout
     else
         *(pszBufPtr-1) = 0; //remove the #
     
