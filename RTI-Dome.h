@@ -37,9 +37,9 @@
 #define MAKE_ERR_CODE(P_ID, DTYPE, ERR_CODE)  (((P_ID<<24) & 0xff000000) | ((DTYPE<<16) & 0x00ff0000)  | (ERR_CODE & 0x0000ffff))
 
 #define SERIAL_BUFFER_SIZE 256
-#define MAX_TIMEOUT 1500
+#define MAX_TIMEOUT 500
 #define MAX_READ_WAIT_TIMEOUT 250
-#define NB_RX_WAIT 2
+#define NB_RX_WAIT 3
 #define ND_LOG_BUFFER_SIZE 256
 #define PANID_TIMEOUT 15    // in seconds
 #define RAIN_CHECK_INTERVAL 10
@@ -66,7 +66,7 @@ public:
     CRTIDome();
     ~CRTIDome();
 
-    int         Connect(const char *pszPort, char *IpAddr=NULL, char *IpPort=NULL);
+    int         Connect(const char *pszPort);
     int         Reconnect();
     void        Disconnect(void);
     const bool  IsConnected(void) { return m_bIsConnected; }

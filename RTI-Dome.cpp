@@ -115,7 +115,7 @@ CRTIDome::~CRTIDome()
     }
 }
 
-int CRTIDome::Connect(const char *pszPort, char *IpAddr, char *IpPort)
+int CRTIDome::Connect(const char *pszPort)
 {
     int nErr;
     bool bDummy;
@@ -141,23 +141,20 @@ int CRTIDome::Connect(const char *pszPort, char *IpAddr, char *IpPort)
     m_bCalibrating = false;
     m_bUnParking = false;
 
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-    ltime = time(NULL);
-    timestamp = asctime(localtime(&ltime));
-    timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::Connect connected to %s\n", timestamp, pszPort);
-    if(IpAddr)
-        fprintf(Logfile, "[%s] CRTIDome::Connect connected to IP %s\n", timestamp, IpAddr);
-    if(IpPort)
-        fprintf(Logfile, "[%s] CRTIDome::Connect connected to Port %s\n", timestamp, IpPort);
-    fflush(Logfile);
-#endif
-
     if(m_Port.find("TCP")!= -1)  {
         m_bNetworkConnected = true;
     }
     else
         m_bNetworkConnected = false;
+
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] CRTIDome::Connect connected to %s\n", timestamp, pszPort);
+    fprintf(Logfile, "[%s] CRTIDome::Connect connected via network : %s\n", timestamp, m_bNetworkConnected?"Yes":"No");
+    fflush(Logfile);
+#endif
 
     getIpAddress(m_IpAddress);
     getSubnetMask(m_SubnetMask);
@@ -305,7 +302,7 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
         return nErr;
 
     // read response
-    nErr = readResponse(szResp, SERIAL_BUFFER_SIZE);
+    nErr = readResponse(szResp, SERIAL_BUFFER_SIZE, nTimeout);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
@@ -358,7 +355,6 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
         fflush(Logfile);
 #endif
         if(!nBytesWaiting) {
-            m_pSleeper->sleep(MAX_READ_WAIT_TIMEOUT);
             if(nbTimeouts++ >= NB_RX_WAIT) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
                 ltime = time(NULL);
@@ -370,6 +366,7 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
                 nErr = ERR_RXTIMEOUT;
                 break;
             }
+            m_pSleeper->sleep(MAX_READ_WAIT_TIMEOUT);
             continue;
         }
         nbTimeouts = 0;
