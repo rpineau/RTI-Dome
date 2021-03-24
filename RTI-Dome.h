@@ -37,7 +37,9 @@
 #define MAKE_ERR_CODE(P_ID, DTYPE, ERR_CODE)  (((P_ID<<24) & 0xff000000) | ((DTYPE<<16) & 0x00ff0000)  | (ERR_CODE & 0x0000ffff))
 
 #define SERIAL_BUFFER_SIZE 256
-#define MAX_TIMEOUT 5000
+#define MAX_TIMEOUT 1500
+#define MAX_READ_WAIT_TIMEOUT 250
+#define NB_RX_WAIT 2
 #define ND_LOG_BUFFER_SIZE 256
 #define PANID_TIMEOUT 15    // in seconds
 #define RAIN_CHECK_INTERVAL 10
@@ -45,7 +47,7 @@
 #define PLUGIN_VERSION      2.65
 #define PLUGIN_ID   1
 
-// #define PLUGIN_DEBUG 2
+#define PLUGIN_DEBUG 2
 
 
 // error codes

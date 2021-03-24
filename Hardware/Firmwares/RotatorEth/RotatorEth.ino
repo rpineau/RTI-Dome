@@ -218,6 +218,7 @@ void setup()
     gotHelloFromShutter = false;
 #endif
     Rotator = new RotatorClass();
+    Rotator->motorStop();
     Rotator->EnableMotor(false);
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);

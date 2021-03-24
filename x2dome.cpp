@@ -238,6 +238,7 @@ int X2Dome::execModalSettingsDialog()
             dx->setPropertyInt("shutterWatchdog", "value", nWatchdog);
 
             dx->setEnabled("lowShutBatCutOff",true);
+            dx->setText("shutterPresent", "Shutter present");
         } else {
             dx->setEnabled("shutterSpeed",false);
             dx->setPropertyInt("shutterSpeed","value",0);
@@ -248,16 +249,9 @@ int X2Dome::execModalSettingsDialog()
             dx->setEnabled("pushButton_4", false);
             dx->setPropertyInt("shutterWatchdog", "value", 0);
             dx->setEnabled("lowShutBatCutOff",false);
-        }
-
-        dx->setEnabled("lowRotBatCutOff",true);
-
-        if(m_bHasShutterControl) {
-            dx->setText("shutterPresent", "Shutter present");
-        }
-        else {
             dx->setText("shutterPresent", "No Shutter detected");
         }
+
         // panID
         dx->setEnabled("panID", true);
         dx->setEnabled("pushButton_2", true);
@@ -433,9 +427,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 
     if (!strcmp(pszEvent, "on_timer"))
     {
-        bShutterPresent = uiex->isChecked("hasShutterCtrl");
         m_RTIDome.getShutterPresent(bShutterPresent);
-
         if(bShutterPresent != m_bHasShutterControl) {
             m_bHasShutterControl = bShutterPresent;
             if(m_bHasShutterControl && m_bLinked) {

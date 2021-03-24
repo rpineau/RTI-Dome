@@ -94,7 +94,7 @@ CRTIDome::CRTIDome()
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] [CRTIDome] Version %3.2f build 2020_11_16_1810.\n", timestamp, PLUGIN_VERSION);
+    fprintf(Logfile, "[%s] [CRTIDome] Version %3.2f build 2021_03_23_1810.\n", timestamp, PLUGIN_VERSION);
     fprintf(Logfile, "[%s] [CRTIDome] Constructor Called.\n", timestamp);
     fprintf(Logfile, "[%s] [CRTIDome] Rains status file : '%s'.\n", timestamp, m_sRainStatusfilePath.c_str());
     fflush(Logfile);
@@ -328,7 +328,7 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
     if (szResp[0] != respCmdCode)
         nErr = BAD_CMD_RESPONSE;
 
-    if(pszResult)
+    if(pszResult && (nErr == PLUGIN_OK ))
         strncpy(pszResult, &szResp[1], nResultMaxLen);
 
     return nErr;
@@ -341,41 +341,74 @@ int CRTIDome::readResponse(char *szRespBuffer, int nBufferLen, int nTimeout)
     unsigned long ulBytesRead = 0;
     unsigned long ulTotalBytesRead = 0;
     char *pszBufPtr;
-
+    int nBytesWaiting = 0 ;
+    int nbTimeouts = 0;
+    
     memset(szRespBuffer, 0, (size_t) nBufferLen);
     pszBufPtr = szRespBuffer;
-
+    
     do {
-        nErr = m_pSerx->readFile(pszBufPtr, 1, ulBytesRead, nTimeout);
+        m_pSerx->bytesWaitingRx(nBytesWaiting);
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::readResponse] nBytesWaiting = %d\n", timestamp, nBytesWaiting);
+        fflush(Logfile);
+#endif
+        if(!nBytesWaiting) {
+            m_pSleeper->sleep(MAX_READ_WAIT_TIMEOUT);
+            if(nbTimeouts++ >= NB_RX_WAIT) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+                ltime = time(NULL);
+                timestamp = asctime(localtime(&ltime));
+                timestamp[strlen(timestamp) - 1] = 0;
+                fprintf(Logfile, "[%s] [CRTIDome::readResponse] bytesWaitingRx timeout, no data for %d loops\n", timestamp, NB_RX_WAIT);
+                fflush(Logfile);
+#endif
+                nErr = ERR_RXTIMEOUT;
+                break;
+            }
+            continue;
+        }
+        nbTimeouts = 0;
+        if(ulTotalBytesRead + nBytesWaiting <= nBufferLen)
+            nErr = m_pSerx->readFile(pszBufPtr, nBytesWaiting, ulBytesRead, nTimeout);
+        else {
+            nErr = ERR_RXTIMEOUT;
+            break; // buffer is full.. there is a problem !!
+        }
         if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));
             timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] [CRTIDome::readResponse] readFile error\n", timestamp);
+            fprintf(Logfile, "[%s] [CRTIDome::readResponse] readFile error.\n", timestamp);
             fflush(Logfile);
 #endif
             return nErr;
         }
-
-        if (ulBytesRead !=1) {// timeout
+        
+        if (ulBytesRead != nBytesWaiting) { // timeout
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));
             timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] CRTIDome::readResponse Timeout while waiting for response from controller\n", timestamp);
+            fprintf(Logfile, "[%s] [CRTIDome::readResponse] readFile Timeout, end of data. nErr = %d\n", timestamp, nErr);
             fflush(Logfile);
 #endif
-
-            nErr = COMMAND_TIMEOUT;
             break;
         }
+        
         ulTotalBytesRead += ulBytesRead;
-    } while (*pszBufPtr++ != '#' && ulTotalBytesRead < nBufferLen );
-
-    if(ulTotalBytesRead)
+        pszBufPtr+=ulBytesRead;
+    } while (ulTotalBytesRead < nBufferLen  && *(pszBufPtr-1) != '#');
+    
+    if(!ulTotalBytesRead)
+        nErr = BAD_CMD_RESPONSE;
+    else
         *(pszBufPtr-1) = 0; //remove the #
-
+    
     return nErr;
 }
 
