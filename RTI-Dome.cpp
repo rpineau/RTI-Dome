@@ -124,7 +124,7 @@ int CRTIDome::Connect(const char *pszPort)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::Connect Called %s\n", timestamp, pszPort);
+    fprintf(Logfile, "[%s] [CRTIDome::Connect] Called %s\n", timestamp, pszPort);
     fflush(Logfile);
 #endif
 
@@ -151,21 +151,34 @@ int CRTIDome::Connect(const char *pszPort)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::Connect connected to %s\n", timestamp, pszPort);
-    fprintf(Logfile, "[%s] CRTIDome::Connect connected via network : %s\n", timestamp, m_bNetworkConnected?"Yes":"No");
+    fprintf(Logfile, "[%s] [CRTIDome::Connect] connected to %s\n", timestamp, pszPort);
+    fprintf(Logfile, "[%s] [CRTIDome::Connect] connected via network : %s\n", timestamp, m_bNetworkConnected?"Yes":"No");
     fflush(Logfile);
 #endif
 
-    getIpAddress(m_IpAddress);
-    getSubnetMask(m_SubnetMask);
-    getIPGateway(m_GatewayIP);
-    getUseDHCP(m_bUseDHCP);
+    nErr = getIpAddress(m_IpAddress);
+    if(nErr) {
+        // looks like the connection is not working.
+        m_pSerx->close();
+        m_bIsConnected = false;
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::Connect] Connection failed\n", timestamp);
+        fflush(Logfile);
+#endif
+    }
+
+    nErr |= getSubnetMask(m_SubnetMask);
+    nErr |= getIPGateway(m_GatewayIP);
+    nErr |= getUseDHCP(m_bUseDHCP);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::Connect Getting Firmware\n", timestamp);
+    fprintf(Logfile, "[%s] [CRTIDome::Connect] Getting Firmware\n", timestamp);
     fflush(Logfile);
 #endif
 
@@ -188,7 +201,7 @@ int CRTIDome::Connect(const char *pszPort)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::Connect Got Firmware %s ( %f )\n", timestamp, m_szFirmwareVersion, m_fVersion);
+    fprintf(Logfile, "[%s] [CRTIDome::Connect] Got Firmware %s ( %f )\n", timestamp, m_szFirmwareVersion, m_fVersion);
     fflush(Logfile);
 #endif
     if(m_fVersion < 2.0f && m_fVersion != 0.523f && m_fVersion != 0.522f)  {
@@ -201,7 +214,7 @@ int CRTIDome::Connect(const char *pszPort)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] CRTIDome::Connect getDomeParkAz nErr : %d\n", timestamp, nErr);
+        fprintf(Logfile, "[%s] [CRTIDome::Connect] getDomeParkAz nErr : %d\n", timestamp, nErr);
         fflush(Logfile);
 #endif
         return nErr;
@@ -212,7 +225,7 @@ int CRTIDome::Connect(const char *pszPort)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] CRTIDome::Connect getDomeHomeAz nErr : %d\n", timestamp, nErr);
+        fprintf(Logfile, "[%s] [CRTIDome::Connect] getDomeHomeAz nErr : %d\n", timestamp, nErr);
         fflush(Logfile);
 #endif
         return nErr;
@@ -289,7 +302,7 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::domeCommand sending : %s\n", timestamp, pszCmd);
+    fprintf(Logfile, "[%s] [CRTIDome::domeCommand] sending : %s\n", timestamp, pszCmd);
     fflush(Logfile);
 #endif
 
@@ -308,7 +321,7 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] CRTIDome::domeCommand ***** ERROR READING RESPONSE **** error = %d , response : %s\n", timestamp, nErr, szResp);
+        fprintf(Logfile, "[%s] [CRTIDome::domeCommand] ***** ERROR READING RESPONSE **** error = %d , response : %s\n", timestamp, nErr, szResp);
         fflush(Logfile);
 #endif
         return nErr;
@@ -317,7 +330,7 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::domeCommand response : %s\n", timestamp, szResp);
+    fprintf(Logfile, "[%s] [CRTIDome::domeCommand] response : %s\n", timestamp, szResp);
     fflush(Logfile);
 #endif
 
@@ -1382,7 +1395,7 @@ int CRTIDome::isOpenComplete(bool &bComplete)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::isOpenComplete bComplete = %s\n", timestamp, bComplete?"True":"False");
+    fprintf(Logfile, "[%s] [CRTIDome::isOpenComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
     fflush(Logfile);
 #endif
 
@@ -1421,7 +1434,7 @@ int CRTIDome::isCloseComplete(bool &bComplete)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::isCloseComplete bComplete = %s\n", timestamp, bComplete?"True":"False");
+    fprintf(Logfile, "[%s] [CRTIDome::isCloseComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
     fflush(Logfile);
 #endif
 
@@ -1441,8 +1454,8 @@ int CRTIDome::isParkComplete(bool &bComplete)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::isParkComplete m_bParking = %s\n", timestamp, m_bParking?"True":"False");
-    fprintf(Logfile, "[%s] CRTIDome::isParkComplete bComplete = %s\n", timestamp, bComplete?"True":"False");
+    fprintf(Logfile, "[%s] [CRTIDome::isParkComplete] m_bParking = %s\n", timestamp, m_bParking?"True":"False");
+    fprintf(Logfile, "[%s] [CRTIDome::isParkComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
     fflush(Logfile);
 #endif
 
@@ -1460,7 +1473,7 @@ int CRTIDome::isParkComplete(bool &bComplete)
             ltime = time(NULL);
             timestamp = asctime(localtime(&ltime));
             timestamp[strlen(timestamp) - 1] = 0;
-            fprintf(Logfile, "[%s] CRTIDome::isParkComplete found home, now parking\n", timestamp);
+            fprintf(Logfile, "[%s] [CRTIDome::isParkComplete] found home, now parking\n", timestamp);
             fflush(Logfile);
 #endif
             m_bParking = false;
@@ -1487,7 +1500,7 @@ int CRTIDome::isParkComplete(bool &bComplete)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::isParkComplete bComplete = %s\n", timestamp, bComplete?"True":"False");
+    fprintf(Logfile, "[%s] [CRTIDome::isParkComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
     fflush(Logfile);
 #endif
 
@@ -1509,7 +1522,7 @@ int CRTIDome::isUnparkComplete(bool &bComplete)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] CRTIDome::isUnparkComplete UNPARKED \n", timestamp);
+        fprintf(Logfile, "[%s] [CRTIDome::isUnparkComplete] UNPARKED \n", timestamp);
         fflush(Logfile);
 #endif
     }
@@ -1518,7 +1531,7 @@ int CRTIDome::isUnparkComplete(bool &bComplete)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] CRTIDome::isUnparkComplete unparking.. checking if we're home \n", timestamp);
+        fprintf(Logfile, "[%s] [CRTIDome::isUnparkComplete] unparking.. checking if we're home \n", timestamp);
         fflush(Logfile);
 #endif
         nErr = isFindHomeComplete(bComplete);
@@ -1536,8 +1549,8 @@ int CRTIDome::isUnparkComplete(bool &bComplete)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::isUnparkComplete m_bParked = %s\n", timestamp, m_bParked?"True":"False");
-    fprintf(Logfile, "[%s] CRTIDome::isUnparkComplete bComplete = %s\n", timestamp, bComplete?"True":"False");
+    fprintf(Logfile, "[%s] [CRTIDome::isUnparkComplete] m_bParked = %s\n", timestamp, m_bParked?"True":"False");
+    fprintf(Logfile, "[%s] [CRTIDome::isUnparkComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
     fflush(Logfile);
 #endif
 
@@ -1555,7 +1568,7 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
     ltime = time(NULL);
     timestamp = asctime(localtime(&ltime));
     timestamp[strlen(timestamp) - 1] = 0;
-    fprintf(Logfile, "[%s] CRTIDome::isFindHomeComplete\n", timestamp);
+    fprintf(Logfile, "[%s] [CRTIDome::isFindHomeComplete]\n", timestamp);
     fflush(Logfile);
 #endif
 
@@ -1565,7 +1578,7 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] CRTIDome::isFindHomeComplete still moving\n", timestamp);
+        fprintf(Logfile, "[%s] [CRTIDome::isFindHomeComplete] still moving\n", timestamp);
         fflush(Logfile);
 #endif
         return nErr;
@@ -1582,7 +1595,7 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
         timestamp[strlen(timestamp) - 1] = 0;
-        fprintf(Logfile, "[%s] CRTIDome::isFindHomeComplete At Home\n", timestamp);
+        fprintf(Logfile, "[%s] [CRTIDome::isFindHomeComplete] At Home\n", timestamp);
         fflush(Logfile);
 #endif
     }

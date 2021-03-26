@@ -115,7 +115,7 @@ const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
 const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor control.
 const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
 const char ETH_MAC_ADDRESS              = 'f'; // get the MAC address.
-const char GOTO_ROTATOR_CMD             = 'g'; // Get/set dome azimuth
+const char GOTO_ROTATOR_CMD             = 'g'; // Get dome azimuth or move to new position (GoT
 const char HOME_ROTATOR_CMD             = 'h'; // Home the dome
 const char HOMEAZ_ROTATOR_CMD           = 'i'; // Get/Set home position
 const char IP_ADDRESS                   = 'j'; // get/set the IP address
@@ -127,10 +127,10 @@ const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has respo
 const char IP_SUBNET                    = 'p'; // get/set the ip subnet
 const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
 const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
-const char SYNC_ROTATOR_CMD             = 's'; // Sync to telescope
-const char STEPSPER_ROTATOR_CMD         = 't'; // GetSteps per rotation
-const char IP_GATEWAY                   = 'u'; // get/set IP default gateway
-const char VERSION_ROTATOR_GET          = 'v'; // Get Version string
+const char SYNC_ROTATOR_CMD             = 's'; // Sync to new Azimuth
+const char STEPSPER_ROTATOR_CMD         = 't'; // Get/set Steps per rotation
+const char IP_GATEWAY                   = 'u'; // get/set default gateway IP
+const char VERSION_ROTATOR_GET          = 'v'; // Get Firmware Version
 const char IP_DHCP                      = 'w'; // get/set DHCP mode
                                         //'x' see bellow
 const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
@@ -144,14 +144,14 @@ const char INIT_XBEE                    = 'x'; // force a XBee reconfig
 // available A B J N S U W X Z
 // Shutter commands
 const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
-const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // restore default values for motor controll.
+const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // Restore default values for motor control.
 const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
                                        // 'F' see above
 //const char ELEVATION_SHUTTER_CMD      = 'G'; // Get/Set altitude TBD
 const char HELLO_CMD                    = 'H'; // Let shutter know we're here
 const char WATCHDOG_INTERVAL_SET        = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
-const char VOLTS_SHUTTER_CMD            = 'K'; // Get volts and get/set cutoff
-const char SHUTTER_PING                 = 'L'; // use to reset watchdong timer.
+const char VOLTS_SHUTTER_CMD            = 'K'; // Get volts and set cutoff voltage (close if bellow)
+const char SHUTTER_PING                 = 'L'; // Shutter ping, uses to reset watchdog timer.
 const char STATE_SHUTTER_GET            = 'M'; // Get shutter state
 const char OPEN_SHUTTER_CMD             = 'O'; // Open the shutter
 const char POSITION_SHUTTER_GET		    = 'P'; // Get step position
@@ -335,6 +335,8 @@ void checkForNewTCPClient()
     if(newClient) {
         DBPrintln("new client");
         if(nbEthernetClient > 0) { // we only accept 1 client
+            newClient.print("Already in use#");
+            newClient.flush();
             newClient.stop();
             DBPrintln("new client rejected");
         }
@@ -736,7 +738,7 @@ void ProcessCommand(bool bFromNetwork)
                 fTmp = value.toFloat();
                 if (fTmp >= 0 && fTmp < 360) {
                     Rotator->SyncPosition(fTmp);
-                    serialMessage = String(SYNC_ROTATOR_CMD) + String(Rotator->GetPosition());
+                    serialMessage = String(SYNC_ROTATOR_CMD) + String(Rotator->GetAzimuth());
                 }
             }
             else {
