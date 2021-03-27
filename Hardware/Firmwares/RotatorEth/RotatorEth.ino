@@ -1023,75 +1023,7 @@ void ProcessCommand(bool bFromNetwork)
 }
 
 
-
-
 #ifndef STANDALONE
-void ReceiveWireless2()
-{
-    int timeout = 0;
-    char wirelessCharacter;
-
-    if (isConfiguringWireless) {
-        DBPrintln("[ReceiveWireless] Configuring XBee");
-        // read the response
-        do {
-            while(Wireless.available() < 1) {
-                delay(1);
-                timeout++;
-                if(timeout >= MAX_TIMEOUT*10) {
-                    return;
-                    }
-            }
-            wirelessCharacter = Wireless.read();
-            if (wirelessCharacter != ERR_NO_DATA) {
-                if(wirelessCharacter != '\r' && wirelessCharacter != ERR_NO_DATA) {
-                    wirelessBuffer += String(wirelessCharacter);
-                }
-            }
-        } while (wirelessCharacter != '\r');
-
-        DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
-
-        ConfigXBee();
-        wirelessBuffer = "";
-        return;
-    }
-
-    // wait for response
-    timeout = 0;
-    while(Wireless.available() < 1) {
-        delay(5);   // give time to the shutter to reply
-        timeout++;
-        if(timeout >= MAX_TIMEOUT) {
-            return;
-            }
-    }
-
-    // read the response
-    timeout = 0;
-    do {
-        if(Wireless.available() > 0 ) {
-            wirelessCharacter = Wireless.read();
-            DBPrintln("[ReceiveWireless] received  : '" + String(wirelessCharacter) + "' ( 0x" + String(wirelessCharacter, HEX) + " )");
-            if(wirelessCharacter != ERR_NO_DATA && wirelessCharacter!=0xFF && wirelessCharacter != '#') {
-                wirelessBuffer += String(wirelessCharacter);
-            }
-        } else {
-            delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
-            timeout++;
-        }
-        if(timeout >= MAX_TIMEOUT) {
-            return;
-        }
-    } while (wirelessCharacter != '#');
-
-    if (wirelessBuffer.length() > 0) {
-        ProcessWireless();
-        wirelessBuffer = "";
-
-    }
-    return;
-}
 
 void ReceiveWireless()
 {
