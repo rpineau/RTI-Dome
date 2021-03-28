@@ -38,13 +38,13 @@
 
 #define SERIAL_BUFFER_SIZE 256
 #define MAX_TIMEOUT 500
-#define MAX_READ_WAIT_TIMEOUT 250
-#define NB_RX_WAIT 3
+#define MAX_READ_WAIT_TIMEOUT 25
+#define NB_RX_WAIT 10
 #define ND_LOG_BUFFER_SIZE 256
 #define PANID_TIMEOUT 15    // in seconds
 #define RAIN_CHECK_INTERVAL 10
 
-#define PLUGIN_VERSION      2.65
+#define PLUGIN_VERSION      1.0
 #define PLUGIN_ID   1
 
 // #define PLUGIN_DEBUG 3
