@@ -1,0 +1,344 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		938EAFDA1D0C84F700ED2086 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938EAFD61D0C84F700ED2086 /* main.cpp */; };
+		938EAFDB1D0C84F700ED2086 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = 938EAFD71D0C84F700ED2086 /* main.h */; };
+		938EAFDC1D0C84F700ED2086 /* x2dome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938EAFD81D0C84F700ED2086 /* x2dome.cpp */; };
+		938EAFDD1D0C84F700ED2086 /* x2dome.h in Headers */ = {isa = PBXBuildFile; fileRef = 938EAFD91D0C84F700ED2086 /* x2dome.h */; };
+		938EAFE01D0C858700ED2086 /* RTI-Dome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938EAFDE1D0C858700ED2086 /* RTI-Dome.cpp */; };
+		938EAFE11D0C858700ED2086 /* RTI-Dome.h in Headers */ = {isa = PBXBuildFile; fileRef = 938EAFDF1D0C858700ED2086 /* RTI-Dome.h */; };
+		938EAFE31D0C988800ED2086 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938EAFE21D0C988800ED2086 /* IOKit.framework */; };
+		938EAFE51D0C989400ED2086 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938EAFE41D0C989400ED2086 /* CoreFoundation.framework */; };
+		93C11EC4252BFEEC00077F0C /* StopWatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 93C11EC3252BFEEC00077F0C /* StopWatch.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		938EAFCD1D0C83E900ED2086 /* libRTI-Dome.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libRTI-Dome.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		938EAFD61D0C84F700ED2086 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		938EAFD71D0C84F700ED2086 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		938EAFD81D0C84F700ED2086 /* x2dome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = x2dome.cpp; sourceTree = "<group>"; };
+		938EAFD91D0C84F700ED2086 /* x2dome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x2dome.h; sourceTree = "<group>"; };
+		938EAFDE1D0C858700ED2086 /* RTI-Dome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "RTI-Dome.cpp"; sourceTree = "<group>"; };
+		938EAFDF1D0C858700ED2086 /* RTI-Dome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RTI-Dome.h"; sourceTree = "<group>"; };
+		938EAFE21D0C988800ED2086 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		938EAFE41D0C989400ED2086 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		93C11EC3252BFEEC00077F0C /* StopWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopWatch.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		938EAFCA1D0C83E900ED2086 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				938EAFE51D0C989400ED2086 /* CoreFoundation.framework in Frameworks */,
+				938EAFE31D0C988800ED2086 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		938EAFC41D0C83E900ED2086 = {
+			isa = PBXGroup;
+			children = (
+				938EAFD51D0C84E900ED2086 /* Sources */,
+				938EAFD41D0C84DF00ED2086 /* Frameworks */,
+				938EAFCE1D0C83E900ED2086 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		938EAFCE1D0C83E900ED2086 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				938EAFCD1D0C83E900ED2086 /* libRTI-Dome.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		938EAFD41D0C84DF00ED2086 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				938EAFE41D0C989400ED2086 /* CoreFoundation.framework */,
+				938EAFE21D0C988800ED2086 /* IOKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		938EAFD51D0C84E900ED2086 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				93C11EC3252BFEEC00077F0C /* StopWatch.h */,
+				938EAFDE1D0C858700ED2086 /* RTI-Dome.cpp */,
+				938EAFDF1D0C858700ED2086 /* RTI-Dome.h */,
+				938EAFD61D0C84F700ED2086 /* main.cpp */,
+				938EAFD71D0C84F700ED2086 /* main.h */,
+				938EAFD81D0C84F700ED2086 /* x2dome.cpp */,
+				938EAFD91D0C84F700ED2086 /* x2dome.h */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		938EAFCB1D0C83E900ED2086 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				938EAFE11D0C858700ED2086 /* RTI-Dome.h in Headers */,
+				938EAFDB1D0C84F700ED2086 /* main.h in Headers */,
+				93C11EC4252BFEEC00077F0C /* StopWatch.h in Headers */,
+				938EAFDD1D0C84F700ED2086 /* x2dome.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		938EAFCC1D0C83E900ED2086 /* RTI-Dome */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 938EAFD11D0C83E900ED2086 /* Build configuration list for PBXNativeTarget "RTI-Dome" */;
+			buildPhases = (
+				938EAFC91D0C83E900ED2086 /* Sources */,
+				938EAFCA1D0C83E900ED2086 /* Frameworks */,
+				938EAFCB1D0C83E900ED2086 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RTI-Dome";
+			productName = "RTI-Dome";
+			productReference = 938EAFCD1D0C83E900ED2086 /* libRTI-Dome.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		938EAFC51D0C83E900ED2086 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1220;
+				ORGANIZATIONNAME = "RTI-Zone";
+				TargetAttributes = {
+					938EAFCC1D0C83E900ED2086 = {
+						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = PB97QXVYQC;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 938EAFC81D0C83E900ED2086 /* Build configuration list for PBXProject "RTI-Dome" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 938EAFC41D0C83E900ED2086;
+			productRefGroup = 938EAFCE1D0C83E900ED2086 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				938EAFCC1D0C83E900ED2086 /* RTI-Dome */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		938EAFC91D0C83E900ED2086 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				938EAFDC1D0C84F700ED2086 /* x2dome.cpp in Sources */,
+				938EAFDA1D0C84F700ED2086 /* main.cpp in Sources */,
+				938EAFE01D0C858700ED2086 /* RTI-Dome.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		938EAFCF1D0C83E900ED2086 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		938EAFD01D0C83E900ED2086 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		938EAFD21D0C83E900ED2086 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CODE_SIGN_IDENTITY = "-";
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = SB_MAC_BUILD;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/\"",
+					"\"$(SRCROOT)/../..\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		938EAFD31D0C83E900ED2086 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CODE_SIGN_IDENTITY = "-";
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = SB_MAC_BUILD;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/\"",
+					"\"$(SRCROOT)/../..\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		938EAFC81D0C83E900ED2086 /* Build configuration list for PBXProject "RTI-Dome" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				938EAFCF1D0C83E900ED2086 /* Debug */,
+				938EAFD01D0C83E900ED2086 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		938EAFD11D0C83E900ED2086 /* Build configuration list for PBXNativeTarget "RTI-Dome" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				938EAFD21D0C83E900ED2086 /* Debug */,
+				938EAFD31D0C83E900ED2086 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 938EAFC51D0C83E900ED2086 /* Project object */;
+}
