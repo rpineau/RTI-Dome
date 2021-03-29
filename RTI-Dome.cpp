@@ -240,27 +240,6 @@ int CRTIDome::Connect(const char *pszPort)
     return SB_OK;
 }
 
-int CRTIDome::Reconnect()
-{
-    int nErr = PLUGIN_OK;
-    
-    m_pSerx->close();
-
-    m_bIsConnected = false;
-    m_bCalibrating = false;
-    m_bUnParking = false;
-
-    // 115200 8N1 DTR
-    nErr = m_pSerx->open(m_Port.c_str(), 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
-    if(nErr) {
-        m_bIsConnected = false;
-        return nErr;
-    }
-
-    m_bIsConnected = false;
-    return nErr;
-}
-
 void CRTIDome::Disconnect()
 {
     if(m_bIsConnected) {
@@ -288,14 +267,6 @@ int CRTIDome::domeCommand(const char *pszCmd, char *pszResult, char respCmdCode,
     char szResp[SERIAL_BUFFER_SIZE];
     unsigned long  ulBytesWrite;
 
-    if(!m_pSerx->isConnected()) {
-        nErr = Reconnect();
-        if(nErr) {
-            Disconnect();
-            return nErr;
-        }
-    }
-    
     m_pSerx->purgeTxRx();
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
