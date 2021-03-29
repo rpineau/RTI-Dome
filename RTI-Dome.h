@@ -67,7 +67,6 @@ public:
     ~CRTIDome();
 
     int         Connect(const char *pszPort);
-    int         Reconnect();
     void        Disconnect(void);
     const bool  IsConnected(void) { return m_bIsConnected; }
 
