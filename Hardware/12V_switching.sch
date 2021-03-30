@@ -10475,6 +10475,7 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 <segment>
 <wire x1="160.02" y1="0" x2="162.56" y2="0" width="0.1524" layer="91"/>
 <label x="160.02" y="0" size="1.016" layer="95" rot="MR0" xref="yes"/>
+<pinref part="J3" gate="G$1" pin="GND"/>
 </segment>
 </net>
 <net name="+VIN" class="1">
@@ -10491,6 +10492,7 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/LM2576D2TR4-0
 <segment>
 <wire x1="160.02" y1="10.16" x2="162.56" y2="10.16" width="0.1524" layer="91"/>
 <label x="160.02" y="10.16" size="1.016" layer="95" rot="MR0" xref="yes"/>
+<pinref part="J3" gate="G$1" pin="V+"/>
 </segment>
 </net>
 <net name="+12V" class="0">

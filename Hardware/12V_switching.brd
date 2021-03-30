@@ -1780,6 +1780,7 @@ design rules under a new name.</description>
 <vertex x="27.6225" y="9.2075"/>
 <vertex x="34.29" y="9.2075"/>
 </polygon>
+<contactref element="J3" pad="RED"/>
 </signal>
 <signal name="+12V">
 <contactref element="L1" pad="2"/>
@@ -1811,9 +1812,6 @@ design rules under a new name.</description>
 <wire x1="7.285" y1="34.925" x2="8.255" y2="35.225" width="1.6764" layer="1"/>
 <wire x1="15.695" y1="23.628" x2="19.565" y2="23.628" width="1.6764" layer="1"/>
 <wire x1="19.565" y1="23.628" x2="19.565" y2="23.8125" width="1.6764" layer="1"/>
-</signal>
-<signal name="V+">
-<contactref element="J3" pad="RED"/>
 </signal>
 </signals>
 <errors>
