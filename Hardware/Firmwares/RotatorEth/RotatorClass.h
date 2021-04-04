@@ -62,7 +62,7 @@ DueFlashStorage dueFlashStorage;
 
 // used to offset the config location.. at some point.
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
-#define EEPROM_SIGNATURE    2645
+#define EEPROM_SIGNATURE    2646
 
 
 typedef struct IPCONFIG {

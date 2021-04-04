@@ -4817,10 +4817,10 @@ design rules under a new name.</description>
 <attribute name="OC_NEWARK" value="92C6843" x="-2.9845" y="55.91175" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="-2.9845" y="55.91175" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R1" library="rti" package="R0805" value="1K" x="7.58825" y="44.45" rot="R270">
+<element name="R1" library="rti" package="R0805" value="2.2K" x="7.58825" y="44.45" rot="R270">
 <attribute name="MPN" value="RT0805FRE071KL" x="7.58825" y="44.45" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
-<element name="R3" library="rti" package="R0805" value="1K" x="1.93675" y="44.45" rot="R270">
+<element name="R3" library="rti" package="R0805" value="2.2K" x="1.93675" y="44.45" rot="R270">
 <attribute name="MPN" value="RT0805FRE071KL" x="1.93675" y="44.45" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="C5" library="rti" package="C0805" value="100nF" x="1.93675" y="40.22725" rot="R270">
@@ -4960,7 +4960,7 @@ design rules under a new name.</description>
 <attribute name="MPN" value="RT0805FRE074K7L" x="63.1825" y="41.91" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="J1" library="powerpoles" package="POWERPOLE_PAIR_45A" value="POWERPOLE_POWER45A" x="102.87" y="8.89" rot="MR90"/>
-<element name="25MHZ" library="rti" package="SMD-7050_4P" value="CB3LV-OSCILATOR" x="58.42" y="27.94">
+<element name="25MHZ" library="rti" package="SMD-7050_4P" value="CB3LV-3I-25M0000" x="58.42" y="27.94">
 <attribute name="MPN" value="CB3LV-3I-25M0000" x="58.42" y="27.94" size="1.778" layer="27" display="off"/>
 </element>
 <element name="C20" library="rti" package="C0805" value="100nF" x="53.34" y="27.94" rot="R90">
@@ -4984,7 +4984,7 @@ design rules under a new name.</description>
 <element name="FL1" library="BLM21AG121SN1D" package="L0805" value="BLM21AG121SN1D" x="78.74" y="13.97" rot="R180">
 <attribute name="MPN" value="BLM21AG121SN1D" x="78.74" y="13.97" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="IC4" library="burr-brown" package="SOT223" value="REG1117" x="50.8" y="21.59" rot="R180">
+<element name="IC4" library="burr-brown" package="SOT223" value="REG1117-3.3/2K5" x="50.8" y="21.59" rot="R180">
 <attribute name="MPN" value="REG1117-3.3/2K5" x="50.8" y="21.59" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MF" value="" x="50.8" y="21.59" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_NEWARK" value="14P6981" x="50.8" y="21.59" size="1.778" layer="27" rot="R180" display="off"/>

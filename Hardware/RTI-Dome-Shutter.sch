@@ -14683,8 +14683,8 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <part name="X11" library="con-ptr500" deviceset="AK500/2" device=""/>
 <part name="IC1" library="microchip" deviceset="24*" device="ST" technology="AA128"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
-<part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
-<part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="1K"/>
+<part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="2.2K"/>
+<part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="2.2K"/>
 <part name="C5" library="rti" deviceset="C-EU" device="'0805'" value="100nF"/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>

@@ -16830,10 +16830,10 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 </part>
 <part name="IC1" library="microchip" deviceset="24*" device="ST" technology="AA128"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
-<part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="1K">
+<part name="R1" library="rti" deviceset="R-EU" device="'0805'" value="2.2K">
 <attribute name="MPN" value="RT0805FRE071KL"/>
 </part>
-<part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="1K">
+<part name="R3" library="rti" deviceset="R-EU" device="'0805'" value="2.2K">
 <attribute name="MPN" value="RT0805FRE071KL"/>
 </part>
 <part name="C5" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
@@ -16971,7 +16971,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 </part>
 <part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
-<part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device="">
+<part name="25MHZ" library="rti" deviceset="CB3LV-OSCILATOR" device="" value="CB3LV-3I-25M0000">
 <attribute name="MPN" value="CB3LV-3I-25M0000"/>
 </part>
 <part name="C20" library="rti" deviceset="C-EU" device="'0805'" value="100nF">
@@ -16991,7 +16991,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <part name="FL1" library="BLM21AG121SN1D" deviceset="BLM21AG121SN1D" device="">
 <attribute name="MPN" value="BLM21AG121SN1D"/>
 </part>
-<part name="IC4" library="burr-brown" deviceset="REG1117" device="">
+<part name="IC4" library="burr-brown" deviceset="REG1117" device="" value="REG1117-3.3/2K5">
 <attribute name="MPN" value="REG1117-3.3/2K5"/>
 </part>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>

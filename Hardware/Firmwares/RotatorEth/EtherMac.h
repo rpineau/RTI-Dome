@@ -6,9 +6,9 @@
 #define __ETHER_MAC__
 
 #define EEFC_FKEY 0x5A
-#define EEFC_FMR_SCOD   (0x1ul << 16)
-#define IFLASH0_ADDR  0x00080000                               // Flash memory begins at 0x00080000
-#define IFLASH1_ADDR ( IFLASH0_ADDR + IFLASH_SIZE / 2 )        // IFLASH1_ADDR         = 0x000C0000
+//#define EEFC_FMR_SCOD   (0x1ul << 16)
+//#define IFLASH0_ADDR  0x00080000                               // Flash memory begins at 0x00080000
+//#define IFLASH1_ADDR ( IFLASH0_ADDR + IFLASH_SIZE / 2 )        // IFLASH1_ADDR         = 0x000C0000
 
 __attribute__ ((section (".ramfunc")))
 void ReadUniqueID( uint32_t * latch_buffer )
