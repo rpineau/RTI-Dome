@@ -23,6 +23,8 @@ X2Dome::X2Dome(const char* pszSelection, const int& nISIndex,
 	m_bLinked = false;
     m_bCalibratingDome = false;
     m_bSettingPanID = false;
+    m_bSettingNetwork = false;
+    
     m_bHasShutterControl = false;
     
     m_RTIDome.setSerxPointer(pSerX);
@@ -412,7 +414,8 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     int nAcc;
     int n_nbStepPerRev;
     int nWatchdog;
-
+    bool bUseDHCP;
+    
     if (!strcmp(pszEvent, "on_pushButtonCancel_clicked") && m_bCalibratingDome)
         m_RTIDome.abortCurrentCommand();
 
@@ -505,6 +508,29 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                     }
                 }
             }
+
+            else if(m_bSettingNetwork) {
+                if(m_SetNetworkTimer.GetElapsedSeconds()>5) {
+                    nErr = m_RTIDome.getUseDHCP(bUseDHCP);
+                    if(bUseDHCP) {
+                        uiex->setEnabled("IPAddress", false);
+                        uiex->setEnabled("SubnetMask", false);
+                        uiex->setEnabled("GatewayIP", false);
+                    }
+                    else { // not using dhcp so the field are editable
+                        uiex->setEnabled("IPAddress", true);
+                        uiex->setEnabled("SubnetMask", true);
+                        uiex->setEnabled("GatewayIP", true);
+                    }
+                    m_RTIDome.getIpAddress(sDummy);
+                    uiex->setPropertyString("IPAddress", "text", sDummy.c_str());
+                    m_RTIDome.getSubnetMask(sDummy);
+                    uiex->setPropertyString("SubnetMask", "text", sDummy.c_str());
+                    m_RTIDome.getIPGateway(sDummy);
+                    uiex->setPropertyString("GatewayIP", "text", sDummy.c_str());
+                }
+            }
+
             else if(m_bHasShutterControl && !m_bCalibratingDome) {
                 m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
                 if(dShutterCutOff < 1.0f) // not right.. ask again
@@ -532,7 +558,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         }
     }
 
-    if (!strcmp(pszEvent, "on_pushButton_clicked"))
+    else if (!strcmp(pszEvent, "on_pushButton_clicked"))
     {
         if(m_bLinked) {
             if( m_bCalibratingDome) { // Abort
@@ -562,7 +588,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         }
     }
     
-    if (!strcmp(pszEvent, "on_pushButton_2_clicked")) {
+    else if (!strcmp(pszEvent, "on_pushButton_2_clicked")) {
         // set Pan ID
         uiex->propertyInt("panID", "value", nPanId);
         nErr = m_RTIDome.setPanId(nPanId);
@@ -577,7 +603,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         m_SetPanIdTimer.Reset();
     }
 
-    if (!strcmp(pszEvent, "on_pushButton_3_clicked")) {
+    else if (!strcmp(pszEvent, "on_pushButton_3_clicked")) {
         m_RTIDome.restoreDomeMotorSettings();
         // read values from dome controller
         n_nbStepPerRev = m_RTIDome.getNbTicksPerRev();
@@ -590,7 +616,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         uiex->setPropertyInt("rotationAcceletation","value", nAcc);
     }
 
-    if (!strcmp(pszEvent, "on_pushButton_4_clicked")) {
+    else if (!strcmp(pszEvent, "on_pushButton_4_clicked")) {
         m_RTIDome.restoreShutterMotorSettings();
         // read values from dome controller
         m_RTIDome.getShutterSpeed(nSpeed);
@@ -600,7 +626,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         uiex->setPropertyInt("shutterAcceleration","value", nAcc);
     }
 
-    if (!strcmp(pszEvent, "on_checkBox_stateChanged"))
+    else if (!strcmp(pszEvent, "on_checkBox_stateChanged"))
     {
         m_bLogRainStatus = uiex->isChecked("checkBox");
         if(m_bLogRainStatus) {
@@ -612,17 +638,9 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         }
     }
 
-    
-    if (!strcmp(pszEvent, "on_pushButton_5_clicked")) {
+   else if (!strcmp(pszEvent, "on_pushButton_5_clicked")) {
         if(uiex->isChecked("checkBox_2")) {
             m_RTIDome.setUseDHCP(true);
-            m_RTIDome.reconfigureNetwork();
-            m_RTIDome.getIpAddress(sDummy);
-            uiex->setPropertyString("IPAddress", "text", sDummy.c_str());
-            m_RTIDome.getSubnetMask(sDummy);
-            uiex->setPropertyString("SubnetMask", "text", sDummy.c_str());
-            m_RTIDome.getIPGateway(sDummy);
-            uiex->setPropertyString("GatewayIP", "text", sDummy.c_str());
         }
         else {
             m_RTIDome.setUseDHCP(false);
@@ -634,18 +652,13 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 
             uiex->propertyString("GatewayIP", "text", szTmpBuf, SERIAL_BUFFER_SIZE);
             m_RTIDome.setIPGateway(std::string(szTmpBuf));
-            m_RTIDome.reconfigureNetwork();
-            // re-read thenm.. just to be sure :)
-            m_RTIDome.getIpAddress(sDummy);
-            uiex->setPropertyString("IPAddress", "text", sDummy.c_str());
-            m_RTIDome.getSubnetMask(sDummy);
-            uiex->setPropertyString("SubnetMask", "text", sDummy.c_str());
-            m_RTIDome.getIPGateway(sDummy);
-            uiex->setPropertyString("GatewayIP", "text", sDummy.c_str());
-            }
         }
+        m_RTIDome.reconfigureNetwork();
+        m_bSettingNetwork = true;
+        m_SetNetworkTimer.Reset();
+    }
 
-    if (!strcmp(pszEvent, "on_checkBox_2_stateChanged")) {
+    else if (!strcmp(pszEvent, "on_checkBox_2_stateChanged")) {
         if(uiex->isChecked("checkBox_2")) {
             uiex->setEnabled("IPAddress", false);
             uiex->setEnabled("SubnetMask", false);
@@ -657,7 +670,6 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
             uiex->setEnabled("GatewayIP", true);
         }
     }
-
 }
 
 //
