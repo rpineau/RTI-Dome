@@ -319,8 +319,6 @@ void ShutterClass::ClosedInterrupt()
     if (digitalRead(CLOSED_PIN) == 0) {
         if(shutterState == CLOSING)
             motorStop();
-        if(shutterState != OPENING)
-            shutterState = CLOSED;
     }
 }
 
@@ -330,8 +328,6 @@ void ShutterClass::OpenInterrupt()
     if (digitalRead(OPENED_PIN) == 0) {
         if(shutterState == OPENING)
             motorStop();
-        if(shutterState != CLOSING)
-            shutterState = OPEN;
     }
 }
 
@@ -676,29 +672,6 @@ void ShutterClass::bufferEnable(bool bEnable)
 
 void ShutterClass::Run()
 {
-    static bool hitSwitch = false, doSync = true;
-
-    if (digitalRead(CLOSED_PIN) == 0 && shutterState != OPENING && hitSwitch == false) {
-            hitSwitch = true;
-            doSync = true;
-            shutterState = CLOSED;
-            motorStop();
-            DBPrintln("Hit closed switch");
-            DBPrintln("shutterState = CLOSED");
-    }
-
-    if (digitalRead(OPENED_PIN) == 0 && shutterState != CLOSING && hitSwitch == false) {
-            hitSwitch = true;
-            shutterState = OPEN;
-            motorStop();
-            DBPrintln("Hit opened switch");
-            DBPrintln("shutterState = OPEN");
-    }
-
-    if (stepper.isRunning()) {
-        m_bWasRunning = true;
-    }
-
 
     if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
         DBPrintln("Measuring Battery");
@@ -710,22 +683,22 @@ void ShutterClass::Run()
         m_batteryCheckTimer.reset();
     }
 
-    if (stepper.isRunning())
+    if (stepper.isRunning()) {
+        m_bWasRunning = true;
         return;
-
-    if (doSync && digitalRead(CLOSED_PIN) == 0) {
-            stepper.setCurrentPosition(0);
-            doSync = false;
-            DBPrintln("Stopped at closed position");
     }
 
     if (m_bWasRunning) { // This only runs once after stopping.
-        if (digitalRead(OPENED_PIN) != 0 && digitalRead(CLOSED_PIN) != 0) {
-            shutterState = ERROR;
-        }
-        DBPrintln("m_bWasRunning " + String(shutterState) + " Hitswitch " + String(hitSwitch));
-        m_bWasRunning = false;
-        hitSwitch = false;
+		if (digitalRead(CLOSED_PIN) == 0) {
+			shutterState = CLOSED;
+			stepper.setCurrentPosition(0);
+			DBPrintln("Stopped at closed position");
+		}
+		else if (digitalRead(OPENED_PIN) == 0) {
+			shutterState = OPEN;
+			DBPrintln("Stopped at open position");
+		}
+        DBPrintln("m_bWasRunning " + String(shutterState));
         EnableMotor(false);
     }
 }
