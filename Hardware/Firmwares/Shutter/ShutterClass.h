@@ -699,9 +699,6 @@ void ShutterClass::Run()
         m_bWasRunning = true;
     }
 
-    if (stepper.isRunning() == false && digitalRead(OPENED_PIN) != 0 && digitalRead(CLOSED_PIN) != 0) {
-        shutterState = ERROR;
-    }
 
     if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
         DBPrintln("Measuring Battery");
@@ -723,6 +720,9 @@ void ShutterClass::Run()
     }
 
     if (m_bWasRunning) { // This only runs once after stopping.
+        if (digitalRead(OPENED_PIN) != 0 && digitalRead(CLOSED_PIN) != 0) {
+            shutterState = ERROR;
+        }
         DBPrintln("m_bWasRunning " + String(shutterState) + " Hitswitch " + String(hitSwitch));
         m_bWasRunning = false;
         hitSwitch = false;
