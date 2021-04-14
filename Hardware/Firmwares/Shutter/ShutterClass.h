@@ -80,14 +80,14 @@ typedef struct ShutterConfiguration {
     unsigned long   watchdogInterval;
     int             panid;
     bool            bHasDropShutter;
-    bool            bTopShutterFirst;
+    bool            bTopShutterOpenFirst;
 } Configuration;
 
 
 AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_PIN);
 
-// need to make this global so we can access it in the interrupt
-enum ShutterStates { OPEN, CLOSED, OPENING, BOTTOM_OPENING, BOTTOM_CLOSING, CLOSING, ERROR };
+// All possible Shutter state, including option got a dropout
+enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR };
 volatile ShutterStates   shutterState = ERROR;
 
 StopWatch watchdogTimer;
@@ -344,7 +344,7 @@ void ShutterClass::SetDefaultConfig()
     m_Config.watchdogInterval = 90000;
     m_Config.panid = DEFAULT_PANID;
     m_Config.bHasDropShutter = false;
-    m_Config.bTopShutterFirst = true;
+    m_Config.bTopShutterOpenFirst = true;
 }
 
 int ShutterClass::restoreDefaultMotorSettings()
@@ -382,7 +382,7 @@ void ShutterClass::LoadFromEEProm()
     DBPrintln("ShutterClass::LoadFromEEProm m_Config.watchdogInterval   : " + String(m_Config.watchdogInterval));
     DBPrintln("ShutterClass::LoadFromEEProm m_Config.panid              : 0x" + String(m_Config.panid, HEX));
     DBPrintln("ShutterClass::LoadFromEEProm m_Config.bHasDropShutter    : " + String(m_Config.bHasDropShutter?"Yes":"No"));
-    DBPrintln("ShutterClass::LoadFromEEProm m_Config.bTopShutterFirst   : " + String(m_Config.bTopShutterFirst?"Yes":"No"));
+    DBPrintln("ShutterClass::LoadFromEEProm m_Config.bTopShutterOpenFirst   : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
 
     if (m_Config.signature != EEPROM_SIGNATURE) {
         SetDefaultConfig();
