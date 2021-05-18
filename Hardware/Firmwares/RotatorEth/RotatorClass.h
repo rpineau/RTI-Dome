@@ -58,6 +58,13 @@ DueFlashStorage dueFlashStorage;
 
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
+
+/*
+Micro-steps per rotation with original motor and 15.3:1 gearbox
+    NexDome 2m      : 440640
+    Explora-Dome 8' : 479800
+*/
+
 #define STEPS_DEFAULT       440640
 
 // used to offset the config location.. at some point.
