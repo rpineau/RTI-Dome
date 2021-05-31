@@ -417,6 +417,10 @@ inline void RotatorClass::homeInterrupt()
 {
     long  nPos;
 
+	// debounce
+	if (digitalRead(HOME_PIN) != LOW)
+		return;
+
     nPos = stepper.currentPosition(); // read position immediately
 
     switch(m_seekMode) {
@@ -815,6 +819,11 @@ int RotatorClass::GetHomeStatus()
 {
     int status = NOT_AT_HOME;
 
+    if(digitalRead(HOME_PIN) == LOW)
+        m_bisAtHome = true;
+	else
+		m_bisAtHome = false;
+
     if (m_bisAtHome)
         status = ATHOME;
     return status;
@@ -863,11 +872,13 @@ void RotatorClass::StartHoming()
     float diff;
     long distance;
 
-    if (m_bisAtHome) {
-        SyncPosition(m_Config.homeAzimuth); // Set the Azimuth to the home position
-        return;
+    if(digitalRead(HOME_PIN) == LOW) {
+        // we're at the home position
+        m_bisAtHome = true;
+        SyncPosition(m_Config.homeAzimuth);
+        DBPrintln("At home on startup");
     }
-
+	m_bisAtHome = false;
     m_HomeFound = false;
     // Always home in the same direction as we don't
     // know the width of the home magnet in steps.
