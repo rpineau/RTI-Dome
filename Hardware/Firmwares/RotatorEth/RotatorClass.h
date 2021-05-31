@@ -199,13 +199,13 @@ public:
 
     RotatorClass();
 
-    void        SaveToEEProm();
+    void		SaveToEEProm();
 
     // rain sensor methods
-    bool            GetRainStatus();
-    int             GetRainAction();
-    void            SetRainAction(const int);
-    void            rainInterrupt();
+    bool		GetRainStatus();
+    int			GetRainAction();
+    void		SetRainAction(const int);
+    void		rainInterrupt();
 
     // motor methods
     long        GetAcceleration();
@@ -269,9 +269,8 @@ public:
     void        motorMoveRelative(const long howFar);
     void        stopInterrupt();
     void        homeInterrupt();
-    volatile long        m_nStepsAtHome;
 
-    void            ButtonCheck();
+    void		ButtonCheck();
 
     void        bufferEnable(bool bEnable);
 
@@ -285,22 +284,27 @@ public:
     String      getIPGateway();
     void        setIPGateway(String ipGateway);
     String      IpAddress2String(const IPAddress& ipAddress);
+
+
 private:
     Configuration   m_Config;
 
     // Rotator
     bool            wasRunning;
     bool            m_bisAtHome;
-    volatile enum Seeks      m_seekMode;
+    volatile enum Seeks	m_seekMode;
     bool            m_bSetToHomeAzimuth;
     bool            m_bDoStepsPerRotation;
+
     float           m_fStepsPerDegree;
     StopWatch       m_MoveOffUntilTimer;
     unsigned long   m_nMOVE_OFFUntilLapse = 2000;
     int             m_nMoveDirection;
-    volatile long            m_nHomePosEdgePass1;
-    volatile long            m_nHomePosEdgePass2;
-    volatile bool            m_HomeFound;
+
+	volatile long	m_nStepsAtHome;
+    volatile long	m_nHomePosEdgePass1;
+    volatile long	m_nHomePosEdgePass2;
+    volatile bool	m_HomeFound;
 
     // Power values
     float           m_fAdcConvert;
