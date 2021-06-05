@@ -87,7 +87,7 @@ typedef struct ShutterConfiguration {
 AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_PIN);
 
 // All possible Shutter state, including option got a dropout
-enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR };
+enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 volatile ShutterStates   shutterState = ERROR;
 
 StopWatch watchdogTimer;
@@ -303,9 +303,9 @@ ShutterClass::ShutterClass()
 
     if(sw1 == 0 && sw2 == 0)
         shutterState = ERROR;
-    else if (sw1 == 1 && sw2 == 0)
-        shutterState = CLOSED;
     else if (sw1 == 0 && sw2 == 1)
+        shutterState = CLOSED;
+    else if (sw1 == 1 && sw2 == 0)
         shutterState = OPEN;
 
     m_bButtonUsed = false;
@@ -317,8 +317,10 @@ void ShutterClass::ClosedInterrupt()
 {
     // debounce
     if (digitalRead(CLOSED_PIN) == 0) {
-        if(shutterState == CLOSING)
+        if(shutterState == CLOSING) {
             motorStop();
+            shutterState = FINISHING_CLOSE;
+        }
     }
 }
 
@@ -326,8 +328,10 @@ void ShutterClass::OpenInterrupt()
 {
     // debounce
     if (digitalRead(OPENED_PIN) == 0) {
-        if(shutterState == OPENING)
+        if(shutterState == OPENING) {
             motorStop();
+            shutterState = FINISHING_OPEN;
+        }
     }
 }
 
@@ -648,6 +652,11 @@ void ShutterClass::Open()
     if(GetVoltsAreLow()) // do not try to open if we're already at low voltage
         return;
 
+	if (digitalRead(OPENED_PIN) == 0) {
+		shutterState = OPEN;
+		return;
+	}
+
     shutterState = OPENING;
     DBPrintln("shutterState = OPENING");
     MoveRelative(m_Config.stepsPerStroke * 1.25);
@@ -655,6 +664,10 @@ void ShutterClass::Open()
 
 void ShutterClass::Close()
 {
+	if (digitalRead(CLOSED_PIN) == 0) {
+		shutterState = CLOSED;
+		return;
+	}
     shutterState = CLOSING;
     DBPrintln("shutterState = CLOSING");
     MoveRelative(1 - m_Config.stepsPerStroke * 1.25);
@@ -698,6 +711,17 @@ void ShutterClass::Run()
 			shutterState = OPEN;
 			DBPrintln("Stopped at open position");
 		}
+		else if(shutterState == FINISHING_CLOSE) {
+			//motor stopped for some reason
+			Close();
+			return;
+		}
+		else if(shutterState == FINISHING_OPEN) {
+			//motor stopped for some reason
+			Open();
+			return;
+		}
+
         DBPrintln("m_bWasRunning " + String(shutterState));
         EnableMotor(false);
     }
