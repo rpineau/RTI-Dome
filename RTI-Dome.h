@@ -56,7 +56,7 @@ enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, 
 enum RTIDomeShutterState {OPEN = 0, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, SHUTTER_ERROR };
 enum HomeStatuses {NOT_AT_HOME = 0, HOMED, ATHOME};
 enum RainActions {DO_NOTHING=0, HOME, PARK};
-
+enum MoveDirection {MOVE_NEGATIVE = -1, MOVE_NONE, MOVE_POSITIVE};
 // RG-11
 enum RainSensorStates {RAINING= 0, NOT_RAINING, RAIN_UNKNOWN};
 
@@ -188,6 +188,8 @@ protected:
     bool            isDomeAtHome();
     int             parseFields(const char *pszResp, std::vector<std::string> &svFields, char cSeparator);
 
+    bool            checkGotoBoundaries(double dGotoAz, double dDomeAz);
+    
     SerXInterface   *m_pSerx;
     SleeperInterface *m_pSleeper;
 

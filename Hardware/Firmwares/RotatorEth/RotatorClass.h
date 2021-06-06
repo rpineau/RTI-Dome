@@ -965,11 +965,11 @@ void RotatorClass::MoveRelative(const long howFar)
     // from current position. Stopped only by
     // homing or calibrating routine.
     EnableMotor(true);
-    m_nMoveDirection = -1;  // MOVE_NEGATIVE ?
+    m_nMoveDirection = MOVE_NEGATIVE;
     if (howFar > 0)
-        m_nMoveDirection = 1; // MOVE_POSITIVE ?
+        m_nMoveDirection = MOVE_POSITIVE;
     else if(howFar == 0 )
-        m_nMoveDirection = 0;
+        m_nMoveDirection = MOVE_NONE;
     m_bisAtHome = false;
     motorMoveRelative(howFar);
 }

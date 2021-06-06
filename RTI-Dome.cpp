@@ -824,7 +824,7 @@ bool CRTIDome::isDomeMoving()
     fprintf(Logfile, "[%s] CRTIDome::isDomeMoving nTmp : %d\n", timestamp, nTmp);
     fflush(Logfile);
 #endif
-    if(nTmp)
+    if(nTmp != MOVE_NONE)
         bIsMoving = true;
 
 #ifdef PLUGIN_DEBUG
@@ -1274,7 +1274,7 @@ int CRTIDome::calibrate()
 
     return nErr;
 }
-
+/*
 int CRTIDome::isGoToComplete(bool &bComplete)
 {
     int nErr = PLUGIN_OK;
@@ -1333,6 +1333,105 @@ int CRTIDome::isGoToComplete(bool &bComplete)
     }
 
     return nErr;
+}
+*/
+
+int CRTIDome::isGoToComplete(bool &bComplete)
+{
+    int nErr = PLUGIN_OK;
+    double dDomeAz = 0;
+
+    if(!m_bIsConnected)
+        return NOT_CONNECTED;
+
+    bComplete = false;
+    if(isDomeMoving()) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::isGoToComplete] Dome is still moving\n", timestamp);
+        fprintf(Logfile, "[%s] [CRTIDome::isGoToComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
+        fflush(Logfile);
+#endif
+        return nErr;
+    }
+
+    getDomeAz(dDomeAz);
+
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::isGoToComplete] DomeAz    = %3.2f\n", timestamp, dDomeAz);
+    fprintf(Logfile, "[%s] [CRTIDome::isGoToComplete] m_dGotoAz = %3.2f\n", timestamp, m_dGotoAz);
+    fflush(Logfile);
+#endif
+
+    if(checkGotoBoundaries(m_dGotoAz, dDomeAz)) {
+        bComplete = true;
+        m_nGotoTries = 0;
+    }
+    else {
+        // we're not moving and we're not at the final destination !!!
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] CRTIDome::isGoToComplete ***** ERROR **** domeAz = %3.2f, m_dGotoAz = %3.2f\n", timestamp, dDomeAz, m_dGotoAz);
+        fflush(Logfile);
+#endif
+        if(m_nGotoTries == 0) {
+            bComplete = false;
+            m_nGotoTries = 1;
+            gotoAzimuth(m_dGotoAz);
+        }
+        else {
+            m_nGotoTries = 0;
+            nErr = ERR_CMDFAILED;
+        }
+    }
+
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    ltime = time(NULL);
+    timestamp = asctime(localtime(&ltime));
+    timestamp[strlen(timestamp) - 1] = 0;
+    fprintf(Logfile, "[%s] [CRTIDome::isGoToComplete] bComplete = %s\n", timestamp, bComplete?"True":"False");
+    fflush(Logfile);
+#endif
+
+    return nErr;
+}
+
+
+bool CRTIDome::checkGotoBoundaries(double dGotoAz, double dDomeAz)
+{
+    double highMark;
+    double lowMark;
+    double roundedGotoAz;
+
+    // we need to test "large" depending on the heading error and movement coasting
+    highMark = ceil(dDomeAz)+2;
+    lowMark = ceil(dDomeAz)-2;
+    roundedGotoAz = ceil(dGotoAz);
+
+    if(lowMark < 0 && highMark>0) { // we're close to 0 degre but above 0
+        if((roundedGotoAz+2) >= 360)
+            roundedGotoAz = (roundedGotoAz+2)-360;
+        if ( (roundedGotoAz > lowMark) && (roundedGotoAz <= highMark)) {
+            return true;
+        }
+    }
+    else if ( lowMark > 0 && highMark>360 ) { // we're close to 0 but from the other side
+        if( (roundedGotoAz+360) > lowMark && (roundedGotoAz+360) <= highMark) {
+            return true;
+        }
+    }
+    else if (roundedGotoAz > lowMark && roundedGotoAz <= highMark) {
+        return true;
+    }
+
+    return false;
 }
 
 int CRTIDome::isOpenComplete(bool &bComplete)
