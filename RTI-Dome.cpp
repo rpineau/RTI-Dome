@@ -420,6 +420,7 @@ int CRTIDome::getDomeAz(double &dDomeAz)
     }
     // convert Az string to double
     dDomeAz = atof(szResp);
+
     m_dCurrentAzPosition = dDomeAz;
 
     if(m_cRainCheckTimer.GetElapsedSeconds() > RAIN_CHECK_INTERVAL) {
@@ -1422,12 +1423,12 @@ bool CRTIDome::checkGotoBoundaries(double dGotoAz, double dDomeAz)
             return true;
         }
     }
-    else if ( lowMark > 0 && highMark>360 ) { // we're close to 0 but from the other side
+    if ( lowMark > 0 && highMark>360 ) { // we're close to 0 but from the other side
         if( (roundedGotoAz+360) > lowMark && (roundedGotoAz+360) <= highMark) {
             return true;
         }
     }
-    else if (roundedGotoAz > lowMark && roundedGotoAz <= highMark) {
+    if (roundedGotoAz > lowMark && roundedGotoAz <= highMark) {
         return true;
     }
 
