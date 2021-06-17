@@ -290,7 +290,7 @@ private:
     Configuration   m_Config;
 
     // Rotator
-    bool            wasRunning;
+    bool            m_bWasRunning;
     bool            m_bisAtHome;
     volatile enum Seeks	m_seekMode;
     bool            m_bSetToHomeAzimuth;
@@ -347,7 +347,7 @@ RotatorClass::RotatorClass()
 #endif
 
     m_seekMode = HOMING_NONE;
-    wasRunning = false;
+    m_bWasRunning = false;
     m_bisAtHome = false;
     m_HomeFound = false;
     m_bSetToHomeAzimuth = false;
@@ -1011,7 +1011,7 @@ void RotatorClass::Run()
         Calibrate();
 
     if (stepper.isRunning()) {
-        wasRunning = true;
+        m_bWasRunning = true;
         if (m_seekMode == HOMING_HOME && m_HomeFound) { // We're looking for home and found it
             Stop();
             m_bSetToHomeAzimuth = true; // Need to set home az but not until rotator is stopped;
@@ -1048,7 +1048,7 @@ void RotatorClass::Run()
         m_seekMode = HOMING_BACK_HOME;
     }
 
-    if (wasRunning) {
+    if (m_bWasRunning) {
         stepsFromZero = GetPosition();
         if (stepsFromZero < 0) {
             while (stepsFromZero < 0)
@@ -1068,14 +1068,14 @@ void RotatorClass::Run()
             // not moving anymore ..
             m_nMoveDirection = MOVE_NONE;
             EnableMotor(false);
-            wasRunning = false;
+            m_bWasRunning = false;
             // check if we stopped on the home sensor
             if(digitalRead(HOME_PIN) == LOW) {
                 // we're at the home position
                 m_bisAtHome = true;
             }
         }
-    } // end if (wasRunning)
+    } // end if (m_bWasRunning)
 }
 
 void RotatorClass::Stop()
