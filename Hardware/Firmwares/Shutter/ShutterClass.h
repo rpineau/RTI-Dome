@@ -696,8 +696,6 @@ void ShutterClass::Run()
         m_batteryCheckTimer.reset();
     }
 
-    m_bWasRunning = false;
-
     if (stepper.isRunning()) {
         m_bWasRunning = true;
         return;
@@ -725,9 +723,8 @@ void ShutterClass::Run()
 			Open();
 			return;
 		}
-
-        DBPrintln("m_bWasRunning " + String(shutterState));
         EnableMotor(false);
+        m_bWasRunning = false;
     }
     else { // make sure the state are accurate.
         sw1 = digitalRead(CLOSED_PIN);
