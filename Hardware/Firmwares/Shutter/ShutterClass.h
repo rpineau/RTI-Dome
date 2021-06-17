@@ -88,7 +88,7 @@ AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_P
 
 // All possible Shutter state, including option got a dropout
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
-volatile ShutterStates   shutterState = ERROR;
+volatile ShutterStates shutterState = ERROR;
 
 StopWatch watchdogTimer;
 
@@ -301,9 +301,8 @@ ShutterClass::ShutterClass()
     sw1 = digitalRead(CLOSED_PIN);
     sw2 = digitalRead(OPENED_PIN);
 
-    if(sw1 == 0 && sw2 == 0)
-        shutterState = ERROR;
-    else if (sw1 == 0 && sw2 == 1)
+    shutterState = ERROR;
+    if (sw1 == 0 && sw2 == 1)
         shutterState = CLOSED;
     else if (sw1 == 1 && sw2 == 0)
         shutterState = OPEN;
@@ -659,7 +658,7 @@ void ShutterClass::Open()
 
     shutterState = OPENING;
     DBPrintln("shutterState = OPENING");
-    MoveRelative(m_Config.stepsPerStroke * 1.25);
+    MoveRelative(160000000L);
 }
 
 void ShutterClass::Close()
@@ -670,7 +669,7 @@ void ShutterClass::Close()
 	}
     shutterState = CLOSING;
     DBPrintln("shutterState = CLOSING");
-    MoveRelative(1 - m_Config.stepsPerStroke * 1.25);
+    MoveRelative(-160000000L);
 }
 
 
@@ -685,6 +684,7 @@ void ShutterClass::bufferEnable(bool bEnable)
 
 void ShutterClass::Run()
 {
+    int sw1,sw2;
 
     if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
         DBPrintln("Measuring Battery");
@@ -695,6 +695,8 @@ void ShutterClass::Run()
         }
         m_batteryCheckTimer.reset();
     }
+
+    m_bWasRunning = false;
 
     if (stepper.isRunning()) {
         m_bWasRunning = true;
@@ -711,19 +713,30 @@ void ShutterClass::Run()
 			shutterState = OPEN;
 			DBPrintln("Stopped at open position");
 		}
-		else if(shutterState == FINISHING_CLOSE) {
+		else if(shutterState == FINISHING_CLOSE || shutterState==CLOSING) {
 			//motor stopped for some reason
+			DBPrintln("motor stopped for some reason but we're not closed... closing");
 			Close();
 			return;
 		}
-		else if(shutterState == FINISHING_OPEN) {
+		else if(shutterState == FINISHING_OPEN || shutterState==OPENING) {
 			//motor stopped for some reason
+			DBPrintln("motor stopped for some reason but we're not open... opening");
 			Open();
 			return;
 		}
 
         DBPrintln("m_bWasRunning " + String(shutterState));
         EnableMotor(false);
+    }
+    else { // make sure the state are accurate.
+        sw1 = digitalRead(CLOSED_PIN);
+        sw2 = digitalRead(OPENED_PIN);
+
+        if (sw1 == 0 && sw2 == 1)
+            shutterState = CLOSED;
+        else if (sw1 == 1 && sw2 == 0)
+            shutterState = OPEN;
     }
 }
 
@@ -752,6 +765,7 @@ void ShutterClass::motorMoveTo(const long newPosition)
 
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
+    stopTimer(TC1, 0, TC3_IRQn);
     startTimer(TC1, 0, TC3_IRQn, nFreq);
 
 }
@@ -767,6 +781,7 @@ void ShutterClass::motorMoveRelative(const long amount)
     nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
     // AccelStepper run() is called under a timer interrupt
+    stopTimer(TC1, 0, TC3_IRQn);
     startTimer(TC1, 0, TC3_IRQn, nFreq);
 }
 

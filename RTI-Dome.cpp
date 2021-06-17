@@ -1369,7 +1369,7 @@ int CRTIDome::isGoToComplete(bool &bComplete)
     fflush(Logfile);
 #endif
 
-    if(checkGotoBoundaries(m_dGotoAz, dDomeAz)) {
+    if(checkBoundaries(m_dGotoAz, dDomeAz)) {
         bComplete = true;
         m_nGotoTries = 0;
     }
@@ -1405,7 +1405,7 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 }
 
 
-bool CRTIDome::checkGotoBoundaries(double dGotoAz, double dDomeAz)
+bool CRTIDome::checkBoundaries(double dGotoAz, double dDomeAz)
 {
     double highMark;
     double lowMark;
@@ -1555,8 +1555,7 @@ int CRTIDome::isParkComplete(bool &bComplete)
 
     getDomeAz(dDomeAz);
 
-    // we need to test "large" depending on the heading error
-    if ((ceil(m_dParkAz) <= ceil(dDomeAz)+3) && (ceil(m_dParkAz) >= ceil(dDomeAz)-3)) {
+    if(checkBoundaries(m_dParkAz, dDomeAz)) {
         m_bParked = true;
         bComplete = true;
     }
@@ -1904,14 +1903,6 @@ double CRTIDome::getCurrentEl()
         getDomeEl(m_dCurrentElPosition);
 
     return m_dCurrentElPosition;
-}
-
-int CRTIDome::getCurrentShutterState()
-{
-    if(m_bIsConnected)
-        getShutterState(m_nShutterState);
-
-    return m_nShutterState;
 }
 
 

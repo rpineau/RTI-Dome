@@ -75,12 +75,14 @@ RotatorClass *Rotator = NULL;
 /// ATAC,CE1,ID4242,CH0C,MY0,DH0,DLFFFF,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATCH0C","ATMY0","ATDH0","ATDLFFFF",
                         "ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
-#else if defined(XBEE_S2C)
+#endif
+#if defined(XBEE_S2C)
 #define NB_AT_OK  13
 /// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
                         "ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
+
 // index in array above where the command is empty.
 // This allows us to change the Pan ID and store it in the EEPROM/Flash
 #define PANID_STEP 4
@@ -220,10 +222,12 @@ void setup()
     Rotator = new RotatorClass();
     Rotator->motorStop();
     Rotator->EnableMotor(false);
+    noInterrupts();
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+    interrupts();
     configureEthernet();
 }
 
