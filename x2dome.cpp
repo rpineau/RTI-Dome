@@ -231,7 +231,7 @@ int X2Dome::execModalSettingsDialog()
             dx->setPropertyInt("shutterWatchdog", "value", nWatchdog);
 
             dx->setEnabled("lowShutBatCutOff",true);
-            dx->setText("shutterPresent", "Shutter present");
+            dx->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#00FF00;\">Shutter present</span></p></body></html>");
         } else {
             dx->setEnabled("shutterSpeed",false);
             dx->setPropertyInt("shutterSpeed","value",0);
@@ -242,7 +242,7 @@ int X2Dome::execModalSettingsDialog()
             dx->setEnabled("pushButton_4", false);
             dx->setPropertyInt("shutterWatchdog", "value", 0);
             dx->setEnabled("lowShutBatCutOff",false);
-            dx->setText("shutterPresent", "No Shutter detected");
+            dx->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#FF0000;\">No Shutter detected</span></p></body></html>");
         }
 
         // panID
@@ -425,7 +425,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         if(bShutterPresent != m_bHasShutterControl) {
             m_bHasShutterControl = bShutterPresent;
             if(m_bHasShutterControl && m_bLinked) {
-                uiex->setText("shutterPresent", "Shutter present");
+                uiex->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#00FF00;\">Shutter present</span></p></body></html>");
                 uiex->setEnabled("shutterSpeed",true);
                 m_RTIDome.getShutterSpeed(nSpeed);
                 uiex->setPropertyInt("shutterSpeed","value", nSpeed);
@@ -439,7 +439,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 uiex->setPropertyInt("shutterWatchdog", "value", nWatchdog);
             }
             else {
-                uiex->setText("shutterPresent", "No Shutter detected");
+                uiex->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#FF0000;\">No Shutter detected</span></p></body></html>");
                 uiex->setPropertyInt("shutterSpeed","value", 0);
                 uiex->setPropertyInt("shutterAcceleration","value", 0);
                 uiex->setPropertyInt("shutterWatchdog", "value", 0);
