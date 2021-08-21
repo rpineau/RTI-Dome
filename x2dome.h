@@ -20,10 +20,6 @@
 #include "RTI-Dome.h"
 #include "StopWatch.h"
 
-#define DOME0_DATA                  "Dome0"
-#define DOME0_IP_ADDR               "RTI-Dome\\SerXTCPHost"
-#define DOME0_IP_PORT               "RTI-Dome\\SerXTCPPort"
-
 #define PARENT_KEY			        "RTI-Dome"
 #define CHILD_KEY_PORTNAME	        "PortName"
 #define CHILD_KEY_HOME_ON_PARK      "HomeOnPark"
@@ -165,6 +161,9 @@ private:
     bool        m_bLogRainStatus;
 
     CStopWatch  m_SetPanIdTimer;
-    
+
+    bool        m_bSettingNetwork;
+    CStopWatch  m_SetNetworkTimer;
+
     // bool        mIsRollOffRoof;
 };

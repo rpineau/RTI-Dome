@@ -44,7 +44,7 @@
 #define PANID_TIMEOUT 15    // in seconds
 #define RAIN_CHECK_INTERVAL 10
 
-#define PLUGIN_VERSION      1.0
+#define PLUGIN_VERSION      1.1
 #define PLUGIN_ID   1
 
 // #define PLUGIN_DEBUG 3
@@ -53,10 +53,11 @@
 // error codes
 // Error code
 enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED, COMMAND_TIMEOUT};
-enum RTIDomeShutterState {OPEN = 0, CLOSED, OPENING, CLOSING, SHUTTER_ERROR };
+enum RTIDomeShutterState { OPEN=0 , CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, SHUTTER_ERROR, FINISHING_OPEN, FINISHING_CLOSE };
+
 enum HomeStatuses {NOT_AT_HOME = 0, HOMED, ATHOME};
 enum RainActions {DO_NOTHING=0, HOME, PARK};
-
+enum MoveDirection {MOVE_NEGATIVE = -1, MOVE_NONE, MOVE_POSITIVE};
 // RG-11
 enum RainSensorStates {RAINING= 0, NOT_RAINING, RAIN_UNKNOWN};
 
@@ -113,7 +114,6 @@ public:
     double getCurrentAz();
     double getCurrentEl();
 
-    int getCurrentShutterState();
     int getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &dShutterVolts, double &dShutterCutOff);
     int setBatteryCutOff(double dDomeCutOff, double dShutterCutOff);
 
@@ -188,6 +188,8 @@ protected:
     bool            isDomeAtHome();
     int             parseFields(const char *pszResp, std::vector<std::string> &svFields, char cSeparator);
 
+    bool            checkBoundaries(double dGotoAz, double dDomeAz);
+    
     SerXInterface   *m_pSerx;
     SleeperInterface *m_pSleeper;
 

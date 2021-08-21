@@ -56,7 +56,9 @@ const char REVERSED_SHUTTER_CMD		= 'Y'; // Get/Set stepper reversed status
 // ATAC,CE0,ID4242,CH0C,MY1,DH0,DL0,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATCH0C","ATMY1","ATDH0","ATDL0",
                         "ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
-#else if defined(XBEE_S2C)
+#endif
+
+#if defined(XBEE_S2C)
 #define NB_AT_OK  14
 /// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATDH0","ATDL0","ATJV1",
@@ -95,10 +97,12 @@ void setup()
     Shutter = new ShutterClass();
 	watchdogTimer.reset();
     Shutter->EnableMotor(false);
+    noInterrupts();
     attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
     attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
     attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+    interrupts();
     // enable input buffers
     Shutter->bufferEnable(true);
     Shutter->motorStop();

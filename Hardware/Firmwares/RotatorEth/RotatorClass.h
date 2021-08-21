@@ -58,6 +58,13 @@ DueFlashStorage dueFlashStorage;
 
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
+
+/*
+Micro-steps per rotation with original motor and 15.3:1 gearbox
+    NexDome 2m      : 440640
+    Explora-Dome 8' : 479800
+*/
+
 #define STEPS_DEFAULT       440640
 
 // used to offset the config location.. at some point.
@@ -192,13 +199,13 @@ public:
 
     RotatorClass();
 
-    void        SaveToEEProm();
+    void		SaveToEEProm();
 
     // rain sensor methods
-    bool            GetRainStatus();
-    int             GetRainAction();
-    void            SetRainAction(const int);
-    void            rainInterrupt();
+    bool		GetRainStatus();
+    int			GetRainAction();
+    void		SetRainAction(const int);
+    void		rainInterrupt();
 
     // motor methods
     long        GetAcceleration();
@@ -262,9 +269,8 @@ public:
     void        motorMoveRelative(const long howFar);
     void        stopInterrupt();
     void        homeInterrupt();
-    volatile long        m_nStepsAtHome;
 
-    void            ButtonCheck();
+    void		ButtonCheck();
 
     void        bufferEnable(bool bEnable);
 
@@ -278,22 +284,27 @@ public:
     String      getIPGateway();
     void        setIPGateway(String ipGateway);
     String      IpAddress2String(const IPAddress& ipAddress);
+
+
 private:
     Configuration   m_Config;
 
     // Rotator
-    bool            wasRunning;
+    bool            m_bWasRunning;
     bool            m_bisAtHome;
-    volatile enum Seeks      m_seekMode;
+    volatile enum Seeks	m_seekMode;
     bool            m_bSetToHomeAzimuth;
     bool            m_bDoStepsPerRotation;
+
     float           m_fStepsPerDegree;
     StopWatch       m_MoveOffUntilTimer;
     unsigned long   m_nMOVE_OFFUntilLapse = 2000;
     int             m_nMoveDirection;
-    volatile long            m_nHomePosEdgePass1;
-    volatile long            m_nHomePosEdgePass2;
-    volatile bool            m_HomeFound;
+
+	volatile long	m_nStepsAtHome;
+    volatile long	m_nHomePosEdgePass1;
+    volatile long	m_nHomePosEdgePass2;
+    volatile bool	m_HomeFound;
 
     // Power values
     float           m_fAdcConvert;
@@ -336,7 +347,7 @@ RotatorClass::RotatorClass()
 #endif
 
     m_seekMode = HOMING_NONE;
-    wasRunning = false;
+    m_bWasRunning = false;
     m_bisAtHome = false;
     m_HomeFound = false;
     m_bSetToHomeAzimuth = false;
@@ -409,6 +420,10 @@ RotatorClass::RotatorClass()
 inline void RotatorClass::homeInterrupt()
 {
     long  nPos;
+
+	// debounce
+	if (digitalRead(HOME_PIN) != LOW)
+		return;
 
     nPos = stepper.currentPosition(); // read position immediately
 
@@ -808,6 +823,11 @@ int RotatorClass::GetHomeStatus()
 {
     int status = NOT_AT_HOME;
 
+    if(digitalRead(HOME_PIN) == LOW)
+        m_bisAtHome = true;
+	else
+		m_bisAtHome = false;
+
     if (m_bisAtHome)
         status = ATHOME;
     return status;
@@ -856,11 +876,13 @@ void RotatorClass::StartHoming()
     float diff;
     long distance;
 
-    if (m_bisAtHome) {
-        SyncPosition(m_Config.homeAzimuth); // Set the Azimuth to the home position
-        return;
+    if(digitalRead(HOME_PIN) == LOW) {
+        // we're at the home position
+        m_bisAtHome = true;
+        SyncPosition(m_Config.homeAzimuth);
+        DBPrintln("At home on startup");
     }
-
+	m_bisAtHome = false;
     m_HomeFound = false;
     // Always home in the same direction as we don't
     // know the width of the home magnet in steps.
@@ -943,11 +965,11 @@ void RotatorClass::MoveRelative(const long howFar)
     // from current position. Stopped only by
     // homing or calibrating routine.
     EnableMotor(true);
-    m_nMoveDirection = -1;  // MOVE_NEGATIVE ?
+    m_nMoveDirection = MOVE_NEGATIVE;
     if (howFar > 0)
-        m_nMoveDirection = 1; // MOVE_POSITIVE ?
+        m_nMoveDirection = MOVE_POSITIVE;
     else if(howFar == 0 )
-        m_nMoveDirection = 0;
+        m_nMoveDirection = MOVE_NONE;
     m_bisAtHome = false;
     motorMoveRelative(howFar);
 }
@@ -989,7 +1011,7 @@ void RotatorClass::Run()
         Calibrate();
 
     if (stepper.isRunning()) {
-        wasRunning = true;
+        m_bWasRunning = true;
         if (m_seekMode == HOMING_HOME && m_HomeFound) { // We're looking for home and found it
             Stop();
             m_bSetToHomeAzimuth = true; // Need to set home az but not until rotator is stopped;
@@ -1026,7 +1048,7 @@ void RotatorClass::Run()
         m_seekMode = HOMING_BACK_HOME;
     }
 
-    if (wasRunning) {
+    if (m_bWasRunning) {
         stepsFromZero = GetPosition();
         if (stepsFromZero < 0) {
             while (stepsFromZero < 0)
@@ -1046,14 +1068,14 @@ void RotatorClass::Run()
             // not moving anymore ..
             m_nMoveDirection = MOVE_NONE;
             EnableMotor(false);
-            wasRunning = false;
+            m_bWasRunning = false;
             // check if we stopped on the home sensor
             if(digitalRead(HOME_PIN) == LOW) {
                 // we're at the home position
                 m_bisAtHome = true;
             }
         }
-    } // end if (wasRunning)
+    } // end if (m_bWasRunning)
 }
 
 void RotatorClass::Stop()

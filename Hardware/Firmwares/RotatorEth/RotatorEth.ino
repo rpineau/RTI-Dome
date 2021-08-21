@@ -61,6 +61,8 @@ RemoteShutterClass RemoteShutter;
 String wirelessBuffer;
 bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
 int configStep = 0;
+bool isResetingXbee = false;
+int XbeeResets = 0;
 #endif
 
 
@@ -75,12 +77,14 @@ RotatorClass *Rotator = NULL;
 /// ATAC,CE1,ID4242,CH0C,MY0,DH0,DLFFFF,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATCH0C","ATMY0","ATDH0","ATDLFFFF",
                         "ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
-#else if defined(XBEE_S2C)
+#endif
+#if defined(XBEE_S2C)
 #define NB_AT_OK  13
 /// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
                         "ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
+
 // index in array above where the command is empty.
 // This allows us to change the Pan ID and store it in the EEPROM/Flash
 #define PANID_STEP 4
@@ -220,10 +224,12 @@ void setup()
     Rotator = new RotatorClass();
     Rotator->motorStop();
     Rotator->EnableMotor(false);
+    noInterrupts();
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+    interrupts();
     configureEthernet();
 }
 
@@ -257,8 +263,20 @@ void loop()
         if(!SentHello)
             SendHello();
         PingShutter();
-        if(ShutterWatchdog.elapsed() > (pingInterval*6)) {
+        if(ShutterWatchdog.elapsed() > (pingInterval*6) && XbeeResets < 10) { // try 10 times max
             bShutterPresent = false;
+            SentHello = false;
+            DBPrintln("watchdogTimer triggered");
+            // lets try to recover
+	        if(!isResetingXbee && XbeeResets == 0) {
+	            XbeeResets++;
+	            isResetingXbee = true;
+                resetChip(XBEE_RESET);
+                isConfiguringWireless = false;
+                XbeeStarted = false;
+                configStep = 0;
+                StartWirelessConfig();
+	        }
         }
         if(gotHelloFromShutter) {
             requestShutterData();
@@ -437,6 +455,7 @@ inline void ConfigXBee()
 void setPANID(String value)
 {
     Rotator->setPANID(value);
+    resetChip(XBEE_RESET);
     isConfiguringWireless = false;
     XbeeStarted = false;
     configStep = 0;
@@ -1108,6 +1127,7 @@ void ProcessWireless()
     // we got data so the shutter is alive
     ShutterWatchdog.reset();
     bShutterPresent = true;
+    XbeeResets = 0;
 
     switch (command) {
         case ACCELERATION_SHUTTER_CMD:
