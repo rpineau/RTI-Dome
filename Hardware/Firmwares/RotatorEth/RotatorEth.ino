@@ -61,6 +61,8 @@ RemoteShutterClass RemoteShutter;
 String wirelessBuffer;
 bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
 int configStep = 0;
+bool isResetingXbee = false;
+int XbeeResets = 0;
 #endif
 
 
@@ -261,8 +263,20 @@ void loop()
         if(!SentHello)
             SendHello();
         PingShutter();
-        if(ShutterWatchdog.elapsed() > (pingInterval*6)) {
+        if(ShutterWatchdog.elapsed() > (pingInterval*6) && XbeeResets < 10) { // try 10 times max
             bShutterPresent = false;
+            SentHello = false;
+            DBPrintln("watchdogTimer triggered");
+            // lets try to recover
+	        if(!isResetingXbee && XbeeResets == 0) {
+	            XbeeResets++;
+	            isResetingXbee = true;
+                resetChip(XBEE_RESET);
+                isConfiguringWireless = false;
+                XbeeStarted = false;
+                configStep = 0;
+                StartWirelessConfig();
+	        }
         }
         if(gotHelloFromShutter) {
             requestShutterData();
@@ -441,6 +455,7 @@ inline void ConfigXBee()
 void setPANID(String value)
 {
     Rotator->setPANID(value);
+    resetChip(XBEE_RESET);
     isConfiguringWireless = false;
     XbeeStarted = false;
     configStep = 0;
@@ -1112,6 +1127,7 @@ void ProcessWireless()
     // we got data so the shutter is alive
     ShutterWatchdog.reset();
     bShutterPresent = true;
+    XbeeResets = 0;
 
     switch (command) {
         case ACCELERATION_SHUTTER_CMD:
