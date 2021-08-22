@@ -129,11 +129,6 @@ void loop()
 			StartWirelessConfig();
             needFirstPing = true;
 		}
-		else {
-			XbeeStarted = true;
-			wirelessBuffer = "";
-			DBPrintln("Radio configured");
-		}
 	}
 
     // if we lost 3 pings and had no coms for that long.. reset XBee close if we've already reset the XBee
@@ -194,6 +189,7 @@ void StartWirelessConfig()
 	DBPrintln("Sending +++");
 	Wireless.print("+++");
 	delay(1100);
+	watchdogTimer.reset();
 }
 
 inline void ConfigXBee(String result)

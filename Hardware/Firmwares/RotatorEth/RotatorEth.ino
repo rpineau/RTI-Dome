@@ -90,7 +90,7 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
 #define PANID_STEP 4
 
 static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed with command
-
+#define MAX_XBEE_RESET  10
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
@@ -209,6 +209,7 @@ void setup()
 
 #ifdef DEBUG
     DebugPort.begin(115200);
+    DBPrintln("\n\n========== RTI-Zome controller booting ==========\n\n");
 #endif
     getMacAddress(MAC_Address, uidBuffer);
 
@@ -246,12 +247,6 @@ void loop()
             StartWirelessConfig();
             DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
         }
-        else {
-            XbeeStarted = true;
-            wirelessBuffer = "";
-            DBPrintln("Radio configured");
-            SendHello();
-        }
     }
 #endif
     Rotator->Run();
@@ -260,15 +255,13 @@ void loop()
     checkShuterLowVoltage();
 #ifndef STANDALONE
     if(XbeeStarted) {
-        if(!SentHello)
-            SendHello();
-        PingShutter();
-        if(ShutterWatchdog.elapsed() > (pingInterval*6) && XbeeResets < 10) { // try 10 times max
-            bShutterPresent = false;
-            SentHello = false;
-            DBPrintln("watchdogTimer triggered");
+        if(ShutterWatchdog.elapsed() > (pingInterval*5) && XbeeResets < MAX_XBEE_RESET) { // try 10 times max
             // lets try to recover
-	        if(!isResetingXbee && XbeeResets == 0) {
+	        if(!isResetingXbee && XbeeResets < MAX_XBEE_RESET) {
+                DBPrintln("watchdogTimer triggered");
+    	        DBPrintln("Resetting XBee reset #" + String(XbeeResets));
+                bShutterPresent = false;
+                SentHello = false;
 	            XbeeResets++;
 	            isResetingXbee = true;
                 resetChip(XBEE_RESET);
@@ -278,6 +271,11 @@ void loop()
                 StartWirelessConfig();
 	        }
         }
+        else if(!SentHello && XbeeResets < MAX_XBEE_RESET) // if after 10 reset we didn't get an answer there is no point sending more hello.
+            SendHello();
+        else
+            PingShutter();
+
         if(gotHelloFromShutter) {
             requestShutterData();
             gotHelloFromShutter = false;
@@ -419,6 +417,7 @@ void StartWirelessConfig()
     DBPrintln("Sending +++");
     Wireless.print("+++");
     delay(1100);
+    ShutterWatchdog.reset();
 }
 
 inline void ConfigXBee()
@@ -448,6 +447,7 @@ inline void ConfigXBee()
         }
         SentHello = false;
         gotHelloFromShutter = false;
+        isResetingXbee = false;
     }
     delay(100);
 }
