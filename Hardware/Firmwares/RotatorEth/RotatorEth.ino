@@ -860,6 +860,7 @@ void ProcessCommand(bool bFromNetwork)
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
             DBPrintln("trying to reconfigure radio");
+            resetChip(XBEE_RESET);
             break;
 
         case PANID_GET:
