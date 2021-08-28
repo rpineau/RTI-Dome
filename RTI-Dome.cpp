@@ -1028,7 +1028,6 @@ int CRTIDome::openShutter()
     fflush(Logfile);
 #endif
 
-	
     nErr = domeCommand("O#", szResp, 'O', SERIAL_BUFFER_SIZE);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1039,7 +1038,7 @@ int CRTIDome::openShutter()
         fflush(Logfile);
 #endif
     }
-    if(szResp[0] == 'L') { // batteryb LOW.. can't open
+    if(szResp[0] == 'L') { // battery LOW.. can't open
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         ltime = time(NULL);
         timestamp = asctime(localtime(&ltime));
@@ -1047,8 +1046,19 @@ int CRTIDome::openShutter()
         fprintf(Logfile, "[%s] [CRTIDome::openShutter] Voltage too low to open\n", timestamp);
         fflush(Logfile);
 #endif
-        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
+        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_BATTERY_LOW);
     }
+    if(szResp[0] == 'R') { // Raining. can't open
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        ltime = time(NULL);
+        timestamp = asctime(localtime(&ltime));
+        timestamp[strlen(timestamp) - 1] = 0;
+        fprintf(Logfile, "[%s] [CRTIDome::openShutter] Voltage too low to open\n", timestamp);
+        fflush(Logfile);
+#endif
+        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_RAINING);
+    }
+
     return nErr;
 }
 
@@ -1080,6 +1090,7 @@ int CRTIDome::closeShutter()
     if(!m_bShutterPresent) {
         return SB_OK;
     }
+
     getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1102,9 +1113,8 @@ int CRTIDome::closeShutter()
 #endif
     }
 
-    if(szResp[0] == 'L') { // batteryb LOW.. can't open
-        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
-;
+    if(szResp[0] == 'L') { // batteryb LOW.. can't close :(
+        nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_BATTERY_LOW);
     }
 
     return nErr;
