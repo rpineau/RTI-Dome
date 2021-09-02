@@ -62,7 +62,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>Dome params</string>
+       <string>Dome parameters</string>
       </property>
       <widget class="QCheckBox" name="homeOnUnpark">
        <property name="geometry">
@@ -234,7 +234,7 @@
       <property name="geometry">
        <rect>
         <x>336</x>
-        <y>24</y>
+        <y>32</y>
         <width>336</width>
         <height>408</height>
        </rect>
