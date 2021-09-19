@@ -1153,12 +1153,6 @@ int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
         fVersion = 0.0;
         return PLUGIN_OK;
     }
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-    for(int i=0; i < firmwareFields.size(); i++)
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterFirmwareVersion] firmwareFields["<<i<<"] = " << firmwareFields[i] << std::endl;
-
-    m_sLogFile.flush();
-#endif
 
     if(firmwareFields.size()>0) {
         try {
