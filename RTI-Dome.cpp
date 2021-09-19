@@ -88,7 +88,7 @@ CRTIDome::CRTIDome()
 #endif
     
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Version " << std::fixed << std::setprecision(2) << PLUGIN_VERSION << std::endl;
+    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Version " << std::fixed << std::setprecision(2) << PLUGIN_VERSION << " build " << __DATE__ << " " << __TIME__ << std::endl;
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Constructor Called." << std::endl;
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Rains status file : " << m_sRainStatusfilePath<<std::endl;
     m_sLogFile.flush();
@@ -198,7 +198,7 @@ int CRTIDome::Connect(const char *pszPort)
     }
 
     sendShutterHello();
-    m_pSleeper->sleep(250);
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
     getShutterPresent(bDummy);
     // we need to get the initial state
     getShutterState(m_nShutterState);
@@ -303,7 +303,7 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout)
                 nErr = COMMAND_TIMEOUT;
                 break;
             }
-            m_pSleeper->sleep(MAX_READ_WAIT_TIMEOUT);
+            std::this_thread::sleep_for(std::chrono::milliseconds(MAX_READ_WAIT_TIMEOUT));
             continue;
         }
         nbTimeouts = 0;

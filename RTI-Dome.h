@@ -27,14 +27,13 @@
 #include <iomanip>
 #include <fstream>
 #include <chrono>
+#include <thread>
 #include <ctime>
 
 // SB includes
 #include "../../licensedinterfaces/driverrootinterface.h"
 #include "../../licensedinterfaces/sberrorx.h"
 #include "../../licensedinterfaces/serxinterface.h"
-#include "../../licensedinterfaces/sleeperinterface.h"
-#include "../../licensedinterfaces/loggerinterface.h"
 
 #include "StopWatch.h"
 
@@ -74,7 +73,6 @@ public:
     const bool  IsConnected(void) { return m_bIsConnected; }
 
     void        setSerxPointer(SerXInterface *p) { m_pSerx = p; }
-    void        setSleeprPinter(SleeperInterface *p) {m_pSleeper = p; }
 
     // Dome commands
     int syncDome(double dAz, double dEl);
@@ -194,7 +192,6 @@ protected:
     bool            checkBoundaries(double dGotoAz, double dDomeAz);
     
     SerXInterface   *m_pSerx;
-    SleeperInterface *m_pSleeper;
 
     std::string     m_Port;
     bool            m_bNetworkConnected;

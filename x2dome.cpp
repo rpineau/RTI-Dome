@@ -28,7 +28,6 @@ X2Dome::X2Dome(const char* pszSelection, const int& nISIndex,
     m_bHasShutterControl = false;
     
     m_RTIDome.setSerxPointer(pSerX);
-    m_RTIDome.setSleeprPinter(pSleeper);
 
     if (m_pIniUtil)
     {
@@ -73,12 +72,12 @@ int X2Dome::establishLink(void)
     nErr = m_RTIDome.Connect(szPort);
     if(nErr) {
         m_bLinked = false;
-        // nErr = ERR_COMMOPENING;
     }
     else
         m_bLinked = true;
 
-    m_RTIDome.getShutterPresent(m_bHasShutterControl);
+    if(m_bLinked)
+        m_RTIDome.getShutterPresent(m_bHasShutterControl);
 	return nErr;
 }
 
