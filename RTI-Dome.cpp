@@ -725,7 +725,7 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
         // Shutter
         std::stringstream().swap(ssTmp);
         ssTmp << "k" << nShutCutOff <<"#";
-        nErr = domeCommand(ssTmp.str(), sResp, 'K', SERIAL_BUFFER_SIZE);
+        nErr = domeCommand(ssTmp.str(), sResp, 'K');
         if(nErr) {
     #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] dDomeCutOff ERROR = " << sResp << std::endl;
@@ -1153,11 +1153,17 @@ int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
         fVersion = 0.0;
         return PLUGIN_OK;
     }
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    for(int i=0; i < firmwareFields.size(); i++)
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterFirmwareVersion] firmwareFields["<<i<<"] = " << firmwareFields[i] << std::endl;
+
+    m_sLogFile.flush();
+#endif
 
     if(firmwareFields.size()>0) {
-        sVersion.assign(firmwareFields[0]);
         try {
-            fVersion = std::stof(firmwareFields[1]);
+            sVersion.assign(firmwareFields[0]);
+            fVersion = std::stof(firmwareFields[0]);
         }
         catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1607,7 +1613,7 @@ int CRTIDome::sendShutterHello()
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("H#", sResp, 'H');
+    nErr = domeCommand("H#", sResp, 0x00); // we don't want the response
     return nErr;
 }
 
@@ -2330,7 +2336,7 @@ int CRTIDome::reconfigureNetwork()
         return NOT_CONNECTED;
 
     if(m_bNetworkConnected) {
-        nErr = domeCommand("b#", sResp, 0x00, SERIAL_BUFFER_SIZE); // we won't get an answer as reconfiguring the network will disconnect us.
+        nErr = domeCommand("b#", sResp, 0x00); // we won't get an answer as reconfiguring the network will disconnect us.
     }
     else {
         nErr = domeCommand("b#", sResp, 'b');
@@ -2510,6 +2516,11 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
     if(svFields.size()==0) {
         nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
+#ifdef PLUGIN_DEBUG
+    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [parseFields] Done all good." << std::endl;
+    m_sLogFile.flush();
+#endif
+
     return nErr;
 }
 
