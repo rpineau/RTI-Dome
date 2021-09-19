@@ -1607,10 +1607,6 @@ int CRTIDome::sendShutterHello()
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    if(!m_bShutterPresent) {
-        return SB_OK;
-    }
-
     nErr = domeCommand("H#", sResp, 'H');
     return nErr;
 }
