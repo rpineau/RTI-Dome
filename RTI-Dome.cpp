@@ -1773,7 +1773,7 @@ int CRTIDome::setDefaultDir(bool bNormal)
 
 #ifdef PLUGIN_DEBUG
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] bNormal = " << (bNormal?"True":"False") << std::endl;
-    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] ssTmp = " << ssTmp << std::endl;
+    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] ssTmp = " << ssTmp.str() << std::endl;
     m_sLogFile.flush();
 #endif
 
