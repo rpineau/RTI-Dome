@@ -278,7 +278,7 @@ int X2Dome::execModalSettingsDialog()
             dx->setPropertyString("rainStatus","text", "--");
         else {
             std::stringstream().swap(sTmpBuf);
-            sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "Not raining" : "Raining");
+            sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "<html><head/><body><p><span style=\" color:#00FF00;\">Not raining</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Raining</span></p></body></html>");
             dx->setPropertyString("rainStatus","text", sTmpBuf.str().c_str());
         }
 
@@ -552,7 +552,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                     uiex->setPropertyString("rainStatus","text", "--");
                 else {
                     std::stringstream().swap(sTmpBuf);
-                    sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "Not raining" : "Raining");
+                    sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "<html><head/><body><p><span style=\" color:#00FF00;\">Not raining</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Raining</span></p></body></html>");
                     uiex->setPropertyString("rainStatus","text", sTmpBuf.str().c_str());
                 }
             }
