@@ -923,7 +923,6 @@ int CRTIDome::gotoAzimuth(double dNewAz)
     }
 
     m_dGotoAz = dNewAz;
-    m_nGotoTries = 0;
     return nErr;
 }
 
@@ -1249,8 +1248,6 @@ int CRTIDome::isGoToComplete(bool &bComplete)
     getDomeAz(dDomeAz);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-
-
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] DomeAz = " << std::fixed << std::setprecision(2) << dDomeAz << std::endl;
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
     m_sLogFile.flush();
@@ -1273,6 +1270,11 @@ int CRTIDome::isGoToComplete(bool &bComplete)
             gotoAzimuth(m_dGotoAz);
         }
         else {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] After retry ***** ERROR **** domeAz = " << std::fixed << std::setprecision(2) << dDomeAz << ", m_dGotoAz =" << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
+            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] After retry m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
+            m_sLogFile.flush();
+#endif
             m_nGotoTries = 0;
             nErr = ERR_CMDFAILED;
         }
