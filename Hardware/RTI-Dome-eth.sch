@@ -650,11 +650,11 @@
 <pad name="38" x="44.45" y="1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="GND..." x="44.45" y="-19.05" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="GND...." x="46.99" y="-19.05" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="5V." x="44.45" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="5V.." x="46.99" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="+5V@3" x="44.45" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="+5V@4" x="46.99" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="RESET" x="-16.51" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="3.3V" x="-13.97" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="5V" x="-11.43" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="+5V@1" x="-11.43" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="GND.." x="-8.89" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="GND." x="-6.35" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="VIN" x="-3.81" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
@@ -883,7 +883,7 @@
 <pad name="RESET." x="13.97" y="-1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="MOSI" x="16.51" y="1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="SCK" x="13.97" y="1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
-<pad name="+5V_" x="16.51" y="3.81" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
+<pad name="+5V@2" x="16.51" y="3.81" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="MISO" x="13.97" y="3.81" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <rectangle x1="16.256" y1="-1.524" x2="16.764" y2="-1.016" layer="51" rot="R90"/>
 <rectangle x1="13.716" y1="-1.524" x2="14.224" y2="-1.016" layer="51" rot="R90"/>
@@ -923,7 +923,7 @@
 <pin name="VIN" x="-30.48" y="15.24" length="short" direction="pwr"/>
 <pin name="GND@2" x="-30.48" y="17.78" length="short" direction="pwr"/>
 <pin name="GND@3" x="-30.48" y="20.32" length="short" direction="pwr"/>
-<pin name="5V" x="-30.48" y="22.86" length="short" direction="pwr"/>
+<pin name="+5V@1" x="-30.48" y="22.86" length="short" direction="pwr"/>
 <pin name="3.3V" x="-30.48" y="25.4" length="short" direction="pwr"/>
 <pin name="RESET" x="-30.48" y="27.94" length="short"/>
 <pin name="IOREF" x="-30.48" y="30.48" length="short"/>
@@ -1007,9 +1007,10 @@
 <device name="" package="ARDUINO_DUE_SHIELD_FULL">
 <connects>
 <connect gate="G$1" pin="(N/C)" pad="N/C"/>
-<connect gate="G$1" pin="+5V@2" pad="+5V_"/>
-<connect gate="G$1" pin="+5V@3" pad="5V."/>
-<connect gate="G$1" pin="+5V@4" pad="5V.."/>
+<connect gate="G$1" pin="+5V@1" pad="+5V@1"/>
+<connect gate="G$1" pin="+5V@2" pad="+5V@2"/>
+<connect gate="G$1" pin="+5V@3" pad="+5V@3"/>
+<connect gate="G$1" pin="+5V@4" pad="+5V@4"/>
 <connect gate="G$1" pin="0(RX)" pad="0"/>
 <connect gate="G$1" pin="1(TX)" pad="1"/>
 <connect gate="G$1" pin="10" pad="10"/>
@@ -1061,7 +1062,6 @@
 <connect gate="G$1" pin="51" pad="51"/>
 <connect gate="G$1" pin="52" pad="52"/>
 <connect gate="G$1" pin="53" pad="53"/>
-<connect gate="G$1" pin="5V" pad="5V"/>
 <connect gate="G$1" pin="6" pad="6"/>
 <connect gate="G$1" pin="7" pad="7"/>
 <connect gate="G$1" pin="8" pad="8"/>
@@ -10356,12 +10356,12 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 <package name="UD-10X10_NICHICON">
 <description>&lt;b&gt;ALUMINUM ELECTROLYTIC CAPACITORS&lt;/b&gt; UD Series 10 x 10 mm&lt;p&gt;
 Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
-<wire x1="-5.1" y1="5.1" x2="4.3" y2="5.1" width="0.1016" layer="51"/>
-<wire x1="4.3" y1="5.1" x2="5.1" y2="4.3" width="0.1016" layer="51"/>
-<wire x1="5.1" y1="4.3" x2="5.1" y2="-4.3" width="0.1016" layer="51"/>
-<wire x1="5.1" y1="-4.3" x2="4.3" y2="-5.1" width="0.1016" layer="51"/>
-<wire x1="4.3" y1="-5.1" x2="-5.1" y2="-5.1" width="0.1016" layer="51"/>
-<wire x1="-5.1" y1="-5.1" x2="-5.1" y2="5.1" width="0.1016" layer="51"/>
+<wire x1="-5.1" y1="5.1" x2="4.3" y2="5.1" width="0.1016" layer="21"/>
+<wire x1="4.3" y1="5.1" x2="5.1" y2="4.3" width="0.1016" layer="21"/>
+<wire x1="5.1" y1="4.3" x2="5.1" y2="-4.3" width="0.1016" layer="21"/>
+<wire x1="5.1" y1="-4.3" x2="4.3" y2="-5.1" width="0.1016" layer="21"/>
+<wire x1="4.3" y1="-5.1" x2="-5.1" y2="-5.1" width="0.1016" layer="21"/>
+<wire x1="-5.1" y1="-5.1" x2="-5.1" y2="5.1" width="0.1016" layer="21"/>
 <wire x1="-4.875" y1="0.85" x2="4.875" y2="0.85" width="0.1016" layer="21" curve="-160.259855"/>
 <wire x1="-5.1" y1="0.875" x2="-5.1" y2="5.1" width="0.1016" layer="21"/>
 <wire x1="-5.1" y1="5.1" x2="4.3" y2="5.1" width="0.1016" layer="21"/>
@@ -10370,12 +10370,12 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="4.3" y1="-5.1" x2="-5.1" y2="-5.1" width="0.1016" layer="21"/>
 <wire x1="-5.1" y1="-5.1" x2="-5.1" y2="-0.85" width="0.1016" layer="21"/>
 <wire x1="4.875" y1="-0.85" x2="-4.875" y2="-0.85" width="0.1016" layer="21" curve="-160.259855"/>
-<circle x="0" y="0" radius="4.95" width="0.1016" layer="51"/>
+<circle x="0" y="0" radius="4.95" width="0.1016" layer="21"/>
 <smd name="-" x="-4.3" y="0" dx="3.6" dy="1.3" layer="1"/>
 <smd name="+" x="4.3" y="0" dx="3.6" dy="1.3" layer="1"/>
 <text x="-5.08" y="5.715" size="1.016" layer="25">&gt;NAME</text>
 <text x="-5.08" y="-6.35" size="1.016" layer="27">&gt;VALUE</text>
-<polygon width="0.1016" layer="51">
+<polygon width="0.1016" layer="21">
 <vertex x="-4.05" y="2.8" curve="69.465624"/>
 <vertex x="-4.05" y="-2.825"/>
 </polygon>
@@ -16377,6 +16377,29 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 <wire x1="3.73" y1="-6.81" x2="-3.73" y2="-6.81" width="0.127" layer="21"/>
 <wire x1="3.73" y1="0.19" x2="-3.73" y2="0.19" width="0.127" layer="21"/>
 </package>
+<package name="POWERPOLE_PAIR_25A_HORIZ_G2_HOLE">
+<pad name="BLACK" x="-4" y="0" drill="1.8" shape="long" rot="R180"/>
+<pad name="RED" x="4" y="0" drill="1.8" shape="long" rot="R180"/>
+<wire x1="-7.9" y1="25.6" x2="-7.9" y2="17.4" width="0.127" layer="21"/>
+<wire x1="-7.9" y1="17.4" x2="-7.9" y2="16.97" width="0.127" layer="21"/>
+<wire x1="-7.9" y1="14.43" x2="-7.9" y2="1" width="0.127" layer="21"/>
+<wire x1="-7.9" y1="1" x2="0" y2="1" width="0.127" layer="21"/>
+<wire x1="0" y1="1" x2="7.9" y2="1" width="0.127" layer="21"/>
+<wire x1="7.9" y1="1" x2="7.9" y2="14.43" width="0.127" layer="21"/>
+<wire x1="7.9" y1="16.97" x2="7.9" y2="17.4" width="0.127" layer="21"/>
+<wire x1="7.9" y1="17.4" x2="7.9" y2="25.6" width="0.127" layer="21"/>
+<wire x1="7.9" y1="25.6" x2="0" y2="25.6" width="0.127" layer="21"/>
+<text x="2.89" y="2" size="2.54" layer="21" font="vector">+</text>
+<wire x1="0" y1="25.6" x2="-7.9" y2="25.6" width="0.127" layer="21"/>
+<wire x1="0" y1="1" x2="0" y2="14.43" width="0.127" layer="21"/>
+<wire x1="0" y1="16.97" x2="0" y2="25.6" width="0.127" layer="21"/>
+<circle x="0" y="15.7" radius="1.27" width="0.127" layer="21"/>
+<wire x1="-7.9" y1="16.97" x2="-7.9" y2="14.43" width="0.127" layer="21" curve="-180"/>
+<wire x1="7.9" y1="16.97" x2="7.9" y2="14.43" width="0.127" layer="21" curve="180"/>
+<wire x1="-7.9" y1="17.4" x2="7.9" y2="17.4" width="0.127" layer="21"/>
+<pad name="P$1" x="7.6" y="15.7" drill="1.1" shape="long" rot="R90"/>
+<pad name="P$2" x="-7.6" y="15.7" drill="1.1" shape="long" rot="R90"/>
+</package>
 </packages>
 <symbols>
 <symbol name="POWERPOLE_POWER">
@@ -16478,6 +16501,15 @@ using ameteur radio standard layout</description>
 </technologies>
 </device>
 <device name="" package="POWERPOLE_PAIR_45A_HORIZ">
+<connects>
+<connect gate="G$1" pin="GND" pad="BLACK"/>
+<connect gate="G$1" pin="V+" pad="RED"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="STAPLE_HOLE" package="POWERPOLE_PAIR_25A_HORIZ_G2_HOLE">
 <connects>
 <connect gate="G$1" pin="GND" pad="BLACK"/>
 <connect gate="G$1" pin="V+" pad="RED"/>
@@ -17815,7 +17847,7 @@ Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=B
 <segment>
 <wire x1="99.06" y1="109.22" x2="101.6" y2="109.22" width="0.1524" layer="91"/>
 <label x="99.06" y="109.22" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
-<pinref part="U$1" gate="G$1" pin="5V"/>
+<pinref part="U$1" gate="G$1" pin="+5V@1"/>
 </segment>
 <segment>
 <pinref part="IC3" gate="1" pin="VCC"/>
