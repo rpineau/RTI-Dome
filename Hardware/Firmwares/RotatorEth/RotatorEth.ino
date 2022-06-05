@@ -94,19 +94,19 @@ static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
-bool SentHello = false;
+volatile  bool SentHello = false;
 
 // Timer to periodically ping the shutter.
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 
 #endif
-bool bShutterPresent = false;
+volatile bool bShutterPresent = false;
 
 // global variable for rain status
-bool bIsRaining = false;
+volatile bool bIsRaining = false;
 // global variable for shutter voltage state
-bool bLowShutterVoltage = false;
+volatile bool bLowShutterVoltage = false;
 
 // global variable for the IP config and to check if we detect the ethernet card
 bool ethernetPresent;

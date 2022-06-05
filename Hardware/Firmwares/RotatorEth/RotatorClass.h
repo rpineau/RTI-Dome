@@ -600,6 +600,12 @@ String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 //
 bool RotatorClass::GetRainStatus()
 {
+    if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
+        m_bIsRaining = true;
+    }
+    else
+        m_bIsRaining = false;
+
     return m_bIsRaining;
 }
 
