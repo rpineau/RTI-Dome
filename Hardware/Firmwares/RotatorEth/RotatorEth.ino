@@ -302,7 +302,7 @@ void checkInterruptTimer()
             detachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN));
             detachInterrupt(digitalPinToInterrupt(BUTTON_CW));
             detachInterrupt(digitalPinToInterrupt(BUTTON_CCW));
-            delay(10);
+            // re-attach interrupts
             attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
             attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
             attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);

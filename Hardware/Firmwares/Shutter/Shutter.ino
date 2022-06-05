@@ -180,7 +180,7 @@ void checkInterruptTimer()
             detachInterrupt(digitalPinToInterrupt(CLOSED_PIN));
             detachInterrupt(digitalPinToInterrupt(BUTTON_OPEN));
             detachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE));
-            delay(10);
+            // re-attach interrupts
             attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
             attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
             attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
