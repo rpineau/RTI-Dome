@@ -90,6 +90,8 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
 #define PANID_STEP 4
 
 static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed with command
+static const unsigned long resetInterruptInterval = 43200000; // 12 hours
+
 #define MAX_XBEE_RESET  10
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
@@ -99,6 +101,7 @@ volatile  bool SentHello = false;
 // Timer to periodically ping the shutter.
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
+StopWatch ResetInterruptWatchdog;
 
 #endif
 volatile bool bShutterPresent = false;
@@ -167,27 +170,29 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 #endif
 
 // function prototypes
+void checkInterruptTimer();
 void configureEthernet();
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
-void checkForNewTCPClient(void);
-void homeIntHandler(void);
-void rainIntHandler(void);
-void buttonHandler(void);
+void checkForNewTCPClient();
+void homeIntHandler();
+void rainIntHandler();
+void buttonHandler();
 void resetChip(int);
 void resetFTDI(int);
-void StartWirelessConfig(void);
+void StartWirelessConfig();
 void ConfigXBee();
 void setPANID(String);
-void SendHello(void);
-void requestShutterData(void);
-void CheckForCommands(void);
-void CheckForRain(void);
-void PingShutter(void);
+void SendHello();
+void requestShutterData();
+void CheckForCommands();
+void CheckForRain();
+void checkShuterLowVoltage();
+void PingShutter();
 void ReceiveNetwork(EthernetClient);
-void ReceiveComputer(void);
-void ProcessCommand(bool);
-void ReceiveWireless(void);
-void ProcessWireless(void);
+void ReceiveComputer();
+void ProcessCommand();
+void ReceiveWireless();
+void ProcessWireless();
 
 void setup()
 {
@@ -230,6 +235,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+    ResetInterruptWatchdog.reset();
     interrupts();
     configureEthernet();
 }
@@ -253,6 +259,7 @@ void loop()
     CheckForCommands();
     CheckForRain();
     checkShuterLowVoltage();
+    checkInterruptTimer();
 #ifndef STANDALONE
     if(XbeeStarted) {
         if(ShutterWatchdog.elapsed() > (pingInterval*5) && XbeeResets < MAX_XBEE_RESET) { // try 10 times max
@@ -283,6 +290,27 @@ void loop()
     }
 #endif
 
+}
+
+// reset intterupt as they seem to stop working after a while
+void checkInterruptTimer()
+{
+    if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
+        if(Rotator->GetSeekMode() == HOMING_NONE) { // reset interrupt only if not doing anything
+            noInterrupts();
+            detachInterrupt(digitalPinToInterrupt(HOME_PIN));
+            detachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_CW));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_CCW));
+            delay(10);
+            attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+            attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+            ResetInterruptWatchdog.reset();
+            interrupts();
+        }
+    }
 }
 
 void configureEthernet()

@@ -26,6 +26,8 @@ String serialBuffer;
 #endif
 String wirelessBuffer;
 
+StopWatch ResetInterruptWatchdog;
+static const unsigned long resetInterruptInterval = 43200000; // 12 hours
 
 const String version = "2.645";
 
@@ -102,6 +104,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
     attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+    ResetInterruptWatchdog.reset();
     interrupts();
     // enable input buffers
     Shutter->bufferEnable(true);
@@ -163,7 +166,31 @@ void loop()
 	    watchdogTimer.reset();
 
 	Shutter->Run();
+    checkInterruptTimer();
+
 }
+
+// reset intterupt as they seem to stop working after a while
+void checkInterruptTimer()
+{
+    if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
+        if(Shutter->GetState() == OPEN || Shutter->GetState() == CLOSED) { // reset interrupt only if not doing anything
+            noInterrupts();
+            detachInterrupt(digitalPinToInterrupt(OPENED_PIN));
+            detachInterrupt(digitalPinToInterrupt(CLOSED_PIN));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_OPEN));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE));
+            delay(10);
+            attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
+            attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+            ResetInterruptWatchdog.reset();
+            interrupts();
+        }
+    }
+}
+
 
 void handleClosedInterrupt()
 {
