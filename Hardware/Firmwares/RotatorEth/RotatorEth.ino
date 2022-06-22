@@ -90,7 +90,6 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
 #define PANID_STEP 4
 
 static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed with command
-static const unsigned long resetInterruptInterval = 43200000; // 12 hours
 
 #define MAX_XBEE_RESET  10
 // Once booting is done and XBee is ready, broadcast a hello message
@@ -101,9 +100,11 @@ volatile  bool SentHello = false;
 // Timer to periodically ping the shutter.
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
-StopWatch ResetInterruptWatchdog;
 
 #endif
+
+static const unsigned long resetInterruptInterval = 43200000; // 12 hours
+StopWatch ResetInterruptWatchdog;
 volatile bool bShutterPresent = false;
 
 // global variable for rain status
@@ -186,7 +187,9 @@ void SendHello();
 void requestShutterData();
 void CheckForCommands();
 void CheckForRain();
+#ifndef STANDALONE
 void checkShuterLowVoltage();
+#endif
 void PingShutter();
 void ReceiveNetwork(EthernetClient);
 void ReceiveComputer();
@@ -258,9 +261,9 @@ void loop()
     Rotator->Run();
     CheckForCommands();
     CheckForRain();
-    checkShuterLowVoltage();
     checkInterruptTimer();
 #ifndef STANDALONE
+    checkShuterLowVoltage();
     if(XbeeStarted) {
         if(ShutterWatchdog.elapsed() > (pingInterval*5) && XbeeResets < MAX_XBEE_RESET) { // try 10 times max
             // lets try to recover
@@ -556,7 +559,9 @@ void CheckForRain()
         if (Rotator->GetRainAction() == PARK)
             Rotator->GoToAzimuth(Rotator->GetParkAzimuth());
         // keep telling the shutter that it's raining
+#ifndef STANDALONE
         Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
+#endif
     }
 }
 
