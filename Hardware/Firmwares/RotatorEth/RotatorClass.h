@@ -69,7 +69,7 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 
 // used to offset the config location.. at some point.
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
-#define EEPROM_SIGNATURE    2646
+#define EEPROM_SIGNATURE    2645
 
 #ifdef USE_ETHERNET
 typedef struct IPCONFIG {
