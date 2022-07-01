@@ -25,11 +25,14 @@
 #define VERSION "2.645"
 
 #define USE_EXT_EEPROM
+#define USE_ETHERNET
 
+#ifdef USE_ETHERNET
 // include and some defines for ethernet connection
 #include <SPI.h>
 #include <Ethernet.h>
 #include "EtherMac.h"
+#endif
 
 #define Computer Serial2     // USB FTDI
 #define FTDI_RESET  23
@@ -40,6 +43,7 @@
 
 #include "RotatorClass.h"
 
+#ifdef USE_ETHERNET
 #define ETHERNET_CS     52
 #define ETHERNET_RESET  53
 uint32_t uidBuffer[4];  // DUE unique ID
@@ -49,9 +53,10 @@ byte MAC_Address[6];    // Mac address, uses part of the unique ID
 EthernetServer domeServer(SERVER_PORT);
 EthernetClient domeClient;
 int nbEthernetClient;
+String networkBuffer;
+#endif
 
 String computerBuffer;
-String networkBuffer;
 
 
 #ifndef STANDALONE
@@ -112,9 +117,11 @@ volatile bool bIsRaining = false;
 // global variable for shutter voltage state
 volatile bool bLowShutterVoltage = false;
 
+#ifdef USE_ETHERNET
 // global variable for the IP config and to check if we detect the ethernet card
 bool ethernetPresent;
 IPConfig ServerConfig;
+#endif
 
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
@@ -172,9 +179,11 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 
 // function prototypes
 void checkInterruptTimer();
+#ifdef USE_ETHERNET
 void configureEthernet();
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
 void checkForNewTCPClient();
+#endif
 void homeIntHandler();
 void rainIntHandler();
 void buttonHandler();
@@ -191,7 +200,9 @@ void CheckForRain();
 void checkShuterLowVoltage();
 #endif
 void PingShutter();
+#ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient);
+#endif
 void ReceiveComputer();
 void ProcessCommand();
 void ReceiveWireless();
@@ -207,8 +218,10 @@ void setup()
     digitalWrite(FTDI_RESET, 0);
     pinMode(FTDI_RESET, OUTPUT);
 
+#ifdef USE_ETHERNET
     digitalWrite(ETHERNET_RESET, 0);
     pinMode(ETHERNET_RESET, OUTPUT);
+#endif
 
 #ifndef STANDALONE
     resetChip(XBEE_RESET);
@@ -219,7 +232,9 @@ void setup()
     DebugPort.begin(115200);
     DBPrintln("\n\n========== RTI-Zome controller booting ==========\n\n");
 #endif
+#ifdef USE_ETHERNET
     getMacAddress(MAC_Address, uidBuffer);
+#endif
 
     Computer.begin(115200);
 #ifndef STANDALONE
@@ -240,14 +255,18 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
     ResetInterruptWatchdog.reset();
     interrupts();
+#ifdef USE_ETHERNET
     configureEthernet();
+#endif
 }
 
 void loop()
 {
 
+#ifdef USE_ETHERNET
     if(ethernetPresent)
         checkForNewTCPClient();
+#endif
 
 #ifndef STANDALONE
     if (!XbeeStarted) {
@@ -316,6 +335,7 @@ void checkInterruptTimer()
     }
 }
 
+#ifdef USE_ETHERNET
 void configureEthernet()
 {
     Rotator->getIpConfig(ServerConfig);
@@ -402,6 +422,7 @@ void checkForNewTCPClient()
         configureEthernet();
     }
 }
+#endif
 
 void homeIntHandler()
 {
@@ -538,8 +559,10 @@ void CheckForCommands()
         ReceiveWireless();
     }
 #endif
+#ifdef USE_ETHERNET
     if(ethernetPresent )
         ReceiveNetwork(domeClient);
+#endif
 }
 
 void CheckForRain()
@@ -584,6 +607,7 @@ void PingShutter()
 }
 #endif
 
+#ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client)
 {
     char networkCharacter;
@@ -612,6 +636,7 @@ void ReceiveNetwork(EthernetClient client)
         }
     }
 }
+#endif
 
 // All comms are terminated with '#' but the '\r' and '\n' are for XBee config
 void ReceiveComputer()
@@ -653,9 +678,11 @@ void ProcessCommand(bool bFromNetwork)
     // Split the buffer into command char and value if present
     // Command character
     if(bFromNetwork) {
+#ifdef USE_ETHERNET
         command = networkBuffer.charAt(0);
         // Payload
         value = networkBuffer.substring(1);
+#endif
     }
     else {
         command = computerBuffer.charAt(0);
@@ -816,7 +843,7 @@ void ProcessCommand(bool bFromNetwork)
         case IS_SHUTTER_PRESENT:
             serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
             break;
-
+#ifdef USE_ETHERNET
         case ETH_RECONFIG :
             if(nbEthernetClient > 0) {
                 domeClient.stop();
@@ -881,7 +908,7 @@ void ProcessCommand(bool bFromNetwork)
                 serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
             }
             break;
-
+#endif
 
 #ifndef STANDALONE
         case INIT_XBEE:
@@ -1067,11 +1094,13 @@ void ProcessCommand(bool bFromNetwork)
         if(!bFromNetwork) {
             Computer.print(serialMessage + "#");
             }
+#ifdef USE_ETHERNET
         else if(domeClient.connected()) {
                 DBPrintln("Network serialMessage = " + serialMessage);
                 domeClient.print(serialMessage + "#");
                 domeClient.flush();
         }
+#endif
     }
 }
 

@@ -71,7 +71,7 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
 #define EEPROM_SIGNATURE    2645
 
-
+#ifdef USE_ETHERNET
 typedef struct IPCONFIG {
     bool            bUseDHCP;
     IPAddress       ip;
@@ -79,7 +79,7 @@ typedef struct IPCONFIG {
     IPAddress       gateway;
     IPAddress       subnet;
 } IPConfig;
-
+#endif
 
 typedef struct RotatorConfiguration {
     int             signature;
@@ -94,7 +94,9 @@ typedef struct RotatorConfiguration {
 #ifndef STANDALONE
     int             panid;
 #endif
+#ifdef USE_ETHERNET
     IPConfig        ipConfig;
+#endif
 } Configuration;
 
 
@@ -274,6 +276,7 @@ public:
 
     void        bufferEnable(bool bEnable);
 
+#ifdef USE_ETHERNET
     void        getIpConfig(IPConfig &config);
     bool        getDHCPFlag();
     void        setDHCPFlag(bool bUseDHCP);
@@ -284,7 +287,7 @@ public:
     String      getIPGateway();
     void        setIPGateway(String ipGateway);
     String      IpAddress2String(const IPAddress& ipAddress);
-
+#endif
 
 private:
     Configuration   m_Config;
@@ -411,9 +414,6 @@ RotatorClass::RotatorClass()
     // reset all timers
     m_MoveOffUntilTimer.reset();
     m_periodicReadingTimer.reset();
-
-
-
 }
 
 
@@ -520,15 +520,16 @@ void RotatorClass::SetDefaultConfig()
 #ifndef STANDALONE
     m_Config.panid = 0x4242;
 #endif
-
+#ifdef USE_ETHERNET
     m_Config.ipConfig.bUseDHCP = true;
     m_Config.ipConfig.ip.fromString("192.168.0.99");
     m_Config.ipConfig.dns.fromString("192.168.0.1");
     m_Config.ipConfig.gateway.fromString("192.168.0.1");
     m_Config.ipConfig.subnet.fromString("255.255.255.0");
+#endif
 }
 
-
+#ifdef USE_ETHERNET
 void RotatorClass::getIpConfig(IPConfig &config)
 {
     config.bUseDHCP = m_Config.ipConfig.bUseDHCP;
@@ -594,6 +595,7 @@ String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 {
     return String() + ipAddress[0] + "." + ipAddress[1] + "." + ipAddress[2] + "." + ipAddress[3];;
 }
+#endif
 
 //
 // rain sensor methods
