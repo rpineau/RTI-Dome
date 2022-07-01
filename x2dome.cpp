@@ -28,7 +28,6 @@ X2Dome::X2Dome(const char* pszSelection, const int& nISIndex,
     m_bHasShutterControl = false;
     
     m_RTIDome.setSerxPointer(pSerX);
-    m_RTIDome.setSleeprPinter(pSleeper);
 
     if (m_pIniUtil)
     {
@@ -73,12 +72,12 @@ int X2Dome::establishLink(void)
     nErr = m_RTIDome.Connect(szPort);
     if(nErr) {
         m_bLinked = false;
-        // nErr = ERR_COMMOPENING;
     }
     else
         m_bLinked = true;
 
-    m_RTIDome.getShutterPresent(m_bHasShutterControl);
+    if(m_bLinked)
+        m_RTIDome.getShutterPresent(m_bHasShutterControl);
 	return nErr;
 }
 
@@ -123,7 +122,7 @@ int X2Dome::execModalSettingsDialog()
     X2GUIInterface*					ui = uiutil.X2UI();
     X2GUIExchangeInterface*			dx = NULL;//Comes after ui is loaded
     bool bPressedOK = false;
-    char szTmpBuf[SERIAL_BUFFER_SIZE];
+    std::stringstream sTmpBuf;
     std::string fName;
     double dHomeAz = 0;
     double dParkAz = 0;
@@ -158,7 +157,6 @@ int X2Dome::execModalSettingsDialog()
     X2MutexLocker ml(GetMutex());
     m_RTIDome.getShutterPresent(m_bHasShutterControl);
 
-    memset(szTmpBuf,0,SERIAL_BUFFER_SIZE);
     // set controls state depending on the connection state
     if(m_bHomeOnPark) {
         dx->setChecked("homeOnPark",true);
@@ -231,7 +229,7 @@ int X2Dome::execModalSettingsDialog()
             dx->setPropertyInt("shutterWatchdog", "value", nWatchdog);
 
             dx->setEnabled("lowShutBatCutOff",true);
-            dx->setText("shutterPresent", "Shutter present");
+            dx->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#00FF00;\">Shutter present</span></p></body></html>");
         } else {
             dx->setEnabled("shutterSpeed",false);
             dx->setPropertyInt("shutterSpeed","value",0);
@@ -242,7 +240,7 @@ int X2Dome::execModalSettingsDialog()
             dx->setEnabled("pushButton_4", false);
             dx->setPropertyInt("shutterWatchdog", "value", 0);
             dx->setEnabled("lowShutBatCutOff",false);
-            dx->setText("shutterPresent", "No Shutter detected");
+            dx->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#FF0000;\">No Shutter detected</span></p></body></html>");
         }
 
         // panID
@@ -255,18 +253,17 @@ int X2Dome::execModalSettingsDialog()
 
         m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
         dx->setPropertyDouble("lowRotBatCutOff","value", dDomeCutOff);
-
-        snprintf(szTmpBuf,16,"%2.2f V",dDomeBattery);
-        dx->setPropertyString("domeBatteryLevel","text", szTmpBuf);
+        sTmpBuf << std::fixed << std::setprecision(2) << dDomeBattery << " V";
+        dx->setPropertyString("domeBatteryLevel","text", sTmpBuf.str().c_str());
 
         if(m_bHasShutterControl) {
             dx->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
-
+            std::stringstream().swap(sTmpBuf);
             if(dShutterBattery>=0.0f)
-                snprintf(szTmpBuf,16,"%2.2f V",dShutterBattery);
+                sTmpBuf << std::fixed << std::setprecision(2) << dShutterBattery << " V";
             else
-                snprintf(szTmpBuf,16,"--");
-            dx->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
+                sTmpBuf << "--";
+            dx->setPropertyString("shutterBatteryLevel","text", sTmpBuf.str().c_str());
         }
         else {
             dx->setPropertyDouble("lowShutBatCutOff","value", 0);
@@ -280,8 +277,9 @@ int X2Dome::execModalSettingsDialog()
         if(nErr)
             dx->setPropertyString("rainStatus","text", "--");
         else {
-            snprintf(szTmpBuf, 16, nRainSensorStatus==NOT_RAINING ? "Not raining" : "Raining");
-            dx->setPropertyString("rainStatus","text", szTmpBuf);
+            std::stringstream().swap(sTmpBuf);
+            sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "<html><head/><body><p><span style=\" color:#00FF00;\">Not raining</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Raining</span></p></body></html>");
+            dx->setPropertyString("rainStatus","text", sTmpBuf.str().c_str());
         }
 
         nErr = m_RTIDome.getMACAddress(sDummy);
@@ -404,7 +402,8 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     double dDomeBattery, dDomeCutOff;
     double dShutterBattery, dShutterCutOff;
     char szTmpBuf[SERIAL_BUFFER_SIZE];
-    char szErrorMessage[LOG_BUFFER_SIZE];
+    std::stringstream sTmpBuf;
+    std::stringstream sErrorMessage;
     std::string fName;
     std::string sDummy;
     int nRainSensorStatus = NOT_RAINING;
@@ -425,7 +424,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         if(bShutterPresent != m_bHasShutterControl) {
             m_bHasShutterControl = bShutterPresent;
             if(m_bHasShutterControl && m_bLinked) {
-                uiex->setText("shutterPresent", "Shutter present");
+                uiex->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#00FF00;\">Shutter present</span></p></body></html>");
                 uiex->setEnabled("shutterSpeed",true);
                 m_RTIDome.getShutterSpeed(nSpeed);
                 uiex->setPropertyInt("shutterSpeed","value", nSpeed);
@@ -439,7 +438,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 uiex->setPropertyInt("shutterWatchdog", "value", nWatchdog);
             }
             else {
-                uiex->setText("shutterPresent", "No Shutter detected");
+                uiex->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#FF0000;\">No Shutter detected</span></p></body></html>");
                 uiex->setPropertyInt("shutterSpeed","value", 0);
                 uiex->setPropertyInt("shutterAcceleration","value", 0);
                 uiex->setPropertyInt("shutterWatchdog", "value", 0);
@@ -459,8 +458,8 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 if(nErr) {
                     uiex->setEnabled("pushButtonOK",true);
 					uiex->setEnabled("pushButtonCancel", true);
-                    snprintf(szErrorMessage, LOG_BUFFER_SIZE, "Error calibrating dome : Error %d", nErr);
-                    uiex->messageBox("RTI-Dome Calibrate", szErrorMessage);
+                    sErrorMessage << "Error calibrating dome : Error "<< nErr;
+                    uiex->messageBox("RTI-Dome Calibrate", sErrorMessage.str().c_str());
                     m_bCalibratingDome = false;
                     return;
                 }
@@ -491,15 +490,15 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                     m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
                     if(dShutterCutOff < 1.0f) // not right.. ask again
                         m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
-                    snprintf(szTmpBuf,16,"%2.2f V",dShutterBattery);
-                    uiex->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
+                    sTmpBuf << std::fixed << std::setprecision(2) << dShutterBattery << " V";
+                    uiex->setPropertyString("shutterBatteryLevel","text", sTmpBuf.str().c_str());
                     uiex->setEnabled("lowShutBatCutOff",true);
                     uiex->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
 
                 } else {
                     if(m_SetPanIdTimer.GetElapsedSeconds()>PANID_TIMEOUT ) {// 15 seconds is way more than needed.. something when wrong
-                        snprintf(szErrorMessage, LOG_BUFFER_SIZE, "Timeout setting Xbee PAN ID");
-                        uiex->messageBox("RTI-Dome Set PanID", szErrorMessage);
+                        sErrorMessage << "Timeout setting Xbee PAN ID";
+                        uiex->messageBox("RTI-Dome Set PanID", sErrorMessage.str().c_str());
                         uiex->setEnabled("pushButton_2", true);
                         m_bSettingPanID = false;
                         m_RTIDome.getPanId(m_nPanId);
@@ -535,14 +534,15 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
                 if(dShutterCutOff < 1.0f) // not right.. ask again
                     m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
-                snprintf(szTmpBuf,16,"%2.2f V",dDomeBattery);
-                uiex->setPropertyString("domeBatteryLevel","text", szTmpBuf);
+                sTmpBuf << std::fixed << std::setprecision(2) << dDomeBattery << " V";
+                uiex->setPropertyString("domeBatteryLevel","text", sTmpBuf.str().c_str());
+                std::stringstream().swap(sTmpBuf);
                 if(m_bHasShutterControl) {
                     if(dShutterBattery>=0.0f)
-                        snprintf(szTmpBuf,16,"%2.2f V",dShutterBattery);
+                        sTmpBuf << std::fixed << std::setprecision(2) << dShutterBattery << " V";
                     else
-                        snprintf(szTmpBuf,16,"--");
-                    uiex->setPropertyString("shutterBatteryLevel","text", szTmpBuf);
+                        sTmpBuf << "--";
+                    uiex->setPropertyString("shutterBatteryLevel","text", sTmpBuf.str().c_str());
                 }
                 else {
                     uiex->setPropertyString("shutterBatteryLevel","text", "NA");
@@ -551,8 +551,9 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 if(nErr)
                     uiex->setPropertyString("rainStatus","text", "--");
                 else {
-                    snprintf(szTmpBuf, 16, nRainSensorStatus==NOT_RAINING ? "Not raining" : "Raining");
-                    uiex->setPropertyString("rainStatus","text", szTmpBuf);
+                    std::stringstream().swap(sTmpBuf);
+                    sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "<html><head/><body><p><span style=\" color:#00FF00;\">Not raining</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Raining</span></p></body></html>");
+                    uiex->setPropertyString("rainStatus","text", sTmpBuf.str().c_str());
                 }
             }
         }
@@ -593,8 +594,8 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
         uiex->propertyInt("panID", "value", nPanId);
         nErr = m_RTIDome.setPanId(nPanId);
         if(nErr) {
-            snprintf(szErrorMessage, LOG_BUFFER_SIZE, "Error setting Xbee PAN ID : Error %d", nErr);
-            uiex->messageBox("RTI-Dome Set PanID", szErrorMessage);
+            sErrorMessage << "Error setting Xbee PAN ID : Error " << nErr;
+            uiex->messageBox("RTI-Dome Set PanID", sErrorMessage.str().c_str());
             return;
         }
         m_nPanId = nPanId;
@@ -696,10 +697,11 @@ void X2Dome::deviceInfoDetailedDescription(BasicStringInterface& str) const
 {
 
     if(m_bLinked) {
-        char cFirmware[SERIAL_BUFFER_SIZE];
+        std::string sFirmware;
+        float fVersion;
 		X2MutexLocker ml(GetMutex());
-        m_RTIDome.getFirmwareVersion(cFirmware, SERIAL_BUFFER_SIZE);
-        str = cFirmware;
+        m_RTIDome.getFirmwareVersion(sFirmware, fVersion);
+        str = sFirmware.c_str();
 
     }
     else
@@ -1013,7 +1015,7 @@ void X2Dome::portNameOnToCharPtr(char* pszPort, const int& nMaxSize) const
     if (NULL == pszPort)
         return;
 
-    snprintf(pszPort, nMaxSize,DEF_PORT_NAME);
+    snprintf(pszPort, nMaxSize, DEF_PORT_NAME);
 
     if (m_pIniUtil)
         m_pIniUtil->readString(PARENT_KEY, CHILD_KEY_PORTNAME, pszPort, pszPort, nMaxSize);

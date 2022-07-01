@@ -130,6 +130,7 @@
 <layer number="219" name="219bmp" color="20" fill="1" visible="no" active="no"/>
 <layer number="220" name="220bmp" color="21" fill="1" visible="no" active="no"/>
 <layer number="221" name="221bmp" color="22" fill="1" visible="no" active="no"/>
+<layer number="222" name="222bmp" color="23" fill="1" visible="no" active="no"/>
 <layer number="223" name="223bmp" color="24" fill="1" visible="no" active="no"/>
 <layer number="224" name="224bmp" color="25" fill="1" visible="no" active="no"/>
 <layer number="225" name="225bmp" color="7" fill="1" visible="yes" active="yes"/>
@@ -706,11 +707,11 @@
 <pad name="38" x="44.45" y="1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="GND..." x="44.45" y="-19.05" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="GND...." x="46.99" y="-19.05" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="5V." x="44.45" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="5V.." x="46.99" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="+5V@3" x="44.45" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="+5V@4" x="46.99" y="24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="RESET" x="-16.51" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="3.3V" x="-13.97" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
-<pad name="5V" x="-11.43" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="+5V@1" x="-11.43" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="GND.." x="-8.89" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="GND." x="-6.35" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="VIN" x="-3.81" y="-24.13" drill="1.016" diameter="1.8796" rot="R90"/>
@@ -939,7 +940,7 @@
 <pad name="RESET." x="13.97" y="-1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="MOSI" x="16.51" y="1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="SCK" x="13.97" y="1.27" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
-<pad name="+5V_" x="16.51" y="3.81" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
+<pad name="+5V@2" x="16.51" y="3.81" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <pad name="MISO" x="13.97" y="3.81" drill="1.016" diameter="1.8796" shape="octagon" rot="R90"/>
 <rectangle x1="16.256" y1="-1.524" x2="16.764" y2="-1.016" layer="51" rot="R90"/>
 <rectangle x1="13.716" y1="-1.524" x2="14.224" y2="-1.016" layer="51" rot="R90"/>
@@ -3726,12 +3727,12 @@ Es handelt sich hierbei um AK500 in horizontaler Ausführung.&lt;p&gt;
 <package name="UD-10X10_NICHICON">
 <description>&lt;b&gt;ALUMINUM ELECTROLYTIC CAPACITORS&lt;/b&gt; UD Series 10 x 10 mm&lt;p&gt;
 Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
-<wire x1="-5.1" y1="5.1" x2="4.3" y2="5.1" width="0.1016" layer="51"/>
-<wire x1="4.3" y1="5.1" x2="5.1" y2="4.3" width="0.1016" layer="51"/>
-<wire x1="5.1" y1="4.3" x2="5.1" y2="-4.3" width="0.1016" layer="51"/>
-<wire x1="5.1" y1="-4.3" x2="4.3" y2="-5.1" width="0.1016" layer="51"/>
-<wire x1="4.3" y1="-5.1" x2="-5.1" y2="-5.1" width="0.1016" layer="51"/>
-<wire x1="-5.1" y1="-5.1" x2="-5.1" y2="5.1" width="0.1016" layer="51"/>
+<wire x1="-5.1" y1="5.1" x2="4.3" y2="5.1" width="0.1016" layer="21"/>
+<wire x1="4.3" y1="5.1" x2="5.1" y2="4.3" width="0.1016" layer="21"/>
+<wire x1="5.1" y1="4.3" x2="5.1" y2="-4.3" width="0.1016" layer="21"/>
+<wire x1="5.1" y1="-4.3" x2="4.3" y2="-5.1" width="0.1016" layer="21"/>
+<wire x1="4.3" y1="-5.1" x2="-5.1" y2="-5.1" width="0.1016" layer="21"/>
+<wire x1="-5.1" y1="-5.1" x2="-5.1" y2="5.1" width="0.1016" layer="21"/>
 <wire x1="-4.875" y1="0.85" x2="4.875" y2="0.85" width="0.1016" layer="21" curve="-160.259855"/>
 <wire x1="-5.1" y1="0.875" x2="-5.1" y2="5.1" width="0.1016" layer="21"/>
 <wire x1="-5.1" y1="5.1" x2="4.3" y2="5.1" width="0.1016" layer="21"/>
@@ -3740,12 +3741,12 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="4.3" y1="-5.1" x2="-5.1" y2="-5.1" width="0.1016" layer="21"/>
 <wire x1="-5.1" y1="-5.1" x2="-5.1" y2="-0.85" width="0.1016" layer="21"/>
 <wire x1="4.875" y1="-0.85" x2="-4.875" y2="-0.85" width="0.1016" layer="21" curve="-160.259855"/>
-<circle x="0" y="0" radius="4.95" width="0.1016" layer="51"/>
+<circle x="0" y="0" radius="4.95" width="0.1016" layer="21"/>
 <smd name="-" x="-4.3" y="0" dx="3.6" dy="1.3" layer="1"/>
 <smd name="+" x="4.3" y="0" dx="3.6" dy="1.3" layer="1"/>
 <text x="-5.08" y="5.715" size="1.016" layer="25">&gt;NAME</text>
 <text x="-5.08" y="-6.35" size="1.016" layer="27">&gt;VALUE</text>
-<polygon width="0.1016" layer="51">
+<polygon width="0.1016" layer="21">
 <vertex x="-4.05" y="2.8" curve="69.465624"/>
 <vertex x="-4.05" y="-2.825"/>
 </polygon>
@@ -5668,9 +5669,9 @@ design rules under a new name.</description>
 <wire x1="37.973" y1="27.879" x2="40.10025" y2="27.879" width="0.8128" layer="1"/>
 <wire x1="40.10025" y1="27.879" x2="42.19575" y2="27.879" width="0.8128" layer="1"/>
 <wire x1="42.19575" y1="27.879" x2="44.323" y2="27.879" width="0.8128" layer="1"/>
-<contactref element="U$1" pad="5V"/>
-<contactref element="U$1" pad="5V."/>
-<contactref element="U$1" pad="5V.."/>
+<contactref element="U$1" pad="+5V@1"/>
+<contactref element="U$1" pad="+5V@3"/>
+<contactref element="U$1" pad="+5V@4"/>
 <wire x1="83.21675" y1="59.27725" x2="85.75675" y2="59.27725" width="0.4064" layer="16"/>
 <via x="105.525" y="57.645" extent="1-16" drill="0.3"/>
 <wire x1="27.33675" y1="11.01725" x2="27.305" y2="11.049" width="0.6096" layer="1"/>
@@ -6377,7 +6378,7 @@ design rules under a new name.</description>
 <wire x1="63.1825" y1="40.03675" x2="63.1825" y2="40.96" width="0.254" layer="1"/>
 </signal>
 <signal name="+5V">
-<contactref element="U$1" pad="+5V_"/>
+<contactref element="U$1" pad="+5V@2"/>
 </signal>
 <signal name="ETH_RESET">
 <contactref element="U1" pad="37"/>

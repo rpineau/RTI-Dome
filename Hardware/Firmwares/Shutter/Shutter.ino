@@ -2,7 +2,7 @@
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
 // As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
 // fix most of the known issues. I also added some feature related to XBee init and reset.
-// This also is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
+// This also is meant to run on an Arduino DUE as we put the AccelStepper run() call in an interrupt
 //
 
 
@@ -26,6 +26,8 @@ String serialBuffer;
 #endif
 String wirelessBuffer;
 
+StopWatch ResetInterruptWatchdog;
+static const unsigned long resetInterruptInterval = 43200000; // 12 hours
 
 const String version = "2.645";
 
@@ -102,6 +104,7 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
     attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+    ResetInterruptWatchdog.reset();
     interrupts();
     // enable input buffers
     Shutter->bufferEnable(true);
@@ -128,11 +131,6 @@ void loop()
 		if (!isConfiguringWireless) {
 			StartWirelessConfig();
             needFirstPing = true;
-		}
-		else {
-			XbeeStarted = true;
-			wirelessBuffer = "";
-			DBPrintln("Radio configured");
 		}
 	}
 
@@ -168,7 +166,31 @@ void loop()
 	    watchdogTimer.reset();
 
 	Shutter->Run();
+    checkInterruptTimer();
+
 }
+
+// reset intterupt as they seem to stop working after a while
+void checkInterruptTimer()
+{
+    if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
+        if(Shutter->GetState() == OPEN || Shutter->GetState() == CLOSED) { // reset interrupt only if not doing anything
+            noInterrupts();
+            detachInterrupt(digitalPinToInterrupt(OPENED_PIN));
+            detachInterrupt(digitalPinToInterrupt(CLOSED_PIN));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_OPEN));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE));
+            // re-attach interrupts
+            attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
+            attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+            ResetInterruptWatchdog.reset();
+            interrupts();
+        }
+    }
+}
+
 
 void handleClosedInterrupt()
 {
@@ -194,6 +216,7 @@ void StartWirelessConfig()
 	DBPrintln("Sending +++");
 	Wireless.print("+++");
 	delay(1100);
+	watchdogTimer.reset();
 }
 
 inline void ConfigXBee(String result)

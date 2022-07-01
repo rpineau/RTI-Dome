@@ -62,7 +62,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>Dome params</string>
+       <string>Dome parameters</string>
       </property>
       <widget class="QCheckBox" name="homeOnUnpark">
        <property name="geometry">
@@ -234,7 +234,7 @@
       <property name="geometry">
        <rect>
         <x>336</x>
-        <y>24</y>
+        <y>32</y>
         <width>336</width>
         <height>408</height>
        </rect>
@@ -364,7 +364,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Rotation acceleration (step/s) :</string>
+        <string>Rotation acceleration (step/s²) :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -428,7 +428,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Shutter acceleration (step/s) :</string>
+        <string>Shutter acceleration (step/s²) :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

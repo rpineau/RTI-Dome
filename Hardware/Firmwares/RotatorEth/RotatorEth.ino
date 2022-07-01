@@ -2,7 +2,7 @@
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
 // As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
 // fix most of the known issues. I also added some feature related to XBee init and reset.
-// This is meant to run on an Arduino DUE as we put he AccelStepper run() call in an interrupt
+// This is meant to run on an Arduino DUE as we put the AccelStepper run() call in an interrupt
 //
 
 // Uncomment #define DEBUG in RotatorClass.h to enable printing debug messages in serial
@@ -25,11 +25,14 @@
 #define VERSION "2.645"
 
 #define USE_EXT_EEPROM
+#define USE_ETHERNET
 
+#ifdef USE_ETHERNET
 // include and some defines for ethernet connection
 #include <SPI.h>
 #include <Ethernet.h>
 #include "EtherMac.h"
+#endif
 
 #define Computer Serial2     // USB FTDI
 #define FTDI_RESET  23
@@ -40,6 +43,7 @@
 
 #include "RotatorClass.h"
 
+#ifdef USE_ETHERNET
 #define ETHERNET_CS     52
 #define ETHERNET_RESET  53
 uint32_t uidBuffer[4];  // DUE unique ID
@@ -49,9 +53,10 @@ byte MAC_Address[6];    // Mac address, uses part of the unique ID
 EthernetServer domeServer(SERVER_PORT);
 EthernetClient domeClient;
 int nbEthernetClient;
+String networkBuffer;
+#endif
 
 String computerBuffer;
-String networkBuffer;
 
 
 #ifndef STANDALONE
@@ -91,26 +96,32 @@ String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
 
 static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed with command
 
+#define MAX_XBEE_RESET  10
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
-bool SentHello = false;
+volatile  bool SentHello = false;
 
 // Timer to periodically ping the shutter.
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 
 #endif
-bool bShutterPresent = false;
+
+static const unsigned long resetInterruptInterval = 43200000; // 12 hours
+StopWatch ResetInterruptWatchdog;
+volatile bool bShutterPresent = false;
 
 // global variable for rain status
-bool bIsRaining = false;
+volatile bool bIsRaining = false;
 // global variable for shutter voltage state
-bool bLowShutterVoltage = false;
+volatile bool bLowShutterVoltage = false;
 
+#ifdef USE_ETHERNET
 // global variable for the IP config and to check if we detect the ethernet card
 bool ethernetPresent;
 IPConfig ServerConfig;
+#endif
 
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
@@ -167,27 +178,35 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 #endif
 
 // function prototypes
+void checkInterruptTimer();
+#ifdef USE_ETHERNET
 void configureEthernet();
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
-void checkForNewTCPClient(void);
-void homeIntHandler(void);
-void rainIntHandler(void);
-void buttonHandler(void);
+void checkForNewTCPClient();
+#endif
+void homeIntHandler();
+void rainIntHandler();
+void buttonHandler();
 void resetChip(int);
 void resetFTDI(int);
-void StartWirelessConfig(void);
+void StartWirelessConfig();
 void ConfigXBee();
 void setPANID(String);
-void SendHello(void);
-void requestShutterData(void);
-void CheckForCommands(void);
-void CheckForRain(void);
-void PingShutter(void);
+void SendHello();
+void requestShutterData();
+void CheckForCommands();
+void CheckForRain();
+#ifndef STANDALONE
+void checkShuterLowVoltage();
+#endif
+void PingShutter();
+#ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient);
-void ReceiveComputer(void);
-void ProcessCommand(bool);
-void ReceiveWireless(void);
-void ProcessWireless(void);
+#endif
+void ReceiveComputer();
+void ProcessCommand();
+void ReceiveWireless();
+void ProcessWireless();
 
 void setup()
 {
@@ -199,8 +218,10 @@ void setup()
     digitalWrite(FTDI_RESET, 0);
     pinMode(FTDI_RESET, OUTPUT);
 
+#ifdef USE_ETHERNET
     digitalWrite(ETHERNET_RESET, 0);
     pinMode(ETHERNET_RESET, OUTPUT);
+#endif
 
 #ifndef STANDALONE
     resetChip(XBEE_RESET);
@@ -209,8 +230,11 @@ void setup()
 
 #ifdef DEBUG
     DebugPort.begin(115200);
+    DBPrintln("\n\n========== RTI-Zome controller booting ==========\n\n");
 #endif
+#ifdef USE_ETHERNET
     getMacAddress(MAC_Address, uidBuffer);
+#endif
 
     Computer.begin(115200);
 #ifndef STANDALONE
@@ -229,15 +253,20 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+    ResetInterruptWatchdog.reset();
     interrupts();
+#ifdef USE_ETHERNET
     configureEthernet();
+#endif
 }
 
 void loop()
 {
 
+#ifdef USE_ETHERNET
     if(ethernetPresent)
         checkForNewTCPClient();
+#endif
 
 #ifndef STANDALONE
     if (!XbeeStarted) {
@@ -246,29 +275,22 @@ void loop()
             StartWirelessConfig();
             DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
         }
-        else {
-            XbeeStarted = true;
-            wirelessBuffer = "";
-            DBPrintln("Radio configured");
-            SendHello();
-        }
     }
 #endif
     Rotator->Run();
     CheckForCommands();
     CheckForRain();
-    checkShuterLowVoltage();
+    checkInterruptTimer();
 #ifndef STANDALONE
+    checkShuterLowVoltage();
     if(XbeeStarted) {
-        if(!SentHello)
-            SendHello();
-        PingShutter();
-        if(ShutterWatchdog.elapsed() > (pingInterval*6) && XbeeResets < 10) { // try 10 times max
-            bShutterPresent = false;
-            SentHello = false;
-            DBPrintln("watchdogTimer triggered");
+        if(ShutterWatchdog.elapsed() > (pingInterval*5) && XbeeResets < MAX_XBEE_RESET) { // try 10 times max
             // lets try to recover
-	        if(!isResetingXbee && XbeeResets == 0) {
+	        if(!isResetingXbee && XbeeResets < MAX_XBEE_RESET) {
+                DBPrintln("watchdogTimer triggered");
+    	        DBPrintln("Resetting XBee reset #" + String(XbeeResets));
+                bShutterPresent = false;
+                SentHello = false;
 	            XbeeResets++;
 	            isResetingXbee = true;
                 resetChip(XBEE_RESET);
@@ -278,6 +300,11 @@ void loop()
                 StartWirelessConfig();
 	        }
         }
+        else if(!SentHello && XbeeResets < MAX_XBEE_RESET) // if after 10 reset we didn't get an answer there is no point sending more hello.
+            SendHello();
+        else
+            PingShutter();
+
         if(gotHelloFromShutter) {
             requestShutterData();
             gotHelloFromShutter = false;
@@ -287,6 +314,28 @@ void loop()
 
 }
 
+// reset intterupt as they seem to stop working after a while
+void checkInterruptTimer()
+{
+    if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
+        if(Rotator->GetSeekMode() == HOMING_NONE) { // reset interrupt only if not doing anything
+            noInterrupts();
+            detachInterrupt(digitalPinToInterrupt(HOME_PIN));
+            detachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_CW));
+            detachInterrupt(digitalPinToInterrupt(BUTTON_CCW));
+            // re-attach interrupts
+            attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+            attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
+            attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+            ResetInterruptWatchdog.reset();
+            interrupts();
+        }
+    }
+}
+
+#ifdef USE_ETHERNET
 void configureEthernet()
 {
     Rotator->getIpConfig(ServerConfig);
@@ -373,6 +422,7 @@ void checkForNewTCPClient()
         configureEthernet();
     }
 }
+#endif
 
 void homeIntHandler()
 {
@@ -419,6 +469,7 @@ void StartWirelessConfig()
     DBPrintln("Sending +++");
     Wireless.print("+++");
     delay(1100);
+    ShutterWatchdog.reset();
 }
 
 inline void ConfigXBee()
@@ -448,6 +499,7 @@ inline void ConfigXBee()
         }
         SentHello = false;
         gotHelloFromShutter = false;
+        isResetingXbee = false;
     }
     delay(100);
 }
@@ -507,8 +559,10 @@ void CheckForCommands()
         ReceiveWireless();
     }
 #endif
+#ifdef USE_ETHERNET
     if(ethernetPresent )
         ReceiveNetwork(domeClient);
+#endif
 }
 
 void CheckForRain()
@@ -528,7 +582,9 @@ void CheckForRain()
         if (Rotator->GetRainAction() == PARK)
             Rotator->GoToAzimuth(Rotator->GetParkAzimuth());
         // keep telling the shutter that it's raining
+#ifndef STANDALONE
         Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
+#endif
     }
 }
 
@@ -551,6 +607,7 @@ void PingShutter()
 }
 #endif
 
+#ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client)
 {
     char networkCharacter;
@@ -579,6 +636,7 @@ void ReceiveNetwork(EthernetClient client)
         }
     }
 }
+#endif
 
 // All comms are terminated with '#' but the '\r' and '\n' are for XBee config
 void ReceiveComputer()
@@ -620,9 +678,11 @@ void ProcessCommand(bool bFromNetwork)
     // Split the buffer into command char and value if present
     // Command character
     if(bFromNetwork) {
+#ifdef USE_ETHERNET
         command = networkBuffer.charAt(0);
         // Payload
         value = networkBuffer.substring(1);
+#endif
     }
     else {
         command = computerBuffer.charAt(0);
@@ -783,7 +843,7 @@ void ProcessCommand(bool bFromNetwork)
         case IS_SHUTTER_PRESENT:
             serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
             break;
-
+#ifdef USE_ETHERNET
         case ETH_RECONFIG :
             if(nbEthernetClient > 0) {
                 domeClient.stop();
@@ -848,7 +908,7 @@ void ProcessCommand(bool bFromNetwork)
                 serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
             }
             break;
-
+#endif
 
 #ifndef STANDALONE
         case INIT_XBEE:
@@ -860,6 +920,7 @@ void ProcessCommand(bool bFromNetwork)
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
             DBPrintln("trying to reconfigure radio");
+            resetChip(XBEE_RESET);
             break;
 
         case PANID_GET:
@@ -1033,11 +1094,13 @@ void ProcessCommand(bool bFromNetwork)
         if(!bFromNetwork) {
             Computer.print(serialMessage + "#");
             }
+#ifdef USE_ETHERNET
         else if(domeClient.connected()) {
                 DBPrintln("Network serialMessage = " + serialMessage);
                 domeClient.print(serialMessage + "#");
                 domeClient.flush();
         }
+#endif
     }
 }
 
