@@ -283,6 +283,8 @@ int X2Dome::execModalSettingsDialog()
         }
 
         nErr = m_RTIDome.getMACAddress(sDummy);
+        if(nErr)
+            sDummy = "";
         dx->setPropertyString("MACAddress", "text", sDummy.c_str());
 
         nErr = m_RTIDome.getUseDHCP(bUseDHCP);
@@ -298,11 +300,19 @@ int X2Dome::execModalSettingsDialog()
             dx->setEnabled("GatewayIP", true);
         }
 
-        m_RTIDome.getIpAddress(sIpAddress);
+        nErr = m_RTIDome.getIpAddress(sIpAddress);
+        if(nErr)
+            sIpAddress = "";
         dx->setPropertyString("IPAddress", "text", sIpAddress.c_str());
-        m_RTIDome.getSubnetMask(sSubnetMask);
+
+        nErr = m_RTIDome.getSubnetMask(sSubnetMask);
+        if(nErr)
+            sSubnetMask = "";
         dx->setPropertyString("SubnetMask", "text", sSubnetMask.c_str());
-        m_RTIDome.getIPGateway(sGatewayIP);
+
+        nErr = m_RTIDome.getIPGateway(sGatewayIP);
+        if(nErr)
+            sGatewayIP = "";
         dx->setPropertyString("GatewayIP", "text", sGatewayIP.c_str());
         
         dx->setEnabled("pushButton",true);
