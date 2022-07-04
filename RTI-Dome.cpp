@@ -141,20 +141,23 @@ int CRTIDome::Connect(const char *pszPort)
 #endif
 
     nErr = getIpAddress(m_IpAddress);
-    if(nErr) {
-        // looks like the connection is not working.
-        m_pSerx->close();
-        m_bIsConnected = false;
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Connection failed." << std::endl;
-        m_sLogFile.flush();
-#endif
-    }
-
+    if(nErr)
+        m_IpAddress = "";
     nErr |= getSubnetMask(m_SubnetMask);
+    if(nErr)
+        m_SubnetMask = "";
     nErr |= getIPGateway(m_GatewayIP);
+    if(nErr)
+        m_GatewayIP = "";
     nErr |= getUseDHCP(m_bUseDHCP);
-
+    if(nErr)
+        m_bUseDHCP = false;
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    if(nErr) {
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Board without network feature." << std::endl;
+        m_sLogFile.flush();
+    }
+#endif
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Getting Firmware." << std::endl;
     m_sLogFile.flush();
