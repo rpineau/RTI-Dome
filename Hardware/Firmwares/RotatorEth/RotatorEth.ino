@@ -32,13 +32,13 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include "EtherMac.h"
-#endif
+#endif // USE_ETHERNET
 
 #define Computer Serial2     // USB FTDI
 #define FTDI_RESET  23
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
-#endif
+#endif // STANDALONE
 #define DebugPort Serial    // programing port
 
 #include "RotatorClass.h"
@@ -54,7 +54,7 @@ EthernetServer domeServer(SERVER_PORT);
 EthernetClient domeClient;
 int nbEthernetClient;
 String networkBuffer;
-#endif
+#endif // USE_ETHERNET
 
 String computerBuffer;
 
@@ -68,7 +68,7 @@ bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
 int configStep = 0;
 bool isResetingXbee = false;
 int XbeeResets = 0;
-#endif
+#endif // STANDALONE
 
 
 RotatorClass *Rotator = NULL;
@@ -106,7 +106,7 @@ volatile  bool SentHello = false;
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 
-#endif
+#endif // STANDALONE
 
 static const unsigned long resetInterruptInterval = 43200000; // 12 hours
 StopWatch ResetInterruptWatchdog;
@@ -121,7 +121,7 @@ volatile bool bLowShutterVoltage = false;
 // global variable for the IP config and to check if we detect the ethernet card
 bool ethernetPresent;
 IPConfig ServerConfig;
-#endif
+#endif // USE_ETHERNET
 
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
@@ -175,7 +175,7 @@ const char SPEED_SHUTTER_CMD            = 'R'; // Get/Set step rate (speed)
 const char STEPSPER_SHUTTER_CMD         = 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET          = 'V'; // Get version string
 const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed status
-#endif
+#endif // STANDALONE
 
 // function prototypes
 void checkInterruptTimer();
@@ -183,7 +183,7 @@ void checkInterruptTimer();
 void configureEthernet();
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
 void checkForNewTCPClient();
-#endif
+#endif // USE_ETHERNET
 void homeIntHandler();
 void rainIntHandler();
 void buttonHandler();
@@ -198,11 +198,11 @@ void CheckForCommands();
 void CheckForRain();
 #ifndef STANDALONE
 void checkShuterLowVoltage();
-#endif
+#endif // STANDALONE
 void PingShutter();
 #ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient);
-#endif
+#endif // USE_ETHERNET
 void ReceiveComputer();
 void ProcessCommand();
 void ReceiveWireless();
@@ -214,18 +214,18 @@ void setup()
     // set reset pins to output and low
     digitalWrite(XBEE_RESET, 0);
     pinMode(XBEE_RESET, OUTPUT);
-#endif
+#endif // STANDALONE
     digitalWrite(FTDI_RESET, 0);
     pinMode(FTDI_RESET, OUTPUT);
 
 #ifdef USE_ETHERNET
     digitalWrite(ETHERNET_RESET, 0);
     pinMode(ETHERNET_RESET, OUTPUT);
-#endif
+#endif // USE_ETHERNET
 
 #ifndef STANDALONE
     resetChip(XBEE_RESET);
-#endif
+#endif // STANDALONE
     resetFTDI(FTDI_RESET);
 
 #ifdef DEBUG
@@ -234,7 +234,7 @@ void setup()
 #endif
 #ifdef USE_ETHERNET
     getMacAddress(MAC_Address, uidBuffer);
-#endif
+#endif // USE_ETHERNET
 
     Computer.begin(115200);
 #ifndef STANDALONE
@@ -244,7 +244,7 @@ void setup()
     sentHello = false;
     isConfiguringWireless = false;
     gotHelloFromShutter = false;
-#endif
+#endif // STANDALONE
     Rotator = new RotatorClass();
     Rotator->motorStop();
     Rotator->EnableMotor(false);
@@ -257,7 +257,7 @@ void setup()
     interrupts();
 #ifdef USE_ETHERNET
     configureEthernet();
-#endif
+#endif // USE_ETHERNET
 }
 
 void loop()
@@ -266,7 +266,7 @@ void loop()
 #ifdef USE_ETHERNET
     if(ethernetPresent)
         checkForNewTCPClient();
-#endif
+#endif // USE_ETHERNET
 
 #ifndef STANDALONE
     if (!XbeeStarted) {
@@ -276,7 +276,7 @@ void loop()
             DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
         }
     }
-#endif
+#endif // STANDALONE
     Rotator->Run();
     CheckForCommands();
     CheckForRain();
@@ -310,8 +310,7 @@ void loop()
             gotHelloFromShutter = false;
         }
     }
-#endif
-
+#endif // STANDALONE
 }
 
 // reset intterupt as they seem to stop working after a while
@@ -422,7 +421,7 @@ void checkForNewTCPClient()
         configureEthernet();
     }
 }
-#endif
+#endif // USE_ETHERNET
 
 void homeIntHandler()
 {
@@ -548,7 +547,7 @@ void requestShutterData()
         ReceiveWireless();
 }
 
-#endif
+#endif // STANDALONE
 
 void CheckForCommands()
 {
@@ -558,11 +557,11 @@ void CheckForCommands()
     if (Wireless.available() > 0) {
         ReceiveWireless();
     }
-#endif
+#endif // STANDALONE
 #ifdef USE_ETHERNET
     if(ethernetPresent )
         ReceiveNetwork(domeClient);
-#endif
+#endif // USE_ETHERNET
 }
 
 void CheckForRain()
@@ -573,7 +572,7 @@ void CheckForRain()
 #ifndef STANDALONE
         Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
         ReceiveWireless();
-#endif
+#endif // STANDALONE
     }
     if (bIsRaining) {
         if (Rotator->GetRainAction() == HOME)
@@ -584,7 +583,7 @@ void CheckForRain()
         // keep telling the shutter that it's raining
 #ifndef STANDALONE
         Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
-#endif
+#endif // STANDALONE
     }
 }
 
@@ -605,7 +604,7 @@ void PingShutter()
         PingTimer.reset();
         }
 }
-#endif
+#endif // STANDALONE
 
 #ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client)
@@ -636,7 +635,7 @@ void ReceiveNetwork(EthernetClient client)
         }
     }
 }
-#endif
+#endif // USE_ETHERNET
 
 // All comms are terminated with '#' but the '\r' and '\n' are for XBee config
 void ReceiveComputer()
@@ -671,7 +670,7 @@ void ProcessCommand(bool bFromNetwork)
 
 #ifndef STANDALONE
     String wirelessMessage;
-#endif
+#endif // STANDALONE
     String serialMessage, sTmpString;
     bool hasValue = false;
 
@@ -682,7 +681,7 @@ void ProcessCommand(bool bFromNetwork)
         command = networkBuffer.charAt(0);
         // Payload
         value = networkBuffer.substring(1);
-#endif
+#endif // USE_ETHERNET
     }
     else {
         command = computerBuffer.charAt(0);
@@ -696,7 +695,7 @@ void ProcessCommand(bool bFromNetwork)
     serialMessage = "";
 #ifndef STANDALONE
     wirelessMessage = "";
-#endif
+#endif // STANDALONE
 
     DBPrintln("\nProcessCommand");
     DBPrintln("Command = \"" + String(command) +"\"");
@@ -713,7 +712,7 @@ void ProcessCommand(bool bFromNetwork)
             wirelessMessage = sTmpString;
             Wireless.print(wirelessMessage + "#");
             ReceiveWireless();
-#endif
+#endif // STANDALONE
             break;
 
         case ACCELERATION_ROTATOR_CMD:
@@ -742,7 +741,7 @@ void ProcessCommand(bool bFromNetwork)
             SendHello();
             serialMessage = String(HELLO_CMD);
             break;
-#endif
+#endif // STANDALONE
         case HOME_ROTATOR_CMD:
             Rotator->StartHoming();
             serialMessage = String(HOME_ROTATOR_CMD);
@@ -908,7 +907,7 @@ void ProcessCommand(bool bFromNetwork)
                 serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
             }
             break;
-#endif
+#endif // USE_ETHERNET
 
 #ifndef STANDALONE
         case INIT_XBEE:
@@ -1081,7 +1080,7 @@ void ProcessCommand(bool bFromNetwork)
             ReceiveWireless();
             serialMessage = sTmpString + RemoteShutter.watchdogInterval;
             break;
-#endif
+#endif // STANDALONE
 
         default:
             serialMessage = "Unknown command:" + String(command);
@@ -1100,7 +1099,7 @@ void ProcessCommand(bool bFromNetwork)
                 domeClient.print(serialMessage + "#");
                 domeClient.flush();
         }
-#endif
+#endif // USE_ETHERNET
     }
 }
 
@@ -1272,7 +1271,7 @@ void ProcessWireless()
     }
 
 }
-#endif
+#endif // STANDALONE
 
 
 

@@ -79,7 +79,7 @@ typedef struct IPCONFIG {
     IPAddress       gateway;
     IPAddress       subnet;
 } IPConfig;
-#endif
+#endif // USE_ETHERNET
 
 typedef struct RotatorConfiguration {
     int             signature;
@@ -93,10 +93,10 @@ typedef struct RotatorConfiguration {
     int             rainAction;
 #ifndef STANDALONE
     int             panid;
-#endif
+#endif // STANDALONE
 #ifdef USE_ETHERNET
     IPConfig        ipConfig;
-#endif
+#endif // USE_ETHERNET
 } Configuration;
 
 
@@ -254,7 +254,7 @@ public:
     // Xbee
     String      GetPANID();
     void        setPANID(const String panID);
-#endif
+#endif // STANDALONE
 
     // Homing and Calibration
     void        StartHoming();
@@ -287,7 +287,7 @@ public:
     String      getIPGateway();
     void        setIPGateway(String ipGateway);
     String      IpAddress2String(const IPAddress& ipAddress);
-#endif
+#endif // USE_ETHERNET
 
 private:
     Configuration   m_Config;
@@ -382,7 +382,7 @@ RotatorClass::RotatorClass()
     if(m_Config.panid <= 0) { // set to default.. there was something bad in eeprom.
         m_Config.panid = 0x4242;
     }
-#endif
+#endif // STANDALONE
     m_bDoEEPromSave = true;
 
 
@@ -519,14 +519,14 @@ void RotatorClass::SetDefaultConfig()
     m_Config.rainAction = DO_NOTHING;
 #ifndef STANDALONE
     m_Config.panid = 0x4242;
-#endif
+#endif // STANDALONE
 #ifdef USE_ETHERNET
     m_Config.ipConfig.bUseDHCP = true;
     m_Config.ipConfig.ip.fromString("192.168.0.99");
     m_Config.ipConfig.dns.fromString("192.168.0.1");
     m_Config.ipConfig.gateway.fromString("192.168.0.1");
     m_Config.ipConfig.subnet.fromString("255.255.255.0");
-#endif
+#endif // USE_ETHERNET
 }
 
 #ifdef USE_ETHERNET
@@ -595,7 +595,7 @@ String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 {
     return String() + ipAddress[0] + "." + ipAddress[1] + "." + ipAddress[2] + "." + ipAddress[3];;
 }
-#endif
+#endif // USE_ETHERNET
 
 //
 // rain sensor methods
@@ -873,7 +873,7 @@ void RotatorClass::setPANID(const String panID)
     SaveToEEProm();
 }
 
-#endif
+#endif // STANDALONE
 
 
 //
