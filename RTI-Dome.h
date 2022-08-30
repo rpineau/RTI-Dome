@@ -189,8 +189,8 @@ protected:
     bool            isDomeAtHome();
     int             parseFields(std::string sResp, std::vector<std::string> &svFields, char cSeparator);
 
-    bool            checkBoundaries(double dGotoAz, double dDomeAz);
-    
+    bool            checkBoundaries(double dTargetAz, double dDomeAz, double nMargin=2.0);
+
     SerXInterface   *m_pSerx;
 
     std::string     m_Port;
