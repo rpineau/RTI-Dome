@@ -158,6 +158,12 @@ void loop()
             }
 		delay(1000);
 	}
+    else if(watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) {
+        // could be the case is the rotator was off for a whille
+	    watchdogTimer.reset();
+        PingRotator();
+		delay(1000);
+    }
 
     if(needFirstPing && XbeeStarted) {
         PingRotator();

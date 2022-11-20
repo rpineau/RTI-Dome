@@ -23,7 +23,7 @@ DueFlashStorage dueFlashStorage;
 // stepper controller
 #define STEP_TYPE 8
 
-// #define DEBUG   // enable debug to DebugPort serial port
+#define DEBUG   // enable debug to DebugPort serial port
 #ifdef DEBUG
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)

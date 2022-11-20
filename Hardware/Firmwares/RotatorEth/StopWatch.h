@@ -32,4 +32,3 @@ unsigned long StopWatch::elapsed()
 }
 
 #endif
-// END OF FILE

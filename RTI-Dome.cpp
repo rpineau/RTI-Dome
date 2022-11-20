@@ -337,6 +337,13 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout)
         pszBufPtr+=ulBytesRead;
     } while (ulTotalBytesRead < SERIAL_BUFFER_SIZE  && *(pszBufPtr-1) != '#');
 
+
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] pszBuf = '" << pszBuf << "'" << std::endl;
+    m_sLogFile.flush();
+#endif
+
+
     if(!ulTotalBytesRead)
         nErr = COMMAND_TIMEOUT; // we didn't get an answer.. so timeout
     else
@@ -1613,7 +1620,7 @@ int CRTIDome::sendShutterHello()
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("H#", sResp, 0x00); // we don't want the response
+    nErr = domeCommand("H#", sResp, 'H'); // we don't want the response
     return nErr;
 }
 

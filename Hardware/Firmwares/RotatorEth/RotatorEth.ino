@@ -11,6 +11,10 @@
 // This us useful for people who only want to automate the rotation.
 // #define STANDALONE
 
+#ifdef STANDALONE
+#pragma message "Standalone mode, no shutter code"
+#endif // STANDALONE
+
 // The Xbee S1 were the original one used on the NexDome controller.
 // I have since tested with a pair of S2C that are easier to find and
 // fix the Xbee init command to make it work.
@@ -26,8 +30,13 @@
 
 #define USE_EXT_EEPROM
 #define USE_ETHERNET
+//#define USE_ALPACA
 
 #ifdef USE_ETHERNET
+#pragma message "Ethernet enabled"
+#ifdef USE_ALPACA
+#pragma message "Alpaca server enabled"
+#endif
 // include and some defines for ethernet connection
 #include <SPI.h>
 #include <Ethernet.h>
@@ -35,6 +44,7 @@
 #endif // USE_ETHERNET
 
 #define Computer Serial2     // USB FTDI
+
 #define FTDI_RESET  23
 #ifndef STANDALONE
 #define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
@@ -51,6 +61,11 @@ byte MAC_Address[6];    // Mac address, uses part of the unique ID
 
 #define SERVER_PORT 2323
 EthernetServer domeServer(SERVER_PORT);
+#ifdef USE_ALPACA
+#include "RTI-DomeAlpacaServer.h"
+#define ALPACA_SERVER_PORT 11111
+RTIDomeAlpacaServer AlpacaServer(ALPACA_SERVER_PORT);
+#endif // USE_ALPACA
 EthernetClient domeClient;
 int nbEthernetClient;
 String networkBuffer;
@@ -102,16 +117,12 @@ static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed
 // the shutter will send a hello when it boots.
 volatile  bool SentHello = false;
 
-// Timer to periodically ping the shutter.
+// Timer to periodically ping the shutter
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
-
 #endif // STANDALONE
 
-static const unsigned long resetInterruptInterval = 43200000; // 12 hours
-StopWatch ResetInterruptWatchdog;
 volatile bool bShutterPresent = false;
-
 // global variable for rain status
 volatile bool bIsRaining = false;
 // global variable for shutter voltage state
@@ -178,7 +189,6 @@ const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed statu
 #endif // STANDALONE
 
 // function prototypes
-void checkInterruptTimer();
 #ifdef USE_ETHERNET
 void configureEthernet();
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
@@ -237,6 +247,7 @@ void setup()
 #endif // USE_ETHERNET
 
     Computer.begin(115200);
+
 #ifndef STANDALONE
     Wireless.begin(9600);
     PingTimer.reset();
@@ -253,7 +264,6 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-    ResetInterruptWatchdog.reset();
     interrupts();
 #ifdef USE_ETHERNET
     configureEthernet();
@@ -280,7 +290,6 @@ void loop()
     Rotator->Run();
     CheckForCommands();
     CheckForRain();
-    checkInterruptTimer();
 #ifndef STANDALONE
     checkShuterLowVoltage();
     if(XbeeStarted) {
@@ -311,27 +320,6 @@ void loop()
         }
     }
 #endif // STANDALONE
-}
-
-// reset intterupt as they seem to stop working after a while
-void checkInterruptTimer()
-{
-    if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
-        if(Rotator->GetSeekMode() == HOMING_NONE) { // reset interrupt only if not doing anything
-            noInterrupts();
-            detachInterrupt(digitalPinToInterrupt(HOME_PIN));
-            detachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN));
-            detachInterrupt(digitalPinToInterrupt(BUTTON_CW));
-            detachInterrupt(digitalPinToInterrupt(BUTTON_CCW));
-            // re-attach interrupts
-            attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
-            attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
-            attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
-            attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-            ResetInterruptWatchdog.reset();
-            interrupts();
-        }
-    }
 }
 
 #ifdef USE_ETHERNET
@@ -388,6 +376,9 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 
     DBPrintln("Server ready, calling begin()");
     domeServer.begin();
+#ifdef USE_ALPACA
+    AlpacaServer.startServer();
+#endif // USE_ALPACA
     return true;
 }
 
@@ -641,6 +632,10 @@ void ReceiveNetwork(EthernetClient client)
 void ReceiveComputer()
 {
     char computerCharacter;
+
+    if(!Computer)
+        return;
+
     if(Computer.available() < 1)
         return; // no data
 
@@ -1091,7 +1086,8 @@ void ProcessCommand(bool bFromNetwork)
     // Send messages if they aren't empty.
     if (serialMessage.length() > 0) {
         if(!bFromNetwork) {
-            Computer.print(serialMessage + "#");
+            if(Computer)
+                Computer.print(serialMessage + "#");
             }
 #ifdef USE_ETHERNET
         else if(domeClient.connected()) {
