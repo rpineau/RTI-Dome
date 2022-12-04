@@ -237,7 +237,7 @@ int CRTIDome::domeCommand(const std::string sCmd, std::string &sResp, char respC
 
     m_pSerx->purgeTxRx();
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [domeCommand] Sending : " << sCmd << std::endl;
+    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [domeCommand] Sending : '" << sCmd <<  "'" << std::endl;
     m_sLogFile.flush();
 #endif
     nErr = m_pSerx->writeFile((void *)(sCmd.c_str()), sCmd.size(), ulBytesWrite);
@@ -251,7 +251,7 @@ int CRTIDome::domeCommand(const std::string sCmd, std::string &sResp, char respC
         return nErr;
     }
 
-    if (!respCmdCode)
+    if (respCmdCode == 0x00)
         return nErr;
 
     // read response
@@ -379,7 +379,7 @@ int CRTIDome::getDomeAz(double &dDomeAz)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeAz] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeAz] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         dDomeAz = 0;
@@ -443,7 +443,7 @@ int CRTIDome::getDomeHomeAz(double &dAz)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeHomeAz] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeHomeAz] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         dAz = 0;
@@ -479,7 +479,7 @@ int CRTIDome::getDomeParkAz(double &dAz)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeParkAz] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeParkAz] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         dAz = 0;
@@ -532,7 +532,7 @@ int CRTIDome::getShutterState(int &nState)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterState] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterState] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nState = 0;
@@ -569,7 +569,7 @@ int CRTIDome::getDomeStepPerRev(int &nStepPerRev)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeStepPerRev] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeStepPerRev] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nStepPerRev = 0;
@@ -636,7 +636,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
         }
         catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] convertsion exception = " << e.what() << std::endl;
+            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] conversion exception = " << e.what() << std::endl;
             m_sLogFile.flush();
 #endif
             domeVolts = 0;
@@ -685,7 +685,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
         }
         catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] convertsion exception = " << e.what() << std::endl;
+            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] conversion exception = " << e.what() << std::endl;
             m_sLogFile.flush();
 #endif
             dShutterVolts = 0;
@@ -775,19 +775,19 @@ bool CRTIDome::isDomeMoving()
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nTmp = MOVE_NONE;
     }
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] nTmp : " << nTmp << std::endl;
     m_sLogFile.flush();
 #endif
     if(nTmp != MOVE_NONE)
         bIsMoving = true;
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] bIsMoving : " << (bIsMoving?"True":"False") << std::endl;
     m_sLogFile.flush();
 #endif
@@ -820,7 +820,7 @@ bool CRTIDome::isDomeAtHome()
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeAtHome] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeAtHome] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nTmp = ATHOME;
@@ -1104,7 +1104,7 @@ int CRTIDome::getFirmwareVersion(std::string &sVersion, float &fVersion)
             }
             catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-                m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] convertsion exception = " << e.what() << std::endl;
+                m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] conversion exception = " << e.what() << std::endl;
                 m_sLogFile.flush();
 #endif
                 fVersion = 0;
@@ -1170,7 +1170,7 @@ int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
         }
         catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterFirmwareVersion] convertsion exception = " << e.what() << std::endl;
+            m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterFirmwareVersion] conversion exception = " << e.what() << std::endl;
             m_sLogFile.flush();
 #endif
             fVersion = 0;
@@ -1755,13 +1755,13 @@ int CRTIDome::getDefaultDir(bool &bNormal)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDefaultDir] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDefaultDir] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         bNormal = true;
     }
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDefaultDir] bNormal = " << (bNormal?"True":"False") << std::endl;
     m_sLogFile.flush();
 #endif
@@ -1780,7 +1780,7 @@ int CRTIDome::setDefaultDir(bool bNormal)
 
     ssTmp << "y" << (bNormal?"0":"1") << "#";
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] bNormal = " << (bNormal?"True":"False") << std::endl;
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] ssTmp = " << ssTmp.str() << std::endl;
     m_sLogFile.flush();
@@ -1807,13 +1807,13 @@ int CRTIDome::getRainSensorStatus(int &nStatus)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainSensorStatus] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainSensorStatus] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nStatus = false;
     }
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainSensorStatus] nStatus = " << (nStatus?"NOT RAINING":"RAINING") << std::endl;
     m_sLogFile.flush();
 #endif
@@ -1840,13 +1840,13 @@ int CRTIDome::getRotationSpeed(int &nSpeed)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationSpeed] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationSpeed] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nSpeed = 0;
     }
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationSpeed] nSpeed = " << nSpeed << std::endl;
     m_sLogFile.flush();
 #endif
@@ -1887,12 +1887,12 @@ int CRTIDome::getRotationAcceleration(int &nAcceleration)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationAcceleration] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationAcceleration] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nAcceleration = 0;
     }
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationAcceleration] nAcceleration = " << nAcceleration << std::endl;
     m_sLogFile.flush();
 #endif
@@ -1938,12 +1938,12 @@ int CRTIDome::getShutterSpeed(int &nSpeed)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterSpeed] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterSpeed] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nSpeed = 0;
     }
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterSpeed] nSpeed = " << nSpeed << std::endl;
     m_sLogFile.flush();
 #endif
@@ -1993,12 +1993,12 @@ int CRTIDome::getShutterAcceleration(int &nAcceleration)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterAcceleration] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterAcceleration] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nAcceleration = 0;
     }
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterAcceleration] nAcceleration = " << nAcceleration << std::endl;
     m_sLogFile.flush();
 #endif
@@ -2056,13 +2056,13 @@ int	CRTIDome::getSutterWatchdogTimerValue(int &nValue)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getSutterWatchdogTimerValue] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getSutterWatchdogTimerValue] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nValue = 0;
     }
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getSutterWatchdogTimerValue] nValue = " << nValue << std::endl;
     m_sLogFile.flush();
 #endif
@@ -2105,13 +2105,13 @@ int CRTIDome::getRainAction(int &nAction)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainAction] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainAction] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nAction = 0;
     }
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainTimerValue] nAction = " << nAction << std::endl;
     m_sLogFile.flush();
 #endif
@@ -2152,13 +2152,13 @@ int CRTIDome::getPanId(int &nPanId)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getPanId] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getPanId] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nPanId = 0;
     }
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getPanId] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
     m_sLogFile.flush();
 #endif
@@ -2200,12 +2200,12 @@ int CRTIDome::getShutterPanId(int &nPanId)
     }
     catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterPanId] convertsion exception = " << e.what() << std::endl;
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterPanId] conversion exception = " << e.what() << std::endl;
         m_sLogFile.flush();
 #endif
         nPanId = 0;
     }
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterPanId] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
     m_sLogFile.flush();
 #endif
@@ -2283,7 +2283,7 @@ void CRTIDome::writeRainStatus()
 {
     int nStatus;
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [writeRainStatus] m_nIsRaining = " <<(m_nIsRaining==RAINING?"Raining":"Not Raining") << std::endl;
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [writeRainStatus] m_bSaveRainStatus = " <<(m_bSaveRainStatus?"YES":"NO") << std::endl;
     m_sLogFile.flush();
@@ -2498,7 +2498,7 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
     int nErr = PLUGIN_OK;
     std::string sSegment;
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [parseFields] sResp = " << sResp << std::endl;
     m_sLogFile.flush();
 #endif
@@ -2523,7 +2523,7 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
     if(svFields.size()==0) {
         nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
     }
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [parseFields] Done all good." << std::endl;
     m_sLogFile.flush();
 #endif

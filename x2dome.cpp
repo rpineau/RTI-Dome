@@ -504,7 +504,6 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                     uiex->setPropertyString("shutterBatteryLevel","text", sTmpBuf.str().c_str());
                     uiex->setEnabled("lowShutBatCutOff",true);
                     uiex->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
-
                 } else {
                     if(m_SetPanIdTimer.GetElapsedSeconds()>PANID_TIMEOUT ) {// 15 seconds is way more than needed.. something when wrong
                         sErrorMessage << "Timeout setting Xbee PAN ID";
