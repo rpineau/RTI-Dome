@@ -87,7 +87,7 @@ CRTIDome::CRTIDome()
     m_sRainStatusfilePath += "/RTI_Rain.txt";
 #endif
     
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+#if defined PLUGIN_DEBUG
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Version " << std::fixed << std::setprecision(2) << PLUGIN_VERSION << " build " << __DATE__ << " " << __TIME__ << std::endl;
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Constructor Called." << std::endl;
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Rains status file : " << m_sRainStatusfilePath<<std::endl;
