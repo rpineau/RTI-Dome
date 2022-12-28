@@ -321,6 +321,7 @@ int X2Dome::execModalSettingsDialog()
         dx->setEnabled("homePosition", false);
         dx->setEnabled("parkPosition", false);
         dx->setEnabled("needReverse", false);
+        dx->setText("shutterPresent","");
         dx->setEnabled("ticksPerRev", false);
         dx->setEnabled("rotationSpeed", false);
         dx->setEnabled("rotationAcceletation", false);
@@ -424,7 +425,10 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
     int n_nbStepPerRev;
     int nWatchdog;
     bool bUseDHCP;
-    
+
+    if(!m_bLinked)
+        return;
+
     if (!strcmp(pszEvent, "on_pushButtonCancel_clicked") && m_bCalibratingDome)
         m_RTIDome.abortCurrentCommand();
 
@@ -443,6 +447,8 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 m_RTIDome.getShutterAcceleration(nAcc);
                 uiex->setPropertyInt("shutterAcceleration","value", nAcc);
 
+                uiex->setEnabled("pushButton_4", true);
+
                 uiex->setEnabled("shutterWatchdog",true);
                 m_RTIDome.getSutterWatchdogTimerValue(nWatchdog);
                 uiex->setPropertyInt("shutterWatchdog", "value", nWatchdog);
@@ -454,6 +460,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 uiex->setPropertyInt("shutterWatchdog", "value", 0);
                 uiex->setEnabled("shutterSpeed",false);
                 uiex->setEnabled("shutterAcceleration",false);
+                uiex->setEnabled("pushButton_4", false);
                 uiex->setEnabled("shutterWatchdog",false);
                 uiex->setPropertyString("shutterBatteryLevel","text", "--");
 

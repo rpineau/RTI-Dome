@@ -595,7 +595,6 @@ int CRTIDome::setDomeStepPerRev(int nStepPerRev)
 
 }
 
-#pragma mark - TODO : Convert sscanf
 int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &dShutterVolts, double &dShutterCutOff)
 {
     int nErr = PLUGIN_OK;
