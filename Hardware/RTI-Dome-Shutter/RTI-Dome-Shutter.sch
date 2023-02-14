@@ -7,11 +7,21 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="1.27" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.127" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
 <layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
+<layer number="4" name="Route4" color="18" fill="4" visible="no" active="no"/>
+<layer number="5" name="Route5" color="19" fill="4" visible="no" active="no"/>
+<layer number="6" name="Route6" color="25" fill="8" visible="no" active="no"/>
+<layer number="7" name="Route7" color="26" fill="8" visible="no" active="no"/>
+<layer number="8" name="Route8" color="27" fill="2" visible="no" active="no"/>
+<layer number="9" name="Route9" color="28" fill="2" visible="no" active="no"/>
+<layer number="10" name="Route10" color="29" fill="7" visible="no" active="no"/>
+<layer number="11" name="Route11" color="30" fill="7" visible="no" active="no"/>
+<layer number="12" name="Route12" color="20" fill="5" visible="no" active="no"/>
+<layer number="13" name="Route13" color="21" fill="5" visible="no" active="no"/>
 <layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
 <layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
@@ -14129,434 +14139,6 @@ DIN A3, landscape with extra doc field</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="powerpoles">
-<description>Anderson Powerpole footprints</description>
-<packages>
-<package name="POWERPOLE_PAIR_45A_HOLE">
-<pad name="RED" x="-3.95" y="-1.15" drill="5.4" shape="long" rot="R90"/>
-<pad name="BLACK" x="3.95" y="-1.15" drill="5.4" shape="long" rot="R90"/>
-<wire x1="-7.9" y1="3.95" x2="-7.9" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="-3.95" x2="0" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="0" y1="-3.95" x2="7.9" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="7.9" y1="-3.95" x2="7.9" y2="3.95" width="0.127" layer="21"/>
-<wire x1="7.9" y1="3.95" x2="0" y2="3.95" width="0.127" layer="21"/>
-<text x="-10.16" y="2.54" size="2.54" layer="21" font="vector">+</text>
-<wire x1="0" y1="3.95" x2="-7.9" y2="3.95" width="0.127" layer="21"/>
-<wire x1="0" y1="-3.95" x2="0" y2="3.95" width="0.127" layer="21"/>
-</package>
-<package name="POWERPOLE_PAIR_45A_HORIZ_HOLE">
-<pad name="RED" x="-3.95" y="-3.4" drill="5.4" shape="long" rot="R90"/>
-<pad name="BLACK" x="3.95" y="-3.4" drill="5.4" shape="long" rot="R90"/>
-<wire x1="-7.9" y1="24.6" x2="-7.9" y2="16.4" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="16.4" x2="-7.9" y2="15.97" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="13.43" x2="-7.9" y2="0" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="0" x2="0" y2="0" width="0.127" layer="21"/>
-<wire x1="0" y1="0" x2="7.9" y2="0" width="0.127" layer="21"/>
-<wire x1="7.9" y1="0" x2="7.9" y2="13.43" width="0.127" layer="21"/>
-<wire x1="7.9" y1="15.97" x2="7.9" y2="16.4" width="0.127" layer="21"/>
-<wire x1="7.9" y1="16.4" x2="7.9" y2="24.6" width="0.127" layer="21"/>
-<wire x1="7.9" y1="24.6" x2="0" y2="24.6" width="0.127" layer="21"/>
-<text x="-10.16" y="0" size="2.54" layer="21" font="vector">+</text>
-<wire x1="0" y1="24.6" x2="-7.9" y2="24.6" width="0.127" layer="21"/>
-<wire x1="0" y1="0" x2="0" y2="13.43" width="0.127" layer="21"/>
-<wire x1="0" y1="15.97" x2="0" y2="24.6" width="0.127" layer="21"/>
-<circle x="0" y="14.7" radius="1.27" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="15.97" x2="-7.9" y2="13.43" width="0.127" layer="21" curve="-180"/>
-<wire x1="7.9" y1="15.97" x2="7.9" y2="13.43" width="0.127" layer="21" curve="180"/>
-<wire x1="-7.9" y1="16.4" x2="7.9" y2="16.4" width="0.127" layer="21"/>
-</package>
-<package name="POWERPOLE_PAIR_10AWG">
-<pad name="RED" x="-3.9" y="0" drill="2.8"/>
-<pad name="BLACK" x="3.9" y="0" drill="2.8"/>
-<wire x1="-7.9" y1="3.95" x2="0" y2="3.95" width="0.127" layer="21"/>
-<wire x1="0" y1="3.95" x2="7.9" y2="3.95" width="0.127" layer="21"/>
-<wire x1="7.9" y1="3.95" x2="7.9" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="7.9" y1="-3.95" x2="0" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="0" y1="-3.95" x2="-7.9" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="-3.95" x2="-7.9" y2="3.95" width="0.127" layer="21"/>
-<wire x1="0" y1="3.95" x2="0" y2="-3.95" width="0.127" layer="21"/>
-<text x="-10.16" y="2.54" size="2.54" layer="21" font="vector" ratio="15">+</text>
-</package>
-<package name="POWERPOLE_PAIR_25A">
-<pad name="RED" x="-3.95" y="-0.85" drill="1.8" shape="long" rot="R90"/>
-<pad name="BLACK" x="3.95" y="-0.85" drill="1.8" shape="long" rot="R90"/>
-<wire x1="-7.9" y1="3.95" x2="-7.9" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="-3.95" x2="0" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="0" y1="-3.95" x2="7.9" y2="-3.95" width="0.127" layer="21"/>
-<wire x1="7.9" y1="-3.95" x2="7.9" y2="3.95" width="0.127" layer="21"/>
-<wire x1="7.9" y1="3.95" x2="0" y2="3.95" width="0.127" layer="21"/>
-<text x="-10.16" y="2.54" size="2.54" layer="21" font="vector">+</text>
-<wire x1="0" y1="3.95" x2="-7.9" y2="3.95" width="0.127" layer="21"/>
-<wire x1="0" y1="-3.95" x2="0" y2="3.95" width="0.127" layer="21"/>
-</package>
-<package name="POWERPOLE_PAIR_25A_HORIZ_G2">
-<pad name="BLACK" x="-4" y="0" drill="1.8" shape="long" rot="R180"/>
-<pad name="RED" x="4" y="0" drill="1.8" shape="long" rot="R180"/>
-<wire x1="-7.9" y1="25.6" x2="-7.9" y2="17.4" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="17.4" x2="-7.9" y2="16.97" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="14.43" x2="-7.9" y2="1" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="1" x2="0" y2="1" width="0.127" layer="21"/>
-<wire x1="0" y1="1" x2="7.9" y2="1" width="0.127" layer="21"/>
-<wire x1="7.9" y1="1" x2="7.9" y2="14.43" width="0.127" layer="21"/>
-<wire x1="7.9" y1="16.97" x2="7.9" y2="17.4" width="0.127" layer="21"/>
-<wire x1="7.9" y1="17.4" x2="7.9" y2="25.6" width="0.127" layer="21"/>
-<wire x1="7.9" y1="25.6" x2="0" y2="25.6" width="0.127" layer="21"/>
-<text x="2.89" y="2" size="2.54" layer="21" font="vector">+</text>
-<wire x1="0" y1="25.6" x2="-7.9" y2="25.6" width="0.127" layer="21"/>
-<wire x1="0" y1="1" x2="0" y2="14.43" width="0.127" layer="21"/>
-<wire x1="0" y1="16.97" x2="0" y2="25.6" width="0.127" layer="21"/>
-<circle x="0" y="15.7" radius="1.27" width="0.127" layer="21"/>
-<wire x1="-7.9" y1="16.97" x2="-7.9" y2="14.43" width="0.127" layer="21" curve="-180"/>
-<wire x1="7.9" y1="16.97" x2="7.9" y2="14.43" width="0.127" layer="21" curve="180"/>
-<wire x1="-7.9" y1="17.4" x2="7.9" y2="17.4" width="0.127" layer="21"/>
-</package>
-<package name="POWERPOLE_PAIR_55A_HORIZ_MINI">
-<text x="6.35" y="2.54" size="1.27" layer="21">red</text>
-<pad name="BLACK2" x="-2.48" y="0" drill="2.6"/>
-<pad name="BLACK4" x="-2.48" y="-6.1" drill="2.6"/>
-<pad name="BLACK3" x="-13.4" y="-6.1" drill="2.6"/>
-<pad name="BLACK1" x="-13.4" y="0" drill="2.6"/>
-<pad name="RED1" x="2.48" y="0" drill="2.6"/>
-<pad name="RED3" x="2.48" y="-6.1" drill="2.6"/>
-<pad name="RED4" x="13.4" y="-6.1" drill="2.6"/>
-<pad name="RED2" x="13.4" y="0" drill="2.6"/>
-<wire x1="-12.7" y1="17.78" x2="12.7" y2="17.78" width="0.127" layer="21"/>
-<wire x1="-12.7" y1="24.89" x2="12.7" y2="24.89" width="0.127" layer="21"/>
-<rectangle x1="-16.51" y1="-8.89" x2="16.51" y2="25.4" layer="39"/>
-</package>
-<package name="POWERPOLE_PAIR_55A_HORIZ">
-<circle x="0" y="29.8" radius="2.4" width="0.127" layer="21"/>
-<wire x1="-15.7" y1="32.2" x2="-15.7" y2="27.4" width="0.127" layer="21" curve="-180"/>
-<wire x1="15.7" y1="32.2" x2="15.7" y2="27.4" width="0.127" layer="21" curve="180"/>
-<wire x1="0" y1="0" x2="-15.7" y2="0" width="0.127" layer="21"/>
-<wire x1="-15.7" y1="0" x2="-15.7" y2="27.4" width="0.127" layer="21"/>
-<wire x1="0" y1="0" x2="0" y2="27.4" width="0.127" layer="21"/>
-<wire x1="0" y1="0" x2="15.7" y2="0" width="0.127" layer="21"/>
-<wire x1="15.7" y1="0" x2="15.7" y2="27.4" width="0.127" layer="21"/>
-<wire x1="15.7" y1="32.2" x2="15.7" y2="33.3" width="0.127" layer="21"/>
-<wire x1="15.7" y1="33.3" x2="15.7" y2="48" width="0.127" layer="21"/>
-<wire x1="15.7" y1="48" x2="0" y2="48" width="0.127" layer="21"/>
-<wire x1="0" y1="48" x2="-15.7" y2="48" width="0.127" layer="21"/>
-<wire x1="-15.7" y1="48" x2="-15.7" y2="33.3" width="0.127" layer="21"/>
-<wire x1="-15.7" y1="33.3" x2="-15.7" y2="32.2" width="0.127" layer="21"/>
-<wire x1="0" y1="32.2" x2="0" y2="48" width="0.127" layer="21"/>
-<wire x1="-15.7" y1="33.3" x2="15.7" y2="33.3" width="0.127" layer="21"/>
-<pad name="RED1" x="-4.51" y="-5.76" drill="2.54"/>
-<pad name="RED2" x="-11.37" y="-10.84" drill="2.6"/>
-<pad name="RED3" x="-4.51" y="-15.92" drill="2.6"/>
-<pad name="BLACK1" x="11.19" y="-5.76" drill="2.6"/>
-<pad name="BLACK2" x="4.33" y="-10.84" drill="2.6"/>
-<pad name="BLACK3" x="11.19" y="-15.92" drill="2.6"/>
-</package>
-<package name="POWERPOLE_PAIR_55A">
-<pad name="BLACK4" x="-2.79" y="0" drill="2.6"/>
-<pad name="BLACK3" x="-13.08" y="0" drill="2.6"/>
-<pad name="BLACK1" x="-13.08" y="4.98" drill="2.6"/>
-<pad name="BLACK2" x="-2.79" y="4.98" drill="2.6"/>
-<pad name="RED1" x="2.79" y="4.98" drill="2.6"/>
-<pad name="RED3" x="2.79" y="0" drill="2.6"/>
-<pad name="RED4" x="13.08" y="0" drill="2.6"/>
-<pad name="RED2" x="13.08" y="4.98" drill="2.6"/>
-<text x="7.62" y="-3.81" size="1.27" layer="21">red</text>
-<wire x1="-17.25" y1="8.44" x2="-17.25" y2="-2.76" width="0.127" layer="21"/>
-<wire x1="-17.25" y1="-2.76" x2="-16" y2="-2.76" width="0.127" layer="21"/>
-<wire x1="-16" y1="-2.76" x2="-16" y2="-8.26" width="0.127" layer="21"/>
-<wire x1="-16" y1="-8.26" x2="16" y2="-8.26" width="0.127" layer="21"/>
-<wire x1="16" y1="-8.26" x2="16" y2="-2.76" width="0.127" layer="21"/>
-<wire x1="16" y1="-2.76" x2="17.25" y2="-2.76" width="0.127" layer="21"/>
-<wire x1="17.25" y1="-2.76" x2="17.25" y2="8.44" width="0.127" layer="21"/>
-<wire x1="17.25" y1="8.44" x2="-17.25" y2="8.44" width="0.127" layer="21"/>
-</package>
-<package name="POWERPOLE_PAIR_45A">
-<pad name="RED" x="-3.93" y="0.02" drill="1.27" diameter="3.5" shape="long" thermals="no"/>
-<pad name="BLACK" x="3.97" y="0.02" drill="1.27" diameter="3.5" shape="long" thermals="no"/>
-<wire x1="-7.5" y1="4" x2="-5.5" y2="4" width="0.127" layer="21"/>
-<text x="-4.405" y="8.81" size="2.54" layer="21" font="vector">+</text>
-<hole x="-1.95" y="0.02" drill="1.27"/>
-<hole x="-5.91" y="0.02" drill="1.27"/>
-<hole x="1.99" y="0.02" drill="1.27"/>
-<hole x="5.95" y="0.02" drill="1.27"/>
-<hole x="-4.64" y="0.02" drill="1.27"/>
-<hole x="-3.37" y="0.02" drill="1.27"/>
-<hole x="3.26" y="0.02" drill="1.27"/>
-<hole x="4.68" y="0.02" drill="1.27"/>
-<hole x="-5.656" y="0.02" drill="1.27"/>
-<hole x="-5.783" y="0.02" drill="1.27"/>
-<hole x="-5.529" y="0.02" drill="1.27"/>
-<hole x="-5.402" y="0.02" drill="1.27"/>
-<hole x="-5.275" y="0.02" drill="1.27"/>
-<hole x="-5.148" y="0.02" drill="1.27"/>
-<hole x="-5.021" y="0.02" drill="1.27"/>
-<hole x="-4.894" y="0.02" drill="1.27"/>
-<hole x="-4.767" y="0.02" drill="1.27"/>
-<hole x="-2.077" y="0.02" drill="1.27"/>
-<hole x="-2.204" y="0.02" drill="1.27"/>
-<hole x="-2.331" y="0.02" drill="1.27"/>
-<hole x="-2.458" y="0.02" drill="1.27"/>
-<hole x="-2.585" y="0.02" drill="1.27"/>
-<hole x="-2.712" y="0.02" drill="1.27"/>
-<hole x="-2.966" y="0.02" drill="1.27"/>
-<hole x="-2.839" y="0.02" drill="1.27"/>
-<hole x="-3.093" y="0.02" drill="1.27"/>
-<hole x="-3.22" y="0.02" drill="1.27"/>
-<hole x="-3.497" y="0.02" drill="1.27"/>
-<hole x="-3.624" y="0.02" drill="1.27"/>
-<hole x="-3.751" y="0.02" drill="1.27"/>
-<hole x="-3.878" y="0.02" drill="1.27"/>
-<hole x="-4.005" y="0.02" drill="1.27"/>
-<hole x="-4.132" y="0.02" drill="1.27"/>
-<hole x="-4.259" y="0.02" drill="1.27"/>
-<hole x="-4.386" y="0.02" drill="1.27"/>
-<hole x="-4.513" y="0.02" drill="1.27"/>
-<hole x="5.823" y="0.02" drill="1.27"/>
-<hole x="5.696" y="0.02" drill="1.27"/>
-<hole x="5.569" y="0.02" drill="1.27"/>
-<hole x="5.442" y="0.02" drill="1.27"/>
-<hole x="5.315" y="0.02" drill="1.27"/>
-<hole x="5.188" y="0.02" drill="1.27"/>
-<hole x="5.061" y="0.02" drill="1.27"/>
-<hole x="4.934" y="0.02" drill="1.27"/>
-<hole x="4.807" y="0.02" drill="1.27"/>
-<hole x="4.553" y="0.02" drill="1.27"/>
-<hole x="4.426" y="0.02" drill="1.27"/>
-<hole x="4.299" y="0.02" drill="1.27"/>
-<hole x="4.045" y="0.02" drill="1.27"/>
-<hole x="4.045" y="0.02" drill="1.27"/>
-<hole x="4.172" y="0.02" drill="1.27"/>
-<hole x="3.918" y="0.02" drill="1.27"/>
-<hole x="3.791" y="0.02" drill="1.27"/>
-<hole x="3.791" y="0.02" drill="1.27"/>
-<hole x="3.664" y="0.02" drill="1.27"/>
-<hole x="3.664" y="0.02" drill="1.27"/>
-<hole x="3.664" y="0.02" drill="1.27"/>
-<hole x="3.537" y="0.02" drill="1.27"/>
-<hole x="3.537" y="0.02" drill="1.27"/>
-<hole x="3.41" y="0.02" drill="1.27"/>
-<hole x="3.133" y="0.02" drill="1.27"/>
-<hole x="3.006" y="0.02" drill="1.27"/>
-<hole x="2.879" y="0.02" drill="1.27"/>
-<hole x="2.752" y="0.02" drill="1.27"/>
-<hole x="2.625" y="0.02" drill="1.27"/>
-<hole x="2.498" y="0.02" drill="1.27"/>
-<hole x="2.371" y="0.02" drill="1.27"/>
-<hole x="2.244" y="0.02" drill="1.27"/>
-<hole x="2.117" y="0.02" drill="1.27"/>
-<wire x1="-5.5" y1="4" x2="-2.5" y2="4" width="0.127" layer="21"/>
-<wire x1="-2.5" y1="4" x2="0" y2="4" width="0.127" layer="21"/>
-<wire x1="0" y1="4" x2="2.5" y2="4" width="0.127" layer="21"/>
-<wire x1="2.5" y1="4" x2="5.5" y2="4" width="0.127" layer="21"/>
-<wire x1="5.5" y1="4" x2="7.5" y2="4" width="0.127" layer="21"/>
-<wire x1="-7.5" y1="4" x2="-7.5" y2="17" width="0.127" layer="21"/>
-<wire x1="-7.1" y1="29" x2="0" y2="29" width="0.127" layer="21"/>
-<wire x1="0" y1="29" x2="7.1" y2="29" width="0.127" layer="21"/>
-<wire x1="7.5" y1="17" x2="7.5" y2="4" width="0.127" layer="21"/>
-<wire x1="0" y1="29" x2="0" y2="4" width="0.127" layer="21"/>
-<wire x1="-7.1" y1="19" x2="7.1" y2="19" width="0.127" layer="21"/>
-<wire x1="-7.1" y1="19" x2="-7.5" y2="17" width="0.127" layer="21" curve="-180"/>
-<wire x1="7.1" y1="19" x2="7.5" y2="17" width="0.127" layer="21" curve="180"/>
-<wire x1="-7.1" y1="19" x2="-7.1" y2="29" width="0.127" layer="21"/>
-<wire x1="7.1" y1="19" x2="7.1" y2="29" width="0.127" layer="21"/>
-<wire x1="-5.5" y1="4" x2="-5.5" y2="0" width="0.127" layer="21"/>
-<wire x1="-5.5" y1="0" x2="-2.5" y2="0" width="0.127" layer="21"/>
-<wire x1="-2.5" y1="0" x2="-2.5" y2="4" width="0.127" layer="21"/>
-<wire x1="2.5" y1="4" x2="2.5" y2="0" width="0.127" layer="21"/>
-<wire x1="2.5" y1="0" x2="5.5" y2="0" width="0.127" layer="21"/>
-<wire x1="5.5" y1="0" x2="5.5" y2="4" width="0.127" layer="21"/>
-</package>
-<package name="POWERPOLE_PAIR_45A_HORIZ">
-<pad name="RED" x="0" y="-3.81" drill="1.27" diameter="3.5" shape="long"/>
-<pad name="BLACK" x="0" y="4.19" drill="1.27" diameter="3.5" shape="long"/>
-<text x="-5.61" y="-4.71" size="2.54" layer="21" font="vector">+</text>
-<hole x="2.14" y="-3.78" drill="1.27"/>
-<hole x="-1.82" y="-3.78" drill="1.27"/>
-<hole x="-1.98" y="4.19" drill="1.27"/>
-<hole x="1.98" y="4.19" drill="1.27"/>
-<hole x="-0.55" y="-3.78" drill="1.27"/>
-<hole x="0.72" y="-3.78" drill="1.27"/>
-<hole x="-0.71" y="4.19" drill="1.27"/>
-<hole x="0.71" y="4.19" drill="1.27"/>
-<hole x="-1.566" y="-3.78" drill="1.27"/>
-<hole x="-1.693" y="-3.78" drill="1.27"/>
-<hole x="-1.439" y="-3.78" drill="1.27"/>
-<hole x="-1.312" y="-3.78" drill="1.27"/>
-<hole x="-1.185" y="-3.78" drill="1.27"/>
-<hole x="-1.058" y="-3.78" drill="1.27"/>
-<hole x="-0.931" y="-3.78" drill="1.27"/>
-<hole x="-0.804" y="-3.78" drill="1.27"/>
-<hole x="-0.677" y="-3.78" drill="1.27"/>
-<hole x="2.013" y="-3.78" drill="1.27"/>
-<hole x="1.886" y="-3.78" drill="1.27"/>
-<hole x="1.759" y="-3.78" drill="1.27"/>
-<hole x="1.632" y="-3.78" drill="1.27"/>
-<hole x="1.505" y="-3.78" drill="1.27"/>
-<hole x="1.378" y="-3.78" drill="1.27"/>
-<hole x="1.124" y="-3.78" drill="1.27"/>
-<hole x="1.251" y="-3.78" drill="1.27"/>
-<hole x="0.997" y="-3.78" drill="1.27"/>
-<hole x="0.87" y="-3.78" drill="1.27"/>
-<hole x="0.593" y="-3.78" drill="1.27"/>
-<hole x="0.466" y="-3.78" drill="1.27"/>
-<hole x="0.339" y="-3.78" drill="1.27"/>
-<hole x="0.212" y="-3.78" drill="1.27"/>
-<hole x="0.085" y="-3.78" drill="1.27"/>
-<hole x="-0.042" y="-3.78" drill="1.27"/>
-<hole x="-0.169" y="-3.78" drill="1.27"/>
-<hole x="-0.296" y="-3.78" drill="1.27"/>
-<hole x="-0.423" y="-3.78" drill="1.27"/>
-<hole x="1.853" y="4.19" drill="1.27"/>
-<hole x="1.726" y="4.19" drill="1.27"/>
-<hole x="1.599" y="4.19" drill="1.27"/>
-<hole x="1.472" y="4.19" drill="1.27"/>
-<hole x="1.345" y="4.19" drill="1.27"/>
-<hole x="1.218" y="4.19" drill="1.27"/>
-<hole x="1.091" y="4.19" drill="1.27"/>
-<hole x="0.964" y="4.19" drill="1.27"/>
-<hole x="0.837" y="4.19" drill="1.27"/>
-<hole x="0.583" y="4.19" drill="1.27"/>
-<hole x="0.456" y="4.19" drill="1.27"/>
-<hole x="0.329" y="4.19" drill="1.27"/>
-<hole x="0.075" y="4.19" drill="1.27"/>
-<hole x="0.075" y="4.19" drill="1.27"/>
-<hole x="0.202" y="4.19" drill="1.27"/>
-<hole x="-0.052" y="4.19" drill="1.27"/>
-<hole x="-0.179" y="4.19" drill="1.27"/>
-<hole x="-0.179" y="4.19" drill="1.27"/>
-<hole x="-0.306" y="4.19" drill="1.27"/>
-<hole x="-0.306" y="4.19" drill="1.27"/>
-<hole x="-0.306" y="4.19" drill="1.27"/>
-<hole x="-0.433" y="4.19" drill="1.27"/>
-<hole x="-0.433" y="4.19" drill="1.27"/>
-<hole x="-0.56" y="4.19" drill="1.27"/>
-<hole x="-0.837" y="4.19" drill="1.27"/>
-<hole x="-0.964" y="4.19" drill="1.27"/>
-<hole x="-1.091" y="4.19" drill="1.27"/>
-<hole x="-1.218" y="4.19" drill="1.27"/>
-<hole x="-1.345" y="4.19" drill="1.27"/>
-<hole x="-1.472" y="4.19" drill="1.27"/>
-<hole x="-1.599" y="4.19" drill="1.27"/>
-<hole x="-1.726" y="4.19" drill="1.27"/>
-<hole x="-1.853" y="4.19" drill="1.27"/>
-<wire x1="-3.73" y1="-6.81" x2="-3.73" y2="0.19" width="0.127" layer="21"/>
-<wire x1="-3.73" y1="0.19" x2="-3.73" y2="7.19" width="0.127" layer="21"/>
-<wire x1="-3.73" y1="7.19" x2="3.73" y2="7.19" width="0.127" layer="21"/>
-<wire x1="3.73" y1="7.19" x2="3.73" y2="0.19" width="0.127" layer="21"/>
-<wire x1="3.73" y1="0.19" x2="3.73" y2="-6.81" width="0.127" layer="21"/>
-<wire x1="3.73" y1="-6.81" x2="-3.73" y2="-6.81" width="0.127" layer="21"/>
-<wire x1="3.73" y1="0.19" x2="-3.73" y2="0.19" width="0.127" layer="21"/>
-</package>
-</packages>
-<symbols>
-<symbol name="POWERPOLE_POWER">
-<wire x1="-5.08" y1="10.16" x2="-5.08" y2="-10.16" width="0.254" layer="94"/>
-<wire x1="-5.08" y1="-10.16" x2="5.08" y2="-10.16" width="0.254" layer="94"/>
-<wire x1="5.08" y1="-10.16" x2="5.08" y2="10.16" width="0.254" layer="94"/>
-<wire x1="5.08" y1="10.16" x2="-5.08" y2="10.16" width="0.254" layer="94"/>
-<pin name="V+" x="-10.16" y="5.08" length="middle" direction="pwr"/>
-<pin name="GND" x="-10.16" y="-5.08" length="middle" direction="pwr"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="POWERPOLE_POWER" prefix="J">
-<description>Anderson Powerpole Power Connector 
-using ameteur radio standard layout</description>
-<gates>
-<gate name="G$1" symbol="POWERPOLE_POWER" x="0" y="0"/>
-</gates>
-<devices>
-<device name="45A_DRILL" package="POWERPOLE_PAIR_45A_HOLE">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK"/>
-<connect gate="G$1" pin="V+" pad="RED"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="45A_HORIZONTAL_DRILL" package="POWERPOLE_PAIR_45A_HORIZ_HOLE">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK"/>
-<connect gate="G$1" pin="V+" pad="RED"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="10AWG" package="POWERPOLE_PAIR_10AWG">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK"/>
-<connect gate="G$1" pin="V+" pad="RED"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="25A" package="POWERPOLE_PAIR_25A">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK"/>
-<connect gate="G$1" pin="V+" pad="RED"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="25A_HORIZONTAL_G2" package="POWERPOLE_PAIR_25A_HORIZ_G2">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK"/>
-<connect gate="G$1" pin="V+" pad="RED"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="55A_HORIZONTAL_MINI" package="POWERPOLE_PAIR_55A_HORIZ_MINI">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK1 BLACK2 BLACK3 BLACK4"/>
-<connect gate="G$1" pin="V+" pad="RED1 RED2 RED3 RED4"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="55A_HORIZONTAL" package="POWERPOLE_PAIR_55A_HORIZ">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK1 BLACK2 BLACK3"/>
-<connect gate="G$1" pin="V+" pad="RED1 RED2 RED3"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="55A" package="POWERPOLE_PAIR_55A">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK1 BLACK2 BLACK3 BLACK4"/>
-<connect gate="G$1" pin="V+" pad="RED1 RED2 RED3 RED4"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="45A" package="POWERPOLE_PAIR_45A">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK"/>
-<connect gate="G$1" pin="V+" pad="RED"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="" package="POWERPOLE_PAIR_45A_HORIZ">
-<connects>
-<connect gate="G$1" pin="GND" pad="BLACK"/>
-<connect gate="G$1" pin="V+" pad="RED"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="MCP120T">
 <description>&lt;Microcontroller Supervisory Circuit&lt;/b&gt;&lt;p&gt;
 &lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
@@ -14630,6 +14212,99 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="samacsys" urn="urn:adsk.eagle:library:37256869">
+<description>&lt;b&gt;https://eagle.componentsearchengine.com&lt;/b&gt;&lt;p&gt;&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
+<packages>
+<package name="XT60PWM" urn="urn:adsk.eagle:footprint:37256916/3" library_version="54">
+<description>&lt;b&gt;XT60PW-M-2&lt;/b&gt;&lt;br&gt;
+</description>
+<pad name="1" x="-3.6" y="0" drill="2.7" diameter="4.05"/>
+<pad name="2" x="3.6" y="0" drill="2.7" diameter="4.05"/>
+<pad name="3" x="6.75" y="6" drill="1.8" diameter="2.7"/>
+<pad name="4" x="-6.75" y="6" drill="1.8" diameter="2.7"/>
+<text x="0" y="7.62" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="5.08" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<text x="3.81" y="2.54" size="1.27" layer="21">+</text>
+<text x="-3.81" y="2.54" size="1.27" layer="21">-</text>
+<wire x1="-8.0675" y1="16.35" x2="8.0675" y2="16.35" width="0.2" layer="21"/>
+<wire x1="8.0675" y1="16.35" x2="8.0675" y2="-2.1675" width="0.2" layer="21"/>
+<wire x1="8.0675" y1="-2.1675" x2="-8.0675" y2="-2.1675" width="0.2" layer="21"/>
+<wire x1="-8.0675" y1="-2.1675" x2="-8.0675" y2="16.35" width="0.2" layer="21"/>
+<wire x1="5.08" y1="10.16" x2="5.08" y2="15.24" width="0.127" layer="21"/>
+<wire x1="5.08" y1="15.24" x2="0" y2="15.24" width="0.127" layer="21"/>
+<wire x1="0" y1="15.24" x2="-3.81" y2="15.24" width="0.127" layer="21"/>
+<wire x1="-3.81" y1="15.24" x2="-5.08" y2="13.97" width="0.127" layer="21"/>
+<wire x1="-5.08" y1="13.97" x2="-5.08" y2="11.43" width="0.127" layer="21"/>
+<wire x1="-5.08" y1="11.43" x2="-3.81" y2="10.16" width="0.127" layer="21"/>
+<wire x1="-3.81" y1="10.16" x2="0" y2="10.16" width="0.127" layer="21"/>
+<wire x1="0" y1="10.16" x2="5.08" y2="10.16" width="0.127" layer="21"/>
+<wire x1="0" y1="15.24" x2="0" y2="13.97" width="0.127" layer="21"/>
+<wire x1="0" y1="11.43" x2="0" y2="10.16" width="0.127" layer="21"/>
+<circle x="2.54" y="12.7" radius="1.79605" width="0.127" layer="21"/>
+<circle x="-2.54" y="12.7" radius="1.79605" width="0.127" layer="21"/>
+</package>
+</packages>
+<packages3d>
+<package3d name="XT60PWM" urn="urn:adsk.eagle:package:37256940/5" type="model" library_version="54">
+<description>&lt;b&gt;XT60PW-M-2&lt;/b&gt;&lt;br&gt;</description>
+<packageinstances>
+<packageinstance name="XT60PWM"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="XT60PW-M" urn="urn:adsk.eagle:symbol:37256935/1" library_version="54">
+<wire x1="-5.08" y1="2.54" x2="5.08" y2="2.54" width="0.254" layer="94"/>
+<wire x1="5.08" y1="-5.08" x2="5.08" y2="2.54" width="0.254" layer="94"/>
+<wire x1="5.08" y1="-5.08" x2="-5.08" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="-5.08" y1="2.54" x2="-5.08" y2="-5.08" width="0.254" layer="94"/>
+<text x="-2.54" y="5.08" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="-2.54" y="-7.62" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<text x="-4.064" y="-3.048" size="1.27" layer="94">+</text>
+<text x="-4.064" y="-0.508" size="1.27" layer="94">-</text>
+<pin name="1" x="-7.62" y="0" length="short"/>
+<pin name="2" x="-7.62" y="-2.54" length="short"/>
+<pin name="3" x="7.62" y="-2.54" length="short" rot="R180"/>
+<pin name="4" x="7.62" y="0" length="short" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/5" prefix="J" library_version="54">
+<description>&lt;b&gt;Socket; DC supply; XT60; male; PIN: 2; on PCBs; THT; Colour: yellow&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade/XT60PW SPEC.pdf"&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="XT60PW-M" x="-10.16" y="0"/>
+</gates>
+<devices>
+<device name="" package="XT60PWM">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+<connect gate="G$1" pin="3" pad="3"/>
+<connect gate="G$1" pin="4" pad="4"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37256940/5"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="ARROW_PART_NUMBER" value="" constant="no"/>
+<attribute name="ARROW_PRICE-STOCK" value="" constant="no"/>
+<attribute name="DESCRIPTION" value="Socket; DC supply; XT60; male; PIN: 2; on PCBs; THT; Colour: yellow" constant="no"/>
+<attribute name="HEIGHT" value="8.4mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="Changzou Amass Elec" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="XT60PW-M" constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="" constant="no"/>
+<attribute name="MOUSER_TESTING_PART_NUMBER" value="" constant="no"/>
+<attribute name="MOUSER_TESTING_PRICE-STOCK" value="" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -14696,7 +14371,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <part name="IC5" library="rti" deviceset="74*245" device="" technology="LVC"/>
 <part name="IC6" library="rti" deviceset="74*245" device="" technology="ABT" value="74ABT245"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
-<part name="J1" library="powerpoles" deviceset="POWERPOLE_POWER" device="45A"/>
 <part name="U$1" library="MCP120T" deviceset="MCP120T" device="" value="MCP120T-315I/TT">
 <attribute name="MPN" value="MCP120T-315I/TT"/>
 </part>
@@ -14706,6 +14380,7 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <part name="C7" library="rti" deviceset="C-EU" device="'0805'" value="10uF"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="R11" library="rti" deviceset="R-EU" device="'0805'" value="100"/>
+<part name="J2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/5"/>
 </parts>
 <sheets>
 <sheet>
@@ -14946,7 +14621,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <instance part="GND7" gate="1" x="187.96" y="226.06" smashed="yes">
 <attribute name="VALUE" x="185.42" y="223.52" size="1.778" layer="96"/>
 </instance>
-<instance part="J1" gate="G$1" x="378.46" y="83.82" smashed="yes"/>
 <instance part="U$1" gate="G$1" x="218.44" y="93.98" smashed="yes">
 <attribute name="MPN" x="218.44" y="93.98" size="1.778" layer="96" display="off"/>
 <attribute name="NAME" x="215.9" y="99.06" size="1.778" layer="95" align="center-left"/>
@@ -14972,6 +14646,10 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <instance part="R11" gate="G$1" x="83.82" y="132.08" smashed="yes" rot="R180">
 <attribute name="NAME" x="87.63" y="130.5814" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="87.63" y="135.382" size="1.778" layer="96" rot="R180"/>
+</instance>
+<instance part="J2" gate="G$1" x="341.63" y="95.25" smashed="yes">
+<attribute name="NAME" x="339.09" y="100.33" size="1.778" layer="95" align="center-left"/>
+<attribute name="VALUE" x="339.09" y="87.63" size="1.778" layer="96" align="center-left"/>
 </instance>
 </instances>
 <busses>
@@ -15101,11 +14779,6 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <pinref part="IC5" gate="P" pin="GND"/>
 </segment>
 <segment>
-<wire x1="365.76" y1="78.74" x2="368.3" y2="78.74" width="0.1524" layer="91"/>
-<label x="365.76" y="78.74" size="1.016" layer="95" rot="R180" xref="yes"/>
-<pinref part="J1" gate="G$1" pin="GND"/>
-</segment>
-<segment>
 <pinref part="XB1" gate="G$1" pin="!DTR!/SLEEP_RQ/DI8"/>
 <wire x1="147.32" y1="55.88" x2="149.86" y2="55.88" width="0.1524" layer="91"/>
 <label x="147.32" y="55.88" size="1.016" layer="95" rot="R180" xref="yes"/>
@@ -15209,6 +14882,11 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <wire x1="116.84" y1="236.22" x2="119.38" y2="236.22" width="0.1524" layer="91"/>
 <label x="116.84" y="236.22" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="1"/>
+<wire x1="331.47" y1="95.25" x2="334.01" y2="95.25" width="0.1524" layer="91"/>
+<label x="331.47" y="95.25" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="+12V" class="1">
 <segment>
@@ -15238,14 +14916,14 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <wire x1="7.62" y1="259.08" x2="7.62" y2="256.54" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="365.76" y1="88.9" x2="368.3" y2="88.9" width="0.1524" layer="91"/>
-<label x="365.76" y="88.9" size="1.016" layer="95" rot="R180" xref="yes"/>
-<pinref part="J1" gate="G$1" pin="V+"/>
-</segment>
-<segment>
 <wire x1="370.84" y1="104.14" x2="373.38" y2="104.14" width="0.1524" layer="91"/>
 <label x="370.84" y="104.14" size="1.016" layer="95" rot="MR0" xref="yes"/>
 <pinref part="X11" gate="-2" pin="KL"/>
+</segment>
+<segment>
+<pinref part="J2" gate="G$1" pin="2"/>
+<wire x1="331.47" y1="92.71" x2="334.01" y2="92.71" width="0.1524" layer="91"/>
+<label x="331.47" y="92.71" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SHUTTER_OPENED" class="0">
@@ -15848,4 +15526,21 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 </sheets>
 </schematic>
 </drawing>
+<compatibility>
+<note version="8.2" severity="warning">
+Since Version 8.2, EAGLE supports online libraries. The ids
+of those online libraries will not be understood (or retained)
+with this version.
+</note>
+<note version="8.3" severity="warning">
+Since Version 8.3, EAGLE supports URNs for individual library
+assets (packages, symbols, and devices). The URNs of those assets
+will not be understood (or retained) with this version.
+</note>
+<note version="8.3" severity="warning">
+Since Version 8.3, EAGLE supports the association of 3D packages
+with devices in libraries, schematics, and board files. Those 3D
+packages will not be understood (or retained) with this version.
+</note>
+</compatibility>
 </eagle>

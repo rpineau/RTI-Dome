@@ -1,29 +1,39 @@
 //
-// RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
-// fix most of the known issues. I also added some feature related to XBee init and reset.
-// This is meant to run on an Arduino DUE as we put the AccelStepper run() call in an interrupt
+// RTI-Zone Dome Rotator firmware.
+// Support Arduino DUE and RP2040
 //
 
-// Uncomment #define DEBUG in RotatorClass.h to enable printing debug messages in serial
+// Uncomment #define DEBUG to enable printing debug messages in serial
 
 // if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
 // This us useful for people who only want to automate the rotation.
-// #define STANDALONE
 
+#include "Arduino.h"
+
+#define DEBUG   // enable debug to DebugPort serial port
+#ifdef DEBUG
+#define DebugPort Serial    // programing port
+#endif
+
+// #define STANDALONE
 #ifdef STANDALONE
 #pragma message "Standalone mode, no shutter code"
 #endif // STANDALONE
 
-// The Xbee S1 were the original one used on the NexDome controller.
-// I have since tested with a pair of S2C that are easier to find and
-// fix the Xbee init command to make it work.
-// Also the XBee3 model XB3-24Z8PT-J work as the S1
-#define XBEE_S1
-// #define XBEE_S2C
+#ifdef DEBUG
+#pragma message "Debug messages enabled"
+#define DBPrint(x) if(DebugPort) DebugPort.print(x)
+#define DBPrintln(x) if(DebugPort) DebugPort.println(x)
+#define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
+#else
+#pragma message "Debug messages disabled"
+#define DBPrint(x)
+#define DBPrintln(x)
+#define DBPrintHex(x)
+#endif // DEBUG
+
 
 #define MAX_TIMEOUT 10
-#define ERR_NO_DATA -1
 #define OK  0
 
 #define VERSION "2.645"
@@ -38,25 +48,47 @@
 #pragma message "Alpaca server enabled"
 #endif
 // include and some defines for ethernet connection
-#include <SPI.h>
+#include <SPI.h>    // RP2040 :  SCK: GP18, COPI/TX: GP19, CIPO/RX: GP16, CS: GP17
+#include <EthernetClient.h>
 #include <Ethernet.h>
 #include "EtherMac.h"
 #endif // USE_ETHERNET
 
+#if defined(ARDUINO_ARCH_RP2040)
+#pragma message "Enabling RP2040 Serial2"
+UART Serial2(8, 9, 0, 0);
+#endif
 #define Computer Serial2     // USB FTDI
 
+#if defined(ARDUINO_ARCH_RP2040)
+#define FTDI_RESET  28
+#else
 #define FTDI_RESET  23
+#endif
+
 #ifndef STANDALONE
-#define Wireless Serial1    // Serial1 on pin 18/19 for XBEE
+#define Wireless Serial1    // XBEE Serial1 on pin 18/19 for Arduino DUE , or 0/1 on RP2040
+// The Xbee S1 were the original one used on the NexDome controller.
+// I have since tested with a pair of S2C that are easier to find and
+// fix the Xbee init command to make it work.
+// Also the XBee3 model XB3-24Z8PT-J work as the S1
+#define XBEE_S1
+// #define XBEE_S2C
 #endif // STANDALONE
-#define DebugPort Serial    // programing port
+
+
 
 #include "RotatorClass.h"
 
 #ifdef USE_ETHERNET
+#if defined(ARDUINO_ARCH_RP2040)    // RP2040 SPI
+#define ETHERNET_CS     17
+#define ETHERNET_RESET  20
+#else
 #define ETHERNET_CS     52
 #define ETHERNET_RESET  53
-uint32_t uidBuffer[4];  // DUE unique ID
+#endif
+uint32_t uidBuffer[4];  // Board unique ID (DUE, RP2040)
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 
 #define SERVER_PORT 2323
@@ -75,7 +107,13 @@ String computerBuffer;
 
 
 #ifndef STANDALONE
+
+#if defined(ARDUINO_ARCH_RP2040)
+#define XBEE_RESET  22
+#else
 #define XBEE_RESET  8
+#endif
+
 #include "RemoteShutterClass.h"
 RemoteShutterClass RemoteShutter;
 String wirelessBuffer;
@@ -133,6 +171,8 @@ volatile bool bLowShutterVoltage = false;
 bool ethernetPresent;
 IPConfig ServerConfig;
 #endif // USE_ETHERNET
+
+const char ERR_NO_DATA = -1;
 
 // Rotator commands
 const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
@@ -240,10 +280,18 @@ void setup()
 
 #ifdef DEBUG
     DebugPort.begin(115200);
-    DBPrintln("\n\n========== RTI-Zome controller booting ==========\n\n");
+    DBPrintln("========== RTI-Zome controller booting ==========");
 #endif
 #ifdef USE_ETHERNET
     getMacAddress(MAC_Address, uidBuffer);
+#ifdef DEBUG
+    DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
+                    String(MAC_Address[1], HEX) + String(":") +
+                    String(MAC_Address[2], HEX) + String(":") +
+                    String(MAC_Address[3], HEX) + String(":") +
+                    String(MAC_Address[4], HEX) + String(":") +
+                    String(MAC_Address[5], HEX) );
+#endif
 #endif // USE_ETHERNET
 
     Computer.begin(115200);
@@ -256,19 +304,28 @@ void setup()
     isConfiguringWireless = false;
     gotHelloFromShutter = false;
 #endif // STANDALONE
+
+
+    // put this in setup1()
     Rotator = new RotatorClass();
     Rotator->motorStop();
     Rotator->EnableMotor(false);
-    noInterrupts();
+
+
+    DBPrintln("========== Attaching interrupt handler ==========");
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-    interrupts();
+
+    DBPrintln("========== RTI-Zome controller Interrupt init done ==========");
+
 #ifdef USE_ETHERNET
     configureEthernet();
 #endif // USE_ETHERNET
+    Computer.println("Online");
 }
+
 
 void loop()
 {
@@ -287,7 +344,9 @@ void loop()
         }
     }
 #endif // STANDALONE
+    // put this in loop1()
     Rotator->Run();
+    //
     CheckForCommands();
     CheckForRain();
 #ifndef STANDALONE
@@ -325,6 +384,8 @@ void loop()
 #ifdef USE_ETHERNET
 void configureEthernet()
 {
+    DBPrintln("========== Configureing Ethernet ==========");
+
     Rotator->getIpConfig(ServerConfig);
     ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
                                     ServerConfig.ip,
@@ -340,11 +401,17 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 #ifdef DEBUG
     IPAddress aTmp;
 #endif
+    // RP2040 :  SCK: GPIO2, COPI/TX: GPIO3, CIPO/RX: GPIO4, CS: GPIO5
+
+    DBPrintln("========== Init Ethernet ==========");
 
     resetChip(ETHERNET_RESET);
     // network configuration
     nbEthernetClient = 0;
     Ethernet.init(ETHERNET_CS);
+
+
+    DBPrintln("========== Setting IP config ==========");
 
     // try DHCP if set
     if(bUseDHCP) {
@@ -362,6 +429,9 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
     else {
         Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
     }
+
+
+    DBPrintln("========== Checking hardware status ==========");
 
     if(Ethernet.hardwareStatus() == EthernetNoHardware) {
          DBPrintln("NO HARDWARE !!!");
@@ -419,20 +489,20 @@ void checkForNewTCPClient()
 
 void homeIntHandler()
 {
-    if(Rotator)
-        Rotator->homeInterrupt();
+   if(Rotator)
+       Rotator->homeInterrupt();
 }
 
 void rainIntHandler()
 {
-    if(Rotator)
-        Rotator->rainInterrupt();
+   if(Rotator)
+       Rotator->rainInterrupt();
 }
 
 void buttonHandler()
 {
-    if(Rotator)
-        Rotator->ButtonCheck();
+   if(Rotator)
+       Rotator->ButtonCheck();
 }
 
 
@@ -463,6 +533,7 @@ void StartWirelessConfig()
     Wireless.print("+++");
     delay(1100);
     ShutterWatchdog.reset();
+    DBPrintln("Xbee +++ sent");
 }
 
 inline void ConfigXBee()
@@ -1118,6 +1189,7 @@ void ReceiveWireless()
                 delay(1);
                 timeout++;
                 if(timeout >= MAX_TIMEOUT*10) {
+                    DBPrintln("[ReceiveWireless] XBee timeout");
                     return;
                     }
             }

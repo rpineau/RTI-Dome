@@ -118,6 +118,10 @@ int CRTIDome::Connect(const char *pszPort)
     // 115200 8N1 DTR
     nErr = m_pSerx->open(pszPort, 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
     if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+        m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Connection failed, nErr = " << nErr <<  std::endl;
+        m_sLogFile.flush();
+#endif
         m_bIsConnected = false;
         return nErr;
     }
