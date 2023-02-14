@@ -3,6 +3,8 @@
 // Support Arduino DUE and RP2040
 //
 
+#include <atomic>
+
 #ifdef USE_EXT_EEPROM
 
 #include <extEEPROM.h>
@@ -337,7 +339,6 @@ public:
     void        Run();
     void        Stop();
     void        motorStop();
-    void        motorMoveTo(const long newPosition);
     void        motorMoveRelative(const long howFar);
     void        stopInterrupt();
     void        homeInterrupt();
@@ -357,6 +358,7 @@ public:
     String      IpAddress2String(const IPAddress& ipAddress);
 #endif // USE_ETHERNET
 
+    std::atomic<int>    nStepperInterruptFreq;
 private:
     Configuration   m_Config;
 
@@ -472,6 +474,8 @@ RotatorClass::RotatorClass()
 
     m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
 
+
+    nStepperInterruptFreq = 0; // used to pass interrupt frequency to core1 from call to methods from core0
 
     // reset all timers
     m_MoveOffUntilTimer.reset();
@@ -1092,6 +1096,10 @@ void RotatorClass::Run()
     if (m_seekMode > HOMING_HOME)
         Calibrate();
 
+#elif defined(ARDUINO_ARCH_RP2040)
+#pragma message "RP2040 Run"
+    // stepper.run() // RP2040 core1
+#endif
     if (stepper.isRunning()) {
         m_bWasRunning = true;
         if (m_seekMode == HOMING_HOME && m_HomeFound) { // We're looking for home and found it
@@ -1188,43 +1196,28 @@ void RotatorClass::stopInterrupt()
     // stop interrupt timer
     stopTimer(TC1, 0, TC3_IRQn);
 #elif defined(ARDUINO_ARCH_RP2040)
-    // do RP2040 interrupt stuff
+#pragma message "RP2040 stopInterrupt"
+    // RP2040 interrupt timer -> disable this in dual core mode
     ITimer.stopTimer();
 #endif
 
 }
 
-void RotatorClass::motorMoveTo(const long newPosition)
-{
-    // AccelStepper run() is called under a timer interrupt
-
-    stepper.moveTo(newPosition);
-    int nFreq;
-    nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
-    // start interrupt timer
-#if defined(ARDUINO_SAM_DUE)
-#pragma message "Arduino DUE motorMoveTo"
-    startTimer(TC1, 0, TC3_IRQn, nFreq);
-#elif defined(ARDUINO_ARCH_RP2040)
-    // do RP2040 interrupt stuff
-    ITimer.attachInterrupt(nFreq, TimerHandler);
-#endif
-
-}
 
 void RotatorClass::motorMoveRelative(const long howFar)
 {
     // AccelStepper run() is called under a timer interrupt
     stepper.move(howFar);
-    int nFreq;
-    nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
     // start interrupt timer
 #if defined(ARDUINO_SAM_DUE)
 #pragma message "Arduino DUE motorMoveRelative"
-    startTimer(TC1, 0, TC3_IRQn, nFreq);
+    nStepperInterruptFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
+    startTimer(TC1, 0, TC3_IRQn, nStepperInterruptFreq);
 #elif defined(ARDUINO_ARCH_RP2040)
-    // do RP2040 interrupt stuff
-    ITimer.attachInterrupt(nFreq, TimerHandler);
+#pragma message "RP2040 motorMoveRelative"
+    // RP2040 interrupt timer -> disable this in dual core mode
+    nStepperInterruptFreq = m_Config.maxSpeed *2; // 2x freq to make sure we don't miss any steps
+    ITimer.attachInterrupt(nStepperInterruptFreq, TimerHandler);
 #endif
 }
 

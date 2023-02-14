@@ -323,7 +323,9 @@ void setup()
 #ifdef USE_ETHERNET
     configureEthernet();
 #endif // USE_ETHERNET
+#ifdef DEBUG
     Computer.println("Online");
+#endif
 }
 
 
