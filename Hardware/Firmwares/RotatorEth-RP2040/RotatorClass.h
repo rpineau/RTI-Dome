@@ -1096,7 +1096,7 @@ void RotatorClass::Run()
     if (m_seekMode > HOMING_HOME)
         Calibrate();
 
-#elif defined(ARDUINO_ARCH_RP2040)
+#if defined(ARDUINO_ARCH_RP2040)
 #pragma message "RP2040 Run"
     // stepper.run() // RP2040 core1
 #endif
