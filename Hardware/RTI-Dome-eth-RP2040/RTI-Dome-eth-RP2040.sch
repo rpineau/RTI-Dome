@@ -9775,7 +9775,7 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 <text x="-11.43" y="13.97" size="1.27" layer="25">&gt;NAME</text>
 <text x="-11.43" y="-19.3" size="1.27" layer="27">&gt;VALUE</text>
 </package>
-<package name="SOIC127P600X175-8N" urn="urn:adsk.eagle:footprint:37894664/1" library_version="18">
+<package name="SOIC127P600X175-8N" urn="urn:adsk.eagle:footprint:37894664/1" library_version="22">
 <description>&lt;b&gt;(SOIC)&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-2.7" y="1.905" dx="1.5" dy="0.65" layer="1"/>
@@ -9857,9 +9857,8 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 <packageinstance name="XBEE-PRO"/>
 </packageinstances>
 </package3d>
-<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:37894665/2" type="model" library_version="18">
-<description>&lt;b&gt;(SOIC)&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:37894665/2" type="model" library_version="22">
+<description>&lt;b&gt;(SOIC)&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="SOIC127P600X175-8N"/>
 </packageinstances>
@@ -12779,7 +12778,7 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 </device>
 </devices>
 </deviceset>
-<deviceset name="74*245" urn="urn:adsk.eagle:component:37318440/2" prefix="IC" library_version="6">
+<deviceset name="74*245" urn="urn:adsk.eagle:component:37318440/4" prefix="IC" library_version="22">
 <gates>
 <gate name="G$1" symbol="74*245" x="0" y="2.54" swaplevel="1"/>
 <gate name="P" symbol="PWR2" x="-30.48" y="-10.16" addlevel="request"/>
@@ -12812,9 +12811,15 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 <package3dinstance package3d_urn="urn:adsk.eagle:package:37318379/2"/>
 </package3dinstances>
 <technologies>
-<technology name="ABT"/>
-<technology name="LVC"/>
-<technology name="LVT"/>
+<technology name="ABT">
+<attribute name="MPN" value="74ABT245PW,118" constant="no"/>
+</technology>
+<technology name="LVC">
+<attribute name="MPN" value="SN74LVC245APWR" constant="no"/>
+</technology>
+<technology name="LVT">
+<attribute name="MPN" value="" constant="no"/>
+</technology>
 </technologies>
 </device>
 </devices>
@@ -13054,7 +13059,7 @@ Source: MaxStream, Inc. xbee_productmanual.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="24LC128T-I_SN" urn="urn:adsk.eagle:component:37894666/3" prefix="IC" library_version="18">
+<deviceset name="24LC128T-I_SN" urn="urn:adsk.eagle:component:37894666/3" prefix="IC" library_version="22">
 <description>&lt;b&gt;128K I2C CMOS Serial EEPROM&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="http://componentsearchengine.com/Datasheets/3/24LC128T-I_SN.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21460,7 +21465,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="-2.64" y1="-2.64" x2="-2.64" y2="2.64" width="0.1" layer="51"/>
 <wire x1="-2.64" y1="1.37" x2="-1.37" y2="2.64" width="0.1" layer="51"/>
 </package>
-<package name="476421001" urn="urn:adsk.eagle:footprint:39204862/1" library_version="56">
+<package name="476421001" urn="urn:adsk.eagle:footprint:39204862/1" library_version="57">
 <description>&lt;b&gt;47642-1001-3&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-1.3" y="2.85" dx="1.1" dy="0.45" layer="1" rot="R90"/>
@@ -21497,22 +21502,19 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </packageinstances>
 </package3d>
 <package3d name="QFN40P700X700X90-57N" urn="urn:adsk.eagle:package:38428684/2" type="model" library_version="57">
-<description>&lt;b&gt;RP 2040&lt;/b&gt;&lt;br&gt;
-</description>
+<description>&lt;b&gt;RP 2040&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="QFN40P700X700X90-57N"/>
 </packageinstances>
 </package3d>
 <package3d name="SOIC127P790X216-8N" urn="urn:adsk.eagle:package:38428698/2" type="model" library_version="57">
-<description>&lt;b&gt;8-Pin SOIC 208-mil (Package Code S)_1&lt;/b&gt;&lt;br&gt;
-</description>
+<description>&lt;b&gt;8-Pin SOIC 208-mil (Package Code S)_1&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="SOIC127P790X216-8N"/>
 </packageinstances>
 </package3d>
-<package3d name="476421001" urn="urn:adsk.eagle:package:39204864/2" type="model" library_version="56">
-<description>&lt;b&gt;47642-1001-3&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="476421001" urn="urn:adsk.eagle:package:39204864/2" type="model" library_version="57">
+<description>&lt;b&gt;47642-1001-3&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="476421001"/>
 </packageinstances>
@@ -23234,12 +23236,8 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <attribute name="MPN" value="RT0805FRE074K7L"/>
 </part>
 <part name="FRAME1" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA3_L" device=""/>
-<part name="IC5" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*245" device="" package3d_urn="urn:adsk.eagle:package:37318379/2" technology="LVC">
-<attribute name="MPN" value="74LVC245APW,112"/>
-</part>
-<part name="IC6" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*245" device="" package3d_urn="urn:adsk.eagle:package:37318379/2" technology="ABT" value="74ABT245">
-<attribute name="MPN" value="74ABT245PW,112"/>
-</part>
+<part name="IC5" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*245" device="" package3d_urn="urn:adsk.eagle:package:37318379/2" technology="LVC"/>
+<part name="IC6" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*245" device="" package3d_urn="urn:adsk.eagle:package:37318379/2" technology="ABT" value="74ABT245"/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U1" library="W5500" library_urn="urn:adsk.eagle:library:37501005" deviceset="W5500" device="" package3d_urn="urn:adsk.eagle:package:37501008/2" value="W5500">
 <attribute name="MPN" value="W5500"/>
