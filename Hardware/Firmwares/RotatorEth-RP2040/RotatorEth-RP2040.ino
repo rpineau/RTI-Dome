@@ -55,8 +55,7 @@
 #endif // USE_ETHERNET
 
 #if defined(ARDUINO_ARCH_RP2040)
-#pragma message "Enabling RP2040 Serial2"
-UART Serial2(8, 9, 0, 0);
+#pragma message "RP2040 Serial2"
 #endif
 #define Computer Serial2     // USB FTDI
 
@@ -123,6 +122,9 @@ bool isResetingXbee = false;
 int XbeeResets = 0;
 #endif // STANDALONE
 
+#if defined(ARDUINO_ARCH_RP2040)
+volatile bool core0Ready = false;
+#endif
 
 RotatorClass *Rotator = NULL;
 
@@ -260,6 +262,9 @@ void ProcessWireless();
 
 void setup()
 {
+#if defined(ARDUINO_ARCH_RP2040)
+    core0Ready = false;
+#endif
 #ifndef STANDALONE
     // set reset pins to output and low
     digitalWrite(XBEE_RESET, 0);
@@ -305,20 +310,18 @@ void setup()
     gotHelloFromShutter = false;
 #endif // STANDALONE
 
-
-    // put this in setup1()
     Rotator = new RotatorClass();
     Rotator->motorStop();
     Rotator->EnableMotor(false);
 
-
-    DBPrintln("========== Attaching interrupt handler ==========");
+#if defined(ARDUINO_SAM_DUE)
+    noInterrupts();
     attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
     attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-
-    DBPrintln("========== RTI-Zome controller Interrupt init done ==========");
+    interrupts();
+#endif
 
 #ifdef USE_ETHERNET
     configureEthernet();
@@ -326,8 +329,29 @@ void setup()
 #ifdef DEBUG
     Computer.println("Online");
 #endif
+#if defined(ARDUINO_ARCH_RP2040)
+    core0Ready = true;
+    DBPrintln("========== Core 0 ready ==========");
+#endif
 }
 
+#if defined(ARDUINO_ARCH_RP2040)
+void setup1()
+{
+    while(!core0Ready)
+        delay(100);
+
+    DBPrintln("========== Core 1 starting ==========");
+
+    DBPrintln("========== Core 1 Attaching interrupt handler ==========");
+    attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+    attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+
+    DBPrintln("========== Core 1 ready ==========");
+}
+#endif
 
 void loop()
 {
@@ -346,9 +370,9 @@ void loop()
         }
     }
 #endif // STANDALONE
-    // put this in loop1()
+#if defined(ARDUINO_SAM_DUE)
     Rotator->Run();
-    //
+#endif
     CheckForCommands();
     CheckForRain();
 #ifndef STANDALONE
@@ -383,11 +407,17 @@ void loop()
 #endif // STANDALONE
 }
 
+#if defined(ARDUINO_ARCH_RP2040)
+void loop1()
+{   // all stepper motor code runs on core 1
+    Rotator->Run();
+}
+#endif
+
 #ifdef USE_ETHERNET
 void configureEthernet()
 {
     DBPrintln("========== Configureing Ethernet ==========");
-
     Rotator->getIpConfig(ServerConfig);
     ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
                                     ServerConfig.ip,
@@ -403,18 +433,14 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 #ifdef DEBUG
     IPAddress aTmp;
 #endif
-    // RP2040 :  SCK: GPIO2, COPI/TX: GPIO3, CIPO/RX: GPIO4, CS: GPIO5
 
     DBPrintln("========== Init Ethernet ==========");
-
     resetChip(ETHERNET_RESET);
     // network configuration
     nbEthernetClient = 0;
     Ethernet.init(ETHERNET_CS);
 
-
     DBPrintln("========== Setting IP config ==========");
-
     // try DHCP if set
     if(bUseDHCP) {
         dhcpOk = Ethernet.begin(MAC_Address, 10000, 4000); // short timeout
@@ -432,9 +458,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
         Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
     }
 
-
     DBPrintln("========== Checking hardware status ==========");
-
     if(Ethernet.hardwareStatus() == EthernetNoHardware) {
          DBPrintln("NO HARDWARE !!!");
         return false;
@@ -448,7 +472,6 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 #endif
 
     Ethernet.setRetransmissionCount(3);
-
     DBPrintln("Server ready, calling begin()");
     domeServer.begin();
 #ifdef USE_ALPACA

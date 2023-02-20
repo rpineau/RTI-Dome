@@ -54,7 +54,7 @@ void getMacAddress(byte* macBuffer, uint32_t* uid)
 }
 
 #elif defined(ARDUINO_ARCH_RP2040)
-#include <flash.h>
+#include <hardware/flash.h>
 #pragma message "RP2040 getMacAddress"
 void getMacAddress(byte* macBuffer, uint32_t* uid)
 {

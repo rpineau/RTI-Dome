@@ -239,30 +239,6 @@ void TC3_Handler()
 }
 
 #elif defined(ARDUINO_ARCH_RP2040)
-#pragma message "RP2040 Timer"
-
-#include <MBED_RPi_Pico_TimerInterrupt.h>
-#include <MBED_RPi_Pico_TimerInterrupt.hpp>
-#include <MBED_RPi_Pico_ISR_Timer.h>
-#include <MBED_RPi_Pico_ISR_Timer.hpp>
-
-void TimerHandler(uint alarm_num)
-{
-    ///////////////////////////////////////////////////////////
-    // Always call this for MBED RP2040 before processing ISR
-    TIMER_ISR_START(alarm_num);
-    ///////////////////////////////////////////////////////////
-
-    stepper.run();
-
-    ////////////////////////////////////////////////////////////
-    // Always call this for MBED RP2040 after processing ISR
-    TIMER_ISR_END(alarm_num);
-    ////////////////////////////////////////////////////////////
-}
-
-MBED_RPI_PICO_Timer ITimer(0);
-
 #endif // ARDUINO_SAM_DUE - ARDUINO_ARCH_RP2040
 
 
@@ -582,10 +558,10 @@ bool RotatorClass::LoadFromEEProm()
 #endif
 #ifdef USE_ETHERNET
     DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP));
-    DBPrintln("ipConfig.ip       : " + String(m_Config.ipConfig.ip));
-    DBPrintln("ipConfig.dns      : " + String(m_Config.ipConfig.dns));
-    DBPrintln("ipConfig.gateway  : " + String(m_Config.ipConfig.gateway));
-    DBPrintln("ipConfig.subnet   : " + String(m_Config.ipConfig.subnet));
+    DBPrintln("ipConfig.ip       : " + String(int(m_Config.ipConfig.ip)));
+    DBPrintln("ipConfig.dns      : " + String(int(m_Config.ipConfig.dns)));
+    DBPrintln("ipConfig.gateway  : " + String(int(m_Config.ipConfig.gateway)));
+    DBPrintln("ipConfig.subnet   : " + String(int(m_Config.ipConfig.subnet)));
 #endif
 #endif
     return response;
@@ -1098,7 +1074,7 @@ void RotatorClass::Run()
 
 #if defined(ARDUINO_ARCH_RP2040)
 #pragma message "RP2040 Run"
-    // stepper.run() // RP2040 core1
+    stepper.run(); // RP2040 core1
 #endif
     if (stepper.isRunning()) {
         m_bWasRunning = true;
@@ -1197,8 +1173,6 @@ void RotatorClass::stopInterrupt()
     stopTimer(TC1, 0, TC3_IRQn);
 #elif defined(ARDUINO_ARCH_RP2040)
 #pragma message "RP2040 stopInterrupt"
-    // RP2040 interrupt timer -> disable this in dual core mode
-    ITimer.stopTimer();
 #endif
 
 }
@@ -1215,9 +1189,6 @@ void RotatorClass::motorMoveRelative(const long howFar)
     startTimer(TC1, 0, TC3_IRQn, nStepperInterruptFreq);
 #elif defined(ARDUINO_ARCH_RP2040)
 #pragma message "RP2040 motorMoveRelative"
-    // RP2040 interrupt timer -> disable this in dual core mode
-    nStepperInterruptFreq = m_Config.maxSpeed *2; // 2x freq to make sure we don't miss any steps
-    ITimer.attachInterrupt(nStepperInterruptFreq, TimerHandler);
 #endif
 }
 
