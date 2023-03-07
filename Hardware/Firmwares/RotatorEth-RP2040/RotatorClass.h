@@ -90,8 +90,13 @@ DueFlashStorage dueFlashStorage;
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
 
+// Normal stepper controller
 #define M_ENABLE    HIGH
 #define M_DISABLE   LOW
+
+// A4988
+//#define M_ENABLE    LOW
+//#define M_DISABLE   HIGH
 
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
@@ -696,7 +701,7 @@ long RotatorClass::GetAcceleration()
 void RotatorClass::SetAcceleration(const long newAccel)
 {
     m_Config.acceleration = newAccel;
-    stepper.setAcceleration(newAccel);
+    stepper.setAcceleration(float(newAccel));
     SaveToEEProm();
 }
 
@@ -708,7 +713,7 @@ long RotatorClass::GetMaxSpeed()
 void RotatorClass::SetMaxSpeed(const long newSpeed)
 {
     m_Config.maxSpeed = newSpeed;
-    stepper.setMaxSpeed(newSpeed);
+    stepper.setMaxSpeed(float(newSpeed));
     SaveToEEProm();
 }
 
