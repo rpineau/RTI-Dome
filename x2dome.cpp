@@ -109,6 +109,8 @@ int X2Dome::queryAbstraction(const char* pszName, void** ppVal)
         *ppVal = dynamic_cast<X2GUIEventInterface*>(this);
     else if (!strcmp(pszName, SerialPortParams2Interface_Name))
         *ppVal = dynamic_cast<SerialPortParams2Interface*>(this);
+    else if (!strcmp(pszName, DomeHasHighlyRelaibleOpenCloseSensors_Name))
+        *ppVal = dynamic_cast<DomeHasHighlyRelaibleOpenCloseSensors*>(this);
 
     return SB_OK;
 }

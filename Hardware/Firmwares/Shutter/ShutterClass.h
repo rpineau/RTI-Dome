@@ -285,6 +285,10 @@ ShutterClass::ShutterClass()
     pinMode(STEPPER_DIRECTION_PIN,  OUTPUT);
     pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
+    // old board buffer enable
+    // pinMode(A3,       OUTPUT);
+    // digitalWrite(A3, LOW);
+
     LoadFromEEProm();
 
     m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
@@ -730,10 +734,12 @@ void ShutterClass::Run()
         sw1 = digitalRead(CLOSED_PIN);
         sw2 = digitalRead(OPENED_PIN);
 
-        if (sw1 == 0 && sw2 == 1)
+        if (sw1 == 0 && sw2 == 1) {
             shutterState = CLOSED;
-        else if (sw1 == 1 && sw2 == 0)
+            }
+        else if (sw1 == 1 && sw2 == 0) {
             shutterState = OPEN;
+            }
     }
 }
 
