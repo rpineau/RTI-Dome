@@ -109,6 +109,13 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 
 #define STEPS_DEFAULT       440640
 
+// DM556T stepper controller min pulse width  = 2.5uS
+// #define MIN_PULSE_WIDTH 3
+
+// ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
+// TB6600 tepper controller min pulse width = 5uS
+#define MIN_PULSE_WIDTH 5
+
 // used to offset the config location.. at some point.
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
 #define EEPROM_SIGNATURE    2646
@@ -427,6 +434,9 @@ RotatorClass::RotatorClass()
     SetAcceleration(m_Config.acceleration);
     SetStepsPerRotation(m_Config.stepsPerRotation);
     SetReversed(m_Config.reversed);
+    // set pulse width
+    stepper.setMinPulseWidth(MIN_PULSE_WIDTH); // 5uS to test. Default in the source seems to be set to 1 ...
+
 #ifndef STANDALONE
     if(m_Config.panid <= 0) { // set to default.. there was something bad in eeprom.
         m_Config.panid = 0x4242;
