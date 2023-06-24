@@ -47,7 +47,7 @@
 #define PANID_TIMEOUT 15    // in seconds
 #define RAIN_CHECK_INTERVAL 10
 
-#define PLUGIN_VERSION      1.33
+#define PLUGIN_VERSION      1.34
 #define PLUGIN_ID   1
 
 // #define PLUGIN_DEBUG 2

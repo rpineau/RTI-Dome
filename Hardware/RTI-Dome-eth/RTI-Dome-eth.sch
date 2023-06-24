@@ -109,9 +109,17 @@
 <layer number="127" name="_tValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="128" name="_bValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="129" name="Mask" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="130" name="SMDSTROOK" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="131" name="tAdjust" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="132" name="bAdjust" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="133" name="bottom_silk" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="134" name="silk_top" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="135" name="silk_bottom" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="136" name="silktop" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="137" name="silkbottom" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="144" name="Drill_legend" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="145" name="DrillLegend_01-16" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="146" name="DrillLegend_01-20" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="150" name="Notes" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="151" name="HeatSink" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="152" name="_bDocu" color="7" fill="1" visible="yes" active="yes"/>
@@ -906,7 +914,9 @@
 </package>
 </packages>
 <packages3d>
-<package3d name="ARDUINO_DUE_SHIELD_FULL" urn="urn:adsk.eagle:package:37505088/2" type="box" library_version="4">
+<package3d name="ARDUINO_DUE_SHIELD_FULL" urn="urn:adsk.eagle:package:37505088/4" type="model" library_version="4" library_locally_modified="yes">
+<description>Double-row, 36-pin Pin Header (Male) Straight, 2.54 mm (0.10 in) row pitch, 2.54 mm (0.10 in) col pitch, 6.25 mm mating length, 46.00 X 5.08 X 8.79 mm body
+&lt;p&gt;Double-row (2X18), 36-pin Pin Header (Male) Straight package with 2.54 mm (0.10 in) row pitch, 2.54 mm (0.10 in) col pitch, 0.64 mm lead width, 3.00 mm tail length and 6.25 mm mating length with overall size 46.00 X 5.08 X 8.79 mm, pin pattern - clockwise from top left&lt;/p&gt;</description>
 <packageinstances>
 <packageinstance name="ARDUINO_DUE_SHIELD_FULL"/>
 </packageinstances>
@@ -1017,7 +1027,7 @@
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="ARDUINO_DUE_SHIELD_FULL" urn="urn:adsk.eagle:component:37505094/2" library_version="4">
+<deviceset name="ARDUINO_DUE_SHIELD_FULL" urn="urn:adsk.eagle:component:37505094/2" locally_modified="yes" library_version="4" library_locally_modified="yes">
 <gates>
 <gate name="G$1" symbol="ARDUINO_DUE_SHIELD_FULL" x="-2.54" y="2.54"/>
 </gates>
@@ -1118,7 +1128,7 @@
 <connect gate="G$1" pin="VIN" pad="VIN"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37505088/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37505088/4"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -10760,24 +10770,63 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 <text x="-11.43" y="13.97" size="1.27" layer="25">&gt;NAME</text>
 <text x="-11.43" y="-19.3" size="1.27" layer="27">&gt;VALUE</text>
 </package>
-<package name="SOIC127P600X175-8N" urn="urn:adsk.eagle:footprint:37894664/1" library_version="18">
-<description>&lt;b&gt;(SOIC)&lt;/b&gt;&lt;br&gt;
-</description>
-<smd name="1" x="-2.7" y="1.905" dx="1.5" dy="0.65" layer="1"/>
-<smd name="2" x="-2.7" y="0.635" dx="1.5" dy="0.65" layer="1"/>
-<smd name="3" x="-2.7" y="-0.635" dx="1.5" dy="0.65" layer="1"/>
-<smd name="4" x="-2.7" y="-1.905" dx="1.5" dy="0.65" layer="1"/>
-<smd name="5" x="2.7" y="-1.905" dx="1.5" dy="0.65" layer="1"/>
-<smd name="6" x="2.7" y="-0.635" dx="1.5" dy="0.65" layer="1"/>
-<smd name="7" x="2.7" y="0.635" dx="1.5" dy="0.65" layer="1"/>
-<smd name="8" x="2.7" y="1.905" dx="1.5" dy="0.65" layer="1"/>
-<text x="0" y="3.81" size="1.27" layer="25" align="center">&gt;NAME</text>
-<text x="0" y="-3.81" size="1.27" layer="27" align="center">&gt;VALUE</text>
-<wire x1="-1.95" y1="2.45" x2="1.95" y2="2.45" width="0.1" layer="51"/>
-<wire x1="1.95" y1="2.45" x2="1.95" y2="-2.45" width="0.1" layer="51"/>
-<wire x1="1.95" y1="-2.45" x2="-1.95" y2="-2.45" width="0.1" layer="51"/>
-<wire x1="-1.95" y1="-2.45" x2="-1.95" y2="2.45" width="0.1" layer="51"/>
-<wire x1="-1.95" y1="1.18" x2="-0.68" y2="2.45" width="0.1" layer="51"/>
+<package name="SOIC127P600X175-8N" urn="urn:adsk.eagle:footprint:39481384/1" library_version="25">
+<smd name="1" x="-2.3622" y="1.905" dx="1.9812" dy="0.5588" layer="1"/>
+<smd name="2" x="-2.3622" y="0.635" dx="1.9812" dy="0.5588" layer="1"/>
+<smd name="3" x="-2.3622" y="-0.635" dx="1.9812" dy="0.5588" layer="1"/>
+<smd name="4" x="-2.3622" y="-1.905" dx="1.9812" dy="0.5588" layer="1"/>
+<smd name="5" x="2.3622" y="-1.905" dx="1.9812" dy="0.5588" layer="1"/>
+<smd name="6" x="2.3622" y="-0.635" dx="1.9812" dy="0.5588" layer="1"/>
+<smd name="7" x="2.3622" y="0.635" dx="1.9812" dy="0.5588" layer="1"/>
+<smd name="8" x="2.3622" y="1.905" dx="1.9812" dy="0.5588" layer="1"/>
+<wire x1="-1.9558" y1="1.651" x2="-1.9558" y2="2.159" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="2.159" x2="-2.9972" y2="2.159" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="2.159" x2="-2.9972" y2="1.651" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="1.651" x2="-1.9558" y2="1.651" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="0.381" x2="-1.9558" y2="0.889" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="0.889" x2="-2.9972" y2="0.889" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="0.889" x2="-2.9972" y2="0.381" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="0.381" x2="-1.9558" y2="0.381" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="-0.889" x2="-1.9558" y2="-0.381" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="-0.381" x2="-2.9972" y2="-0.381" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="-0.381" x2="-2.9972" y2="-0.889" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="-0.889" x2="-1.9558" y2="-0.889" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="-2.159" x2="-1.9558" y2="-1.651" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="-1.651" x2="-2.9972" y2="-1.651" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="-1.651" x2="-2.9972" y2="-2.159" width="0.1524" layer="51"/>
+<wire x1="-2.9972" y1="-2.159" x2="-1.9558" y2="-2.159" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="-1.651" x2="1.9558" y2="-2.159" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="-2.159" x2="2.9972" y2="-2.159" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="-2.159" x2="2.9972" y2="-1.651" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="-1.651" x2="1.9558" y2="-1.651" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="-0.381" x2="1.9558" y2="-0.889" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="-0.889" x2="2.9972" y2="-0.889" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="-0.889" x2="2.9972" y2="-0.381" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="-0.381" x2="1.9558" y2="-0.381" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="0.889" x2="1.9558" y2="0.381" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="0.381" x2="2.9972" y2="0.381" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="0.381" x2="2.9972" y2="0.889" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="0.889" x2="1.9558" y2="0.889" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="2.159" x2="1.9558" y2="1.651" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="1.651" x2="2.9972" y2="1.651" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="1.651" x2="2.9972" y2="2.159" width="0.1524" layer="51"/>
+<wire x1="2.9972" y1="2.159" x2="1.9558" y2="2.159" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="-2.4384" x2="1.9558" y2="-2.4384" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="-2.4384" x2="1.9558" y2="2.4384" width="0.1524" layer="51"/>
+<wire x1="1.9558" y1="2.4384" x2="0.3048" y2="2.4384" width="0.1524" layer="51"/>
+<wire x1="0.3048" y1="2.4384" x2="-0.3048" y2="2.4384" width="0.1524" layer="51"/>
+<wire x1="-0.3048" y1="2.4384" x2="-1.9558" y2="2.4384" width="0.1524" layer="51"/>
+<wire x1="-1.9558" y1="2.4384" x2="-1.9558" y2="-2.4384" width="0.1524" layer="51"/>
+<wire x1="0.3048" y1="2.4384" x2="-0.3048" y2="2.4384" width="0" layer="51" curve="-180"/>
+<wire x1="-1.1684" y1="-2.4384" x2="1.1684" y2="-2.4384" width="0.1524" layer="21"/>
+<wire x1="1.1684" y1="2.4384" x2="0.3048" y2="2.4384" width="0.1524" layer="21"/>
+<wire x1="0.3048" y1="2.4384" x2="-0.3048" y2="2.4384" width="0.1524" layer="21"/>
+<wire x1="-0.3048" y1="2.4384" x2="-1.1684" y2="2.4384" width="0.1524" layer="21"/>
+<wire x1="0.3048" y1="2.4384" x2="-0.3048" y2="2.4384" width="0" layer="21" curve="-180"/>
+<text x="-3.2004" y="2.3368" size="1.27" layer="51" ratio="6" rot="SR0">*</text>
+<text x="-3.2004" y="2.3368" size="1.27" layer="21" ratio="6" rot="SR0">*</text>
+<text x="-4.5212" y="2.8956" size="2.0828" layer="25" ratio="10" rot="SR0">&gt;NAME</text>
+<text x="-5.5626" y="-4.9022" size="2.0828" layer="27" ratio="10" rot="SR0">&gt;VALUE</text>
 </package>
 </packages>
 <packages3d>
@@ -10842,9 +10891,7 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 <packageinstance name="XBEE-PRO"/>
 </packageinstances>
 </package3d>
-<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:37894665/2" type="model" library_version="18">
-<description>&lt;b&gt;(SOIC)&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:37894665/3" type="model" library_version="25">
 <packageinstances>
 <packageinstance name="SOIC127P600X175-8N"/>
 </packageinstances>
@@ -13764,7 +13811,7 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 </device>
 </devices>
 </deviceset>
-<deviceset name="74*245" urn="urn:adsk.eagle:component:37318440/2" prefix="IC" library_version="6">
+<deviceset name="74*245" urn="urn:adsk.eagle:component:37318440/4" prefix="IC" library_version="25">
 <gates>
 <gate name="G$1" symbol="74*245" x="0" y="2.54" swaplevel="1"/>
 <gate name="P" symbol="PWR2" x="-30.48" y="-10.16" addlevel="request"/>
@@ -13797,9 +13844,15 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 <package3dinstance package3d_urn="urn:adsk.eagle:package:37318379/2"/>
 </package3dinstances>
 <technologies>
-<technology name="ABT"/>
-<technology name="LVC"/>
-<technology name="LVT"/>
+<technology name="ABT">
+<attribute name="MPN" value="74ABT245PW,118" constant="no"/>
+</technology>
+<technology name="LVC">
+<attribute name="MPN" value="SN74LVC245APWR" constant="no"/>
+</technology>
+<technology name="LVT">
+<attribute name="MPN" value="" constant="no"/>
+</technology>
 </technologies>
 </device>
 </devices>
@@ -14039,7 +14092,7 @@ Source: MaxStream, Inc. xbee_productmanual.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="24LC128T-I_SN" urn="urn:adsk.eagle:component:37894666/3" prefix="IC" library_version="18">
+<deviceset name="24LC128T-I_SN" urn="urn:adsk.eagle:component:37894666/4" prefix="IC" library_version="25">
 <description>&lt;b&gt;128K I2C CMOS Serial EEPROM&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="http://componentsearchengine.com/Datasheets/3/24LC128T-I_SN.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -14058,7 +14111,7 @@ Source: &lt;a href="http://componentsearchengine.com/Datasheets/3/24LC128T-I_SN.
 <connect gate="G$1" pin="WP" pad="7"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37894665/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37894665/3"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -23704,7 +23757,7 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <attribute name="MPN" value="74ABT245PW,112"/>
 </part>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U$1" library="arduino_shield" library_urn="urn:adsk.eagle:library:37505075" deviceset="ARDUINO_DUE_SHIELD_FULL" device="" package3d_urn="urn:adsk.eagle:package:37505088/2"/>
+<part name="U$1" library="arduino_shield" library_urn="urn:adsk.eagle:library:37505075" deviceset="ARDUINO_DUE_SHIELD_FULL" device="" package3d_urn="urn:adsk.eagle:package:37505088/4"/>
 <part name="GND9" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U1" library="W5500" library_urn="urn:adsk.eagle:library:37501005" deviceset="W5500" device="" package3d_urn="urn:adsk.eagle:package:37501008/2" value="W5500">
 <attribute name="MPN" value="W5500"/>
@@ -24034,7 +24087,7 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <part name="J2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/5"/>
 <part name="X2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/2"/>
 <part name="X10" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/2"/>
-<part name="IC2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="24LC128T-I_SN" device="" package3d_urn="urn:adsk.eagle:package:37894665/2"/>
+<part name="IC2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="24LC128T-I_SN" device="" package3d_urn="urn:adsk.eagle:package:37894665/3"/>
 <part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>

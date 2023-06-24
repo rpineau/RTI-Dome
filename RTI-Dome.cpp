@@ -1342,7 +1342,7 @@ int CRTIDome::isOpenComplete(bool &bComplete)
 
     getShutterPresent(bDummy);
     if(!m_bShutterPresent) {
-        bComplete = true;
+        bComplete = true; // no shuter, report open by default
         return SB_OK;
     }
 
@@ -1378,7 +1378,7 @@ int CRTIDome::isCloseComplete(bool &bComplete)
 
     getShutterPresent(bDummy);
     if(!m_bShutterPresent) {
-        bComplete = true;
+        bComplete = false; // no shuter, report open by default
         return SB_OK;
     }
 
