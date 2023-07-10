@@ -1,4 +1,3 @@
-#include "wiring_constants.h"
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
 // As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
