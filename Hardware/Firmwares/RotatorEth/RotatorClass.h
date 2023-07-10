@@ -1,3 +1,4 @@
+#include "wiring_constants.h"
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
 // As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
@@ -23,7 +24,7 @@ DueFlashStorage dueFlashStorage;
 // stepper controller
 #define STEP_TYPE 8
 
-#define DEBUG   // enable debug to DebugPort serial port
+// #define DEBUG   // enable debug to DebugPort serial port
 #ifdef DEBUG
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)
@@ -53,8 +54,11 @@ DueFlashStorage dueFlashStorage;
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
 
-#define M_ENABLE    HIGH
-#define M_DISABLE   LOW
+// #define M_ENABLE    HIGH
+// #define M_DISABLE   LOW
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
+
 
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
