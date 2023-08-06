@@ -230,7 +230,7 @@ void CRTIDome::Disconnect()
 #endif
 }
 
-int CRTIDome::domeCommand(const std::string sCmd, std::string &sResp, char respCmdCode, int nTimeout)
+int CRTIDome::domeCommand(const std::string sCmd, std::string &sResp, char respCmdCode, int nTimeout, char cEndOfResponse)
 {
     int nErr = PLUGIN_OK;
     unsigned long  ulBytesWrite;
@@ -259,7 +259,7 @@ int CRTIDome::domeCommand(const std::string sCmd, std::string &sResp, char respC
         return nErr;
 
     // read response
-    nErr = readResponse(localResp, nTimeout);
+    nErr = readResponse(localResp, nTimeout, cEndOfResponse);
     if(nErr)
         return nErr;
 
@@ -279,7 +279,7 @@ int CRTIDome::domeCommand(const std::string sCmd, std::string &sResp, char respC
     return nErr;
 }
 
-int CRTIDome::readResponse(std::string &sResp, int nTimeout)
+int CRTIDome::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse)
 {
     int nErr = PLUGIN_OK;
     char pszBuf[SERIAL_BUFFER_SIZE];
@@ -339,7 +339,7 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout)
 
         ulTotalBytesRead += ulBytesRead;
         pszBufPtr+=ulBytesRead;
-    } while (ulTotalBytesRead < SERIAL_BUFFER_SIZE  && *(pszBufPtr-1) != '#');
+    } while (ulTotalBytesRead < SERIAL_BUFFER_SIZE  && *(pszBufPtr-1) != cEndOfResponse);
 
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -351,7 +351,7 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout)
     if(!ulTotalBytesRead)
         nErr = COMMAND_TIMEOUT; // we didn't get an answer.. so timeout
     else
-        *(pszBufPtr-1) = 0; //remove the #
+        *(pszBufPtr-1) = 0; //remove the cEndOfResponse
 
     sResp.assign(pszBuf);
     return nErr;

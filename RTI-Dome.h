@@ -174,8 +174,8 @@ public:
     
 protected:
 
-    int             domeCommand(const std::string sCmd, std::string &sResp, char respCmdCode, int nTimeout = MAX_TIMEOUT);
-    int             readResponse(std::string &sResp, int nTimeout = MAX_TIMEOUT);
+    int             domeCommand(const std::string sCmd, std::string &sResp, char respCmdCode, int nTimeout = MAX_TIMEOUT, char cEndOfResponse = '#');
+    int             readResponse(std::string &sResp, int nTimeout = MAX_TIMEOUT, char cEndOfResponse = '#');
 
     int             getDomeAz(double &dDomeAz);
     int             getDomeEl(double &dDomeEl);

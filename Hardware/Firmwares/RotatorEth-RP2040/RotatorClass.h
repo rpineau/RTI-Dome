@@ -90,9 +90,10 @@ DueFlashStorage dueFlashStorage;
 #define MOVE_NONE            0
 #define MOVE_POSITIVE        1
 
-// Normal stepper controller
-#define M_ENABLE    HIGH
-#define M_DISABLE   LOW
+// #define M_ENABLE    HIGH
+// #define M_DISABLE   LOW
+#define M_ENABLE    LOW
+#define M_DISABLE   HIGH
 
 // A4988
 //#define M_ENABLE    LOW
