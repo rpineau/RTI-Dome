@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="1.27" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.127" altunitdist="mm" altunit="mm"/>
+<grid distance="0.635" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.127" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -21472,7 +21472,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="-3.81" y="0" size="0.635" layer="25" rot="R90">&gt;NAME</text>
 <text x="3.175" y="0" size="0.635" layer="27" rot="R90">&gt;VALUE</text>
 </package>
-<package name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:footprint:40546187/2" library_version="66">
+<package name="RASPBERRYPIPICO" urn="urn:adsk.eagle:footprint:40546187/3" locally_modified="yes" library_version="68" library_locally_modified="yes">
 <description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-9.69" y="24.13" dx="1.6" dy="1.6" layer="1"/>
@@ -21527,6 +21527,9 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="-10.5" y1="-25.2" x2="-10.5" y2="-25.5" width="0.2" layer="21"/>
 <wire x1="-10.5" y1="-25.5" x2="10.5" y2="-25.5" width="0.2" layer="21"/>
 <wire x1="10.5" y1="-25.5" x2="10.5" y2="-25.2" width="0.2" layer="21"/>
+<wire x1="-2.54" y1="25.4" x2="-2.54" y2="22.86" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="22.86" x2="3.175" y2="22.86" width="0.127" layer="21"/>
+<wire x1="3.175" y1="22.86" x2="3.175" y2="25.4" width="0.127" layer="21"/>
 </package>
 </packages>
 <packages3d>
@@ -21548,11 +21551,11 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <packageinstance name="RASPBERRYPIPICOPIN"/>
 </packageinstances>
 </package3d>
-<package3d name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:package:40546189/4" type="model" library_version="67">
+<package3d name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:package:40546189/5" type="model" library_version="68" library_locally_modified="yes">
 <description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
 </description>
 <packageinstances>
-<packageinstance name="RASPBERRYPIPICOW"/>
+<packageinstance name="RASPBERRYPIPICO"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -21696,14 +21699,14 @@ Source: &lt;a href="https://www.vishay.com/docs/28395/150crz.pdf"&gt; Datasheet 
 </device>
 </devices>
 </deviceset>
-<deviceset name="RASPBERRY_PI_PICO" urn="urn:adsk.eagle:component:40546191/5" prefix="IC" library_version="67">
+<deviceset name="RASPBERRY_PI_PICO" urn="urn:adsk.eagle:component:40546191/6" prefix="IC" library_version="68" library_locally_modified="yes">
 <description>&lt;b&gt;RASPBERRY-PI - RASPBERRY PI PICO W - Raspberry Pi Board, Raspberry Pi Pico W, RP2040, 32bit, ARM Cortex-M0+&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
 <gate name="G$1" symbol="RASPBERRY_PI_PICO" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="RASPBERRYPIPICOW">
+<device name="" package="RASPBERRYPIPICO">
 <connects>
 <connect gate="G$1" pin="3V3(OUT)" pad="36"/>
 <connect gate="G$1" pin="3V3_EN" pad="37"/>
@@ -21747,7 +21750,7 @@ Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pd
 <connect gate="G$1" pin="VSYS" pad="39"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:40546189/4"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:40546189/5"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -23526,7 +23529,7 @@ Source: &lt;a href=""&gt; Datasheet &lt;/a&gt;</description>
 <attribute name="MPN" value="CC0805KKX5R8BB106"/>
 </part>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="RASPBERRY_PI_PICO" device="" package3d_urn="urn:adsk.eagle:package:40546189/4" value="RASPBERRY_PI_PICO">
+<part name="IC4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="RASPBERRY_PI_PICO" device="" package3d_urn="urn:adsk.eagle:package:40546189/5" value="RASPBERRY_PI_PICO">
 <attribute name="DESCRIPTION" value="RASPBERRY-PI - RASPBERRY PI PICO - Raspberry Pi Board, Raspberry Pi Pic, RP2040, 32bit, ARM Cortex-M0+"/>
 <attribute name="MANUFACTURER_NAME" value="RASPBERRY-PI PICO"/>
 <attribute name="MANUFACTURER_PART_NUMBER" value="SC0916"/>
