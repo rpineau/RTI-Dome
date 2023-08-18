@@ -1050,7 +1050,6 @@ void RotatorClass::MoveRelative(const long howFar)
     // Tells dome to rotate more than 360 degrees
     // from current position. Stopped only by
     // homing or calibrating routine.
-    EnableMotor(true);
     m_nMoveDirection = MOVE_NEGATIVE;
     if (howFar > 0)
         m_nMoveDirection = MOVE_POSITIVE;
@@ -1197,6 +1196,7 @@ void RotatorClass::stopInterrupt()
 void RotatorClass::motorMoveRelative(const long howFar)
 {
     // AccelStepper run() is called under a timer interrupt
+    EnableMotor(true);
     stepper.move(howFar);
     // start interrupt timer
 #if defined(ARDUINO_SAM_DUE)

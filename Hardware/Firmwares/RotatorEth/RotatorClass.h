@@ -986,7 +986,6 @@ void RotatorClass::MoveRelative(const long howFar)
     // Tells dome to rotate more than 360 degrees
     // from current position. Stopped only by
     // homing or calibrating routine.
-    EnableMotor(true);
     m_nMoveDirection = MOVE_NEGATIVE;
     if (howFar > 0)
         m_nMoveDirection = MOVE_POSITIVE;
@@ -1131,7 +1130,7 @@ void RotatorClass::stopInterrupt()
 
 void RotatorClass::motorMoveTo(const long newPosition)
 {
-
+    EnableMotor(true);
     stepper.moveTo(newPosition);
     DBPrintln("Starting motor interrupt");
     int nFreq;
@@ -1143,7 +1142,7 @@ void RotatorClass::motorMoveTo(const long newPosition)
 
 void RotatorClass::motorMoveRelative(const long howFar)
 {
-
+    EnableMotor(true);
     stepper.move(howFar);
     DBPrintln("Starting motor interrupt");
     int nFreq;
