@@ -12,7 +12,7 @@
 
 #define DEBUG   // enable debug to DebugPort serial port
 #ifdef DEBUG
-#define DebugPort Serial    // programing port
+#define DebugPort Serial    // Programming port
 #endif
 
 // #define STANDALONE
@@ -125,6 +125,8 @@ int XbeeResets = 0;
 #if defined(ARDUINO_ARCH_RP2040)
 volatile bool core0Ready = false;
 #endif
+
+bool bParked = false; // use to the rin check doesn't continuously try to park
 
 RotatorClass *Rotator = NULL;
 
@@ -656,7 +658,8 @@ void CheckForCommands()
 
 void CheckForRain()
 {
-
+    int nPosition, nParkPos;
+    DBPrintln("CheckForRain");
     if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
         bIsRaining = Rotator->GetRainStatus();
 #ifndef STANDALONE
@@ -665,12 +668,18 @@ void CheckForRain()
 #endif // STANDALONE
     }
     if (bIsRaining) {
-        if (Rotator->GetRainAction() == HOME)
+        if (Rotator->GetRainAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
+            DBPrintln("Raining- > Homing");
             Rotator->StartHoming();
+        }
 
-        if (Rotator->GetRainAction() == PARK)
-            Rotator->GoToAzimuth(Rotator->GetParkAzimuth());
-        // keep telling the shutter that it's raining
+        if (Rotator->GetRainAction() == PARK && !bParked) {
+            nParkPos = Rotator->GetParkAzimuth();
+            DBPrintln("Raining -> Parking");
+            Rotator->GoToAzimuth(nParkPos);
+            bParked = true;
+        }
+    // keep telling the shutter that it's raining
 #ifndef STANDALONE
         Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
 #endif // STANDALONE
@@ -682,8 +691,10 @@ void CheckForRain()
 void checkShuterLowVoltage()
 {
     bLowShutterVoltage = (RemoteShutter.lowVoltStateOrRaining.equals("L"));
-    if(bLowShutterVoltage)
+    if(bLowShutterVoltage) {
          Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge tge shutter battery
+         bParked = true;
+    }
 }
 
 void PingShutter()
@@ -826,7 +837,8 @@ void ProcessCommand(bool bFromNetwork)
                 fTmp = value.toFloat();
                 if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
                     Rotator->GoToAzimuth(fTmp);
-                }
+                    }
+                bParked = false;
             }
             serialMessage = String(GOTO_ROTATOR_CMD) + String(Rotator->GetAzimuth());
             break;

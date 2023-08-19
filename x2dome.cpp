@@ -565,6 +565,8 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
                 else {
                     uiex->setPropertyString("shutterBatteryLevel","text", "NA");
                 }
+            }
+            else {
                 nErr = m_RTIDome.getRainSensorStatus(nRainSensorStatus);
                 if(nErr)
                     uiex->setPropertyString("rainStatus","text", "--");

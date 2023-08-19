@@ -15,7 +15,6 @@
 DueFlashStorage dueFlashStorage;
 #endif
 
-
 #include <AccelStepper.h>
 #include "StopWatch.h"
 
@@ -113,6 +112,7 @@ typedef struct RotatorConfiguration {
 
 enum HomeStatuses { NOT_AT_HOME, HOMED, ATHOME };
 enum Seeks { NOT_MOVING,           // Not homing or calibrating
+            MOVING_GOTO,
             HOMING_HOME,            // Homing
             HOMING_FINISH,          // found home
             HOMING_BACK_HOME,       //backing out to home Az
@@ -400,7 +400,7 @@ RotatorClass::RotatorClass()
     m_bDoEEPromSave = true;
 
 
-    // enable buffers to read raind and home sensor, only needed on old protype board
+    // enable buffers to read rain and home sensor, only needed on old prototype board
     bufferEnable(true);
 
     if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
@@ -723,6 +723,7 @@ void RotatorClass::GoToAzimuth(const float newHeading)
     float currentHeading;
     float delta;
 
+    DBPrintln("GoToAzimuth");
     currentHeading = GetAzimuth();
     delta = GetAngularDistance(currentHeading, newHeading) * m_fStepsPerDegree;
     delta = delta - int(delta) % STEP_TYPE;
@@ -730,6 +731,7 @@ void RotatorClass::GoToAzimuth(const float newHeading)
         m_nMoveDirection = MOVE_NONE;
         return;
     }
+    m_seekMode = MOVING_GOTO;
 
     MoveRelative(delta);
 }
@@ -971,10 +973,12 @@ void RotatorClass::Calibrate()
 void RotatorClass::EnableMotor(const bool bEnabled)
 {
     if (!bEnabled) {
+        DBPrintln("Motor OFF");
         digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
         stopInterrupt();
     }
     else {
+        DBPrintln("Motor ON");
         digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
     }
 
@@ -1039,10 +1043,8 @@ void RotatorClass::Run()
             m_seekMode = HOMING_FINISH;
             return;
         }
-    }
-
-    if (stepper.isRunning())
         return;
+    }
 
     if( m_seekMode == HOMING_BACK_HOME) {
         m_bisAtHome = true; // we're back home and done homing.
@@ -1095,6 +1097,11 @@ void RotatorClass::Run()
                 // we're at the home position
                 m_bisAtHome = true;
             }
+        }
+        if(m_seekMode == MOVING_GOTO) {
+            m_nMoveDirection = MOVE_NONE;
+            EnableMotor(false);
+            m_seekMode = NOT_MOVING;
         }
     } // end if (m_bWasRunning)
 }

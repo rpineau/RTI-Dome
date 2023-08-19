@@ -152,6 +152,7 @@ typedef struct RotatorConfiguration {
 
 enum HomeStatuses { NOT_AT_HOME, HOMED, ATHOME };
 enum Seeks { HOMING_NONE,           // Not homing or calibrating
+            MOVING_GOTO,
             HOMING_HOME,            // Homing
             HOMING_FINISH,          // found home
             HOMING_BACK_HOME,       //backing out to home Az
@@ -795,7 +796,7 @@ void RotatorClass::GoToAzimuth(const float newHeading)
         m_nMoveDirection = MOVE_NONE;
         return;
     }
-
+    m_seekMode = MOVING_GOTO;
     MoveRelative(delta);
 }
 
@@ -1099,10 +1100,8 @@ void RotatorClass::Run()
             m_seekMode = HOMING_FINISH;
             return;
         }
-    }
-
-    if (stepper.isRunning())
         return;
+    }
 
     if( m_seekMode == HOMING_BACK_HOME) {
         m_bisAtHome = true; // we're back home and done homing.
@@ -1155,6 +1154,11 @@ void RotatorClass::Run()
                 // we're at the home position
                 m_bisAtHome = true;
             }
+        }
+        if(m_seekMode == MOVING_GOTO) {
+            m_nMoveDirection = MOVE_NONE;
+            EnableMotor(false);
+            m_seekMode = HOMING_NONE;
         }
     } // end if (m_bWasRunning)
 }
