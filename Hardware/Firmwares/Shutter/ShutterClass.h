@@ -98,6 +98,7 @@ enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED,
 volatile ShutterStates shutterState = ERROR;
 
 StopWatch watchdogTimer;
+StopWatch buttonStopTimer;
 
 /*
  * As demonstrated by RCArduino and modified by BKM:
@@ -239,7 +240,8 @@ public:
     void     OpenInterrupt();
     volatile bool     m_bButtonUsed;
 
-    void        bufferEnable(bool bEnable);
+    void    bufferEnable(bool bEnable);
+    void    Abort();
 
 private:
 
@@ -248,6 +250,7 @@ private:
     int             m_nVolts;
     StopWatch       m_batteryCheckTimer;
     unsigned long   m_nBatteryCheckInterval;
+    bool            m_bUserButtonStop;
 
     int             MeasureVoltage();
     void            SetDefaultConfig();
@@ -292,6 +295,7 @@ ShutterClass::ShutterClass()
     pinMode(STEPPER_DIRECTION_PIN,  OUTPUT);
     pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
+    bufferEnable(true);
     // old board buffer enable
     // pinMode(A3,       OUTPUT);
     // digitalWrite(A3, LOW);
@@ -315,11 +319,12 @@ ShutterClass::ShutterClass()
     sw2 = digitalRead(OPENED_PIN);
 
     shutterState = ERROR;
-    if (sw1 == 0 && sw2 == 1)
+    if (sw1 == LOW && sw2 == HIGH)
         shutterState = CLOSED;
-    else if (sw1 == 1 && sw2 == 0)
+    else if (sw1 == HIGH && sw2 == LOW)
         shutterState = OPEN;
 
+    m_bUserButtonStop=false;
     m_bButtonUsed = false;
     m_nVolts = MeasureVoltage();
     m_bDoEEPromSave = true;
@@ -328,7 +333,7 @@ ShutterClass::ShutterClass()
 void ShutterClass::ClosedInterrupt()
 {
     // debounce
-    if (digitalRead(CLOSED_PIN) == 0) {
+    if (digitalRead(CLOSED_PIN) == LOW) {
         if(shutterState == CLOSING) {
             motorStop();
             shutterState = FINISHING_CLOSE;
@@ -339,7 +344,7 @@ void ShutterClass::ClosedInterrupt()
 void ShutterClass::OpenInterrupt()
 {
     // debounce
-    if (digitalRead(OPENED_PIN) == 0) {
+    if (digitalRead(OPENED_PIN) == LOW) {
         if(shutterState == OPENING) {
             motorStop();
             shutterState = FINISHING_OPEN;
@@ -628,20 +633,39 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 // INPUTS
 void ShutterClass::DoButtons()
 {
-    if ((digitalRead(BUTTON_OPEN) == LOW) && (GetEndSwitchStatus() != OPEN)) {
+    int sw1, sw2, sw3, sw4;
+
+    sw1 = digitalRead(BUTTON_OPEN);
+    sw2 = digitalRead(BUTTON_CLOSE);
+
+    sw3 = digitalRead(CLOSED_PIN);
+    sw4 = digitalRead(OPENED_PIN);
+
+    // roof is moving and the user want to stop it in the middle
+    if((sw1 == LOW || sw2== LOW) && sw3 == HIGH && sw4 == HIGH && buttonStopTimer.elapsed() > 1.0 ) {
+        motorStop();
+        m_bUserButtonStop = true; // this allows us to not try to finish the open/close
+        m_bButtonUsed = true;
+    }
+    else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) { // button open pressed and we're closed
         shutterState = OPENING;
         MoveRelative(160000000L);
         m_bButtonUsed = true;
+        m_bUserButtonStop = false;
+        buttonStopTimer.reset();
     }
-    else if ((digitalRead(BUTTON_CLOSE) == LOW) && (GetEndSwitchStatus() != CLOSED)) {
+    else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) { // button close pressed and we're open
         shutterState = CLOSING;
         MoveRelative(-160000000L);
         m_bButtonUsed = true;
+        m_bUserButtonStop = false;
+        buttonStopTimer.reset();
     }
-
     else {
+        buttonStopTimer.reset();
         motorStop();
         m_bButtonUsed = false;
+        m_bUserButtonStop = false;
     }
 }
 
@@ -655,6 +679,14 @@ void ShutterClass::EnableMotor(const bool newState)
     else {
         digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
     }
+}
+
+void ShutterClass::bufferEnable(bool bEnable)
+{
+    if(bEnable)
+        digitalWrite(BUFFERN_EN, 0);
+    else
+        digitalWrite(BUFFERN_EN, 1);
 }
 
 // Movers
@@ -686,14 +718,11 @@ void ShutterClass::Close()
 }
 
 
-void ShutterClass::bufferEnable(bool bEnable)
+void ShutterClass::Abort()
 {
-    if(bEnable)
-        digitalWrite(BUFFERN_EN, 0);
-    else
-        digitalWrite(BUFFERN_EN, 1);
+    m_bButtonUsed = true; // will stop and not try to finish close/open
+    stepper.stop();
 }
-
 
 void ShutterClass::Run()
 {
@@ -724,13 +753,13 @@ void ShutterClass::Run()
 			shutterState = OPEN;
 			DBPrintln("Stopped at open position");
 		}
-		else if(shutterState == FINISHING_CLOSE || shutterState==CLOSING) {
+        else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bUserButtonStop) {
 			//motor stopped for some reason
 			DBPrintln("motor stopped for some reason but we're not closed... closing");
 			Close();
 			return;
 		}
-		else if(shutterState == FINISHING_OPEN || shutterState==OPENING) {
+        else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bUserButtonStop) {
 			//motor stopped for some reason
 			DBPrintln("motor stopped for some reason but we're not open... opening");
 			Open();
@@ -743,10 +772,10 @@ void ShutterClass::Run()
         sw1 = digitalRead(CLOSED_PIN);
         sw2 = digitalRead(OPENED_PIN);
 
-        if (sw1 == 0 && sw2 == 1) {
+        if (sw1 == LOW && sw2 == HIGH) {
             shutterState = CLOSED;
             }
-        else if (sw1 == 1 && sw2 == 0) {
+        else if (sw1 == HIGH && sw2 == LOW) {
             shutterState = OPEN;
             }
     }

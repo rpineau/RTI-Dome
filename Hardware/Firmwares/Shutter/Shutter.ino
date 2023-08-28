@@ -373,7 +373,7 @@ void ProcessMessages(String buffer)
 
 		case ABORT_CMD:
 			DBPrintln("STOP!");
-			Shutter->motorStop();
+			Shutter->Abort();
 			wirelessMessage = String(ABORT_CMD);
 			break;
 
