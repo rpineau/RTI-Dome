@@ -659,7 +659,6 @@ void CheckForCommands()
 void CheckForRain()
 {
     int nPosition, nParkPos;
-    DBPrintln("CheckForRain");
     if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
         bIsRaining = Rotator->GetRainStatus();
 #ifndef STANDALONE

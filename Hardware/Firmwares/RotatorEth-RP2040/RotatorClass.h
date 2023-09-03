@@ -151,7 +151,7 @@ typedef struct RotatorConfiguration {
 
 
 enum HomeStatuses { NOT_AT_HOME, HOMED, ATHOME };
-enum Seeks { HOMING_NONE,           // Not homing or calibrating
+enum Seeks { NOT_MOVING,           // Not homing or calibrating
             MOVING_GOTO,
             HOMING_HOME,            // Homing
             HOMING_FINISH,          // found home
@@ -409,7 +409,7 @@ RotatorClass::RotatorClass()
     m_EEPROMpageSize = 64;
 #endif
 
-    m_seekMode = HOMING_NONE;
+    m_seekMode = NOT_MOVING;
     m_bWasRunning = false;
     m_bisAtHome = false;
     m_HomeFound = false;
@@ -1036,10 +1036,12 @@ void RotatorClass::Calibrate()
 void RotatorClass::EnableMotor(const bool bEnabled)
 {
     if (!bEnabled) {
+        DBPrintln("Motor OFF");
         digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
         stopInterrupt();
     }
     else {
+        DBPrintln("Motor ON");
         digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
     }
 
@@ -1105,7 +1107,7 @@ void RotatorClass::Run()
 
     if( m_seekMode == HOMING_BACK_HOME) {
         m_bisAtHome = true; // we're back home and done homing.
-        m_seekMode = HOMING_NONE;
+        m_seekMode = NOT_MOVING;
     }
 
     if (m_bDoStepsPerRotation) {
@@ -1144,7 +1146,7 @@ void RotatorClass::Run()
             stepper.setCurrentPosition(stepsFromZero);
         }
 
-        if( m_seekMode == HOMING_NONE) {
+        if( m_seekMode == NOT_MOVING) {
             // not moving anymore ..
             m_nMoveDirection = MOVE_NONE;
             EnableMotor(false);
@@ -1158,7 +1160,7 @@ void RotatorClass::Run()
         if(m_seekMode == MOVING_GOTO) {
             m_nMoveDirection = MOVE_NONE;
             EnableMotor(false);
-            m_seekMode = HOMING_NONE;
+            m_seekMode = NOT_MOVING;
         }
     } // end if (m_bWasRunning)
 }
@@ -1173,7 +1175,7 @@ void RotatorClass::Stop()
     if (!stepper.isRunning())
         return;
 
-    m_seekMode = HOMING_NONE;
+    m_seekMode = NOT_MOVING;
     motorStop();
 }
 
