@@ -114,7 +114,7 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 // #define MIN_PULSE_WIDTH 3
 
 // ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
-// TB6600 tepper controller min pulse width = 5uS
+// TB6600 Stepper controller min pulse width = 5uS
 #define MIN_PULSE_WIDTH 5
 
 // used to offset the config location.. at some point.

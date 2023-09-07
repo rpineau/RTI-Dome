@@ -252,8 +252,8 @@ void CheckForCommands();
 void CheckForRain();
 #ifndef STANDALONE
 void checkShuterLowVoltage();
-#endif // STANDALONE
 void PingShutter();
+#endif // STANDALONE
 #ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient);
 #endif // USE_ETHERNET
