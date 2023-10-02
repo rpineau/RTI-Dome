@@ -52,6 +52,60 @@
 
 // #define PLUGIN_DEBUG 2
 
+
+// Rotator commands
+const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
+const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
+const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
+const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor control.
+const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
+const char ETH_MAC_ADDRESS              = 'f'; // get the MAC address.
+const char GOTO_ROTATOR_CMD             = 'g'; // Get dome azimuth or move to new position (GoT
+const char HOME_ROTATOR_CMD             = 'h'; // Home the dome
+const char HOMEAZ_ROTATOR_CMD           = 'i'; // Get/Set home position
+const char IP_ADDRESS                   = 'j'; // get/set the IP address
+const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
+const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
+const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
+const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered (do nothing, home, park)
+const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
+const char IP_SUBNET                    = 'p'; // get/set the ip subnet
+const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
+const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
+const char SYNC_ROTATOR_CMD             = 's'; // Sync to new Azimuth
+const char STEPSPER_ROTATOR_CMD         = 't'; // Get/set Steps per rotation
+const char IP_GATEWAY                   = 'u'; // get/set default gateway IP
+const char VERSION_ROTATOR_GET          = 'v'; // Get Firmware Version
+const char IP_DHCP                      = 'w'; // get/set DHCP mode
+                                        //'x' see bellow
+const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
+const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
+
+const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
+
+const char INIT_XBEE                    = 'x'; // force a XBee reconfig
+
+// available A B J N S U W X Z
+// Shutter commands
+const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
+const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // Restore default values for motor control.
+const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
+                                       // 'F' see above
+//const char ELEVATION_SHUTTER_CMD      = 'G'; // Get/Set altitude TBD
+const char HELLO_CMD                    = 'H'; // Let shutter know we're here
+const char WATCHDOG_INTERVAL_SET        = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
+const char VOLTS_SHUTTER_CMD            = 'K'; // Get volts and set cutoff voltage (close if bellow)
+const char SHUTTER_PING                 = 'L'; // Shutter ping, uses to reset watchdog timer.
+const char STATE_SHUTTER_GET            = 'M'; // Get shutter state
+const char OPEN_SHUTTER_CMD             = 'O'; // Open the shutter
+const char POSITION_SHUTTER_GET            = 'P'; // Get step position
+const char SHUTTER_PANID_GET            = 'Q'; // get and set the XBEE PAN ID
+const char SPEED_SHUTTER_CMD            = 'R'; // Get/Set step rate (speed)
+const char STEPSPER_SHUTTER_CMD         = 'T'; // Get/Set steps per stroke
+const char VERSION_SHUTTER_GET          = 'V'; // Get version string
+const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed status
+const char SOUTH_WALL_PRESENT           = 'Z'; // enable/disable south wall operations
+
 // Error code
 enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED, COMMAND_TIMEOUT, ERR_RAINING, ERR_BATTERY_LOW};
 enum RTIDomeShutterState { OPEN=0 , CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, SHUTTER_ERROR, FINISHING_OPEN, FINISHING_CLOSE };

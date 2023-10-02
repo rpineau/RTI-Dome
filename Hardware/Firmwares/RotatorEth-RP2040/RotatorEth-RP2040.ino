@@ -230,6 +230,8 @@ const char SPEED_SHUTTER_CMD            = 'R'; // Get/Set step rate (speed)
 const char STEPSPER_SHUTTER_CMD         = 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER_GET          = 'V'; // Get version string
 const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed status
+const char SOUTH_WALL_PRESENT           = 'Z'; // enable/disable south wall operations
+
 #endif // STANDALONE
 
 // function prototypes
