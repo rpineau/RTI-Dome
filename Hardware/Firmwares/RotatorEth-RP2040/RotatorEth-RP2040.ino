@@ -75,8 +75,6 @@
 // #define XBEE_S2C
 #endif // STANDALONE
 
-
-
 #include "RotatorClass.h"
 
 #ifdef USE_ETHERNET
@@ -178,61 +176,62 @@ IPConfig ServerConfig;
 
 const char ERR_NO_DATA = -1;
 
+#include "dome_commands.h"
+/*
 // Rotator commands
-const char ABORT_MOVE_CMD               = 'a'; // Tell everything to STOP!
+const char ABORT_MOVE               = 'a'; // Tell everything to STOP!
 const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
-const char CALIBRATE_ROTATOR_CMD        = 'c'; // Calibrate the dome
+const char CALIBRATE_ROTATOR        = 'c'; // Calibrate the dome
 const char RESTORE_MOTOR_DEFAULT        = 'd'; // restore default values for motor control.
-const char ACCELERATION_ROTATOR_CMD     = 'e'; // Get/Set stepper acceleration
+const char ACCELERATION_ROTATOR     = 'e'; // Get/Set stepper acceleration
 const char ETH_MAC_ADDRESS              = 'f'; // get the MAC address.
-const char GOTO_ROTATOR_CMD             = 'g'; // Get dome azimuth or move to new position (GoT
-const char HOME_ROTATOR_CMD             = 'h'; // Home the dome
-const char HOMEAZ_ROTATOR_CMD           = 'i'; // Get/Set home position
+const char GOTO_ROTATOR             = 'g'; // Get dome azimuth or move to new position (GoT
+const char HOME_ROTATOR             = 'h'; // Home the dome
+const char HOMEAZ_ROTATOR           = 'i'; // Get/Set home position
 const char IP_ADDRESS                   = 'j'; // get/set the IP address
-const char VOLTS_ROTATOR_CMD            = 'k'; // Get volts and get/set cutoff
-const char PARKAZ_ROTATOR_CMD           = 'l'; // Get/Set park azimuth
-const char SLEW_ROTATOR_GET             = 'm'; // Get Slewing status/direction
+const char VOLTS_ROTATOR            = 'k'; // Get volts and get/set cutoff
+const char PARKAZ_ROTATOR           = 'l'; // Get/Set park azimuth
+const char SLEW_ROTATOR             = 'm'; // Get Slewing status/direction
 const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered (do nothing, home, park)
 const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
 const char IP_SUBNET                    = 'p'; // get/set the ip subnet
-const char PANID_GET                    = 'q'; // get and set the XBEE PAN ID
-const char SPEED_ROTATOR_CMD            = 'r'; // Get/Set step rate (speed)
-const char SYNC_ROTATOR_CMD             = 's'; // Sync to new Azimuth
-const char STEPSPER_ROTATOR_CMD         = 't'; // Get/set Steps per rotation
+const char PANID                    = 'q'; // get and set the XBEE PAN ID
+const char SPEED_ROTATOR            = 'r'; // Get/Set step rate (speed)
+const char SYNC_ROTATOR             = 's'; // Sync to new Azimuth
+const char STEPSPER_ROTATOR         = 't'; // Get/set Steps per rotation
 const char IP_GATEWAY                   = 'u'; // get/set default gateway IP
-const char VERSION_ROTATOR_GET          = 'v'; // Get Firmware Version
+const char VERSION_ROTATOR          = 'v'; // Get Firmware Version
 const char IP_DHCP                      = 'w'; // get/set DHCP mode
                                         //'x' see bellow
-const char REVERSED_ROTATOR_CMD         = 'y'; // Get/Set stepper reversed status
-const char HOMESTATUS_ROTATOR_GET       = 'z'; // Get homed status
+const char REVERSED_ROTATOR         = 'y'; // Get/Set stepper reversed status
+const char HOMESTATUS_ROTATOR       = 'z'; // Get homed status
 
-const char RAIN_SHUTTER_GET             = 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
+const char RAIN_SHUTTER             = 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
 
 #ifndef STANDALONE
 const char INIT_XBEE                    = 'x'; // force a XBee reconfig
 
 // available A B J N S U W X Z
 // Shutter commands
-const char CLOSE_SHUTTER_CMD            = 'C'; // Close shutter
+const char CLOSE_SHUTTER            = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT= 'D'; // Restore default values for motor control.
-const char ACCELERATION_SHUTTER_CMD     = 'E'; // Get/Set stepper acceleration
+const char ACCELERATION_SHUTTER     = 'E'; // Get/Set stepper acceleration
                                        // 'F' see above
-//const char ELEVATION_SHUTTER_CMD      = 'G'; // Get/Set altitude TBD
-const char HELLO_CMD                    = 'H'; // Let shutter know we're here
-const char WATCHDOG_INTERVAL_SET        = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
-const char VOLTS_SHUTTER_CMD            = 'K'; // Get volts and set cutoff voltage (close if bellow)
+//const char ELEVATION_SHUTTER      = 'G'; // Get/Set altitude TBD
+const char HELLO                    = 'H'; // Let shutter know we're here
+const char WATCHDOG_INTERVAL        = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
+const char VOLTS_SHUTTER            = 'K'; // Get volts and set cutoff voltage (close if bellow)
 const char SHUTTER_PING                 = 'L'; // Shutter ping, uses to reset watchdog timer.
-const char STATE_SHUTTER_GET            = 'M'; // Get shutter state
-const char OPEN_SHUTTER_CMD             = 'O'; // Open the shutter
-const char POSITION_SHUTTER_GET		    = 'P'; // Get step position
-const char SHUTTER_PANID_GET            = 'Q'; // get and set the XBEE PAN ID
-const char SPEED_SHUTTER_CMD            = 'R'; // Get/Set step rate (speed)
-const char STEPSPER_SHUTTER_CMD         = 'T'; // Get/Set steps per stroke
-const char VERSION_SHUTTER_GET          = 'V'; // Get version string
-const char REVERSED_SHUTTER_CMD         = 'Y'; // Get/Set stepper reversed status
-const char SOUTH_WALL_PRESENT           = 'Z'; // enable/disable south wall operations
-
+const char STATE_SHUTTER            = 'M'; // Get shutter state
+const char OPEN_SHUTTER             = 'O'; // Open the shutter
+const char POSITION_SHUTTER		    = 'P'; // Get step position
+const char SHUTTER_PANID            = 'Q'; // get and set the XBEE PAN ID
+const char SPEED_SHUTTER            = 'R'; // Get/Set step rate (speed)
+const char STEPSPER_SHUTTER         = 'T'; // Get/Set steps per stroke
+const char VERSION_SHUTTER          = 'V'; // Get version string
+const char REVERSED_SHUTTER         = 'Y'; // Get/Set stepper reversed status
 #endif // STANDALONE
+*/
 
 // function prototypes
 #ifdef USE_ETHERNET
@@ -609,35 +608,35 @@ void setPANID(String value)
 void SendHello()
 {
     DBPrintln("Sending hello");
-    Wireless.print(String(HELLO_CMD) + "#");
+    Wireless.print(String(HELLO) + "#");
     ReceiveWireless();
     SentHello = true;
 }
 
 void requestShutterData()
 {
-        Wireless.print(String(STATE_SHUTTER_GET) + "#");
+        Wireless.print(String(STATE_SHUTTER) + "#");
         ReceiveWireless();
 
-        Wireless.print(String(VERSION_SHUTTER_GET) + "#");
+        Wireless.print(String(VERSION_SHUTTER) + "#");
         ReceiveWireless();
 
-        Wireless.print(String(REVERSED_SHUTTER_CMD) + "#");
+        Wireless.print(String(REVERSED_SHUTTER) + "#");
         ReceiveWireless();
 
-        Wireless.print(String(STEPSPER_SHUTTER_CMD) + "#");
+        Wireless.print(String(STEPSPER_SHUTTER) + "#");
         ReceiveWireless();
 
-        Wireless.print(String(SPEED_SHUTTER_CMD) + "#");
+        Wireless.print(String(SPEED_SHUTTER) + "#");
         ReceiveWireless();
 
-        Wireless.print(String(ACCELERATION_SHUTTER_CMD) + "#");
+        Wireless.print(String(ACCELERATION_SHUTTER) + "#");
         ReceiveWireless();
 
-        Wireless.print(String(VOLTS_SHUTTER_CMD) + "#");
+        Wireless.print(String(VOLTS_SHUTTER) + "#");
         ReceiveWireless();
 
-        Wireless.print(String(SHUTTER_PANID_GET) + "#");
+        Wireless.print(String(SHUTTER_PANID) + "#");
         ReceiveWireless();
 }
 
@@ -664,7 +663,7 @@ void CheckForRain()
     if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
         bIsRaining = Rotator->GetRainStatus();
 #ifndef STANDALONE
-        Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
+        Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
         ReceiveWireless();
 #endif // STANDALONE
     }
@@ -682,7 +681,7 @@ void CheckForRain()
         }
     // keep telling the shutter that it's raining
 #ifndef STANDALONE
-        Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
+        Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
 #endif // STANDALONE
     }
 }
@@ -810,8 +809,8 @@ void ProcessCommand(bool bFromNetwork)
 
 
     switch (command) {
-        case ABORT_MOVE_CMD:
-            sTmpString = String(ABORT_MOVE_CMD);
+        case ABORT:
+            sTmpString = String(ABORT);
             serialMessage = sTmpString;
             Rotator->Stop();
 #ifndef STANDALONE
@@ -821,19 +820,19 @@ void ProcessCommand(bool bFromNetwork)
 #endif // STANDALONE
             break;
 
-        case ACCELERATION_ROTATOR_CMD:
+        case ACCELERATION_ROTATOR:
             if (hasValue) {
                 Rotator->SetAcceleration(value.toInt());
             }
-            serialMessage = String(ACCELERATION_ROTATOR_CMD) + String(Rotator->GetAcceleration());
+            serialMessage = String(ACCELERATION_ROTATOR) + String(Rotator->GetAcceleration());
             break;
 
-        case CALIBRATE_ROTATOR_CMD:
+        case CALIBRATE_ROTATOR:
             Rotator->StartCalibrating();
-            serialMessage = String(CALIBRATE_ROTATOR_CMD);
+            serialMessage = String(CALIBRATE_ROTATOR);
             break;
 
-        case GOTO_ROTATOR_CMD:
+        case GOTO_ROTATOR:
             if (hasValue && !bLowShutterVoltage) { // stay at park if shutter voltage is low.
                 fTmp = value.toFloat();
                 if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
@@ -841,34 +840,34 @@ void ProcessCommand(bool bFromNetwork)
                     }
                 bParked = false;
             }
-            serialMessage = String(GOTO_ROTATOR_CMD) + String(Rotator->GetAzimuth());
+            serialMessage = String(GOTO_ROTATOR) + String(Rotator->GetAzimuth());
             break;
 #ifndef STANDALONE
-        case HELLO_CMD:
+        case HELLO:
             SendHello();
-            serialMessage = String(HELLO_CMD);
+            serialMessage = String(HELLO);
             break;
 #endif // STANDALONE
-        case HOME_ROTATOR_CMD:
+        case HOME_ROTATOR:
             Rotator->StartHoming();
-            serialMessage = String(HOME_ROTATOR_CMD);
+            serialMessage = String(HOME_ROTATOR);
             break;
 
-        case HOMEAZ_ROTATOR_CMD:
+        case HOMEAZ_ROTATOR:
             if (hasValue) {
                 fTmp = value.toFloat();
                 if ((fTmp >= 0) && (fTmp < 360))
                     Rotator->SetHomeAzimuth(fTmp);
             }
-            serialMessage = String(HOMEAZ_ROTATOR_CMD) + String(Rotator->GetHomeAzimuth());
+            serialMessage = String(HOMEAZ_ROTATOR) + String(Rotator->GetHomeAzimuth());
             break;
 
-        case HOMESTATUS_ROTATOR_GET:
-            serialMessage = String(HOMESTATUS_ROTATOR_GET) + String(Rotator->GetHomeStatus());
+        case HOMESTATUS_ROTATOR:
+            serialMessage = String(HOMESTATUS_ROTATOR) + String(Rotator->GetHomeStatus());
             break;
 
-        case PARKAZ_ROTATOR_CMD:
-            sTmpString = String(PARKAZ_ROTATOR_CMD);
+        case PARKAZ_ROTATOR:
+            sTmpString = String(PARKAZ_ROTATOR);
             if (hasValue) {
                 fTmp = value.toFloat();
                 if ((fTmp >= 0) && (fTmp < 360)) {
@@ -891,16 +890,16 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator->GetRainAction());
             break;
 
-        case SPEED_ROTATOR_CMD:
+        case SPEED_ROTATOR:
             if (hasValue)
                 Rotator->SetMaxSpeed(value.toInt());
-            serialMessage = String(SPEED_ROTATOR_CMD) + String(Rotator->GetMaxSpeed());
+            serialMessage = String(SPEED_ROTATOR) + String(Rotator->GetMaxSpeed());
             break;
 
-        case REVERSED_ROTATOR_CMD:
+        case REVERSED_ROTATOR:
             if (hasValue)
                 Rotator->SetReversed(value.toInt());
-            serialMessage = String(REVERSED_ROTATOR_CMD) + String(Rotator->GetReversed());
+            serialMessage = String(REVERSED_ROTATOR) + String(Rotator->GetReversed());
             break;
 
         case RESTORE_MOTOR_DEFAULT:
@@ -908,42 +907,42 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = String(RESTORE_MOTOR_DEFAULT);
             break;
 
-        case SLEW_ROTATOR_GET:
-            serialMessage = String(SLEW_ROTATOR_GET) + String(Rotator->GetDirection());
+        case SLEW_ROTATOR:
+            serialMessage = String(SLEW_ROTATOR) + String(Rotator->GetDirection());
             break;
 
-        case STEPSPER_ROTATOR_CMD:
+        case STEPSPER_ROTATOR:
             if (hasValue)
                 Rotator->SetStepsPerRotation(value.toInt());
-            serialMessage = String(STEPSPER_ROTATOR_CMD) + String(Rotator->GetStepsPerRotation());
+            serialMessage = String(STEPSPER_ROTATOR) + String(Rotator->GetStepsPerRotation());
             break;
 
-        case SYNC_ROTATOR_CMD:
+        case SYNC_ROTATOR:
             if (hasValue) {
                 fTmp = value.toFloat();
                 if (fTmp >= 0 && fTmp < 360) {
                     Rotator->SyncPosition(fTmp);
-                    serialMessage = String(SYNC_ROTATOR_CMD) + String(Rotator->GetAzimuth());
+                    serialMessage = String(SYNC_ROTATOR) + String(Rotator->GetAzimuth());
                 }
             }
             else {
-                    serialMessage = String(SYNC_ROTATOR_CMD) + "E";
+                    serialMessage = String(SYNC_ROTATOR) + "E";
             }
             break;
 
-        case VERSION_ROTATOR_GET:
-            serialMessage = String(VERSION_ROTATOR_GET) + VERSION;
+        case VERSION_ROTATOR:
+            serialMessage = String(VERSION_ROTATOR) + VERSION;
             break;
 
-        case VOLTS_ROTATOR_CMD:
+        case VOLTS_ROTATOR:
             if (hasValue) {
                 Rotator->SetLowVoltageCutoff(value.toInt());
             }
-            serialMessage = String(VOLTS_ROTATOR_CMD) + String(Rotator->GetVoltString());
+            serialMessage = String(VOLTS_ROTATOR) + String(Rotator->GetVoltString());
             break;
 
-        case RAIN_SHUTTER_GET:
-            serialMessage = String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0");
+        case RAIN_SHUTTER:
+            serialMessage = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0");
             break;
 
         case IS_SHUTTER_PRESENT:
@@ -1029,22 +1028,22 @@ void ProcessCommand(bool bFromNetwork)
             resetChip(XBEE_RESET);
             break;
 
-        case PANID_GET:
-            sTmpString = String(PANID_GET);
+        case PANID:
+            sTmpString = String(PANID);
             if (hasValue) {
                 RemoteShutter.panid = "0000";
-                wirelessMessage = String(SHUTTER_PANID_GET) + value;
+                wirelessMessage = String(SHUTTER_PANID) + value;
                 Wireless.print(wirelessMessage + "#");
                 setPANID(value); // shutter XBee should be doing the same thing
             }
             serialMessage = sTmpString + String(Rotator->GetPANID());
             break;
 
-        case SHUTTER_PANID_GET:
-            wirelessMessage = String(SHUTTER_PANID_GET);
+        case SHUTTER_PANID:
+            wirelessMessage = String(SHUTTER_PANID);
             Wireless.print(wirelessMessage + "#");
             ReceiveWireless();
-            serialMessage = String(SHUTTER_PANID_GET) + RemoteShutter.panid ;
+            serialMessage = String(SHUTTER_PANID) + RemoteShutter.panid ;
             break;
 
 
@@ -1055,8 +1054,8 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = String(SHUTTER_PING);
             break;
 
-        case ACCELERATION_SHUTTER_CMD:
-            sTmpString = String(ACCELERATION_SHUTTER_CMD);
+        case ACCELERATION_SHUTTER:
+            sTmpString = String(ACCELERATION_SHUTTER);
             if (hasValue) {
                 RemoteShutter.acceleration = value;
                 wirelessMessage = sTmpString + RemoteShutter.acceleration;
@@ -1069,8 +1068,8 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString + RemoteShutter.acceleration;
             break;
 
-        case CLOSE_SHUTTER_CMD:
-            sTmpString = String(CLOSE_SHUTTER_CMD);
+        case CLOSE_SHUTTER:
+            sTmpString = String(CLOSE_SHUTTER);
             Wireless.print(sTmpString+ "#");
             ReceiveWireless();
             serialMessage = sTmpString;
@@ -1080,15 +1079,15 @@ void ProcessCommand(bool bFromNetwork)
             sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
             Wireless.print(sTmpString+ "#");
             ReceiveWireless();
-            Wireless.print(String(SPEED_SHUTTER_CMD)+ "#");
+            Wireless.print(String(SPEED_SHUTTER)+ "#");
             ReceiveWireless();
-            Wireless.print(String(ACCELERATION_SHUTTER_CMD)+ "#");
+            Wireless.print(String(ACCELERATION_SHUTTER)+ "#");
             ReceiveWireless();
             serialMessage = sTmpString;
             break;
 
-//      case ELEVATION_SHUTTER_CMD:
-//          sTmpString = String(ELEVATION_SHUTTER_CMD);
+//      case ELEVATION_SHUTTER:
+//          sTmpString = String(ELEVATION_SHUTTER);
 //          if (hasValue) {
 //              RemoteShutter.position = value;
 //              wirelessMessage = sTmpString + RemoteShutter.position;
@@ -1101,15 +1100,15 @@ void ProcessCommand(bool bFromNetwork)
 //          serialMessage = sTmpString + RemoteShutter.position;
 //          break;
 
-        case OPEN_SHUTTER_CMD:
-                sTmpString = String(OPEN_SHUTTER_CMD);
+        case OPEN_SHUTTER:
+                sTmpString = String(OPEN_SHUTTER);
                 Wireless.print(sTmpString + "#");
                 ReceiveWireless();
                 serialMessage = sTmpString + RemoteShutter.lowVoltStateOrRaining;
                 break;
 
-        case REVERSED_SHUTTER_CMD:
-            sTmpString = String(REVERSED_SHUTTER_CMD);
+        case REVERSED_SHUTTER:
+            sTmpString = String(REVERSED_SHUTTER);
             if (hasValue) {
                 RemoteShutter.reversed = value;
                 wirelessMessage = sTmpString + value;
@@ -1122,8 +1121,8 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString + RemoteShutter.reversed;
             break;
 
-        case SPEED_SHUTTER_CMD:
-            sTmpString = String(SPEED_SHUTTER_CMD);
+        case SPEED_SHUTTER:
+            sTmpString = String(SPEED_SHUTTER);
             if (hasValue) {
                 RemoteShutter.speed = value;
                 wirelessMessage = sTmpString + String(value.toInt());
@@ -1136,15 +1135,15 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString + RemoteShutter.speed;
             break;
 
-        case STATE_SHUTTER_GET:
-            sTmpString = String(STATE_SHUTTER_GET);
+        case STATE_SHUTTER:
+            sTmpString = String(STATE_SHUTTER);
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
             serialMessage = sTmpString + RemoteShutter.state;
             break;
 
-        case STEPSPER_SHUTTER_CMD:
-            sTmpString = String(STEPSPER_SHUTTER_CMD);
+        case STEPSPER_SHUTTER:
+            sTmpString = String(STEPSPER_SHUTTER);
             if (hasValue) {
                 RemoteShutter.stepsPerStroke = value;
                 wirelessMessage = sTmpString + value;
@@ -1157,15 +1156,15 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString + RemoteShutter.stepsPerStroke;
             break;
 
-        case VERSION_SHUTTER_GET:
-            sTmpString = String(VERSION_SHUTTER_GET);
+        case VERSION_SHUTTER:
+            sTmpString = String(VERSION_SHUTTER);
             Wireless.print(sTmpString + "#");
             ReceiveWireless();
             serialMessage = sTmpString + RemoteShutter.version;
             break;
 
-        case VOLTS_SHUTTER_CMD:
-            sTmpString = String(VOLTS_SHUTTER_CMD);
+        case VOLTS_SHUTTER:
+            sTmpString = String(VOLTS_SHUTTER);
             wirelessMessage = sTmpString;
             if (hasValue)
                 wirelessMessage += String(value);
@@ -1175,8 +1174,8 @@ void ProcessCommand(bool bFromNetwork)
             serialMessage = sTmpString + RemoteShutter.volts;
             break;
 
-        case WATCHDOG_INTERVAL_SET:
-            sTmpString = String(WATCHDOG_INTERVAL_SET);
+        case WATCHDOG_INTERVAL:
+            sTmpString = String(WATCHDOG_INTERVAL);
             if (value.length() > 0) {
                 wirelessMessage = sTmpString + value;
             }
@@ -1301,59 +1300,59 @@ void ProcessWireless()
     XbeeResets = 0;
 
     switch (command) {
-        case ACCELERATION_SHUTTER_CMD:
+        case ACCELERATION_SHUTTER:
             if (hasValue)
                 RemoteShutter.acceleration = value;
             break;
 
-        case HELLO_CMD:
+        case HELLO:
             gotHelloFromShutter = true;
             bShutterPresent = true;
             break;
 
-        case SPEED_SHUTTER_CMD:
+        case SPEED_SHUTTER:
             if (hasValue)
                 RemoteShutter.speed = value;
             break;
 
-        case RAIN_SHUTTER_GET:
-            Wireless.print(String(RAIN_SHUTTER_GET) + String(bIsRaining ? "1" : "0") + "#");
+        case RAIN_SHUTTER:
+            Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
             break;
 
-        case REVERSED_SHUTTER_CMD:
+        case REVERSED_SHUTTER:
             if (hasValue)
                 RemoteShutter.reversed = value;
             break;
 
-        case STATE_SHUTTER_GET:
+        case STATE_SHUTTER:
             if (hasValue)
                 RemoteShutter.state = value;
             break;
 
-        case OPEN_SHUTTER_CMD:
+        case OPEN_SHUTTER:
             if (hasValue)
                 RemoteShutter.lowVoltStateOrRaining = value;
             else
                 RemoteShutter.lowVoltStateOrRaining = "";
             break;
 
-        case STEPSPER_SHUTTER_CMD:
+        case STEPSPER_SHUTTER:
             if (hasValue)
                 RemoteShutter.stepsPerStroke = value;
             break;
 
-        case VERSION_SHUTTER_GET:
+        case VERSION_SHUTTER:
             if (hasValue)
                 RemoteShutter.version = value;
             break;
 
-        case VOLTS_SHUTTER_CMD:
+        case VOLTS_SHUTTER:
             if (hasValue)
                 RemoteShutter.volts = value;
             break;
 
 
-        case WATCHDOG_INTERVAL_SET:
+        case WATCHDOG_INTERVAL:
             if (hasValue)
                 RemoteShutter.watchdogInterval = value;
             break;
@@ -1370,7 +1369,7 @@ void ProcessWireless()
          case SHUTTER_RESTORE_MOTOR_DEFAULT:
             break;
 
-        case SHUTTER_PANID_GET:
+        case SHUTTER_PANID:
             if (hasValue)
                  RemoteShutter.panid = value;
             break;

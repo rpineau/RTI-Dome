@@ -361,6 +361,7 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse
 int CRTIDome::getDomeAz(double &dDomeAz)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -369,7 +370,8 @@ int CRTIDome::getDomeAz(double &dDomeAz)
     if(m_bCalibrating)
         return nErr;
 
-    nErr = domeCommand("g#", sResp, 'g');
+    ssCmd<<GOTO_ROTATOR<<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, GOTO_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeAz] ERROR = " << sResp << std::endl;
@@ -424,6 +426,7 @@ int CRTIDome::getDomeEl(double &dDomeEl)
 int CRTIDome::getDomeHomeAz(double &dAz)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -432,7 +435,8 @@ int CRTIDome::getDomeHomeAz(double &dAz)
     if(m_bCalibrating)
         return nErr;
 
-    nErr = domeCommand("i#", sResp, 'i');
+    ssCmd<<HOMEAZ_ROTATOR<<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, HOMEAZ_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeHomeAz] ERROR = " << sResp << std::endl;
@@ -460,6 +464,7 @@ int CRTIDome::getDomeHomeAz(double &dAz)
 int CRTIDome::getDomeParkAz(double &dAz)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -468,7 +473,8 @@ int CRTIDome::getDomeParkAz(double &dAz)
     if(m_bCalibrating)
         return nErr;
 
-    nErr = domeCommand("l#", sResp, 'l');
+    ssCmd<<PARKAZ_ROTATOR<<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, PARKAZ_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeParkAz] ERROR = " << sResp << std::endl;
@@ -502,6 +508,7 @@ int CRTIDome::getDomeParkAz(double &dAz)
 int CRTIDome::getShutterState(int &nState)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
     std::vector<std::string> shutterStateFileds;
 
@@ -516,7 +523,8 @@ int CRTIDome::getShutterState(int &nState)
     if(m_bCalibrating)
         return nErr;
 
-    nErr = domeCommand("M#", sResp, 'M');
+    ssCmd<<STATE_SHUTTER<<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, STATE_SHUTTER);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterState] ERROR = " << sResp << std::endl;
@@ -554,12 +562,14 @@ int CRTIDome::getShutterState(int &nState)
 int CRTIDome::getDomeStepPerRev(int &nStepPerRev)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("t#", sResp, 't');
+    ssCmd<<STEPSPER_ROTATOR<<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, STEPSPER_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeStepPerRev] ERROR = " << sResp << std::endl;
@@ -585,16 +595,16 @@ int CRTIDome::getDomeStepPerRev(int &nStepPerRev)
 int CRTIDome::setDomeStepPerRev(int nStepPerRev)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
-    std::stringstream ssTmp;
 
     m_nNbStepPerRev = nStepPerRev;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "t" << nStepPerRev <<"#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'i');
+    ssCmd << STEPSPER_ROTATOR << nStepPerRev <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, STEPSPER_ROTATOR);
     return nErr;
 
 }
@@ -602,6 +612,7 @@ int CRTIDome::setDomeStepPerRev(int nStepPerRev)
 int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &dShutterVolts, double &dShutterCutOff)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
     std::vector<std::string> voltsFields;
 
@@ -611,7 +622,8 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
     if(m_bCalibrating)
         return nErr;
     // Dome
-    nErr = domeCommand("k#", sResp, 'k');
+    ssCmd<<VOLTS_ROTATOR<<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, VOLTS_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] ERROR = " << sResp << std::endl;
@@ -664,7 +676,9 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
     dShutterVolts  = 0;
     dShutterCutOff = 0;
     if(m_bShutterPresent) {
-        nErr = domeCommand("K#", sResp, 'K');
+        std::stringstream().swap(ssCmd);
+        ssCmd<<VOLTS_SHUTTER<<"#";
+        nErr = domeCommand(ssCmd.str(), sResp, VOLTS_SHUTTER);
         if(nErr) {
     #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] ERROR = " << sResp << std::endl;
@@ -710,8 +724,8 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
-    std::stringstream ssTmp;
     int nRotCutOff, nShutCutOff;
 
     if(!m_bIsConnected)
@@ -724,9 +738,9 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
     nShutCutOff = dShutterCutOff * 100.0;
 
     // Dome
-    ssTmp << "k" << nRotCutOff <<"#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'k');
-    if(nErr) {
+    ssCmd << VOLTS_ROTATOR << nRotCutOff <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, VOLTS_ROTATOR);
+   if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] dDomeCutOff ERROR = " << sResp << std::endl;
         m_sLogFile.flush();
@@ -736,9 +750,9 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 
     if(m_bShutterPresent) {
         // Shutter
-        std::stringstream().swap(ssTmp);
-        ssTmp << "k" << nShutCutOff <<"#";
-        nErr = domeCommand(ssTmp.str(), sResp, 'K');
+        std::stringstream().swap(ssCmd);
+        ssCmd << VOLTS_SHUTTER << nRotCutOff <<"#";
+        nErr = domeCommand(ssCmd.str(), sResp, VOLTS_SHUTTER);
         if(nErr) {
     #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
             m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] dDomeCutOff ERROR = " << sResp << std::endl;
@@ -755,12 +769,14 @@ bool CRTIDome::isDomeMoving()
     bool bIsMoving;
     int nTmp;
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("m#", sResp, 'm');
+    ssCmd << SLEW_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, SLEW_ROTATOR);
     if(nErr & !m_bCalibrating) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] ERROR = " << sResp << std::endl;
@@ -803,12 +819,14 @@ bool CRTIDome::isDomeAtHome()
     bool bAthome;
     int nTmp;
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("z#", sResp, 'z');
+    ssCmd << HOMESTATUS_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, HOMESTATUS_ROTATOR);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeAtHome] response = " << sResp << std::endl;
     m_sLogFile.flush();
@@ -845,15 +863,16 @@ bool CRTIDome::isDomeAtHome()
 int CRTIDome::syncDome(double dAz, double dEl)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
     m_dCurrentAzPosition = dAz;
-    ssTmp << "s" << std::fixed << std::setprecision(2) << dAz << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 's');
+
+    ssCmd << SYNC_ROTATOR << std::fixed << std::setprecision(2) << dAz << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, SYNC_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [syncDome] ERROR = " << sResp << std::endl;
@@ -910,7 +929,7 @@ int CRTIDome::gotoAzimuth(double dNewAz)
     double dShutterVolts;
     double dShutterCutOff;
     bool bDummy;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -925,8 +944,8 @@ int CRTIDome::gotoAzimuth(double dNewAz)
     while(dNewAz >= 360)
         dNewAz = dNewAz - 360;
 
-    ssTmp << "g" << std::fixed << std::setprecision(2) << dNewAz << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'g');
+    ssCmd << GOTO_ROTATOR << std::fixed << std::setprecision(2) << dNewAz << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, GOTO_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [gotoAzimuth] ERROR = " << sResp << std::endl;
@@ -943,6 +962,7 @@ int CRTIDome::openShutter()
 {
     int nErr = PLUGIN_OK;
     bool bDummy;
+    std::stringstream ssCmd;
     std::string sResp;
     double domeVolts;
     double dDomeCutOff;
@@ -970,7 +990,8 @@ int CRTIDome::openShutter()
     m_sLogFile.flush();
 #endif
 
-    nErr = domeCommand("O#", sResp, 'O');
+    ssCmd << OPEN_SHUTTER <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, OPEN_SHUTTER);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [openShutter] ERROR = " << nErr << std::endl;
@@ -1005,6 +1026,7 @@ int CRTIDome::closeShutter()
 {
     int nErr = PLUGIN_OK;
     bool bDummy;
+    std::stringstream ssCmd;
     std::string sResp;
     double domeVolts;
     double dDomeCutOff;
@@ -1034,7 +1056,8 @@ int CRTIDome::closeShutter()
     m_sLogFile.flush();
 #endif
 
-    nErr = domeCommand("C#", sResp, 'C');
+    ssCmd << CLOSE_SHUTTER <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, CLOSE_SHUTTER);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [closeShutter] ERROR Closing shutter : " << nErr << std::endl;
@@ -1053,6 +1076,7 @@ int CRTIDome::getFirmwareVersion(std::string &sVersion, float &fVersion)
 {
     int nErr = PLUGIN_OK;
     int i;
+    std::stringstream ssCmd;
     std::string sResp;
     std::vector<std::string> firmwareFields;
     std::vector<std::string> versionFields;
@@ -1064,7 +1088,8 @@ int CRTIDome::getFirmwareVersion(std::string &sVersion, float &fVersion)
     if(m_bCalibrating)
         return SB_OK;
 
-    nErr = domeCommand("v#", sResp, 'v');
+    ssCmd << VERSION_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, VERSION_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] ERROR = " << sResp << std::endl;
@@ -1139,6 +1164,7 @@ int CRTIDome::getFirmwareVersion(float &fVersion)
 int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
     std::vector<std::string> firmwareFields;
     std::vector<std::string> versionFields;
@@ -1150,7 +1176,8 @@ int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
     if(m_bCalibrating)
         return SB_OK;
 
-    nErr = domeCommand("V#", sResp, 'V');
+    ssCmd << VERSION_SHUTTER <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, VERSION_SHUTTER);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterFirmwareVersion] ERROR = " << sResp << std::endl;
@@ -1189,6 +1216,7 @@ int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
 int CRTIDome::goHome()
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -1206,7 +1234,8 @@ int CRTIDome::goHome()
 #endif
 
     m_nHomingTries = 0;
-    nErr = domeCommand("h#", sResp, 'h');
+    ssCmd << HOME_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, HOME_ROTATOR);
     if(nErr) {
 #ifdef PLUGIN_DEBUG
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [goHome] ERROR = " << nErr << std::endl;
@@ -1221,13 +1250,14 @@ int CRTIDome::goHome()
 int CRTIDome::calibrate()
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-
-    nErr = domeCommand("c#", sResp, 'c');
+    ssCmd << CALIBRATE_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, CALIBRATE_ROTATOR);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [calibrate] ERROR = " << nErr << std::endl;
@@ -1596,6 +1626,7 @@ int CRTIDome::isCalibratingComplete(bool &bComplete)
 int CRTIDome::abortCurrentCommand()
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -1608,7 +1639,8 @@ int CRTIDome::abortCurrentCommand()
     m_nGotoTries = 1;   // prevents the goto retry
     m_nHomingTries = 1; // prevents the find home retry
 
-    nErr = domeCommand("a#", sResp, 'a');
+    ssCmd << ABORT <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, ABORT);
 
     getDomeAz(m_dGotoAz);
 
@@ -1618,21 +1650,25 @@ int CRTIDome::abortCurrentCommand()
 int CRTIDome::sendShutterHello()
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("H#", sResp, 'H'); // we don't want the response
+    ssCmd << HELLO <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, HELLO);
     return nErr;
 }
 
 int CRTIDome::getShutterPresent(bool &bShutterPresent)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
-    nErr = domeCommand("o#", sResp, 'o');
+    ssCmd << IS_SHUTTER_PRESENT <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, IS_SHUTTER_PRESENT);
     if(nErr) {
         return nErr;
     }
@@ -1686,15 +1722,15 @@ double CRTIDome::getHomeAz()
 int CRTIDome::setHomeAz(double dAz)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
-    std::stringstream ssTmp;
     m_dHomeAz = dAz;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "i" << std::fixed << std::setprecision(2) << dAz << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'i');
+    ssCmd << HOMEAZ_ROTATOR << std::fixed << std::setprecision(2) << dAz << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, HOMEAZ_ROTATOR);
     return nErr;
 }
 
@@ -1711,16 +1747,16 @@ double CRTIDome::getParkAz()
 int CRTIDome::setParkAz(double dAz)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
-    std::stringstream ssTmp;
 
     m_dParkAz = dAz;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "l" << std::fixed << std::setprecision(2) << dAz << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'l');
+    ssCmd << PARKAZ_ROTATOR << std::fixed << std::setprecision(2) << dAz << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, PARKAZ_ROTATOR);
     return nErr;
 }
 
@@ -1746,10 +1782,13 @@ double CRTIDome::getCurrentEl()
 int CRTIDome::getDefaultDir(bool &bNormal)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     bNormal = true;
-    nErr = domeCommand("y#", sResp, 'y');
+
+    ssCmd << REVERSED_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, REVERSED_ROTATOR);
     if(nErr) {
         return nErr;
     }
@@ -1775,21 +1814,22 @@ int CRTIDome::getDefaultDir(bool &bNormal)
 int CRTIDome::setDefaultDir(bool bNormal)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
     std::stringstream ssTmp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "y" << (bNormal?"0":"1") << "#";
+    ssCmd << REVERSED_ROTATOR << (bNormal?"0":"1") << "#";
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
     m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] bNormal = " << (bNormal?"True":"False") << std::endl;
-    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] ssTmp = " << ssTmp.str() << std::endl;
+    m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] ssTmp = " << ssCmd.str() << std::endl;
     m_sLogFile.flush();
 #endif
 
-    nErr = domeCommand(ssTmp.str(), sResp, 'y');
+    nErr = domeCommand(ssCmd.str(), sResp, REVERSED_ROTATOR);
     return nErr;
 
 }
@@ -1797,10 +1837,13 @@ int CRTIDome::setDefaultDir(bool bNormal)
 int CRTIDome::getRainSensorStatus(int &nStatus)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     nStatus = NOT_RAINING;
-    nErr = domeCommand("F#", sResp, 'F');
+
+    ssCmd << RAIN_SHUTTER <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, RAIN_SHUTTER);
     if(nErr) {
         return nErr;
     }
@@ -1828,12 +1871,14 @@ int CRTIDome::getRainSensorStatus(int &nStatus)
 int CRTIDome::getRotationSpeed(int &nSpeed)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("r#", sResp, 'r');
+    ssCmd << SPEED_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, SPEED_ROTATOR);
     if(nErr) {
         return nErr;
     }
@@ -1860,14 +1905,14 @@ int CRTIDome::getRotationSpeed(int &nSpeed)
 int CRTIDome::setRotationSpeed(int nSpeed)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "r" << nSpeed << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'r');
+    ssCmd << SPEED_ROTATOR << nSpeed << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, SPEED_ROTATOR);
     return nErr;
 }
 
@@ -1875,12 +1920,14 @@ int CRTIDome::setRotationSpeed(int nSpeed)
 int CRTIDome::getRotationAcceleration(int &nAcceleration)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("e#", sResp, 'e');
+    ssCmd << ACCELERATION_ROTATOR <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, ACCELERATION_ROTATOR);
     if(nErr) {
         return nErr;
     }
@@ -1906,14 +1953,14 @@ int CRTIDome::getRotationAcceleration(int &nAcceleration)
 int CRTIDome::setRotationAcceleration(int nAcceleration)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "e" << nAcceleration << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'e');
+    ssCmd << ACCELERATION_ROTATOR << nAcceleration << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, ACCELERATION_ROTATOR);
 
     return nErr;
 }
@@ -1921,6 +1968,7 @@ int CRTIDome::setRotationAcceleration(int nAcceleration)
 int CRTIDome::getShutterSpeed(int &nSpeed)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -1931,7 +1979,8 @@ int CRTIDome::getShutterSpeed(int &nSpeed)
         return SB_OK;
     }
 
-    nErr = domeCommand("R#", sResp, 'R');
+    ssCmd << SPEED_SHUTTER <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, SPEED_SHUTTER);
     if(nErr) {
         return nErr;
     }
@@ -1957,7 +2006,7 @@ int CRTIDome::getShutterSpeed(int &nSpeed)
 int CRTIDome::setShutterSpeed(int nSpeed)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -1967,8 +2016,8 @@ int CRTIDome::setShutterSpeed(int nSpeed)
         return SB_OK;
     }
 
-    ssTmp << "R" << nSpeed << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'R');
+    ssCmd << SPEED_SHUTTER << nSpeed << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, SPEED_SHUTTER);
 
     return nErr;
 }
@@ -1976,6 +2025,7 @@ int CRTIDome::setShutterSpeed(int nSpeed)
 int CRTIDome::getShutterAcceleration(int &nAcceleration)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -1986,7 +2036,8 @@ int CRTIDome::getShutterAcceleration(int &nAcceleration)
         return SB_OK;
     }
 
-    nErr = domeCommand("E#", sResp, 'E');
+    ssCmd << ACCELERATION_SHUTTER <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, ACCELERATION_SHUTTER);
     if(nErr) {
         return nErr;
     }
@@ -2011,7 +2062,7 @@ int CRTIDome::getShutterAcceleration(int &nAcceleration)
 int CRTIDome::setShutterAcceleration(int nAcceleration)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
@@ -2021,8 +2072,8 @@ int CRTIDome::setShutterAcceleration(int nAcceleration)
         return SB_OK;
     }
 
-    ssTmp << "E" << nAcceleration << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'E');
+    ssCmd << ACCELERATION_SHUTTER << nAcceleration << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, ACCELERATION_SHUTTER);
     return nErr;
 }
 
@@ -2039,6 +2090,7 @@ void CRTIDome::setHomeOnUnpark(const bool bEnabled)
 int	CRTIDome::getSutterWatchdogTimerValue(int &nValue)
 {
 	int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
 	if(!m_bIsConnected)
@@ -2049,7 +2101,8 @@ int	CRTIDome::getSutterWatchdogTimerValue(int &nValue)
         return SB_OK;
     }
 
-    nErr = domeCommand("I#", sResp, 'I');
+    ssCmd << WATCHDOG_INTERVAL <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, WATCHDOG_INTERVAL);
 	if(nErr) {
 		return nErr;
 	}
@@ -2075,7 +2128,7 @@ int	CRTIDome::getSutterWatchdogTimerValue(int &nValue)
 int	CRTIDome::setSutterWatchdogTimerValue(const int &nValue)
 {
 	int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
 	if(!m_bIsConnected)
@@ -2085,20 +2138,22 @@ int	CRTIDome::setSutterWatchdogTimerValue(const int &nValue)
         return SB_OK;
     }
 
-    ssTmp << "I" << (nValue * 1000) << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'I');
+    ssCmd << WATCHDOG_INTERVAL << (nValue * 1000) << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, WATCHDOG_INTERVAL);
 	return nErr;
 }
 
 int CRTIDome::getRainAction(int &nAction)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("n#", sResp, 'n');
+    ssCmd << RAIN_ROTATOR_ACTION <<"#";
+    nErr = domeCommand(ssCmd.str(), sResp, RAIN_ROTATOR_ACTION);
     if(nErr) {
         return nErr;
     }
@@ -2125,14 +2180,14 @@ int CRTIDome::getRainAction(int &nAction)
 int CRTIDome::setRainAction(const int &nAction)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "n" << nAction << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'n');
+    ssCmd << RAIN_ROTATOR_ACTION << nAction << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, RAIN_ROTATOR_ACTION);
     return nErr;
 
 }
@@ -2140,12 +2195,14 @@ int CRTIDome::setRainAction(const int &nAction)
 int CRTIDome::getPanId(int &nPanId)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("q#", sResp, 'q');
+    ssCmd << PANID << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, PANID);
     if(nErr) {
         return nErr;
     }
@@ -2173,14 +2230,14 @@ int CRTIDome::getPanId(int &nPanId)
 int CRTIDome::setPanId(const int nPanId)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "q" << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'q');
+    ssCmd << PANID << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, PANID);
     return nErr;
 
 }
@@ -2188,12 +2245,14 @@ int CRTIDome::setPanId(const int nPanId)
 int CRTIDome::getShutterPanId(int &nPanId)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("Q#", sResp, 'Q');
+    ssCmd << SHUTTER_PANID << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, SHUTTER_PANID);
     if(nErr) {
         return nErr;
     }
@@ -2235,12 +2294,14 @@ int CRTIDome::isPanIdSet(const int nPanId, bool &bSet)
 int CRTIDome::restoreDomeMotorSettings()
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("d#", sResp, 'd');
+    ssCmd << RESTORE_MOTOR_DEFAULT << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, RESTORE_MOTOR_DEFAULT);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [restoreDomeMotorSettings] ERROR = " <<nErr << std::endl;
@@ -2254,13 +2315,15 @@ int CRTIDome::restoreDomeMotorSettings()
 int CRTIDome::restoreShutterMotorSettings()
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
     int nDummy;
     
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("D#", sResp, 'D');
+    ssCmd << SHUTTER_RESTORE_MOTOR_DEFAULT << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, SHUTTER_RESTORE_MOTOR_DEFAULT);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [restoreShutterMotorSettings] ERROR = " <<nErr << std::endl;
@@ -2321,12 +2384,14 @@ void CRTIDome::writeRainStatus()
 int CRTIDome::getMACAddress(std::string &MACAddress)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("f#", sResp, 'f');
+    ssCmd << ETH_MAC_ADDRESS << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, ETH_MAC_ADDRESS);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getMACAddress] ERROR = " <<nErr << std::endl;
@@ -2340,17 +2405,15 @@ int CRTIDome::getMACAddress(std::string &MACAddress)
 int CRTIDome::reconfigureNetwork()
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    if(m_bNetworkConnected) {
-        nErr = domeCommand("b#", sResp, 0x00); // we won't get an answer as reconfiguring the network will disconnect us.
-    }
-    else {
-        nErr = domeCommand("b#", sResp, 'b');
-    }
+    ssCmd << ETH_RECONFIG << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, m_bNetworkConnected?0x00:ETH_RECONFIG);
+
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [reconfigureNetwork] ERROR = " <<nErr << std::endl;
@@ -2363,12 +2426,14 @@ int CRTIDome::reconfigureNetwork()
 int CRTIDome::getUseDHCP(bool &bUseDHCP)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("w#", sResp, 'w');
+    ssCmd << IP_DHCP << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_DHCP);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getUseDHCP] ERROR = " <<nErr << std::endl;
@@ -2384,26 +2449,28 @@ int CRTIDome::getUseDHCP(bool &bUseDHCP)
 int CRTIDome::setUseDHCP(bool bUseDHCP)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "w" << (bUseDHCP?"1":"0") << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'w');
+    ssCmd << IP_DHCP << (bUseDHCP?"1":"0") << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_DHCP);
     return nErr;
 }
 
 int CRTIDome::getIpAddress(std::string &IpAddress)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("j#", sResp, 'j');
+    ssCmd << IP_ADDRESS << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_ADDRESS);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getIpAddress] ERROR = " <<nErr << std::endl;
@@ -2417,26 +2484,28 @@ int CRTIDome::getIpAddress(std::string &IpAddress)
 int CRTIDome::setIpAddress(std::string IpAddress)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "j" << IpAddress << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'j');
+    ssCmd << IP_ADDRESS << IpAddress << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_ADDRESS);
     return nErr;
 }
 
 int CRTIDome::getSubnetMask(std::string &subnetMask)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("p#", sResp, 'p');
+    ssCmd << IP_SUBNET << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_SUBNET);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getSubnetMask] ERROR = " <<nErr << std::endl;
@@ -2451,26 +2520,28 @@ int CRTIDome::getSubnetMask(std::string &subnetMask)
 int CRTIDome::setSubnetMask(std::string subnetMask)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "p" << subnetMask << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'p');
+    ssCmd << IP_SUBNET << subnetMask << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_SUBNET);
     return nErr;
 }
 
 int CRTIDome::getIPGateway(std::string &IpAddress)
 {
     int nErr = PLUGIN_OK;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    nErr = domeCommand("u#", sResp, 'u');
+    ssCmd << IP_GATEWAY << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_GATEWAY);
     if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
         m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getIPGateway] ERROR = " <<nErr << std::endl;
@@ -2484,14 +2555,14 @@ int CRTIDome::getIPGateway(std::string &IpAddress)
 int CRTIDome::setIPGateway(std::string IpAddress)
 {
     int nErr = PLUGIN_OK;
-    std::stringstream ssTmp;
+    std::stringstream ssCmd;
     std::string sResp;
 
     if(!m_bIsConnected)
         return NOT_CONNECTED;
 
-    ssTmp << "u" << IpAddress << "#";
-    nErr = domeCommand(ssTmp.str(), sResp, 'u');
+    ssCmd << IP_GATEWAY << IpAddress << "#";
+    nErr = domeCommand(ssCmd.str(), sResp, IP_GATEWAY);
     return nErr;
 }
 

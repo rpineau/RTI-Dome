@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9344FEE22AD89E43000E9ED4 /* dome_commands.h in Headers */ = {isa = PBXBuildFile; fileRef = 9344FEE12AD89E43000E9ED4 /* dome_commands.h */; };
 		938EAFDA1D0C84F700ED2086 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938EAFD61D0C84F700ED2086 /* main.cpp */; };
 		938EAFDB1D0C84F700ED2086 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = 938EAFD71D0C84F700ED2086 /* main.h */; };
 		938EAFDC1D0C84F700ED2086 /* x2dome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938EAFD81D0C84F700ED2086 /* x2dome.cpp */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9344FEE12AD89E43000E9ED4 /* dome_commands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dome_commands.h; sourceTree = "<group>"; };
 		938EAFCD1D0C83E900ED2086 /* libRTI-Dome.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libRTI-Dome.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		938EAFD61D0C84F700ED2086 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		938EAFD71D0C84F700ED2086 /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 		938EAFD51D0C84E900ED2086 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				9344FEE12AD89E43000E9ED4 /* dome_commands.h */,
 				93C11EC3252BFEEC00077F0C /* StopWatch.h */,
 				938EAFDE1D0C858700ED2086 /* RTI-Dome.cpp */,
 				938EAFDF1D0C858700ED2086 /* RTI-Dome.h */,
@@ -93,6 +96,7 @@
 			files = (
 				938EAFE11D0C858700ED2086 /* RTI-Dome.h in Headers */,
 				938EAFDB1D0C84F700ED2086 /* main.h in Headers */,
+				9344FEE22AD89E43000E9ED4 /* dome_commands.h in Headers */,
 				93C11EC4252BFEEC00077F0C /* StopWatch.h in Headers */,
 				938EAFDD1D0C84F700ED2086 /* x2dome.h in Headers */,
 			);

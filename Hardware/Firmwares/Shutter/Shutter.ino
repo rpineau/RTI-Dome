@@ -31,27 +31,29 @@ static const unsigned long resetInterruptInterval = 43200000; // 12 hours
 
 const String version = "2.645";
 
+#include "dome_commands.h"
+/*
 // available A B J N S U W X Z
-const char ABORT_CMD				= 'a';
-const char CLOSE_SHUTTER_CMD		= 'C'; // Close shutter
+const char ABORT				= 'a';
+const char CLOSE_SHUTTER		= 'C'; // Close shutter
 const char RESTORE_MOTOR_DEFAULT    = 'D'; // restore default values for motor controll.
-const char ACCELERATION_SHUTTER_CMD = 'E'; // Get/Set stepper acceleration
-const char RAIN_ROTATOR_GET			= 'F'; // Rotator telling us if it's raining or not
-// const char ELEVATION_SHUTTER_CMD	= 'G'; // Get/Set altitude
-const char HELLO_CMD				= 'H'; // Let rotator know we're here
+const char ACCELERATION_SHUTTER = 'E'; // Get/Set stepper acceleration
+const char RAIN_ROTATOR			= 'F'; // Rotator telling us if it's raining or not
+// const char ELEVATION_SHUTTER	= 'G'; // Get/Set altitude
+const char HELLO				= 'H'; // Let rotator know we're here
 const char WATCHDOG_INTERVAL_SET	= 'I'; // Tell us how long between checks in seconds
-const char VOLTS_SHUTTER_CMD		= 'K'; // Get volts and get/set cutoff
+const char VOLTS_SHUTTER		= 'K'; // Get volts and get/set cutoff
 const char SHUTTER_PING				= 'L'; // use to reset watchdong timer.
-const char STATE_SHUTTER_GET		= 'M'; // Get shutter state
-const char OPEN_SHUTTER_CMD			= 'O'; // Open the shutter
-const char POSITION_SHUTTER_GET		= 'P'; // Get step position
-const char PANID_GET                = 'Q'; // get and set the XBEE PAN ID
-const char SPEED_SHUTTER_CMD		= 'R'; // Get/Set step rate (speed)
-const char STEPSPER_SHUTTER_CMD		= 'T'; // Get/Set steps per stroke
-const char VERSION_SHUTTER_GET		= 'V'; // Get version string
+const char STATE_SHUTTER		= 'M'; // Get shutter state
+const char OPEN_SHUTTER			= 'O'; // Open the shutter
+const char POSITION_SHUTTER		= 'P'; // Get step position
+const char PANID                = 'Q'; // get and set the XBEE PAN ID
+const char SPEED_SHUTTER		= 'R'; // Get/Set step rate (speed)
+const char STEPSPER_SHUTTER		= 'T'; // Get/Set steps per stroke
+const char VERSION_SHUTTER		= 'V'; // Get version string
 const char INIT_XBEE				= 'x'; // force a ConfigXBee
-const char REVERSED_SHUTTER_CMD		= 'Y'; // Get/Set stepper reversed status
-
+const char REVERSED_SHUTTER		= 'Y'; // Get/Set stepper reversed status
+*/
 
 #if defined(XBEE_S1)
 #define NB_AT_OK  17
@@ -281,10 +283,10 @@ void PingRotator()
 
     Wireless.print(wirelessMessage + "#");
     // ask if it's raining
-    Wireless.print( String(RAIN_ROTATOR_GET) + "#");
+    Wireless.print( String(RAIN_SHUTTER) + "#");
 
     // say hello :)
-    Wireless.print( String(HELLO_CMD) + "#");
+    Wireless.print( String(HELLO) + "#");
     needFirstPing = false;
 }
 
@@ -362,36 +364,36 @@ void ProcessMessages(String buffer)
 	DBPrintln("<<< Command:" + String(command) + " Value:" + value);
 
 	switch (command) {
-		case ACCELERATION_SHUTTER_CMD:
+		case ACCELERATION_SHUTTER:
 			if (hasValue) {
 				DBPrintln("Set acceleration to " + value);
 				Shutter->SetAcceleration(value.toInt());
 			}
-			wirelessMessage = String(ACCELERATION_SHUTTER_CMD) + String(Shutter->GetAcceleration());
+			wirelessMessage = String(ACCELERATION_SHUTTER) + String(Shutter->GetAcceleration());
 			DBPrintln("Acceleration is " + String(Shutter->GetAcceleration()));
 			break;
 
-		case ABORT_CMD:
+		case ABORT:
 			DBPrintln("STOP!");
 			Shutter->Abort();
-			wirelessMessage = String(ABORT_CMD);
+			wirelessMessage = String(ABORT);
 			break;
 
-		case CLOSE_SHUTTER_CMD:
+		case CLOSE_SHUTTER:
 			DBPrintln("Close shutter");
 			if (Shutter->GetState() != CLOSED) {
 				Shutter->Close();
 			}
-			wirelessMessage = String(STATE_SHUTTER_GET) + String(Shutter->GetState());
+			wirelessMessage = String(STATE_SHUTTER) + String(Shutter->GetState());
 			break;
 
-		case HELLO_CMD:
+		case HELLO:
 			DBPrintln("Rotator says hello!");
-			wirelessMessage = String(HELLO_CMD);
+			wirelessMessage = String(HELLO);
 			DBPrintln("Sending hello back");
 			break;
 
-		case OPEN_SHUTTER_CMD:
+		case OPEN_SHUTTER:
 			DBPrintln("Received Open Shutter Command");
 			if (isRaining) {
 				wirelessMessage = "OR"; // (O)pen command (R)ain cancel
@@ -409,12 +411,12 @@ void ProcessMessages(String buffer)
 
 			break;
 
-		case POSITION_SHUTTER_GET:
-			wirelessMessage = String(POSITION_SHUTTER_GET) + String(Shutter->GetPosition());
+		case POSITION_SHUTTER:
+			wirelessMessage = String(POSITION_SHUTTER) + String(Shutter->GetPosition());
 			DBPrintln(wirelessMessage);
 			break;
 
-		case WATCHDOG_INTERVAL_SET:
+		case WATCHDOG_INTERVAL:
 			if (hasValue) {
 				Shutter->SetWatchdogInterval((unsigned long)value.toInt());
 				DBPrintln("Watchdog interval set to " + value + " ms");
@@ -422,10 +424,10 @@ void ProcessMessages(String buffer)
 			else {
     			DBPrintln("Watchdog interval " + String(Shutter->getWatchdogInterval()) + " ms");
 			}
-			wirelessMessage = String(WATCHDOG_INTERVAL_SET) + String(Shutter->getWatchdogInterval());
+			wirelessMessage = String(WATCHDOG_INTERVAL) + String(Shutter->getWatchdogInterval());
 			break;
 
-		case RAIN_ROTATOR_GET:
+		case RAIN_SHUTTER:
 		    if(hasValue) {
                 if (value.equals("1")) {
                     if (!isRaining) {
@@ -442,30 +444,30 @@ void ProcessMessages(String buffer)
 		    }
 			break;
 
-		case REVERSED_SHUTTER_CMD:
+		case REVERSED_SHUTTER:
 			if (hasValue) {
 				Shutter->SetReversed(value.equals("1"));
 				DBPrintln("Set Reversed to " + value);
 			}
-			wirelessMessage = String(REVERSED_SHUTTER_CMD) + String(Shutter->GetReversed());
+			wirelessMessage = String(REVERSED_SHUTTER) + String(Shutter->GetReversed());
 			DBPrintln(wirelessMessage);
 			break;
 
-		case SPEED_SHUTTER_CMD:
+		case SPEED_SHUTTER:
 			if (hasValue) {
 				DBPrintln("Set speed to " + value);
 				if (value.toInt() > 0) Shutter->SetMaxSpeed(value.toInt());
 			}
-			wirelessMessage = String(SPEED_SHUTTER_CMD) + String(Shutter->GetMaxSpeed());
+			wirelessMessage = String(SPEED_SHUTTER) + String(Shutter->GetMaxSpeed());
 			DBPrintln(wirelessMessage);
 			break;
 
-		case STATE_SHUTTER_GET:
-			wirelessMessage = String(STATE_SHUTTER_GET) + String(Shutter->GetState());
+		case STATE_SHUTTER:
+			wirelessMessage = String(STATE_SHUTTER) + String(Shutter->GetState());
 			DBPrintln(wirelessMessage);
 			break;
 
-		case STEPSPER_SHUTTER_CMD:
+		case STEPSPER_SHUTTER:
 			if (hasValue) {
 				if (value.toInt() > 0) {
 					Shutter->SetStepsPerStroke(value.toInt());
@@ -474,15 +476,15 @@ void ProcessMessages(String buffer)
 			else {
 				DBPrintln("Get Steps " + String(Shutter->GetStepsPerStroke()));
 			}
-			wirelessMessage = String(STEPSPER_SHUTTER_CMD) + String(Shutter->GetStepsPerStroke());
+			wirelessMessage = String(STEPSPER_SHUTTER) + String(Shutter->GetStepsPerStroke());
 			break;
 
-		case VERSION_SHUTTER_GET:
+		case VERSION_SHUTTER:
 			wirelessMessage = "V" + version;
 			DBPrintln(wirelessMessage);
 			break;
 
-		case VOLTS_SHUTTER_CMD:
+		case VOLTS_SHUTTER:
 			if (hasValue) {
 				Shutter->SetVoltsFromString(value);
 				DBPrintln("Set volts to " + value);
@@ -519,13 +521,13 @@ void ProcessMessages(String buffer)
 			wirelessMessage = String(RESTORE_MOTOR_DEFAULT);
             break;
 
-        case PANID_GET:
+        case PANID:
 			if (hasValue) {
-				wirelessMessage = String(PANID_GET);
+				wirelessMessage = String(PANID);
 				setPANID(value);
 			}
 			else {
-                wirelessMessage = String(PANID_GET) + Shutter->GetPANID();
+                wirelessMessage = String(PANID) + Shutter->GetPANID();
             }
             DBPrintln("PAN ID '" + String(Shutter->GetPANID()) + "'");
 			break;
