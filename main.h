@@ -1,4 +1,4 @@
-#ifdef SB_WIN_BUILD
+#ifdef WIN32
 	#define PlugInExport __declspec(dllexport)
 #else
 	#define PlugInExport

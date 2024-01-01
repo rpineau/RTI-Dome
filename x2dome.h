@@ -28,13 +28,7 @@
 #define CHILD_KEY_HOME_ON_UNPARK    "HomeOnUnpark"
 #define CHILD_KEY_LOG_RAIN_STATUS   "LogRainStatus"
 
-#if defined(SB_WIN_BUILD)
-#define DEF_PORT_NAME				"COM1"
-#elif defined(SB_MAC_BUILD)
-#define DEF_PORT_NAME				"/dev/cu.Bluetooth-Incoming-Port"
-#elif defined(SB_LINUX_BUILD)
-#define DEF_PORT_NAME				"/dev/ttyUSB0"
-#endif
+#define DEF_PORT_NAME				"No port found"
 
 #define LOG_BUFFER_SIZE 256
 /*!

@@ -16,7 +16,8 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#ifdef SB_MAC_BUILD
+
+#ifndef WIN32
 #include <unistd.h>
 #endif
 // C++ includes
@@ -177,7 +178,7 @@ public:
     
 protected:
 
-    int             domeCommand(const std::string sCmd, std::string &sResp, char respCmdCode, int nTimeout = MAX_TIMEOUT, char cEndOfResponse = '#');
+    int             deviceCommand(const std::string sCmd, std::string &sResp, char respCmdCode, int nTimeout = MAX_TIMEOUT, char cEndOfResponse = '#');
     int             readResponse(std::string &sResp, int nTimeout = MAX_TIMEOUT, char cEndOfResponse = '#');
 
     int             getDomeAz(double &dDomeAz);
