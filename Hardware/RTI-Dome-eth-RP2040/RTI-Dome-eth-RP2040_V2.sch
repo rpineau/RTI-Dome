@@ -2737,7 +2737,7 @@
 <text x="-0.385" y="-2.655" size="0.8128" layer="25" font="vector" rot="R90">&gt;NAME</text>
 <text x="1.52" y="-2.655" size="0.8128" layer="27" font="vector" rot="R90">&gt;VALUE</text>
 </package>
-<package name="J1011F21PNL" urn="urn:adsk.eagle:footprint:37318358/1" library_version="2" library_locally_modified="yes">
+<package name="J1011F01PNL" urn="urn:adsk.eagle:footprint:43182962/3" library_version="37">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -2746,22 +2746,6 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <wire x1="8.405" y1="-17.05" x2="8.405" y2="8.15" width="0.2032" layer="51"/>
 <wire x1="-8.405" y1="8.15" x2="-8.405" y2="-17.05" width="0.2032" layer="51"/>
 <wire x1="-8.405" y1="8.15" x2="8.405" y2="8.15" width="0.2032" layer="21"/>
-<wire x1="-8.3851" y1="-16.9799" x2="-8.8044" y2="-16.316" width="0.2032" layer="21"/>
-<wire x1="-8.8044" y1="-16.316" x2="-10.2718" y2="-10.3067" width="0.2032" layer="21" curve="-37.105316"/>
-<wire x1="-10.2718" y1="-10.3067" x2="-10.5862" y2="-9.2586" width="0.2032" layer="21" curve="43.052296"/>
-<wire x1="-10.5862" y1="-9.2586" x2="-10.4814" y2="-9.1538" width="0.2032" layer="21" curve="-166.504203"/>
-<wire x1="-10.4814" y1="-9.1538" x2="-10.3766" y2="-9.2935" width="0.2032" layer="21"/>
-<wire x1="-10.3766" y1="-9.2935" x2="-10.132" y2="-9.9923" width="0.2032" layer="21" curve="-35.168494"/>
-<wire x1="-10.132" y1="-9.9923" x2="-10.132" y2="-10.726" width="0.2032" layer="21" curve="-3.414373"/>
-<wire x1="-10.132" y1="-10.726" x2="-8.455" y2="-16.5606" width="0.2032" layer="21" curve="35.485558"/>
-<wire x1="8.3851" y1="-16.9799" x2="8.8044" y2="-16.316" width="0.2032" layer="21"/>
-<wire x1="8.8044" y1="-16.316" x2="10.2718" y2="-10.3067" width="0.2032" layer="21" curve="37.105316"/>
-<wire x1="10.2718" y1="-10.3067" x2="10.5862" y2="-9.2586" width="0.2032" layer="21" curve="-43.052296"/>
-<wire x1="10.5862" y1="-9.2586" x2="10.4814" y2="-9.1538" width="0.2032" layer="21" curve="166.504203"/>
-<wire x1="10.4814" y1="-9.1538" x2="10.3766" y2="-9.2935" width="0.2032" layer="21"/>
-<wire x1="10.3766" y1="-9.2935" x2="10.132" y2="-9.9923" width="0.2032" layer="21" curve="35.168494"/>
-<wire x1="10.132" y1="-9.9923" x2="10.132" y2="-10.726" width="0.2032" layer="21" curve="3.414373"/>
-<wire x1="10.132" y1="-10.726" x2="8.455" y2="-16.5606" width="0.2032" layer="21" curve="-35.485558"/>
 <wire x1="-8.405" y1="8.15" x2="-8.405" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="-8.405" y1="-5.08" x2="-8.405" y2="-17.05" width="0.2032" layer="21"/>
 <wire x1="8.405" y1="-17.05" x2="8.405" y2="-5.08" width="0.2032" layer="21"/>
@@ -9849,13 +9833,13 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 <packageinstance name="TSSOP20"/>
 </packageinstances>
 </package3d>
-<package3d name="J1011F21PNL" urn="urn:adsk.eagle:package:37318428/2" type="model" library_version="5">
+<package3d name="J1026F01PNL" urn="urn:adsk.eagle:package:43182963/4" type="model" library_version="37">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
 Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <packageinstances>
-<packageinstance name="J1011F21PNL"/>
+<packageinstance name="J1011F01PNL"/>
 </packageinstances>
 </package3d>
 <package3d name="SMD-7050_4P" urn="urn:adsk.eagle:package:37318400/2" type="model" library_version="5" library_locally_modified="yes">
@@ -9863,13 +9847,13 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <packageinstance name="SMD-7050_4P"/>
 </packageinstances>
 </package3d>
-<package3d name="AK500/2" urn="urn:adsk.eagle:package:37318416/2" type="model" library_version="2" library_locally_modified="yes">
+<package3d name="AK500/2" urn="urn:adsk.eagle:package:37318416/4" type="model" library_version="36">
 <description>&lt;b&gt;CONNECTOR&lt;/b&gt;</description>
 <packageinstances>
 <packageinstance name="AK500/2"/>
 </packageinstances>
 </package3d>
-<package3d name="AK500/3" urn="urn:adsk.eagle:package:37500967/2" type="model" library_version="5" library_locally_modified="yes">
+<package3d name="AK500/3" urn="urn:adsk.eagle:package:37500967/6" type="model" library_version="36">
 <description>CONNECTOR</description>
 <packageinstances>
 <packageinstance name="AK500/3"/>
@@ -12800,7 +12784,7 @@ Source: http://www.maxstream.net/products/xbee/datasheet_XBee_OEM_RF-Modules.pdf
 </device>
 </devices>
 </deviceset>
-<deviceset name="J1011F" urn="urn:adsk.eagle:component:37318494/2" prefix="X" library_version="5">
+<deviceset name="J1011F01PNL" urn="urn:adsk.eagle:component:43182970/2" prefix="X" library_version="37">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -12809,7 +12793,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <gate name="G$1" symbol="J1011F" x="0" y="0" addlevel="always"/>
 </gates>
 <devices>
-<device name="" package="J1011F21PNL">
+<device name="" package="J1011F01PNL">
 <connects>
 <connect gate="G$1" pin="4/NC" pad="4"/>
 <connect gate="G$1" pin="5/NC" pad="5"/>
@@ -12827,27 +12811,10 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="G$1" pin="TD-" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37318428/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:43182963/4"/>
 </package3dinstances>
 <technologies>
-<technology name="01P">
-<attribute name="MF" value="" constant="no"/>
-<attribute name="MPN" value="" constant="no"/>
-<attribute name="OC_FARNELL" value="unknown" constant="no"/>
-<attribute name="OC_NEWARK" value="unknown" constant="no"/>
-</technology>
-<technology name="21P">
-<attribute name="MF" value="" constant="no"/>
-<attribute name="MPN" value="" constant="no"/>
-<attribute name="OC_FARNELL" value="unknown" constant="no"/>
-<attribute name="OC_NEWARK" value="unknown" constant="no"/>
-</technology>
-<technology name="21PNL">
-<attribute name="MF" value="" constant="no"/>
-<attribute name="MPN" value="" constant="no"/>
-<attribute name="OC_FARNELL" value="" constant="no"/>
-<attribute name="OC_NEWARK" value="" constant="no"/>
-</technology>
+<technology name=""/>
 </technologies>
 </device>
 </devices>
@@ -12873,7 +12840,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="AK500/2" urn="urn:adsk.eagle:component:37318488/2" prefix="X" uservalue="yes" library_version="4">
+<deviceset name="AK500/2" urn="urn:adsk.eagle:component:37318488/4" prefix="X" uservalue="yes" library_version="36">
 <description>&lt;b&gt;CONNECTOR&lt;/b&gt;</description>
 <gates>
 <gate name="-1" symbol="KL" x="0" y="5.08" addlevel="always"/>
@@ -12886,7 +12853,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="-2" pin="KL" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37318416/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37318416/4"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -12899,7 +12866,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="AK500/3" urn="urn:adsk.eagle:component:37500965/2" prefix="X" uservalue="yes" library_version="5" library_locally_modified="yes">
+<deviceset name="AK500/3" urn="urn:adsk.eagle:component:37500965/5" prefix="X" uservalue="yes" library_version="36">
 <description>&lt;b&gt;CONNECTOR&lt;/b&gt;</description>
 <gates>
 <gate name="-1" symbol="KL-1" x="0" y="5.08" addlevel="always"/>
@@ -12914,7 +12881,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="-3" pin="KL" pad="3"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37500967/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37500967/6"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21384,56 +21351,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <vertex x="-4.606628125" y="-1.768646875"/>
 </polygon>
 </package>
-<package name="RASPBERRYPIPICOPIN" urn="urn:adsk.eagle:footprint:40546188/4" library_version="66">
-<pad name="1" x="-8.89" y="24.13" drill="0.6"/>
-<pad name="2" x="-8.89" y="21.59" drill="0.6"/>
-<pad name="3" x="-8.89" y="19.05" drill="0.6"/>
-<pad name="4" x="-8.89" y="16.51" drill="0.6"/>
-<pad name="5" x="-8.89" y="13.97" drill="0.6"/>
-<pad name="6" x="-8.89" y="11.43" drill="0.6"/>
-<pad name="7" x="-8.89" y="8.89" drill="0.6"/>
-<pad name="8" x="-8.89" y="6.35" drill="0.6"/>
-<pad name="9" x="-8.89" y="3.81" drill="0.6"/>
-<pad name="10" x="-8.89" y="1.27" drill="0.6"/>
-<pad name="11" x="-8.89" y="-1.27" drill="0.6"/>
-<pad name="12" x="-8.89" y="-3.81" drill="0.6"/>
-<pad name="13" x="-8.89" y="-6.35" drill="0.6"/>
-<pad name="14" x="-8.89" y="-8.89" drill="0.6"/>
-<pad name="15" x="-8.89" y="-11.43" drill="0.6"/>
-<pad name="16" x="-8.89" y="-13.97" drill="0.6"/>
-<pad name="17" x="-8.89" y="-16.51" drill="0.6"/>
-<pad name="18" x="-8.89" y="-19.05" drill="0.6"/>
-<pad name="19" x="-8.89" y="-21.59" drill="0.6"/>
-<pad name="20" x="-8.89" y="-24.13" drill="0.6"/>
-<pad name="21" x="8.89" y="-24.13" drill="0.6"/>
-<pad name="22" x="8.89" y="-21.59" drill="0.6"/>
-<pad name="23" x="8.89" y="-19.05" drill="0.6"/>
-<pad name="24" x="8.89" y="-16.51" drill="0.6"/>
-<pad name="25" x="8.89" y="-13.97" drill="0.6"/>
-<pad name="26" x="8.89" y="-11.43" drill="0.6"/>
-<pad name="27" x="8.89" y="-8.89" drill="0.6"/>
-<pad name="28" x="8.89" y="-6.35" drill="0.6"/>
-<pad name="29" x="8.89" y="-3.81" drill="0.6"/>
-<pad name="30" x="8.89" y="-1.27" drill="0.6"/>
-<pad name="31" x="8.89" y="1.27" drill="0.6"/>
-<pad name="32" x="8.89" y="3.81" drill="0.6"/>
-<pad name="33" x="8.89" y="6.35" drill="0.6"/>
-<pad name="34" x="8.89" y="8.89" drill="0.6"/>
-<pad name="35" x="8.89" y="11.43" drill="0.6"/>
-<pad name="36" x="8.89" y="13.97" drill="0.6"/>
-<pad name="37" x="8.89" y="16.51" drill="0.6"/>
-<pad name="38" x="8.89" y="19.05" drill="0.6"/>
-<pad name="39" x="8.89" y="21.59" drill="0.6"/>
-<pad name="40" x="8.89" y="24.13" drill="0.6"/>
-<wire x1="-10.16" y1="25.4" x2="10.16" y2="25.4" width="0.127" layer="49"/>
-<wire x1="10.16" y1="25.4" x2="10.16" y2="-25.4" width="0.127" layer="49"/>
-<wire x1="10.16" y1="-25.4" x2="-10.16" y2="-25.4" width="0.127" layer="49"/>
-<wire x1="-10.16" y1="-25.4" x2="-10.16" y2="25.4" width="0.127" layer="49"/>
-<circle x="-6.985" y="23.495" radius="0.179603125" width="0.127" layer="49"/>
-<text x="-3.81" y="0" size="0.635" layer="25" rot="R90">&gt;NAME</text>
-<text x="3.175" y="0" size="0.635" layer="27" rot="R90">&gt;VALUE</text>
-</package>
-<package name="RASPBERRYPIPICO" urn="urn:adsk.eagle:footprint:40546187/3" locally_modified="yes" library_version="68" library_locally_modified="yes">
+<package name="RASPBERRYPIPICO" urn="urn:adsk.eagle:footprint:40546187/5" library_version="108">
 <description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-9.69" y="24.13" dx="1.6" dy="1.6" layer="1"/>
@@ -21485,12 +21403,19 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="-7.455" y1="24.13" x2="-7.355" y2="24.13" width="0.2" layer="21" curve="180"/>
 <wire x1="-7.355" y1="24.13" x2="-7.455" y2="24.13" width="0.2" layer="21" curve="180"/>
 <wire x1="-7.455" y1="24.13" x2="-7.355" y2="24.13" width="0.2" layer="21" curve="180"/>
-<wire x1="-10.5" y1="-25.2" x2="-10.5" y2="-25.5" width="0.2" layer="21"/>
-<wire x1="-10.5" y1="-25.5" x2="10.5" y2="-25.5" width="0.2" layer="21"/>
-<wire x1="10.5" y1="-25.5" x2="10.5" y2="-25.2" width="0.2" layer="21"/>
 <wire x1="-2.54" y1="25.4" x2="-2.54" y2="22.86" width="0.127" layer="21"/>
 <wire x1="-2.54" y1="22.86" x2="3.175" y2="22.86" width="0.127" layer="21"/>
-<wire x1="3.175" y1="22.86" x2="3.175" y2="25.4" width="0.127" layer="21"/>
+<wire x1="3.175" y1="22.86" x2="3.175" y2="25.273" width="0.127" layer="21"/>
+<wire x1="3.175" y1="25.273" x2="3.175" y2="25.4" width="0.127" layer="21"/>
+<wire x1="10.414" y1="25.4" x2="-2.54" y2="25.4" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="25.4" x2="-10.414" y2="25.4" width="0.127" layer="21"/>
+<wire x1="-10.414" y1="25.4" x2="-10.414" y2="-25.4" width="0.127" layer="21"/>
+<wire x1="-10.414" y1="-25.4" x2="10.414" y2="-25.4" width="0.127" layer="21"/>
+<wire x1="10.414" y1="-25.4" x2="10.414" y2="25.4" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="25.4" x2="-2.54" y2="22.86" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="22.86" x2="3.175" y2="22.86" width="0.127" layer="21"/>
+<wire x1="3.175" y1="22.86" x2="3.175" y2="25.273" width="0.127" layer="21"/>
+<circle x="-7.62" y="24.13" radius="0.254" width="0.127" layer="21"/>
 </package>
 <package name="SOT23" urn="urn:adsk.eagle:footprint:28669/1" library_version="108">
 <description>&lt;b&gt;SOT-23&lt;/b&gt;</description>
@@ -21507,6 +21432,60 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <rectangle x1="0.7112" y1="-1.2954" x2="1.1684" y2="-0.7112" layer="51"/>
 <rectangle x1="-1.1684" y1="-1.2954" x2="-0.7112" y2="-0.7112" layer="51"/>
 </package>
+<package name="RASPBERRYPIPICOPIN" urn="urn:adsk.eagle:footprint:40546188/5" library_version="108">
+<pad name="1" x="-8.89" y="24.13" drill="0.6"/>
+<pad name="2" x="-8.89" y="21.59" drill="0.6"/>
+<pad name="3" x="-8.89" y="19.05" drill="0.6"/>
+<pad name="4" x="-8.89" y="16.51" drill="0.6"/>
+<pad name="5" x="-8.89" y="13.97" drill="0.6"/>
+<pad name="6" x="-8.89" y="11.43" drill="0.6"/>
+<pad name="7" x="-8.89" y="8.89" drill="0.6"/>
+<pad name="8" x="-8.89" y="6.35" drill="0.6"/>
+<pad name="9" x="-8.89" y="3.81" drill="0.6"/>
+<pad name="10" x="-8.89" y="1.27" drill="0.6"/>
+<pad name="11" x="-8.89" y="-1.27" drill="0.6"/>
+<pad name="12" x="-8.89" y="-3.81" drill="0.6"/>
+<pad name="13" x="-8.89" y="-6.35" drill="0.6"/>
+<pad name="14" x="-8.89" y="-8.89" drill="0.6"/>
+<pad name="15" x="-8.89" y="-11.43" drill="0.6"/>
+<pad name="16" x="-8.89" y="-13.97" drill="0.6"/>
+<pad name="17" x="-8.89" y="-16.51" drill="0.6"/>
+<pad name="18" x="-8.89" y="-19.05" drill="0.6"/>
+<pad name="19" x="-8.89" y="-21.59" drill="0.6"/>
+<pad name="20" x="-8.89" y="-24.13" drill="0.6"/>
+<pad name="21" x="8.89" y="-24.13" drill="0.6"/>
+<pad name="22" x="8.89" y="-21.59" drill="0.6"/>
+<pad name="23" x="8.89" y="-19.05" drill="0.6"/>
+<pad name="24" x="8.89" y="-16.51" drill="0.6"/>
+<pad name="25" x="8.89" y="-13.97" drill="0.6"/>
+<pad name="26" x="8.89" y="-11.43" drill="0.6"/>
+<pad name="27" x="8.89" y="-8.89" drill="0.6"/>
+<pad name="28" x="8.89" y="-6.35" drill="0.6"/>
+<pad name="29" x="8.89" y="-3.81" drill="0.6"/>
+<pad name="30" x="8.89" y="-1.27" drill="0.6"/>
+<pad name="31" x="8.89" y="1.27" drill="0.6"/>
+<pad name="32" x="8.89" y="3.81" drill="0.6"/>
+<pad name="33" x="8.89" y="6.35" drill="0.6"/>
+<pad name="34" x="8.89" y="8.89" drill="0.6"/>
+<pad name="35" x="8.89" y="11.43" drill="0.6"/>
+<pad name="36" x="8.89" y="13.97" drill="0.6"/>
+<pad name="37" x="8.89" y="16.51" drill="0.6"/>
+<pad name="38" x="8.89" y="19.05" drill="0.6"/>
+<pad name="39" x="8.89" y="21.59" drill="0.6"/>
+<pad name="40" x="8.89" y="24.13" drill="0.6"/>
+<wire x1="-10.16" y1="25.4" x2="10.16" y2="25.4" width="0.127" layer="49"/>
+<wire x1="10.16" y1="25.4" x2="10.16" y2="-25.4" width="0.127" layer="49"/>
+<wire x1="10.16" y1="-25.4" x2="-10.16" y2="-25.4" width="0.127" layer="49"/>
+<wire x1="-10.16" y1="-25.4" x2="-10.16" y2="25.4" width="0.127" layer="49"/>
+<wire x1="10.16" y1="25.4" x2="-10.16" y2="25.4" width="0.127" layer="21"/>
+<wire x1="-10.16" y1="25.4" x2="-10.16" y2="-25.4" width="0.127" layer="21"/>
+<wire x1="-10.16" y1="-25.4" x2="10.16" y2="-25.4" width="0.127" layer="21"/>
+<wire x1="10.16" y1="-25.4" x2="10.16" y2="25.4" width="0.127" layer="21"/>
+<circle x="-6.985" y="23.495" radius="0.179603125" width="0.127" layer="49"/>
+<circle x="-6.985" y="23.495" radius="0.359209375" width="0.127" layer="21"/>
+<text x="-3.81" y="0" size="0.635" layer="25" rot="R90">&gt;NAME</text>
+<text x="3.175" y="0" size="0.635" layer="27" rot="R90">&gt;VALUE</text>
+</package>
 </packages>
 <packages3d>
 <package3d name="XT60PWM" urn="urn:adsk.eagle:package:37256940/5" type="model" library_version="42">
@@ -21522,12 +21501,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <packageinstance name="UD-10X10_NICHICON"/>
 </packageinstances>
 </package3d>
-<package3d name="RASPBERRYPIPICOPIN" urn="urn:adsk.eagle:package:40546190/5" type="model" library_version="66">
-<packageinstances>
-<packageinstance name="RASPBERRYPIPICOPIN"/>
-</packageinstances>
-</package3d>
-<package3d name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:package:40546189/5" type="model" library_version="68" library_locally_modified="yes">
+<package3d name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:package:40546189/7" type="model" library_version="108">
 <description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
 </description>
 <packageinstances>
@@ -21538,6 +21512,11 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <description>SOT-23</description>
 <packageinstances>
 <packageinstance name="SOT23"/>
+</packageinstances>
+</package3d>
+<package3d name="RASPBERRYPIPICOPIN" urn="urn:adsk.eagle:package:40546190/6" type="model" library_version="108">
+<packageinstances>
+<packageinstance name="RASPBERRYPIPICOPIN"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -21644,7 +21623,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/5" prefix="J" library_version="42">
+<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/6" prefix="J" library_version="108">
 <description>&lt;b&gt;Socket; DC supply; XT60; male; PIN: 2; on PCBs; THT; Colour: yellow&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade/XT60PW SPEC.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21673,6 +21652,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 <attribute name="MOUSER_PRICE-STOCK" value="" constant="no"/>
 <attribute name="MOUSER_TESTING_PART_NUMBER" value="" constant="no"/>
 <attribute name="MOUSER_TESTING_PRICE-STOCK" value="" constant="no"/>
+<attribute name="MPN" value="XT60PW-M" constant="no"/>
 </technology>
 </technologies>
 </device>
@@ -21699,7 +21679,7 @@ Source: &lt;a href="https://www.vishay.com/docs/28395/150crz.pdf"&gt; Datasheet 
 </device>
 </devices>
 </deviceset>
-<deviceset name="RASPBERRY_PI_PICO" urn="urn:adsk.eagle:component:40546191/6" prefix="IC" library_version="68" library_locally_modified="yes">
+<deviceset name="RASPBERRY_PI_PICO" urn="urn:adsk.eagle:component:40546191/9" prefix="IC" library_version="108">
 <description>&lt;b&gt;RASPBERRY-PI - RASPBERRY PI PICO W - Raspberry Pi Board, Raspberry Pi Pico W, RP2040, 32bit, ARM Cortex-M0+&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21750,7 +21730,7 @@ Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pd
 <connect gate="G$1" pin="VSYS" pad="39"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:40546189/5"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:40546189/7"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21762,6 +21742,8 @@ Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pd
 <attribute name="MANUFACTURER_PART_NUMBER" value="RASPBERRY PI PICO W" constant="no"/>
 <attribute name="MOUSER_PART_NUMBER" value="" constant="no"/>
 <attribute name="MOUSER_PRICE-STOCK" value="" constant="no"/>
+<attribute name="MPN" value="SCO918" constant="no"/>
+<attribute name="PARTNUMBER" value="SCO918" constant="no"/>
 </technology>
 </technologies>
 </device>
@@ -21809,7 +21791,7 @@ Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pd
 <connect gate="G$1" pin="VSYS" pad="39"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:40546190/5"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:40546190/6"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -22800,16 +22782,16 @@ at 30/07/2012 11:22:31</description>
 </class>
 </classes>
 <parts>
-<part name="X4" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/2">
+<part name="X4" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6">
 <attribute name="MPN" value="691101710003"/>
 </part>
-<part name="X1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/2">
+<part name="X1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/4">
 <attribute name="MPN" value="691101710002"/>
 </part>
-<part name="X3" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/2">
+<part name="X3" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/4">
 <attribute name="MPN" value="691101710002"/>
 </part>
-<part name="X5" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/2">
+<part name="X5" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6">
 <attribute name="MPN" value="691101710003"/>
 </part>
 <part name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="4.7K">
@@ -22955,10 +22937,10 @@ at 30/07/2012 11:22:31</description>
 </spice>
 <attribute name="MPN" value="CC0805KKX5R8BB106"/>
 </part>
-<part name="X8" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/2">
+<part name="X8" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/4">
 <attribute name="MPN" value="691101710002"/>
 </part>
-<part name="X11" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/2">
+<part name="X11" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/4">
 <attribute name="MPN" value="691101710002"/>
 </part>
 <part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1K">
@@ -23118,9 +23100,7 @@ at 30/07/2012 11:22:31</description>
 </spice>
 <attribute name="MPN" value="RC0805FR-0749R9L"/>
 </part>
-<part name="X9" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="J1011F" device="" package3d_urn="urn:adsk.eagle:package:37318428/2" technology="21PNL" value="J1011F21PNL">
-<attribute name="MPN" value="J1011F21PNL"/>
-</part>
+<part name="X9" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="J1011F01PNL" device="" package3d_urn="urn:adsk.eagle:package:43182963/4" value="J1011F01PNL"/>
 <part name="R31" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="4.7K">
 <spice>
 <pinmapping spiceprefix="R">
@@ -23359,8 +23339,8 @@ at 30/07/2012 11:22:31</description>
 <part name="FRAME2" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA3_L" device=""/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="J2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/5"/>
-<part name="X2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/2"/>
-<part name="X10" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/2"/>
+<part name="X2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6"/>
+<part name="X10" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6"/>
 <part name="IC2" library="Microchip_By_element14_Batch_1" deviceset="24LC64T-I/SN" device=""/>
 <part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="IC8" library="burr-brown" library_urn="urn:adsk.eagle:library:37504555" deviceset="REG1117" device="" package3d_urn="urn:adsk.eagle:package:37504714/1" value="REG1117-3.3V">
@@ -23549,8 +23529,9 @@ at 30/07/2012 11:22:31</description>
 <attribute name="MPN" value="CC0805KKX5R8BB106"/>
 </part>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="RASPBERRY_PI_PICO" device="" package3d_urn="urn:adsk.eagle:package:40546189/5" value="RASPBERRY_PI_PICO">
+<part name="IC4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="RASPBERRY_PI_PICO" device="" package3d_urn="urn:adsk.eagle:package:40546189/7" value="RASPBERRY_PI_PICO">
 <attribute name="DESCRIPTION" value="RASPBERRY-PI - RASPBERRY PI PICO - Raspberry Pi Board, Raspberry Pi Pic, RP2040, 32bit, ARM Cortex-M0+"/>
+<attribute name="JLCPCBPN" value="C7203003"/>
 <attribute name="MANUFACTURER_NAME" value="RASPBERRY-PI PICO"/>
 <attribute name="MANUFACTURER_PART_NUMBER" value="SC0916"/>
 <attribute name="MOUSER_PART_NUMBER" value="SC0915"/>
@@ -23559,8 +23540,8 @@ at 30/07/2012 11:22:31</description>
 <part name="X13" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="PN61729-S" device="" package3d_urn="urn:adsk.eagle:package:37504981/2">
 <attribute name="MPN" value="SS-52300-001"/>
 </part>
-<part name="X6" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/2"/>
-<part name="X12" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/2">
+<part name="X6" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6"/>
+<part name="X12" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/2" device="" package3d_urn="urn:adsk.eagle:package:37318416/4">
 <attribute name="MPN" value="691101710002"/>
 </part>
 <part name="U$1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/2" value="74HCT541PWR"/>
@@ -23987,6 +23968,7 @@ at 30/07/2012 11:22:31</description>
 <attribute name="NAME" x="83.82" y="68.58" size="1.778" layer="95" align="center-left"/>
 <attribute name="VALUE" x="83.82" y="66.04" size="1.778" layer="96" align="center-left"/>
 <attribute name="MPN" x="109.22" y="40.64" size="1.778" layer="96" display="off"/>
+<attribute name="JLCPCBPN" x="109.22" y="40.64" size="1.778" layer="96" display="off"/>
 </instance>
 <instance part="X13" gate="G$1" x="335.28" y="180.34" smashed="yes" rot="R180">
 <attribute name="NAME" x="335.28" y="171.45" size="1.778" layer="95" rot="R180"/>
