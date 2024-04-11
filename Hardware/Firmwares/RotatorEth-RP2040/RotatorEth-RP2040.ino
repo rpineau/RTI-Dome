@@ -5,8 +5,6 @@
 
 // Uncomment #define DEBUG to enable printing debug messages in serial
 
-// if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
-// This us useful for people who only want to automate the rotation.
 
 #include "Arduino.h"
 
@@ -14,6 +12,9 @@
 #ifdef DEBUG
 #define DebugPort Serial    // Programming port
 #endif
+
+// if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
+// This us useful for people who only want to automate the rotation.
 
 // #define STANDALONE
 #ifdef STANDALONE
@@ -34,19 +35,19 @@
 
 
 #define MAX_TIMEOUT 10
-#define OK  0
+#define ALPACA_OK 0
 
 #define VERSION "2.645"
 
 #define USE_EXT_EEPROM
 #define USE_ETHERNET
-//#define USE_ALPACA
+#define USE_ALPACA
 
 #ifdef USE_ETHERNET
 #pragma message "Ethernet enabled"
 #ifdef USE_ALPACA
 #pragma message "Alpaca server enabled"
-#endif
+#endif // USE_ALPACA
 // include and some defines for ethernet connection
 #include <SPI.h>    // RP2040 :  SCK: GP18, COPI/TX: GP19, CIPO/RX: GP16, CS: GP17
 #include <EthernetClient.h>
@@ -90,14 +91,24 @@ byte MAC_Address[6];    // Mac address, uses part of the unique ID
 
 #define SERVER_PORT 2323
 EthernetServer domeServer(SERVER_PORT);
-#ifdef USE_ALPACA
-#include "RTI-DomeAlpacaServer.h"
-#define ALPACA_SERVER_PORT 11111
-RTIDomeAlpacaServer AlpacaServer(ALPACA_SERVER_PORT);
-#endif // USE_ALPACA
 EthernetClient domeClient;
 int nbEthernetClient;
 String networkBuffer;
+
+#ifdef USE_ALPACA
+#include <functional>
+#include <EthernetUdp.h>
+#include <ArduinoJson.h>
+// Alpaca REST server
+#include <aWOT.h>
+int nTransactionID;
+String sUID;
+#define SERVER_ERROR -1
+String sAlpacaDiscovery = "alpacadiscovery1";
+#define ALPACA_DISCOVERY_PORT 32227
+#define ALPACA_SERVER_PORT 80
+#endif // USE_ALPACA
+
 #endif // USE_ETHERNET
 
 String computerBuffer;
@@ -177,7 +188,7 @@ IPConfig ServerConfig;
 const char ERR_NO_DATA = -1;
 
 #include "dome_commands.h"
-
+enum CmdSource {SERIAL_CMD, NETWORK_CMD, ALPACA_CMD};
 // function prototypes
 #ifdef USE_ETHERNET
 void configureEthernet();
@@ -204,10 +215,372 @@ void PingShutter();
 void ReceiveNetwork(EthernetClient);
 #endif // USE_ETHERNET
 void ReceiveComputer();
-void ProcessCommand();
+void ProcessCommand(int nSource);
 void ReceiveWireless();
 void ProcessWireless();
 
+#ifdef USE_ALPACA
+
+class RTIDomeAlpacaDiscoveryServer
+{
+public:
+    RTIDomeAlpacaDiscoveryServer(int port);
+    void startServer();
+    int checkForRequest();
+private:
+    EthernetUDP *discoveryServer;
+    int m_UDPPort;
+};
+
+// ALPACA discovery server
+RTIDomeAlpacaDiscoveryServer::RTIDomeAlpacaDiscoveryServer(int port)
+{
+    m_UDPPort = port;
+    discoveryServer = nullptr;
+}
+
+void RTIDomeAlpacaDiscoveryServer::startServer()
+{
+    discoveryServer = new EthernetUDP();
+    if(!discoveryServer) {
+        discoveryServer = nullptr;
+        return;
+    }
+    discoveryServer->begin(m_UDPPort);
+}
+
+int RTIDomeAlpacaDiscoveryServer::checkForRequest()
+{
+    if(!discoveryServer)
+        return -1;
+    
+    String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
+    String sDiscoveryRequest;
+    char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
+    int packetSize = discoveryServer->parsePacket();
+    if (packetSize) {
+        memset(packetBuffer,0,sizeof(packetBuffer));
+        discoveryServer->read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+        // do stuff
+        sDiscoveryRequest = String(packetBuffer);
+        if(sDiscoveryRequest.indexOf(sAlpacaDiscovery)==-1)
+            return SERVER_ERROR; // wrong type of discovery message
+        // send discovery reponse
+        discoveryServer->beginPacket(discoveryServer->remoteIP(), discoveryServer->remotePort());
+        discoveryServer->write(sDiscoveryResponse.c_str());
+        discoveryServer->endPacket();
+    }
+    return ALPACA_OK;
+}
+
+
+// Alpaca API prototype functions
+void getApiVersion(Request &req, Response &res);
+void getDescription(Request &req, Response &res);
+void getConfiguredDevice(Request &req, Response &res);
+void doAction(Request &req, Response &res);
+void doCommandBlind(Request &req, Response &res);
+void doCommandBool(Request &req, Response &res);
+void doCommandString(Request &req, Response &res);
+
+class RTIDomeAlpacaServer
+{
+public :
+    RTIDomeAlpacaServer(int port);
+    void startServer();
+    void checkForRequest();
+
+
+private :
+    EthernetServer *mRestServer;
+    Application  *m_AlpacaRestServer;
+    int m_nRestPort;
+};
+
+RTIDomeAlpacaServer::RTIDomeAlpacaServer(int port)
+{
+    m_nRestPort = port;
+    mRestServer = nullptr;
+    m_AlpacaRestServer = nullptr;
+    nTransactionID = 0;
+}
+
+void RTIDomeAlpacaServer::startServer()
+{
+    mRestServer = new EthernetServer(m_nRestPort);
+    m_AlpacaRestServer = new Application();
+
+    DBPrintln("m_AlpacaRestServer starting");
+    mRestServer->begin();
+
+
+    DBPrintln("m_AlpacaRestServer mapping endpoints");
+
+    m_AlpacaRestServer->get("/management/apiversions", &getApiVersion);
+    m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
+    m_AlpacaRestServer->get("/management/v1/description", &getDescription);
+
+    m_AlpacaRestServer->put("api/v1/dome/0/action", &doAction);
+    m_AlpacaRestServer->put("api/v1/dome/0/commandblind", &doCommandBlind);
+    m_AlpacaRestServer->put("api/v1/dome/0/commandbool", &doCommandBool);
+    m_AlpacaRestServer->put("api/v1/dome/0/commandstring", &doCommandString);
+
+    // m_AlpacaRestServer->get("api/v1/dome/0/connected", &getConected);
+
+    // m_AlpacaRestServer->get("api/v1/dome/0/altitude", &getAltitude);
+
+    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
+
+
+    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
+
+    DBPrintln("m_AlpacaRestServer started");
+
+}
+
+void RTIDomeAlpacaServer::checkForRequest()
+{
+    // process incoming connections one at a time
+    EthernetClient client = mRestServer->available();
+    if (client.connected()) {
+        m_AlpacaRestServer->process(&client);
+        client.stop();
+        nTransactionID++;
+  }
+
+}
+
+RTIDomeAlpacaServer *AlpacaServer;
+RTIDomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
+
+void getApiVersion(Request &req, Response &res)
+{
+    JsonDocument AlpacaResp;
+    String sResp;
+    char ClientID[64];
+    char ClientTransactionID[64];
+    
+    req.query("ClientID", ClientID, 64);
+    req.query("ClientTransactionID", ClientTransactionID, 64);
+    DBPrintln("ClientID : " + String(ClientID));
+    DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+    res.set("Content-Type", "application/json");
+    AlpacaResp["Value"][0] = 1;
+    AlpacaResp["ServerTransactionID"] = nTransactionID;
+    AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+    serializeJson(AlpacaResp, sResp);
+
+    DBPrintln("sResp : " + sResp);
+
+    res.print(sResp);
+    res.flush();
+}
+
+void getDescription(Request &req, Response &res)
+{
+    JsonDocument AlpacaResp;
+    String sResp;
+    char ClientID[64];
+    char ClientTransactionID[64];
+    
+    req.query("ClientID", ClientID, 64);
+    req.query("ClientTransactionID", ClientTransactionID, 64);
+    DBPrintln("ClientID : " + String(ClientID));
+    DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+    res.set("Content-Type", "application/json");
+    AlpacaResp["Value"]["ServerName"]= "RTIDome Alpaca";
+    AlpacaResp["Value"]["Manufacturer"]= "RTI-Zone";
+    AlpacaResp["Value"]["ManufacturerVersion"]= VERSION;
+    AlpacaResp["Value"]["Location"]= "Earth";
+    AlpacaResp["ServerTransactionID"] = nTransactionID;
+    AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("sResp : " + sResp);
+
+    res.print(sResp);
+    res.flush();
+}
+
+void getConfiguredDevice(Request &req, Response &res)
+{
+    JsonDocument AlpacaResp;
+    String sResp;
+    char ClientID[64];
+    char ClientTransactionID[64];
+    
+    req.query("ClientID", ClientID, 64);
+    req.query("ClientTransactionID", ClientTransactionID, 64);
+    DBPrintln("ClientID : " + String(ClientID));
+    DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+    res.set("Content-Type", "application/json");
+    AlpacaResp["Value"][0] ["DeviceName"]= "RTIDome";
+    AlpacaResp["Value"][0] ["DeviceType"]= "dome";
+    AlpacaResp["Value"][0] ["DeviceNumber"]= 0;
+    AlpacaResp["Value"][0] ["UniqueID"]= sUID;
+    AlpacaResp["ServerTransactionID"] = nTransactionID;
+    AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("sResp : " + sResp);
+
+    res.print(sResp);
+    res.flush();
+}
+
+void doAction(Request &req, Response &res)
+{
+    JsonDocument AlpacaResp;
+    JsonDocument FormData;
+    String sResp;
+    char name[256];
+    char value[56];
+
+    while(req.form(name, 256, value, 256)){
+        FormData[name]=String(value);
+    }
+#ifdef DEBUG
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("FormData : " + sResp);
+    sResp="";
+#endif
+
+    if(FormData.size()==0){
+        res.sendStatus(400);
+        AlpacaResp["ErrorNumber"] = 400;
+        AlpacaResp["ErrorMessage"] = "Invalid parameters";
+
+    }
+    res.set("Content-Type", "application/json");
+    AlpacaResp["ErrorNumber"] = 0;
+    AlpacaResp["ErrorMessage"] = "Ok";
+    AlpacaResp["Value"] = "Ok";
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("sResp : " + sResp);
+
+    res.print(sResp);
+    res.flush();
+}
+
+void doCommandBlind(Request &req, Response &res)
+{
+    JsonDocument AlpacaResp;
+    JsonDocument FormData;
+    String sResp;
+    char name[256];
+    char value[56];
+
+    while(req.form(name, 256, value, 256)){
+        FormData[name]=String(value);
+    }
+#ifdef DEBUG
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("FormData : " + sResp);
+    sResp="";
+#endif
+
+    if(FormData.size()==0){
+        res.sendStatus(400);
+        AlpacaResp["ErrorNumber"] = 400;
+        AlpacaResp["ErrorMessage"] = "Invalid parameters";
+
+    }
+
+    res.set("Content-Type", "application/json");
+    AlpacaResp["ErrorNumber"] = 0;
+    AlpacaResp["ErrorMessage"] = "Ok";
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("sResp : " + sResp);
+
+    res.print(sResp);
+    res.flush();
+}
+
+void doCommandBool(Request &req, Response &res)
+{
+    JsonDocument AlpacaResp;
+    JsonDocument FormData;
+    String sResp;
+    char name[256];
+    char value[56];
+
+    while(req.form(name, 256, value, 256)){
+        FormData[name]=String(value);
+    }
+#ifdef DEBUG
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("FormData : " + sResp);
+    sResp="";
+#endif
+
+    if(FormData.size()==0){
+        res.sendStatus(400);
+        AlpacaResp["ErrorNumber"] = 400;
+        AlpacaResp["ErrorMessage"] = "Invalid parameters";
+
+    }
+
+    res.set("Content-Type", "application/json");
+    AlpacaResp["ErrorNumber"] = 0;
+    AlpacaResp["ErrorMessage"] = "Ok";
+    AlpacaResp["Value"] = "True";
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("sResp : " + sResp);
+
+    res.print(sResp);
+    res.flush();
+}
+
+void doCommandString(Request &req, Response &res)
+{
+    JsonDocument AlpacaResp;
+    JsonDocument FormData;
+    String sResp;
+    char name[256];
+    char value[56];
+
+    while(req.form(name, 256, value, 256)){
+        FormData[name]=String(value);
+    }
+#ifdef DEBUG
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("FormData : " + sResp);
+    sResp="";
+#endif
+
+    if(FormData.size()==0){
+        res.sendStatus(400);
+        AlpacaResp["ErrorNumber"] = 400;
+        AlpacaResp["ErrorMessage"] = "Invalid parameters";
+
+    }
+
+    res.set("Content-Type", "application/json");
+    AlpacaResp["ErrorNumber"] = 0;
+    AlpacaResp["ErrorMessage"] = "Ok";
+    AlpacaResp["Value"] = "OK";
+    serializeJson(AlpacaResp, sResp);
+    DBPrintln("sResp : " + sResp);
+
+    res.print(sResp);
+    res.flush();
+}
+
+#endif // USE_ALPACA
+
+
+//
+// Setup and main loops
+//
 void setup()
 {
 #if defined(ARDUINO_ARCH_RP2040)
@@ -237,6 +610,14 @@ void setup()
 #endif
 #ifdef USE_ETHERNET
     getMacAddress(MAC_Address, uidBuffer);
+#ifdef USE_ALPACA
+    sUID = String(MAC_Address[0], HEX) +
+                    String(MAC_Address[1], HEX) +
+                    String(MAC_Address[2], HEX) +
+                    String(MAC_Address[3], HEX) +
+                    String(MAC_Address[4], HEX) +
+                    String(MAC_Address[5], HEX) ;
+#endif // USE_ALPACA
 #ifdef DEBUG
     DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
                     String(MAC_Address[1], HEX) + String(":") +
@@ -273,10 +654,17 @@ void setup()
 
 #ifdef USE_ETHERNET
     configureEthernet();
+#ifdef USE_ALPACA
+    AlpacaDiscoveryServer = new RTIDomeAlpacaDiscoveryServer(ALPACA_DISCOVERY_PORT);
+    AlpacaServer = new RTIDomeAlpacaServer(ALPACA_SERVER_PORT);
+    AlpacaDiscoveryServer->startServer();
+    AlpacaServer->startServer();
+#endif // USE_ALPACA
 #endif // USE_ETHERNET
 #ifdef DEBUG
     Computer.println("Online");
 #endif
+
 #if defined(ARDUINO_ARCH_RP2040)
     core0Ready = true;
     DBPrintln("========== Core 0 ready ==========");
@@ -300,13 +688,20 @@ void setup1()
     DBPrintln("========== Core 1 ready ==========");
 }
 #endif
-
+//
+// This loop takes care of all communications and commands
+//
 void loop()
 {
 
 #ifdef USE_ETHERNET
-    if(ethernetPresent)
+    if(ethernetPresent) {
         checkForNewTCPClient();
+#ifdef USE_ALPACA
+        AlpacaDiscoveryServer->checkForRequest();
+        AlpacaServer->checkForRequest();
+#endif
+    }
 #endif // USE_ETHERNET
 
 #ifndef STANDALONE
@@ -355,6 +750,9 @@ void loop()
 #endif // STANDALONE
 }
 
+//
+// This loop does all the motor controls
+//
 #if defined(ARDUINO_ARCH_RP2040)
 void loop1()
 {   // all stepper motor code runs on core 1
@@ -362,6 +760,9 @@ void loop1()
 }
 #endif
 
+//
+//
+//
 #ifdef USE_ETHERNET
 void configureEthernet()
 {
@@ -422,9 +823,6 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
     Ethernet.setRetransmissionCount(3);
     DBPrintln("Server ready, calling begin()");
     domeServer.begin();
-#ifdef USE_ALPACA
-    AlpacaServer.startServer();
-#endif // USE_ALPACA
     return true;
 }
 
@@ -597,8 +995,10 @@ void CheckForCommands()
     }
 #endif // STANDALONE
 #ifdef USE_ETHERNET
-    if(ethernetPresent )
+    if(ethernetPresent ) {
         ReceiveNetwork(domeClient);
+    }
+
 #endif // USE_ETHERNET
 }
 
@@ -670,7 +1070,7 @@ void ReceiveNetwork(EthernetClient client)
             if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
                 // End of message
                 if (networkBuffer.length() > 0) {
-                    ProcessCommand(true);
+                    ProcessCommand(NETWORK_CMD);
                     networkBuffer = "";
                     return; // we'll read the next command on the next loop.
                 }
@@ -700,7 +1100,7 @@ void ReceiveComputer()
             if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
                 // End of message
                 if (computerBuffer.length() > 0) {
-                    ProcessCommand(false);
+                    ProcessCommand(SERIAL_CMD);
                     computerBuffer = "";
                     return; // we'll read the next command on the next loop.
                 }
@@ -712,7 +1112,7 @@ void ReceiveComputer()
     }
 }
 
-void ProcessCommand(bool bFromNetwork)
+void ProcessCommand(int nSource)
 {
     float fTmp;
     char command;
@@ -726,18 +1126,25 @@ void ProcessCommand(bool bFromNetwork)
 
     // Split the buffer into command char and value if present
     // Command character
-    if(bFromNetwork) {
+    switch(nSource) {
+        case SERIAL_CMD:
+            command = computerBuffer.charAt(0);
+            // Payload
+            value = computerBuffer.substring(1);
+            break;
 #ifdef USE_ETHERNET
-        command = networkBuffer.charAt(0);
-        // Payload
-        value = networkBuffer.substring(1);
-#endif // USE_ETHERNET
+        case NETWORK_CMD:
+            command = networkBuffer.charAt(0);
+            // Payload
+            value = networkBuffer.substring(1);
+            break;
+#endif
+#ifdef USE_ALPACA
+        case ALPACA_CMD:
+            break;
+#endif
     }
-    else {
-        command = computerBuffer.charAt(0);
-        // Payload
-        value = computerBuffer.substring(1);
-    }
+
     // payload has data
     if (value.length() > 0)
         hasValue = true;
@@ -750,7 +1157,7 @@ void ProcessCommand(bool bFromNetwork)
     DBPrintln("\nProcessCommand");
     DBPrintln("Command = \"" + String(command) +"\"");
     DBPrintln("Value = \"" + String(value) +"\"");
-    DBPrintln("bFromNetwork = \"" + String(bFromNetwork?"Yes":"No") +"\"");
+    DBPrintln("nSource = " + String(nSource));
 
 
     switch (command) {
@@ -1141,17 +1548,27 @@ void ProcessCommand(bool bFromNetwork)
 
     // Send messages if they aren't empty.
     if (serialMessage.length() > 0) {
-        if(!bFromNetwork) {
-            if(Computer)
-                Computer.print(serialMessage + "#");
-            }
-#ifdef USE_ETHERNET
-        else if(domeClient.connected()) {
-                DBPrintln("Network serialMessage = " + serialMessage);
-                domeClient.print(serialMessage + "#");
-                domeClient.flush();
+
+        switch(nSource) {
+            case SERIAL_CMD:
+                if(Computer) {
+                    Computer.print(serialMessage + "#");
+                }
+                break;
+    #ifdef USE_ETHERNET
+            case NETWORK_CMD:
+                if(domeClient.connected()) {
+                    DBPrintln("Network serialMessage = " + serialMessage);
+                    domeClient.print(serialMessage + "#");
+                    domeClient.flush();
+                }
+                break;
+    #endif
+    #ifdef USE_ALPACA
+            case ALPACA_CMD:
+                break;
+    #endif
         }
-#endif // USE_ETHERNET
     }
 }
 
@@ -1325,7 +1742,3 @@ void ProcessWireless()
 
 }
 #endif // STANDALONE
-
-
-
-

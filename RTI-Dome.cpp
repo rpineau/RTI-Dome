@@ -126,7 +126,7 @@ int CRTIDome::Connect(const char *pszPort)
     m_bCalibrating = false;
     m_bUnParking = false;
 
-    if(m_Port.size()>=3 && m_Port.find("TCP")!= -1)  {
+    if(m_Port.size()>=3 && m_Port.find("TCP") != std::string::npos)  {
         m_bNetworkConnected = true;
     }
     else
