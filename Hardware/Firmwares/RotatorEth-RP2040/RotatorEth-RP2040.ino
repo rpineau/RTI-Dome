@@ -249,6 +249,7 @@ void RTIDomeAlpacaDiscoveryServer::startServer()
         return;
     }
     discoveryServer->begin(m_UDPPort);
+    DBPrintln("discoveryServer started on port " + String(m_UDPPort));
 }
 
 int RTIDomeAlpacaDiscoveryServer::checkForRequest()
@@ -258,15 +259,21 @@ int RTIDomeAlpacaDiscoveryServer::checkForRequest()
     
     String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
     String sDiscoveryRequest;
+
     char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
     int packetSize = discoveryServer->parsePacket();
     if (packetSize) {
+        DBPrintln("discoveryServer request");
         memset(packetBuffer,0,sizeof(packetBuffer));
         discoveryServer->read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
         // do stuff
         sDiscoveryRequest = String(packetBuffer);
-        if(sDiscoveryRequest.indexOf(sAlpacaDiscovery)==-1)
+        DBPrintln("discoveryServer sDiscoveryRequest : " + sDiscoveryRequest);
+        if(sDiscoveryRequest.indexOf(sAlpacaDiscovery)==-1) {
+            DBPrintln("discoveryServer request error");
             return SERVER_ERROR; // wrong type of discovery message
+        }
+        DBPrintln("discoveryServer sending response : " + sDiscoveryResponse);
         // send discovery reponse
         discoveryServer->beginPacket(discoveryServer->remoteIP(), discoveryServer->remotePort());
         discoveryServer->write(sDiscoveryResponse.c_str());
@@ -370,6 +377,7 @@ void getApiVersion(Request &req, Response &res)
     char ClientID[64];
     char ClientTransactionID[64];
     
+    DBPrintln("getApiVersion");
     req.query("ClientID", ClientID, 64);
     req.query("ClientTransactionID", ClientTransactionID, 64);
     DBPrintln("ClientID : " + String(ClientID));
@@ -394,6 +402,7 @@ void getDescription(Request &req, Response &res)
     char ClientID[64];
     char ClientTransactionID[64];
     
+    DBPrintln("getDescription");
     req.query("ClientID", ClientID, 64);
     req.query("ClientTransactionID", ClientTransactionID, 64);
     DBPrintln("ClientID : " + String(ClientID));
@@ -420,6 +429,7 @@ void getConfiguredDevice(Request &req, Response &res)
     char ClientID[64];
     char ClientTransactionID[64];
     
+    DBPrintln("getConfiguredDevice");
     req.query("ClientID", ClientID, 64);
     req.query("ClientTransactionID", ClientTransactionID, 64);
     DBPrintln("ClientID : " + String(ClientID));
