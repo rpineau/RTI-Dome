@@ -461,6 +461,7 @@ void doAction(Request &req, Response &res)
 #endif
 
     if(FormData.size()==0){
+        res.set("Content-Type", "application/json");
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
@@ -489,7 +490,7 @@ void doCommandBlind(Request &req, Response &res)
     char name[ALPACA_VAR_BUF_LEN];
     char value[ALPACA_VAR_BUF_LEN];
 
-    DBPrintln("doAction");
+    DBPrintln("doCommandBlind");
     while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
         DBPrintln("name : " + String(name));
         DBPrintln("value : " + String(value));
@@ -503,6 +504,7 @@ void doCommandBlind(Request &req, Response &res)
 #endif
 
     if(FormData.size()==0){
+        res.set("Content-Type", "application/json");
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
@@ -531,7 +533,7 @@ void doCommandBool(Request &req, Response &res)
     char name[ALPACA_VAR_BUF_LEN];
     char value[ALPACA_VAR_BUF_LEN];
 
-    DBPrintln("doAction");
+    DBPrintln("doCommandBool");
     while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
         DBPrintln("name : " + String(name));
         DBPrintln("value : " + String(value));
@@ -545,6 +547,7 @@ void doCommandBool(Request &req, Response &res)
 #endif
 
     if(FormData.size()==0){
+        res.set("Content-Type", "application/json");
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
@@ -573,7 +576,7 @@ void doCommandString(Request &req, Response &res)
     char name[ALPACA_VAR_BUF_LEN];
     char value[ALPACA_VAR_BUF_LEN];
 
-    DBPrintln("doAction");
+    DBPrintln("doCommandString");
     while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
         DBPrintln("name : " + String(name));
         DBPrintln("value : " + String(value));
@@ -587,6 +590,7 @@ void doCommandString(Request &req, Response &res)
 #endif
 
     if(FormData.size()==0){
+        res.set("Content-Type", "application/json");
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
@@ -636,10 +640,6 @@ void setup()
 #endif // STANDALONE
     resetFTDI(FTDI_RESET);
 
-#ifdef DEBUG
-    DebugPort.begin(115200);
-    DBPrintln("========== RTI-Zome controller booting ==========");
-#endif
 #ifdef USE_ETHERNET
     getMacAddress(MAC_Address, uidBuffer);
 #ifdef USE_ALPACA
@@ -682,6 +682,11 @@ void setup()
     attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
     attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
     interrupts();
+#endif
+
+#ifdef DEBUG
+    DebugPort.begin(115200);
+    DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
 
 #ifdef USE_ETHERNET
