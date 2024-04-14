@@ -16,7 +16,7 @@
 // if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
 // This us useful for people who only want to automate the rotation.
 
-// #define STANDALONE
+#define STANDALONE
 #ifdef STANDALONE
 #pragma message "Standalone mode, no shutter code"
 #endif // STANDALONE
@@ -107,6 +107,7 @@ String sUID;
 String sAlpacaDiscovery = "alpacadiscovery1";
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
+#define ALPACA_VAR_BUF_LEN 256
 #endif // USE_ALPACA
 
 #endif // USE_ETHERNET
@@ -132,7 +133,8 @@ int XbeeResets = 0;
 #endif // STANDALONE
 
 #if defined(ARDUINO_ARCH_RP2040)
-volatile bool core0Ready = false;
+// volatile bool core0Ready = false;
+std::atomic<bool> core0Ready = false;
 #endif
 
 bool bParked = false; // use to the rin check doesn't continuously try to park
@@ -320,10 +322,10 @@ void RTIDomeAlpacaServer::startServer()
     m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
     m_AlpacaRestServer->get("/management/v1/description", &getDescription);
 
-    m_AlpacaRestServer->put("api/v1/dome/0/action", &doAction);
-    m_AlpacaRestServer->put("api/v1/dome/0/commandblind", &doCommandBlind);
-    m_AlpacaRestServer->put("api/v1/dome/0/commandbool", &doCommandBool);
-    m_AlpacaRestServer->put("api/v1/dome/0/commandstring", &doCommandString);
+    m_AlpacaRestServer->put("/api/v1/dome/0/action", &doAction);
+    m_AlpacaRestServer->put("/api/v1/dome/0/commandblind", &doCommandBlind);
+    m_AlpacaRestServer->put("/api/v1/dome/0/commandbool", &doCommandBool);
+    m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
 
     // m_AlpacaRestServer->get("api/v1/dome/0/connected", &getConected);
 
@@ -442,15 +444,19 @@ void doAction(Request &req, Response &res)
     JsonDocument AlpacaResp;
     JsonDocument FormData;
     String sResp;
-    char name[256];
-    char value[56];
+    char name[ALPACA_VAR_BUF_LEN];
+    char value[ALPACA_VAR_BUF_LEN];
 
-    while(req.form(name, 256, value, 256)){
+    DBPrintln("doAction");
+    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+        DBPrintln("name : " + String(name));
+        DBPrintln("value : " + String(value));
         FormData[name]=String(value);
     }
 #ifdef DEBUG
-    serializeJson(AlpacaResp, sResp);
+    serializeJson(FormData, sResp);
     DBPrintln("FormData : " + sResp);
+    DBPrintln("FormData.size() : " + String(FormData.size()));
     sResp="";
 #endif
 
@@ -458,8 +464,12 @@ void doAction(Request &req, Response &res)
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
-
+        serializeJson(AlpacaResp, sResp);
+        res.print(sResp);
+        res.flush();
+        return;
     }
+
     res.set("Content-Type", "application/json");
     AlpacaResp["ErrorNumber"] = 0;
     AlpacaResp["ErrorMessage"] = "Ok";
@@ -473,18 +483,22 @@ void doAction(Request &req, Response &res)
 
 void doCommandBlind(Request &req, Response &res)
 {
-    JsonDocument AlpacaResp;
+     JsonDocument AlpacaResp;
     JsonDocument FormData;
     String sResp;
-    char name[256];
-    char value[56];
+    char name[ALPACA_VAR_BUF_LEN];
+    char value[ALPACA_VAR_BUF_LEN];
 
-    while(req.form(name, 256, value, 256)){
+    DBPrintln("doAction");
+    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+        DBPrintln("name : " + String(name));
+        DBPrintln("value : " + String(value));
         FormData[name]=String(value);
     }
 #ifdef DEBUG
-    serializeJson(AlpacaResp, sResp);
+    serializeJson(FormData, sResp);
     DBPrintln("FormData : " + sResp);
+    DBPrintln("FormData.size() : " + String(FormData.size()));
     sResp="";
 #endif
 
@@ -492,12 +506,16 @@ void doCommandBlind(Request &req, Response &res)
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
-
+        serializeJson(AlpacaResp, sResp);
+        res.print(sResp);
+        res.flush();
+        return;
     }
 
     res.set("Content-Type", "application/json");
     AlpacaResp["ErrorNumber"] = 0;
     AlpacaResp["ErrorMessage"] = "Ok";
+    AlpacaResp["Value"] = "Ok";
     serializeJson(AlpacaResp, sResp);
     DBPrintln("sResp : " + sResp);
 
@@ -510,15 +528,19 @@ void doCommandBool(Request &req, Response &res)
     JsonDocument AlpacaResp;
     JsonDocument FormData;
     String sResp;
-    char name[256];
-    char value[56];
+    char name[ALPACA_VAR_BUF_LEN];
+    char value[ALPACA_VAR_BUF_LEN];
 
-    while(req.form(name, 256, value, 256)){
+    DBPrintln("doAction");
+    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+        DBPrintln("name : " + String(name));
+        DBPrintln("value : " + String(value));
         FormData[name]=String(value);
     }
 #ifdef DEBUG
-    serializeJson(AlpacaResp, sResp);
+    serializeJson(FormData, sResp);
     DBPrintln("FormData : " + sResp);
+    DBPrintln("FormData.size() : " + String(FormData.size()));
     sResp="";
 #endif
 
@@ -526,13 +548,16 @@ void doCommandBool(Request &req, Response &res)
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
-
+        serializeJson(AlpacaResp, sResp);
+        res.print(sResp);
+        res.flush();
+        return;
     }
 
     res.set("Content-Type", "application/json");
     AlpacaResp["ErrorNumber"] = 0;
     AlpacaResp["ErrorMessage"] = "Ok";
-    AlpacaResp["Value"] = "True";
+    AlpacaResp["Value"] = "Ok";
     serializeJson(AlpacaResp, sResp);
     DBPrintln("sResp : " + sResp);
 
@@ -545,15 +570,19 @@ void doCommandString(Request &req, Response &res)
     JsonDocument AlpacaResp;
     JsonDocument FormData;
     String sResp;
-    char name[256];
-    char value[56];
+    char name[ALPACA_VAR_BUF_LEN];
+    char value[ALPACA_VAR_BUF_LEN];
 
-    while(req.form(name, 256, value, 256)){
+    DBPrintln("doAction");
+    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+        DBPrintln("name : " + String(name));
+        DBPrintln("value : " + String(value));
         FormData[name]=String(value);
     }
 #ifdef DEBUG
-    serializeJson(AlpacaResp, sResp);
+    serializeJson(FormData, sResp);
     DBPrintln("FormData : " + sResp);
+    DBPrintln("FormData.size() : " + String(FormData.size()));
     sResp="";
 #endif
 
@@ -561,13 +590,16 @@ void doCommandString(Request &req, Response &res)
         res.sendStatus(400);
         AlpacaResp["ErrorNumber"] = 400;
         AlpacaResp["ErrorMessage"] = "Invalid parameters";
-
+        serializeJson(AlpacaResp, sResp);
+        res.print(sResp);
+        res.flush();
+        return;
     }
 
     res.set("Content-Type", "application/json");
     AlpacaResp["ErrorNumber"] = 0;
     AlpacaResp["ErrorMessage"] = "Ok";
-    AlpacaResp["Value"] = "OK";
+    AlpacaResp["Value"] = "Ok";
     serializeJson(AlpacaResp, sResp);
     DBPrintln("sResp : " + sResp);
 
