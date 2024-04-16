@@ -16,7 +16,7 @@
 // if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
 // This us useful for people who only want to automate the rotation.
 
-#define STANDALONE
+// #define STANDALONE
 #ifdef STANDALONE
 #pragma message "Standalone mode, no shutter code"
 #endif // STANDALONE
@@ -222,6 +222,7 @@ void ReceiveWireless();
 void ProcessWireless();
 
 #ifdef USE_ALPACA
+#include "AlpacaAPI.h"
 
 class RTIDomeAlpacaDiscoveryServer
 {
@@ -282,16 +283,6 @@ int RTIDomeAlpacaDiscoveryServer::checkForRequest()
     return ALPACA_OK;
 }
 
-
-// Alpaca API prototype functions
-void getApiVersion(Request &req, Response &res);
-void getDescription(Request &req, Response &res);
-void getConfiguredDevice(Request &req, Response &res);
-void doAction(Request &req, Response &res);
-void doCommandBlind(Request &req, Response &res);
-void doCommandBool(Request &req, Response &res);
-void doCommandString(Request &req, Response &res);
-
 class RTIDomeAlpacaServer
 {
 public :
@@ -334,22 +325,22 @@ void RTIDomeAlpacaServer::startServer()
     m_AlpacaRestServer->put("/api/v1/dome/0/commandbool", &doCommandBool);
     m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
 
-    // m_AlpacaRestServer->get("api/v1/dome/0/connected", &getConected);
+    m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConected);
+    m_AlpacaRestServer->get("/api/v1/dome/0/connected", &setConected);
+    m_AlpacaRestServer->get("/api/v1/dome/0/description", &getDeviceDescription);
+    m_AlpacaRestServer->get("/api/v1/dome/0/driverinfo", &getDriverInfo);
+    m_AlpacaRestServer->get("/api/v1/dome/0/driverVersion", &getDriverVersion);
+    m_AlpacaRestServer->get("/api/v1/dome/0/interfaceversion", &getInterfaceVersion);
 
-    // m_AlpacaRestServer->get("api/v1/dome/0/altitude", &getAltitude);
+    m_AlpacaRestServer->get("/api/v1/dome/0/name", &getName);
+    m_AlpacaRestServer->get("/api/v1/dome/0/supportedactions", &getSupportedAxtions);
 
-    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->get("api/v1/dome/0/", &);
-
-
-    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
-    // m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    m_AlpacaRestServer->get("/api/v1/dome/0/altitude", &getAltitude);
+    m_AlpacaRestServer->put("api/v1/dome/0/athome", &geAtHome);
+    m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    m_AlpacaRestServer->put("api/v1/dome/0/", &);
+    m_AlpacaRestServer->put("api/v1/dome/0/", &);
 
     DBPrintln("m_AlpacaRestServer started");
 
@@ -370,256 +361,6 @@ void RTIDomeAlpacaServer::checkForRequest()
 RTIDomeAlpacaServer *AlpacaServer;
 RTIDomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 
-void getApiVersion(Request &req, Response &res)
-{
-    JsonDocument AlpacaResp;
-    String sResp;
-    char ClientID[64];
-    char ClientTransactionID[64];
-    
-    DBPrintln("getApiVersion");
-    req.query("ClientID", ClientID, 64);
-    req.query("ClientTransactionID", ClientTransactionID, 64);
-    DBPrintln("ClientID : " + String(ClientID));
-    DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-
-    res.set("Content-Type", "application/json");
-    AlpacaResp["Value"][0] = 1;
-    AlpacaResp["ServerTransactionID"] = nTransactionID;
-    AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
-    serializeJson(AlpacaResp, sResp);
-
-    DBPrintln("sResp : " + sResp);
-
-    res.print(sResp);
-    res.flush();
-}
-
-void getDescription(Request &req, Response &res)
-{
-    JsonDocument AlpacaResp;
-    String sResp;
-    char ClientID[64];
-    char ClientTransactionID[64];
-    
-    DBPrintln("getDescription");
-    req.query("ClientID", ClientID, 64);
-    req.query("ClientTransactionID", ClientTransactionID, 64);
-    DBPrintln("ClientID : " + String(ClientID));
-    DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-
-    res.set("Content-Type", "application/json");
-    AlpacaResp["Value"]["ServerName"]= "RTIDome Alpaca";
-    AlpacaResp["Value"]["Manufacturer"]= "RTI-Zone";
-    AlpacaResp["Value"]["ManufacturerVersion"]= VERSION;
-    AlpacaResp["Value"]["Location"]= "Earth";
-    AlpacaResp["ServerTransactionID"] = nTransactionID;
-    AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
-    serializeJson(AlpacaResp, sResp);
-    DBPrintln("sResp : " + sResp);
-
-    res.print(sResp);
-    res.flush();
-}
-
-void getConfiguredDevice(Request &req, Response &res)
-{
-    JsonDocument AlpacaResp;
-    String sResp;
-    char ClientID[64];
-    char ClientTransactionID[64];
-    
-    DBPrintln("getConfiguredDevice");
-    req.query("ClientID", ClientID, 64);
-    req.query("ClientTransactionID", ClientTransactionID, 64);
-    DBPrintln("ClientID : " + String(ClientID));
-    DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-
-    res.set("Content-Type", "application/json");
-    AlpacaResp["Value"][0] ["DeviceName"]= "RTIDome";
-    AlpacaResp["Value"][0] ["DeviceType"]= "dome";
-    AlpacaResp["Value"][0] ["DeviceNumber"]= 0;
-    AlpacaResp["Value"][0] ["UniqueID"]= sUID;
-    AlpacaResp["ServerTransactionID"] = nTransactionID;
-    AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
-    serializeJson(AlpacaResp, sResp);
-    DBPrintln("sResp : " + sResp);
-
-    res.print(sResp);
-    res.flush();
-}
-
-void doAction(Request &req, Response &res)
-{
-    JsonDocument AlpacaResp;
-    JsonDocument FormData;
-    String sResp;
-    char name[ALPACA_VAR_BUF_LEN];
-    char value[ALPACA_VAR_BUF_LEN];
-
-    DBPrintln("doAction");
-    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-        DBPrintln("name : " + String(name));
-        DBPrintln("value : " + String(value));
-        FormData[name]=String(value);
-    }
-#ifdef DEBUG
-    serializeJson(FormData, sResp);
-    DBPrintln("FormData : " + sResp);
-    DBPrintln("FormData.size() : " + String(FormData.size()));
-    sResp="";
-#endif
-
-    if(FormData.size()==0){
-        res.set("Content-Type", "application/json");
-        res.sendStatus(400);
-        AlpacaResp["ErrorNumber"] = 400;
-        AlpacaResp["ErrorMessage"] = "Invalid parameters";
-        serializeJson(AlpacaResp, sResp);
-        res.print(sResp);
-        res.flush();
-        return;
-    }
-
-    res.set("Content-Type", "application/json");
-    AlpacaResp["ErrorNumber"] = 0;
-    AlpacaResp["ErrorMessage"] = "Ok";
-    AlpacaResp["Value"] = "Ok";
-    serializeJson(AlpacaResp, sResp);
-    DBPrintln("sResp : " + sResp);
-
-    res.print(sResp);
-    res.flush();
-}
-
-void doCommandBlind(Request &req, Response &res)
-{
-     JsonDocument AlpacaResp;
-    JsonDocument FormData;
-    String sResp;
-    char name[ALPACA_VAR_BUF_LEN];
-    char value[ALPACA_VAR_BUF_LEN];
-
-    DBPrintln("doCommandBlind");
-    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-        DBPrintln("name : " + String(name));
-        DBPrintln("value : " + String(value));
-        FormData[name]=String(value);
-    }
-#ifdef DEBUG
-    serializeJson(FormData, sResp);
-    DBPrintln("FormData : " + sResp);
-    DBPrintln("FormData.size() : " + String(FormData.size()));
-    sResp="";
-#endif
-
-    if(FormData.size()==0){
-        res.set("Content-Type", "application/json");
-        res.sendStatus(400);
-        AlpacaResp["ErrorNumber"] = 400;
-        AlpacaResp["ErrorMessage"] = "Invalid parameters";
-        serializeJson(AlpacaResp, sResp);
-        res.print(sResp);
-        res.flush();
-        return;
-    }
-
-    res.set("Content-Type", "application/json");
-    AlpacaResp["ErrorNumber"] = 0;
-    AlpacaResp["ErrorMessage"] = "Ok";
-    AlpacaResp["Value"] = "Ok";
-    serializeJson(AlpacaResp, sResp);
-    DBPrintln("sResp : " + sResp);
-
-    res.print(sResp);
-    res.flush();
-}
-
-void doCommandBool(Request &req, Response &res)
-{
-    JsonDocument AlpacaResp;
-    JsonDocument FormData;
-    String sResp;
-    char name[ALPACA_VAR_BUF_LEN];
-    char value[ALPACA_VAR_BUF_LEN];
-
-    DBPrintln("doCommandBool");
-    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-        DBPrintln("name : " + String(name));
-        DBPrintln("value : " + String(value));
-        FormData[name]=String(value);
-    }
-#ifdef DEBUG
-    serializeJson(FormData, sResp);
-    DBPrintln("FormData : " + sResp);
-    DBPrintln("FormData.size() : " + String(FormData.size()));
-    sResp="";
-#endif
-
-    if(FormData.size()==0){
-        res.set("Content-Type", "application/json");
-        res.sendStatus(400);
-        AlpacaResp["ErrorNumber"] = 400;
-        AlpacaResp["ErrorMessage"] = "Invalid parameters";
-        serializeJson(AlpacaResp, sResp);
-        res.print(sResp);
-        res.flush();
-        return;
-    }
-
-    res.set("Content-Type", "application/json");
-    AlpacaResp["ErrorNumber"] = 0;
-    AlpacaResp["ErrorMessage"] = "Ok";
-    AlpacaResp["Value"] = "Ok";
-    serializeJson(AlpacaResp, sResp);
-    DBPrintln("sResp : " + sResp);
-
-    res.print(sResp);
-    res.flush();
-}
-
-void doCommandString(Request &req, Response &res)
-{
-    JsonDocument AlpacaResp;
-    JsonDocument FormData;
-    String sResp;
-    char name[ALPACA_VAR_BUF_LEN];
-    char value[ALPACA_VAR_BUF_LEN];
-
-    DBPrintln("doCommandString");
-    while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-        DBPrintln("name : " + String(name));
-        DBPrintln("value : " + String(value));
-        FormData[name]=String(value);
-    }
-#ifdef DEBUG
-    serializeJson(FormData, sResp);
-    DBPrintln("FormData : " + sResp);
-    DBPrintln("FormData.size() : " + String(FormData.size()));
-    sResp="";
-#endif
-
-    if(FormData.size()==0){
-        res.set("Content-Type", "application/json");
-        res.sendStatus(400);
-        AlpacaResp["ErrorNumber"] = 400;
-        AlpacaResp["ErrorMessage"] = "Invalid parameters";
-        serializeJson(AlpacaResp, sResp);
-        res.print(sResp);
-        res.flush();
-        return;
-    }
-
-    res.set("Content-Type", "application/json");
-    AlpacaResp["ErrorNumber"] = 0;
-    AlpacaResp["ErrorMessage"] = "Ok";
-    AlpacaResp["Value"] = "Ok";
-    serializeJson(AlpacaResp, sResp);
-    DBPrintln("sResp : " + sResp);
-
-    res.print(sResp);
-    res.flush();
-}
 
 #endif // USE_ALPACA
 
