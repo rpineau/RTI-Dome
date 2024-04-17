@@ -22,7 +22,7 @@ const char STEPSPER_ROTATOR             = 't'; // Get/set Steps per rotation
 const char IP_GATEWAY                   = 'u'; // get/set default gateway IP
 const char VERSION_ROTATOR              = 'v'; // Get Firmware Version
 const char IP_DHCP                      = 'w'; // get/set DHCP mode
-                                        //'x' see bellow
+										//'x' see bellow
 const char REVERSED_ROTATOR             = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR           = 'z'; // Get homed status
 const char INIT_XBEE                    = 'x'; // force a XBee reconfig
@@ -33,7 +33,7 @@ const char RAIN_SHUTTER                 = 'F'; // Get rain status (from client) 
 const char CLOSE_SHUTTER                    = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT    = 'D'; // Restore default values for motor control.
 const char ACCELERATION_SHUTTER             = 'E'; // Get/Set stepper acceleration
-                                            // 'F' see above
+											// 'F' see above
 //const char ELEVATION_SHUTTER              = 'G'; // Get/Set altitude TBD
 const char HELLO                            = 'H'; // Let shutter know we're here
 const char WATCHDOG_INTERVAL                = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator

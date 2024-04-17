@@ -18,70 +18,70 @@
 class RTIDomeAlpacaServer
 {
 public :
-    RTIDomeAlpacaServer(int port);
-    void startServer();
-    int checkForRequest();
+	RTIDomeAlpacaServer(int port);
+	void startServer();
+	int checkForRequest();
 
 private :
-    int m_nRestPort;
-    int m_nDiscoveryPort;
+	int m_nRestPort;
+	int m_nDiscoveryPort;
 
-    EthernetServer *m_RestServer;
+	EthernetServer *m_RestServer;
 
 };
 
 RTIDomeAlpacaServer::RTIDomeAlpacaServer(int port)
 {
-    m_nRestPort = port;
+	m_nRestPort = port;
 }
 
 
 void RTIDomeAlpacaServer::startServer()
 {
-    m_RestServer =  new EthernetServer(m_nRestPort);
-    m_RestServer->begin();
+	m_RestServer =  new EthernetServer(m_nRestPort);
+	m_RestServer->begin();
 }
 
 int RTIDomeAlpacaServer::checkForRequest()
 {
-    int nErr = OK;
-    bool currentLineIsBlank = true;
-    char c;
-    String sRestBuffer;
+	int nErr = OK;
+	bool currentLineIsBlank = true;
+	char c;
+	String sRestBuffer;
 
-    EthernetClient client = m_RestServer->available();
-    if (client) {
-        while (client.connected()) {
-            if (client.available()) {
-                char c = client.read();
-                // if you've gotten to the end of the line (received a newline
-                // character) and the line is blank, the http request has ended,
-                // so you can parse the request and send the response
-                if (c == '\n' && currentLineIsBlank) {
-                    // parse request
-                    // send response
-                    client.println("HTTP/1.1 200 OK");
-                    client.println("Content-Type: application/json");
-                    client.println("Connection: close");  // the connection will be closed after completion of the response
-                    client.println();
-                    // we're done
-                    break;
-                }
-                if (c == '\n') {
-                    // you're starting a new line
-                    currentLineIsBlank = true;
-                }
-                else if (c != '\r') {
-                    // you've gotten a character on the current line
-                    currentLineIsBlank = false;
-                    // add data to buffer
-                    sRestBuffer+= String(c);
-                }
-            }
-        }
-        delay(1);
-        client.stop();
-    }
-    return nErr;
+	EthernetClient client = m_RestServer->available();
+	if (client) {
+		while (client.connected()) {
+			if (client.available()) {
+				char c = client.read();
+				// if you've gotten to the end of the line (received a newline
+				// character) and the line is blank, the http request has ended,
+				// so you can parse the request and send the response
+				if (c == '\n' && currentLineIsBlank) {
+					// parse request
+					// send response
+					client.println("HTTP/1.1 200 OK");
+					client.println("Content-Type: application/json");
+					client.println("Connection: close");  // the connection will be closed after completion of the response
+					client.println();
+					// we're done
+					break;
+				}
+				if (c == '\n') {
+					// you're starting a new line
+					currentLineIsBlank = true;
+				}
+				else if (c != '\r') {
+					// you've gotten a character on the current line
+					currentLineIsBlank = false;
+					// add data to buffer
+					sRestBuffer+= String(c);
+				}
+			}
+		}
+		delay(1);
+		client.stop();
+	}
+	return nErr;
 }
 #endif // RTI_DOME_ALPACA_SERVER

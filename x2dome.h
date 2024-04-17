@@ -32,48 +32,48 @@
 
 #define LOG_BUFFER_SIZE 256
 /*!
-\brief The X2Dome example.
+ \brief The X2Dome example.
 
-\ingroup Example
+ \ingroup Example
 
-Use this example to write an X2Dome driver.
-*/
+ Use this example to write an X2Dome driver.
+ */
 class X2Dome: public DomeDriverInterface, public SerialPortParams2Interface, public ModalSettingsDialogInterface, public X2GUIEventInterface, public DomeHasHighlyRelaibleOpenCloseSensors
 {
 public:
 
 	/*!Standard X2 constructor*/
 	X2Dome(	const char* pszSelectionString,
-					const int& nISIndex,
-					SerXInterface*						pSerX,
-					TheSkyXFacadeForDriversInterface* pTheSkyX,
-					SleeperInterface*				pSleeper,
-					BasicIniUtilInterface*			pIniUtil,
-					LoggerInterface*					pLogger,
-					MutexInterface*					pIOMutex,
-					TickCountInterface*				pTickCount);
+		   const int& nISIndex,
+		   SerXInterface*						pSerX,
+		   TheSkyXFacadeForDriversInterface* pTheSkyX,
+		   SleeperInterface*				pSleeper,
+		   BasicIniUtilInterface*			pIniUtil,
+		   LoggerInterface*					pLogger,
+		   MutexInterface*					pIOMutex,
+		   TickCountInterface*				pTickCount);
 	virtual ~X2Dome();
 
 	/*!\name DriverRootInterface Implementation
-	See DriverRootInterface.*/
+	 See DriverRootInterface.*/
 	//@{
 	virtual DeviceType							deviceType(void) {return DriverRootInterface::DT_DOME;}
 	virtual int									queryAbstraction(const char* pszName, void** ppVal);
 	//@}
 
 	/*!\name LinkInterface Implementation
-	See LinkInterface.*/
+	 See LinkInterface.*/
 	//@{
 	virtual int									establishLink(void)						;
 	virtual int									terminateLink(void)						;
 	virtual bool								isLinked(void) const					;
 	//@}
 
-    virtual int initModalSettingsDialog(void){return 0;}
-    virtual int execModalSettingsDialog(void);
+	virtual int initModalSettingsDialog(void){return 0;}
+	virtual int execModalSettingsDialog(void);
 
 	/*!\name HardwareInfoInterface Implementation
-	See HardwareInfoInterface.*/
+	 See HardwareInfoInterface.*/
 	//@{
 	virtual void deviceInfoNameShort(BasicStringInterface& str) const					;
 	virtual void deviceInfoNameLong(BasicStringInterface& str) const					;
@@ -83,7 +83,7 @@ public:
 	//@}
 
 	/*!\name DriverInfoInterface Implementation
-	See DriverInfoInterface.*/
+	 See DriverInfoInterface.*/
 	//@{
 	virtual void								driverInfoDetailedInfo(BasicStringInterface& str) const	;
 	virtual double								driverInfoVersion(void) const								;
@@ -106,20 +106,20 @@ public:
 	virtual int dapiIsFindHomeComplete(bool* pbComplete);
 	virtual int dapiSync(double dAz, double dEl);
 
-    //SerialPortParams2Interface
-    virtual void			portName(BasicStringInterface& str) const;
-    virtual void			setPortName(const char* szPort);
-    virtual unsigned int	baudRate() const			{return 9600;};
-    virtual void			setBaudRate(unsigned int)	{};
-    virtual bool			isBaudRateFixed() const		{return true;};
+	//SerialPortParams2Interface
+	virtual void			portName(BasicStringInterface& str) const;
+	virtual void			setPortName(const char* szPort);
+	virtual unsigned int	baudRate() const			{return 9600;};
+	virtual void			setBaudRate(unsigned int)	{};
+	virtual bool			isBaudRateFixed() const		{return true;};
 
-    virtual SerXInterface::Parity	parity() const				{return SerXInterface::B_NOPARITY;};
-    virtual void					setParity(const SerXInterface::Parity& parity){};
-    virtual bool					isParityFixed() const		{return true;};
+	virtual SerXInterface::Parity	parity() const				{return SerXInterface::B_NOPARITY;};
+	virtual void					setParity(const SerXInterface::Parity& parity){};
+	virtual bool					isParityFixed() const		{return true;};
 
 
 
-    virtual void uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent);
+	virtual void uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent);
 
 private:
 
@@ -139,26 +139,26 @@ private:
 	MutexInterface									*	m_pIOMutex;
 	TickCountInterface								*	m_pTickCount;
 
-    void portNameOnToCharPtr(char* pszPort, const int& nMaxSize) const;
+	void portNameOnToCharPtr(char* pszPort, const int& nMaxSize) const;
 
 
 	int         m_nPrivateISIndex;
 	bool        m_bLinked;
-    CRTIDome    m_RTIDome;
-    bool        m_bHasShutterControl;
-    bool        m_bHomeOnPark;
-    bool        m_bHomeOnUnpark;
-    bool        m_bOpenUpperShutterOnly;
-    bool        m_bCalibratingDome;
+	CRTIDome    m_RTIDome;
+	bool        m_bHasShutterControl;
+	bool        m_bHomeOnPark;
+	bool        m_bHomeOnUnpark;
+	bool        m_bOpenUpperShutterOnly;
+	bool        m_bCalibratingDome;
 	int			m_nSavedTicksPerRev;
-    int         m_nPanId;
-    bool        m_bSettingPanID;
-    bool        m_bLogRainStatus;
+	int         m_nPanId;
+	bool        m_bSettingPanID;
+	bool        m_bLogRainStatus;
 
-    CStopWatch  m_SetPanIdTimer;
+	CStopWatch  m_SetPanIdTimer;
 
-    bool        m_bSettingNetwork;
-    CStopWatch  m_SetNetworkTimer;
+	bool        m_bSettingNetwork;
+	CStopWatch  m_SetNetworkTimer;
 
-    // bool        mIsRollOffRoof;
+	// bool        mIsRollOffRoof;
 };

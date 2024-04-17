@@ -8,27 +8,27 @@
 class StopWatch
 {
 public:
-    StopWatch();
-    void reset();
-    unsigned long elapsed();
+	StopWatch();
+	void reset();
+	unsigned long elapsed();
 
 private:
-    unsigned long _starttime;
+	unsigned long _starttime;
 };
 
 StopWatch::StopWatch()
 {
-    reset();
+	reset();
 }
 
 void StopWatch::reset()
 {
-    _starttime = millis();
+	_starttime = millis();
 }
 
 unsigned long StopWatch::elapsed()
 {
-    return millis() - _starttime;
+	return millis() - _starttime;
 }
 
 #endif

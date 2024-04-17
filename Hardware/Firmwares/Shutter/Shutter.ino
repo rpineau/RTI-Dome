@@ -59,14 +59,14 @@ const char REVERSED_SHUTTER		= 'Y'; // Get/Set stepper reversed status
 #define NB_AT_OK  17
 // ATAC,CE0,ID4242,CH0C,MY1,DH0,DL0,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATCH0C","ATMY1","ATDH0","ATDL0",
-                        "ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
+						"ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
 
 #if defined(XBEE_S2C)
 #define NB_AT_OK  14
 /// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATDH0","ATDL0","ATJV1",
-                        "ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
+						"ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
 
 
@@ -88,42 +88,42 @@ bool needFirstPing = true;
 
 void setup()
 {
-    digitalWrite(XBEE_RESET_PIN, 0);
-    pinMode(XBEE_RESET_PIN, OUTPUT);
+	digitalWrite(XBEE_RESET_PIN, 0);
+	pinMode(XBEE_RESET_PIN, OUTPUT);
 
 #ifdef DEBUG
 	DebugPort.begin(115200);
 #endif
 	Wireless.begin(9600);
-    XbeeStarted = false;
+	XbeeStarted = false;
 	XbeeResets = 0;
 	isConfiguringWireless = false;
-    Shutter = new ShutterClass();
+	Shutter = new ShutterClass();
 	watchdogTimer.reset();
-    Shutter->EnableMotor(false);
-    noInterrupts();
-    attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
-    attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
-    ResetInterruptWatchdog.reset();
-    interrupts();
-    // enable input buffers
-    Shutter->bufferEnable(true);
-    Shutter->motorStop();
-    Shutter->EnableMotor(false);
-    ResetXbee();
-    needFirstPing = true;
+	Shutter->EnableMotor(false);
+	noInterrupts();
+	attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
+	attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+	ResetInterruptWatchdog.reset();
+	interrupts();
+	// enable input buffers
+	Shutter->bufferEnable(true);
+	Shutter->motorStop();
+	Shutter->EnableMotor(false);
+	ResetXbee();
+	needFirstPing = true;
 }
 
 void loop()
 {
 #ifdef DEBUG
-    if(DebugPort) {
-        if (DebugPort.available() > 0) {
-            ReceiveSerial();
-        }
-    }
+	if(DebugPort) {
+		if (DebugPort.available() > 0) {
+			ReceiveSerial();
+		}
+	}
 #endif
 
 	if (Wireless.available() > 0)
@@ -132,93 +132,93 @@ void loop()
 	if (!XbeeStarted) {
 		if (!isConfiguringWireless) {
 			StartWirelessConfig();
-            needFirstPing = true;
+			needFirstPing = true;
 		}
 	}
 
-    // if we lost 3 pings and had no coms for that long.. reset XBee close if we've already reset the XBee
+	// if we lost 3 pings and had no coms for that long.. reset XBee close if we've already reset the XBee
 	if((watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) && (Shutter->GetState() != CLOSED) && (Shutter->GetState() != CLOSING)) {
-            DBPrintln("watchdogTimer triggered");
-            // lets try to recover
-	        if(!isResetingXbee && XbeeResets == 0) {
-	            XbeeResets++;
-	            isResetingXbee = true;
-                ResetXbee();
-                isConfiguringWireless = false;
-                XbeeStarted = false;
-                configStep = 0;
-                StartWirelessConfig();
-	        }
-	        else if (!isResetingXbee){
-                // we lost communication with the rotator.. close everything.
-                if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING) {
-                    DBPrintln("watchdogTimer triggered.. closing");
-                    DBPrintln("watchdogTimer.elapsed() = " + String(watchdogTimer.elapsed()));
-                    DBPrintln("Shutter->getWatchdogInterval() = " + String(Shutter->getWatchdogInterval()));
-                    Shutter->Close();
-                    }
-            }
+			DBPrintln("watchdogTimer triggered");
+			// lets try to recover
+			if(!isResetingXbee && XbeeResets == 0) {
+				XbeeResets++;
+				isResetingXbee = true;
+				ResetXbee();
+				isConfiguringWireless = false;
+				XbeeStarted = false;
+				configStep = 0;
+				StartWirelessConfig();
+			}
+			else if (!isResetingXbee){
+				// we lost communication with the rotator.. close everything.
+				if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING) {
+					DBPrintln("watchdogTimer triggered.. closing");
+					DBPrintln("watchdogTimer.elapsed() = " + String(watchdogTimer.elapsed()));
+					DBPrintln("Shutter->getWatchdogInterval() = " + String(Shutter->getWatchdogInterval()));
+					Shutter->Close();
+					}
+			}
 		delay(1000);
 	}
-    else if(watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) {
-        // could be the case is the rotator was off for a whille
-	    watchdogTimer.reset();
-        PingRotator();
+	else if(watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) {
+		// could be the case is the rotator was off for a whille
+		watchdogTimer.reset();
+		PingRotator();
 		delay(1000);
-    }
+	}
 
-    if(needFirstPing && XbeeStarted) {
-        PingRotator();
-    }
+	if(needFirstPing && XbeeStarted) {
+		PingRotator();
+	}
 	if(Shutter->m_bButtonUsed)
-	    watchdogTimer.reset();
+		watchdogTimer.reset();
 
 	Shutter->Run();
-    checkInterruptTimer();
+	checkInterruptTimer();
 
 }
 
 // reset intterupt as they seem to stop working after a while
 void checkInterruptTimer()
 {
-    if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
-        if(Shutter->GetState() == OPEN || Shutter->GetState() == CLOSED) { // reset interrupt only if not doing anything
-            noInterrupts();
-            detachInterrupt(digitalPinToInterrupt(OPENED_PIN));
-            detachInterrupt(digitalPinToInterrupt(CLOSED_PIN));
-            detachInterrupt(digitalPinToInterrupt(BUTTON_OPEN));
-            detachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE));
-            // re-attach interrupts
-            attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
-            attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-            attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
-            attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
-            ResetInterruptWatchdog.reset();
-            interrupts();
-        }
-    }
+	if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
+		if(Shutter->GetState() == OPEN || Shutter->GetState() == CLOSED) { // reset interrupt only if not doing anything
+			noInterrupts();
+			detachInterrupt(digitalPinToInterrupt(OPENED_PIN));
+			detachInterrupt(digitalPinToInterrupt(CLOSED_PIN));
+			detachInterrupt(digitalPinToInterrupt(BUTTON_OPEN));
+			detachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE));
+			// re-attach interrupts
+			attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
+			attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
+			attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
+			attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+			ResetInterruptWatchdog.reset();
+			interrupts();
+		}
+	}
 }
 
 
 void handleClosedInterrupt()
 {
-    Shutter->ClosedInterrupt();
+	Shutter->ClosedInterrupt();
 }
 
 void handleOpenInterrupt()
 {
-    Shutter->OpenInterrupt();
+	Shutter->OpenInterrupt();
 }
 
 void handleButtons()
 {
-    Shutter->DoButtons();
+	Shutter->DoButtons();
 }
 
 
 void StartWirelessConfig()
 {
-    DBPrintln("Xbee configuration started");
+	DBPrintln("Xbee configuration started");
 	delay(1100); // guard time before and after
 	isConfiguringWireless = true;
 	DBPrintln("Sending +++");
@@ -229,90 +229,90 @@ void StartWirelessConfig()
 
 inline void ConfigXBee(String result)
 {
-    DBPrint("Sending : ");
-    if ( configStep == PANID_STEP) {
-        String ATCmd = "ATID" + String(Shutter->GetPANID());
-        DBPrintln(ATCmd);
-        Wireless.println(ATCmd);
-        Wireless.flush();
-        configStep++;
-    }
-    else {
-        DBPrintln(ATString[configStep]);
-        Wireless.println(ATString[configStep]);
-        Wireless.flush();
-        configStep++;
-    }
+	DBPrint("Sending : ");
+	if ( configStep == PANID_STEP) {
+		String ATCmd = "ATID" + String(Shutter->GetPANID());
+		DBPrintln(ATCmd);
+		Wireless.println(ATCmd);
+		Wireless.flush();
+		configStep++;
+	}
+	else {
+		DBPrintln(ATString[configStep]);
+		Wireless.println(ATString[configStep]);
+		Wireless.flush();
+		configStep++;
+	}
 	if (configStep > NB_AT_OK) {
 		isConfiguringWireless = false;
 		XbeeStarted = true;
-        DBPrintln("Xbee configuration finished");
+		DBPrintln("Xbee configuration finished");
 
-        isResetingXbee = false;
+		isResetingXbee = false;
 		while(Wireless.available() > 0) {
 			Wireless.read();
 		}
 	}
-    delay(100);
+	delay(100);
 }
 
 void ResetXbee()
 {
-    DBPrintln("Resetting Xbee");
-    digitalWrite(XBEE_RESET_PIN, 0);
-    delay(250);
-    digitalWrite(XBEE_RESET_PIN, 1);
+	DBPrintln("Resetting Xbee");
+	digitalWrite(XBEE_RESET_PIN, 0);
+	delay(250);
+	digitalWrite(XBEE_RESET_PIN, 1);
 }
 
 void setPANID(String value)
 {
-    Shutter->setPANID(value);
-    isConfiguringWireless = false;
-    XbeeStarted = false;
-    configStep = 0;
+	Shutter->setPANID(value);
+	isConfiguringWireless = false;
+	XbeeStarted = false;
+	configStep = 0;
 }
 
 void PingRotator()
 {
-    String wirelessMessage="";
-    wirelessMessage = String(SHUTTER_PING);
-    // make sure the rotator knows as soon as possible
-    if (Shutter->GetVoltsAreLow()) {
-        wirelessMessage += "L"; // low voltage detected
-    }
+	String wirelessMessage="";
+	wirelessMessage = String(SHUTTER_PING);
+	// make sure the rotator knows as soon as possible
+	if (Shutter->GetVoltsAreLow()) {
+		wirelessMessage += "L"; // low voltage detected
+	}
 
-    Wireless.print(wirelessMessage + "#");
-    // ask if it's raining
-    Wireless.print( String(RAIN_SHUTTER) + "#");
+	Wireless.print(wirelessMessage + "#");
+	// ask if it's raining
+	Wireless.print( String(RAIN_SHUTTER) + "#");
 
-    // say hello :)
-    Wireless.print( String(HELLO) + "#");
-    needFirstPing = false;
+	// say hello :)
+	Wireless.print( String(HELLO) + "#");
+	needFirstPing = false;
 }
 
 #ifdef DEBUG
 void ReceiveSerial()
 {
-    char computerCharacter;
-    if(DebugPort.available() < 1)
-        return; // no data
+	char computerCharacter;
+	if(DebugPort.available() < 1)
+		return; // no data
 
-    while(DebugPort.available() > 0 ) {
-        computerCharacter = DebugPort.read();
-        if (computerCharacter != ERR_NO_DATA) {
-            if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
-                // End of command
-                if (serialBuffer.length() > 0) {
-                    ProcessMessages(serialBuffer);
-                    serialBuffer = "";
-                    return; // we'll read the next command on the next loop.
-                }
-            }
-            else {
-                serialBuffer += String(computerCharacter);
-            }
-        }
-    }
+	while(DebugPort.available() > 0 ) {
+		computerCharacter = DebugPort.read();
+		if (computerCharacter != ERR_NO_DATA) {
+			if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
+				// End of command
+				if (serialBuffer.length() > 0) {
+					ProcessMessages(serialBuffer);
+					serialBuffer = "";
+					return; // we'll read the next command on the next loop.
+				}
+			}
+			else {
+				serialBuffer += String(computerCharacter);
+			}
+		}
+	}
 }
 #endif
 
@@ -348,7 +348,7 @@ void ProcessMessages(String buffer)
 {
 	String value, wirelessMessage="";
 	char command;
-    bool hasValue = false;
+	bool hasValue = false;
 
 	if (buffer.equals("OK")) {
 		DBPrint("Buffer == OK");
@@ -406,7 +406,7 @@ void ProcessMessages(String buffer)
 			else {
 				wirelessMessage = "O"; // (O)pen command
 				if (Shutter->GetState() != OPEN)
-				    Shutter->Open();
+					Shutter->Open();
 			}
 
 			break;
@@ -422,26 +422,26 @@ void ProcessMessages(String buffer)
 				DBPrintln("Watchdog interval set to " + value + " ms");
 			}
 			else {
-    			DBPrintln("Watchdog interval " + String(Shutter->getWatchdogInterval()) + " ms");
+				DBPrintln("Watchdog interval " + String(Shutter->getWatchdogInterval()) + " ms");
 			}
 			wirelessMessage = String(WATCHDOG_INTERVAL) + String(Shutter->getWatchdogInterval());
 			break;
 
 		case RAIN_SHUTTER:
-		    if(hasValue) {
-                if (value.equals("1")) {
-                    if (!isRaining) {
-                        if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING)
-                            Shutter->Close();
-                        isRaining = true;
-                        DBPrintln("It's raining! (" + value + ")");
-                    }
-                }
-                else {
-                    isRaining = false;
-                    DBPrintln("It's not raining");
-                }
-		    }
+			if(hasValue) {
+				if (value.equals("1")) {
+					if (!isRaining) {
+						if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING)
+							Shutter->Close();
+						isRaining = true;
+						DBPrintln("It's raining! (" + value + ")");
+					}
+				}
+				else {
+					isRaining = false;
+					DBPrintln("It's not raining");
+				}
+			}
 			break;
 
 		case REVERSED_SHUTTER:
@@ -502,34 +502,34 @@ void ProcessMessages(String buffer)
 
 		case SHUTTER_PING:
 			wirelessMessage = String(SHUTTER_PING);
-            // make sure the rotator knows as soon as possible
-            if (Shutter->GetVoltsAreLow()) {
-                wirelessMessage += "L"; // low voltage detected
-            }
-            else if(isRaining) {
-                wirelessMessage += "R"; // Raining
-            }
+			// make sure the rotator knows as soon as possible
+			if (Shutter->GetVoltsAreLow()) {
+				wirelessMessage += "L"; // low voltage detected
+			}
+			else if(isRaining) {
+				wirelessMessage += "R"; // Raining
+			}
 
 			DBPrintln("Got Ping");
 			watchdogTimer.reset();
 			XbeeResets = 0;
 			break;
 
-        case RESTORE_MOTOR_DEFAULT:
+		case RESTORE_MOTOR_DEFAULT:
 			DBPrintln("Restore default motor settings");
-            Shutter->restoreDefaultMotorSettings();
+			Shutter->restoreDefaultMotorSettings();
 			wirelessMessage = String(RESTORE_MOTOR_DEFAULT);
-            break;
+			break;
 
-        case PANID:
+		case PANID:
 			if (hasValue) {
 				wirelessMessage = String(PANID);
 				setPANID(value);
 			}
 			else {
-                wirelessMessage = String(PANID) + Shutter->GetPANID();
-            }
-            DBPrintln("PAN ID '" + String(Shutter->GetPANID()) + "'");
+				wirelessMessage = String(PANID) + Shutter->GetPANID();
+			}
+			DBPrintln("PAN ID '" + String(Shutter->GetPANID()) + "'");
 			break;
 
 
