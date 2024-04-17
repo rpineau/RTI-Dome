@@ -137,7 +137,7 @@ int XbeeResets = 0;
 std::atomic<bool> core0Ready = false;
 #endif
 
-bool bParked = false; // use to the rin check doesn't continuously try to park
+bool bParked = false; // use to the run check doesn't continuously try to park
 
 RotatorClass *Rotator = NULL;
 
@@ -149,13 +149,13 @@ RotatorClass *Rotator = NULL;
 #define NB_AT_OK  17
 /// ATAC,CE1,ID4242,CH0C,MY0,DH0,DLFFFF,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATCH0C","ATMY0","ATDH0","ATDLFFFF",
-                        "ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
+						"ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
 #if defined(XBEE_S2C)
 #define NB_AT_OK  13
 /// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
 String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
-                        "ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
+						"ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
 
 // index in array above where the command is empty.
@@ -227,133 +227,147 @@ void ProcessWireless();
 class RTIDomeAlpacaDiscoveryServer
 {
 public:
-    RTIDomeAlpacaDiscoveryServer(int port);
-    void startServer();
-    int checkForRequest();
+	RTIDomeAlpacaDiscoveryServer(int port);
+	void startServer();
+	int checkForRequest();
 private:
-    EthernetUDP *discoveryServer;
-    int m_UDPPort;
+	EthernetUDP *discoveryServer;
+	int m_UDPPort;
 };
 
 // ALPACA discovery server
 RTIDomeAlpacaDiscoveryServer::RTIDomeAlpacaDiscoveryServer(int port)
 {
-    m_UDPPort = port;
-    discoveryServer = nullptr;
+	m_UDPPort = port;
+	discoveryServer = nullptr;
 }
 
 void RTIDomeAlpacaDiscoveryServer::startServer()
 {
-    discoveryServer = new EthernetUDP();
-    if(!discoveryServer) {
-        discoveryServer = nullptr;
-        return;
-    }
-    discoveryServer->begin(m_UDPPort);
-    DBPrintln("discoveryServer started on port " + String(m_UDPPort));
+	discoveryServer = new EthernetUDP();
+	if(!discoveryServer) {
+		discoveryServer = nullptr;
+		return;
+	}
+	discoveryServer->begin(m_UDPPort);
+	DBPrintln("discoveryServer started on port " + String(m_UDPPort));
 }
 
 int RTIDomeAlpacaDiscoveryServer::checkForRequest()
 {
-    if(!discoveryServer)
-        return -1;
-    
-    String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
-    String sDiscoveryRequest;
+	if(!discoveryServer)
+		return -1;
+	
+	String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
+	String sDiscoveryRequest;
 
-    char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
-    int packetSize = discoveryServer->parsePacket();
-    if (packetSize) {
-        DBPrintln("discoveryServer request");
-        memset(packetBuffer,0,sizeof(packetBuffer));
-        discoveryServer->read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-        // do stuff
-        sDiscoveryRequest = String(packetBuffer);
-        DBPrintln("discoveryServer sDiscoveryRequest : " + sDiscoveryRequest);
-        if(sDiscoveryRequest.indexOf(sAlpacaDiscovery)==-1) {
-            DBPrintln("discoveryServer request error");
-            return SERVER_ERROR; // wrong type of discovery message
-        }
-        DBPrintln("discoveryServer sending response : " + sDiscoveryResponse);
-        // send discovery reponse
-        discoveryServer->beginPacket(discoveryServer->remoteIP(), discoveryServer->remotePort());
-        discoveryServer->write(sDiscoveryResponse.c_str());
-        discoveryServer->endPacket();
-    }
-    return ALPACA_OK;
+	char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
+	int packetSize = discoveryServer->parsePacket();
+	if (packetSize) {
+		DBPrintln("discoveryServer request");
+		memset(packetBuffer,0,sizeof(packetBuffer));
+		discoveryServer->read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+		// do stuff
+		sDiscoveryRequest = String(packetBuffer);
+		DBPrintln("discoveryServer sDiscoveryRequest : " + sDiscoveryRequest);
+		if(sDiscoveryRequest.indexOf(sAlpacaDiscovery)==-1) {
+			DBPrintln("discoveryServer request error");
+			return SERVER_ERROR; // wrong type of discovery message
+		}
+		DBPrintln("discoveryServer sending response : " + sDiscoveryResponse);
+		// send discovery reponse
+		discoveryServer->beginPacket(discoveryServer->remoteIP(), discoveryServer->remotePort());
+		discoveryServer->write(sDiscoveryResponse.c_str());
+		discoveryServer->endPacket();
+	}
+	return ALPACA_OK;
 }
 
 class RTIDomeAlpacaServer
 {
 public :
-    RTIDomeAlpacaServer(int port);
-    void startServer();
-    void checkForRequest();
+	RTIDomeAlpacaServer(int port);
+	void startServer();
+	void checkForRequest();
 
 
 private :
-    EthernetServer *mRestServer;
-    Application  *m_AlpacaRestServer;
-    int m_nRestPort;
+	EthernetServer *mRestServer;
+	Application  *m_AlpacaRestServer;
+	int m_nRestPort;
 };
 
 RTIDomeAlpacaServer::RTIDomeAlpacaServer(int port)
 {
-    m_nRestPort = port;
-    mRestServer = nullptr;
-    m_AlpacaRestServer = nullptr;
-    nTransactionID = 0;
+	m_nRestPort = port;
+	mRestServer = nullptr;
+	m_AlpacaRestServer = nullptr;
+	nTransactionID = 0;
 }
 
 void RTIDomeAlpacaServer::startServer()
 {
-    mRestServer = new EthernetServer(m_nRestPort);
-    m_AlpacaRestServer = new Application();
+	mRestServer = new EthernetServer(m_nRestPort);
+	m_AlpacaRestServer = new Application();
 
-    DBPrintln("m_AlpacaRestServer starting");
-    mRestServer->begin();
+	DBPrintln("m_AlpacaRestServer starting");
+	mRestServer->begin();
 
 
-    DBPrintln("m_AlpacaRestServer mapping endpoints");
+	DBPrintln("m_AlpacaRestServer mapping endpoints");
 
-    m_AlpacaRestServer->get("/management/apiversions", &getApiVersion);
-    m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
-    m_AlpacaRestServer->get("/management/v1/description", &getDescription);
+	m_AlpacaRestServer->get("/management/apiversions", &getApiVersion);
+	m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
+	m_AlpacaRestServer->get("/management/v1/description", &getDescription);
 
-    m_AlpacaRestServer->put("/api/v1/dome/0/action", &doAction);
-    m_AlpacaRestServer->put("/api/v1/dome/0/commandblind", &doCommandBlind);
-    m_AlpacaRestServer->put("/api/v1/dome/0/commandbool", &doCommandBool);
-    m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
+	m_AlpacaRestServer->put("/api/v1/dome/0/action", &doAction);
+	m_AlpacaRestServer->put("/api/v1/dome/0/commandblind", &doCommandBlind);
+	m_AlpacaRestServer->put("/api/v1/dome/0/commandbool", &doCommandBool);
+	m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
 
-    m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConected);
-    m_AlpacaRestServer->get("/api/v1/dome/0/connected", &setConected);
-    m_AlpacaRestServer->get("/api/v1/dome/0/description", &getDeviceDescription);
-    m_AlpacaRestServer->get("/api/v1/dome/0/driverinfo", &getDriverInfo);
-    m_AlpacaRestServer->get("/api/v1/dome/0/driverVersion", &getDriverVersion);
-    m_AlpacaRestServer->get("/api/v1/dome/0/interfaceversion", &getInterfaceVersion);
+	m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConected);
+	
+	m_AlpacaRestServer->put("/api/v1/dome/0/connected", &setConected);
+	
+	m_AlpacaRestServer->get("/api/v1/dome/0/description", &getDeviceDescription);
+	m_AlpacaRestServer->get("/api/v1/dome/0/driverinfo", &getDriverInfo);
+	m_AlpacaRestServer->get("/api/v1/dome/0/driverVersion", &getDriverVersion);
+	m_AlpacaRestServer->get("/api/v1/dome/0/interfaceversion", &getInterfaceVersion);
+	m_AlpacaRestServer->get("/api/v1/dome/0/name", &getName);
+	m_AlpacaRestServer->get("/api/v1/dome/0/supportedactions", &getSupportedActions);
+	m_AlpacaRestServer->get("/api/v1/dome/0/altitude", &getAltitude);
+	m_AlpacaRestServer->get("api/v1/dome/0/athome", &geAtHome);
+	m_AlpacaRestServer->get("api/v1/dome/0/atpark", &geAtPark);
+	m_AlpacaRestServer->get("api/v1/dome/0/azimuth", &getAzimuth);
+	m_AlpacaRestServer->get("api/v1/dome/0/canfindhome", &canfindhome);
+	m_AlpacaRestServer->get("api/v1/dome/0/canpark", &canPark);
+	m_AlpacaRestServer->get("api/v1/dome/0/cansetaltitude", &canSetAltitude);
+	m_AlpacaRestServer->get("api/v1/dome/0/cansetazimuth", &canSetAzimuth);
+	m_AlpacaRestServer->get("api/v1/dome/0/cansetpark", &canSetPark);
+	m_AlpacaRestServer->get("api/v1/dome/0/cansetshutter", &canSetShutter);
+	m_AlpacaRestServer->get("api/v1/dome/0/canslave", &canSlave);
+	m_AlpacaRestServer->get("api/v1/dome/0/cansyncazimuth", canSyncAzimuth&);
+	m_AlpacaRestServer->get("api/v1/dome/0/shutterstatus", &getShutterStatus);
+	m_AlpacaRestServer->get("api/v1/dome/0/slaved", &getSlaved);
+	
+	m_AlpacaRestServer->put("api/v1/dome/0/slaved", &setSlaved);
 
-    m_AlpacaRestServer->get("/api/v1/dome/0/name", &getName);
-    m_AlpacaRestServer->get("/api/v1/dome/0/supportedactions", &getSupportedAxtions);
+	m_AlpacaRestServer->get("api/v1/dome/0/slewing", &getSlewing);
+	m_AlpacaRestServer->get("api/v1/dome/0/", &);
+	m_AlpacaRestServer->get("api/v1/dome/0/", &);
 
-    m_AlpacaRestServer->get("/api/v1/dome/0/altitude", &getAltitude);
-    m_AlpacaRestServer->put("api/v1/dome/0/athome", &geAtHome);
-    m_AlpacaRestServer->put("api/v1/dome/0/", &);
-    m_AlpacaRestServer->put("api/v1/dome/0/", &);
-    m_AlpacaRestServer->put("api/v1/dome/0/", &);
-    m_AlpacaRestServer->put("api/v1/dome/0/", &);
-
-    DBPrintln("m_AlpacaRestServer started");
+	DBPrintln("m_AlpacaRestServer started");
 
 }
 
 void RTIDomeAlpacaServer::checkForRequest()
 {
-    // process incoming connections one at a time
-    EthernetClient client = mRestServer->available();
-    if (client.connected()) {
-        m_AlpacaRestServer->process(&client);
-        client.stop();
-        nTransactionID++;
+	// process incoming connections one at a time
+	EthernetClient client = mRestServer->available();
+	if (client.connected()) {
+		m_AlpacaRestServer->process(&client);
+		client.stop();
+		nTransactionID++;
   }
 
 }
@@ -371,109 +385,109 @@ RTIDomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 void setup()
 {
 #if defined(ARDUINO_ARCH_RP2040)
-    core0Ready = false;
+	core0Ready = false;
 #endif
 #ifndef STANDALONE
-    // set reset pins to output and low
-    digitalWrite(XBEE_RESET, 0);
-    pinMode(XBEE_RESET, OUTPUT);
+	// set reset pins to output and low
+	digitalWrite(XBEE_RESET, 0);
+	pinMode(XBEE_RESET, OUTPUT);
 #endif // STANDALONE
-    digitalWrite(FTDI_RESET, 0);
-    pinMode(FTDI_RESET, OUTPUT);
+	digitalWrite(FTDI_RESET, 0);
+	pinMode(FTDI_RESET, OUTPUT);
 
 #ifdef USE_ETHERNET
-    digitalWrite(ETHERNET_RESET, 0);
-    pinMode(ETHERNET_RESET, OUTPUT);
+	digitalWrite(ETHERNET_RESET, 0);
+	pinMode(ETHERNET_RESET, OUTPUT);
 #endif // USE_ETHERNET
 
 #ifndef STANDALONE
-    resetChip(XBEE_RESET);
+	resetChip(XBEE_RESET);
 #endif // STANDALONE
-    resetFTDI(FTDI_RESET);
+	resetFTDI(FTDI_RESET);
 
 #ifdef USE_ETHERNET
-    getMacAddress(MAC_Address, uidBuffer);
+	getMacAddress(MAC_Address, uidBuffer);
 #ifdef USE_ALPACA
-    sUID = String(MAC_Address[0], HEX) +
-                    String(MAC_Address[1], HEX) +
-                    String(MAC_Address[2], HEX) +
-                    String(MAC_Address[3], HEX) +
-                    String(MAC_Address[4], HEX) +
-                    String(MAC_Address[5], HEX) ;
+	sUID = String(MAC_Address[0], HEX) +
+					String(MAC_Address[1], HEX) +
+					String(MAC_Address[2], HEX) +
+					String(MAC_Address[3], HEX) +
+					String(MAC_Address[4], HEX) +
+					String(MAC_Address[5], HEX) ;
 #endif // USE_ALPACA
 #ifdef DEBUG
-    DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
-                    String(MAC_Address[1], HEX) + String(":") +
-                    String(MAC_Address[2], HEX) + String(":") +
-                    String(MAC_Address[3], HEX) + String(":") +
-                    String(MAC_Address[4], HEX) + String(":") +
-                    String(MAC_Address[5], HEX) );
+	DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
+					String(MAC_Address[1], HEX) + String(":") +
+					String(MAC_Address[2], HEX) + String(":") +
+					String(MAC_Address[3], HEX) + String(":") +
+					String(MAC_Address[4], HEX) + String(":") +
+					String(MAC_Address[5], HEX) );
 #endif
 #endif // USE_ETHERNET
 
-    Computer.begin(115200);
+	Computer.begin(115200);
 
 #ifndef STANDALONE
-    Wireless.begin(9600);
-    PingTimer.reset();
-    XbeeStarted = false;
-    sentHello = false;
-    isConfiguringWireless = false;
-    gotHelloFromShutter = false;
+	Wireless.begin(9600);
+	PingTimer.reset();
+	XbeeStarted = false;
+	sentHello = false;
+	isConfiguringWireless = false;
+	gotHelloFromShutter = false;
 #endif // STANDALONE
 
-    Rotator = new RotatorClass();
-    Rotator->motorStop();
-    Rotator->EnableMotor(false);
+	Rotator = new RotatorClass();
+	Rotator->motorStop();
+	Rotator->EnableMotor(false);
 
 #if defined(ARDUINO_SAM_DUE)
-    noInterrupts();
-    attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
-    attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-    interrupts();
+	noInterrupts();
+	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+	interrupts();
 #endif
 
 #ifdef DEBUG
-    DebugPort.begin(115200);
-    DBPrintln("========== RTI-Zone controller booting ==========");
+	DebugPort.begin(115200);
+	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
 
 #ifdef USE_ETHERNET
-    configureEthernet();
+	configureEthernet();
 #ifdef USE_ALPACA
-    AlpacaDiscoveryServer = new RTIDomeAlpacaDiscoveryServer(ALPACA_DISCOVERY_PORT);
-    AlpacaServer = new RTIDomeAlpacaServer(ALPACA_SERVER_PORT);
-    AlpacaDiscoveryServer->startServer();
-    AlpacaServer->startServer();
+	AlpacaDiscoveryServer = new RTIDomeAlpacaDiscoveryServer(ALPACA_DISCOVERY_PORT);
+	AlpacaServer = new RTIDomeAlpacaServer(ALPACA_SERVER_PORT);
+	AlpacaDiscoveryServer->startServer();
+	AlpacaServer->startServer();
 #endif // USE_ALPACA
 #endif // USE_ETHERNET
 #ifdef DEBUG
-    Computer.println("Online");
+	Computer.println("Online");
 #endif
 
 #if defined(ARDUINO_ARCH_RP2040)
-    core0Ready = true;
-    DBPrintln("========== Core 0 ready ==========");
+	core0Ready = true;
+	DBPrintln("========== Core 0 ready ==========");
 #endif
 }
 
 #if defined(ARDUINO_ARCH_RP2040)
 void setup1()
 {
-    while(!core0Ready)
-        delay(100);
+	while(!core0Ready)
+		delay(100);
 
-    DBPrintln("========== Core 1 starting ==========");
+	DBPrintln("========== Core 1 starting ==========");
 
-    DBPrintln("========== Core 1 Attaching interrupt handler ==========");
-    attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
-    attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+	DBPrintln("========== Core 1 Attaching interrupt handler ==========");
+	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
 
-    DBPrintln("========== Core 1 ready ==========");
+	DBPrintln("========== Core 1 ready ==========");
 }
 #endif
 //
@@ -483,58 +497,58 @@ void loop()
 {
 
 #ifdef USE_ETHERNET
-    if(ethernetPresent) {
-        checkForNewTCPClient();
+	if(ethernetPresent) {
+		checkForNewTCPClient();
 #ifdef USE_ALPACA
-        AlpacaDiscoveryServer->checkForRequest();
-        AlpacaServer->checkForRequest();
+		AlpacaDiscoveryServer->checkForRequest();
+		AlpacaServer->checkForRequest();
 #endif
-    }
+	}
 #endif // USE_ETHERNET
 
 #ifndef STANDALONE
-    if (!XbeeStarted) {
-        if (!isConfiguringWireless) {
-            DBPrintln("Xbee reconfiguring");
-            StartWirelessConfig();
-            DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
-        }
-    }
+	if (!XbeeStarted) {
+		if (!isConfiguringWireless) {
+			DBPrintln("Xbee reconfiguring");
+			StartWirelessConfig();
+			DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
+		}
+	}
 #endif // STANDALONE
 #if defined(ARDUINO_SAM_DUE)
-    Rotator->Run();
+	Rotator->Run();
 #endif
-    CheckForCommands();
-    CheckForRain();
+	CheckForCommands();
+	CheckForRain();
 #ifndef STANDALONE
-    checkShuterLowVoltage();
-    if(XbeeStarted) {
-        if(ShutterWatchdog.elapsed() > (pingInterval*5) && XbeeResets < MAX_XBEE_RESET) { // try 10 times max
-            // lets try to recover
-	        if(!isResetingXbee && XbeeResets < MAX_XBEE_RESET) {
-                DBPrintln("watchdogTimer triggered");
-    	        DBPrintln("Resetting XBee reset #" + String(XbeeResets));
-                bShutterPresent = false;
-                SentHello = false;
-	            XbeeResets++;
-	            isResetingXbee = true;
-                resetChip(XBEE_RESET);
-                isConfiguringWireless = false;
-                XbeeStarted = false;
-                configStep = 0;
-                StartWirelessConfig();
-	        }
-        }
-        else if(!SentHello && XbeeResets < MAX_XBEE_RESET) // if after 10 reset we didn't get an answer there is no point sending more hello.
-            SendHello();
-        else
-            PingShutter();
+	checkShuterLowVoltage();
+	if(XbeeStarted) {
+		if(ShutterWatchdog.elapsed() > (pingInterval*5) && XbeeResets < MAX_XBEE_RESET) { // try 10 times max
+			// lets try to recover
+			if(!isResetingXbee && XbeeResets < MAX_XBEE_RESET) {
+				DBPrintln("watchdogTimer triggered");
+				DBPrintln("Resetting XBee reset #" + String(XbeeResets));
+				bShutterPresent = false;
+				SentHello = false;
+				XbeeResets++;
+				isResetingXbee = true;
+				resetChip(XBEE_RESET);
+				isConfiguringWireless = false;
+				XbeeStarted = false;
+				configStep = 0;
+				StartWirelessConfig();
+			}
+		}
+		else if(!SentHello && XbeeResets < MAX_XBEE_RESET) // if after 10 reset we didn't get an answer there is no point sending more hello.
+			SendHello();
+		else
+			PingShutter();
 
-        if(gotHelloFromShutter) {
-            requestShutterData();
-            gotHelloFromShutter = false;
-        }
-    }
+		if(gotHelloFromShutter) {
+			requestShutterData();
+			gotHelloFromShutter = false;
+		}
+	}
 #endif // STANDALONE
 }
 
@@ -544,7 +558,7 @@ void loop()
 #if defined(ARDUINO_ARCH_RP2040)
 void loop1()
 {   // all stepper motor code runs on core 1
-    Rotator->Run();
+	Rotator->Run();
 }
 #endif
 
@@ -554,677 +568,677 @@ void loop1()
 #ifdef USE_ETHERNET
 void configureEthernet()
 {
-    DBPrintln("========== Configureing Ethernet ==========");
-    Rotator->getIpConfig(ServerConfig);
-    ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
-                                    ServerConfig.ip,
-                                    ServerConfig.dns,
-                                    ServerConfig.gateway,
-                                    ServerConfig.subnet);
+	DBPrintln("========== Configureing Ethernet ==========");
+	Rotator->getIpConfig(ServerConfig);
+	ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
+									ServerConfig.ip,
+									ServerConfig.dns,
+									ServerConfig.gateway,
+									ServerConfig.subnet);
 }
 
 
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
-    int dhcpOk;
+	int dhcpOk;
 #ifdef DEBUG
-    IPAddress aTmp;
+	IPAddress aTmp;
 #endif
 
-    DBPrintln("========== Init Ethernet ==========");
-    resetChip(ETHERNET_RESET);
-    // network configuration
-    nbEthernetClient = 0;
-    Ethernet.init(ETHERNET_CS);
+	DBPrintln("========== Init Ethernet ==========");
+	resetChip(ETHERNET_RESET);
+	// network configuration
+	nbEthernetClient = 0;
+	Ethernet.init(ETHERNET_CS);
 
-    DBPrintln("========== Setting IP config ==========");
-    // try DHCP if set
-    if(bUseDHCP) {
-        dhcpOk = Ethernet.begin(MAC_Address, 10000, 4000); // short timeout
-        if(!dhcpOk) {
-            DBPrintln("DHCP Failed!");
-            if(Ethernet.linkStatus() == LinkON )
-                Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
-            else {
-                DBPrintln("No cable");
-                return false;
-            }
-        }
-    }
-    else {
-        Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
-    }
+	DBPrintln("========== Setting IP config ==========");
+	// try DHCP if set
+	if(bUseDHCP) {
+		dhcpOk = Ethernet.begin(MAC_Address, 10000, 4000); // short timeout
+		if(!dhcpOk) {
+			DBPrintln("DHCP Failed!");
+			if(Ethernet.linkStatus() == LinkON )
+				Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
+			else {
+				DBPrintln("No cable");
+				return false;
+			}
+		}
+	}
+	else {
+		Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
+	}
 
-    DBPrintln("========== Checking hardware status ==========");
-    if(Ethernet.hardwareStatus() == EthernetNoHardware) {
-         DBPrintln("NO HARDWARE !!!");
-        return false;
-    }
+	DBPrintln("========== Checking hardware status ==========");
+	if(Ethernet.hardwareStatus() == EthernetNoHardware) {
+		 DBPrintln("NO HARDWARE !!!");
+		return false;
+	}
 #ifdef DEBUG
-    aTmp = Ethernet.localIP();
-    DBPrintln("IP = " + String(aTmp[0]) + String(".") +
-                        String(aTmp[1]) + String(".") +
-                        String(aTmp[2]) + String(".") +
-                        String(aTmp[3]) );
+	aTmp = Ethernet.localIP();
+	DBPrintln("IP = " + String(aTmp[0]) + String(".") +
+						String(aTmp[1]) + String(".") +
+						String(aTmp[2]) + String(".") +
+						String(aTmp[3]) );
 #endif
 
-    Ethernet.setRetransmissionCount(3);
-    DBPrintln("Server ready, calling begin()");
-    domeServer.begin();
-    return true;
+	Ethernet.setRetransmissionCount(3);
+	DBPrintln("Server ready, calling begin()");
+	domeServer.begin();
+	return true;
 }
 
 
 void checkForNewTCPClient()
 {
-    if(ServerConfig.bUseDHCP)
-        Ethernet.maintain();
+	if(ServerConfig.bUseDHCP)
+		Ethernet.maintain();
 
-    EthernetClient newClient = domeServer.accept();
-    if(newClient) {
-        DBPrintln("new client");
-        if(nbEthernetClient > 0) { // we only accept 1 client
-            newClient.print("Already in use#");
-            newClient.flush();
-            newClient.stop();
-            DBPrintln("new client rejected");
-        }
-        else {
-            nbEthernetClient++;
-            domeClient = newClient;
-            DBPrintln("new client accepted");
-            DBPrintln("nb client = " + String(nbEthernetClient));
-        }
-    }
+	EthernetClient newClient = domeServer.accept();
+	if(newClient) {
+		DBPrintln("new client");
+		if(nbEthernetClient > 0) { // we only accept 1 client
+			newClient.print("Already in use#");
+			newClient.flush();
+			newClient.stop();
+			DBPrintln("new client rejected");
+		}
+		else {
+			nbEthernetClient++;
+			domeClient = newClient;
+			DBPrintln("new client accepted");
+			DBPrintln("nb client = " + String(nbEthernetClient));
+		}
+	}
 
-    if((nbEthernetClient>0) && !domeClient.connected()) {
-        DBPrintln("client disconnected");
-        domeClient.stop();
-        nbEthernetClient--;
-        configureEthernet();
-    }
+	if((nbEthernetClient>0) && !domeClient.connected()) {
+		DBPrintln("client disconnected");
+		domeClient.stop();
+		nbEthernetClient--;
+		configureEthernet();
+	}
 }
 #endif // USE_ETHERNET
 
 void homeIntHandler()
 {
    if(Rotator)
-       Rotator->homeInterrupt();
+	   Rotator->homeInterrupt();
 }
 
 void rainIntHandler()
 {
    if(Rotator)
-       Rotator->rainInterrupt();
+	   Rotator->rainInterrupt();
 }
 
 void buttonHandler()
 {
    if(Rotator)
-       Rotator->ButtonCheck();
+	   Rotator->ButtonCheck();
 }
 
 
 // reset chip with /reset connected to nPin
 void resetChip(int nPin)
 {
-    digitalWrite(nPin, 0);
-    delay(2);
-    digitalWrite(nPin, 1);
-    delay(10);
+	digitalWrite(nPin, 0);
+	delay(2);
+	digitalWrite(nPin, 1);
+	delay(10);
 }
 
 //reset FTDI FT232 usb to serial chip
 void resetFTDI(int nPin)
 {
-    digitalWrite(nPin,0);
-    delay(1000);
-    digitalWrite(nPin,1);
+	digitalWrite(nPin,0);
+	delay(1000);
+	digitalWrite(nPin,1);
 }
 
 #ifndef STANDALONE
 void StartWirelessConfig()
 {
-    DBPrintln("Xbee configuration started");
-    delay(1100); // guard time before and after
-    isConfiguringWireless = true;
-    DBPrintln("Sending +++");
-    Wireless.print("+++");
-    delay(1100);
-    ShutterWatchdog.reset();
-    DBPrintln("Xbee +++ sent");
+	DBPrintln("Xbee configuration started");
+	delay(1100); // guard time before and after
+	isConfiguringWireless = true;
+	DBPrintln("Sending +++");
+	Wireless.print("+++");
+	delay(1100);
+	ShutterWatchdog.reset();
+	DBPrintln("Xbee +++ sent");
 }
 
 inline void ConfigXBee()
 {
 
-    DBPrintln("Sending ");
-    if ( configStep == PANID_STEP) {
-        String ATCmd = "ATID" + String(Rotator->GetPANID());
-        DBPrintln(ATCmd);
-        Wireless.println(ATCmd);
-        Wireless.flush();
-        configStep++;
-    }
-    else {
-        DBPrintln(ATString[configStep]);
-        Wireless.println(ATString[configStep]);
-        Wireless.flush();
-        configStep++;
-    }
-    if (configStep > NB_AT_OK) {
-        isConfiguringWireless = false;
-        XbeeStarted = true;
-        Rotator->SaveToEEProm();
-        DBPrintln("Xbee configuration finished");
-        while(Wireless.available() > 0) {
-            Wireless.read();
-        }
-        SentHello = false;
-        gotHelloFromShutter = false;
-        isResetingXbee = false;
-    }
-    delay(100);
+	DBPrintln("Sending ");
+	if ( configStep == PANID_STEP) {
+		String ATCmd = "ATID" + String(Rotator->GetPANID());
+		DBPrintln(ATCmd);
+		Wireless.println(ATCmd);
+		Wireless.flush();
+		configStep++;
+	}
+	else {
+		DBPrintln(ATString[configStep]);
+		Wireless.println(ATString[configStep]);
+		Wireless.flush();
+		configStep++;
+	}
+	if (configStep > NB_AT_OK) {
+		isConfiguringWireless = false;
+		XbeeStarted = true;
+		Rotator->SaveToEEProm();
+		DBPrintln("Xbee configuration finished");
+		while(Wireless.available() > 0) {
+			Wireless.read();
+		}
+		SentHello = false;
+		gotHelloFromShutter = false;
+		isResetingXbee = false;
+	}
+	delay(100);
 }
 
 void setPANID(String value)
 {
-    Rotator->setPANID(value);
-    resetChip(XBEE_RESET);
-    isConfiguringWireless = false;
-    XbeeStarted = false;
-    configStep = 0;
+	Rotator->setPANID(value);
+	resetChip(XBEE_RESET);
+	isConfiguringWireless = false;
+	XbeeStarted = false;
+	configStep = 0;
 }
 
 void SendHello()
 {
-    DBPrintln("Sending hello");
-    Wireless.print(String(HELLO) + "#");
-    ReceiveWireless();
-    SentHello = true;
+	DBPrintln("Sending hello");
+	Wireless.print(String(HELLO) + "#");
+	ReceiveWireless();
+	SentHello = true;
 }
 
 void requestShutterData()
 {
-        Wireless.print(String(STATE_SHUTTER) + "#");
-        ReceiveWireless();
+		Wireless.print(String(STATE_SHUTTER) + "#");
+		ReceiveWireless();
 
-        Wireless.print(String(VERSION_SHUTTER) + "#");
-        ReceiveWireless();
+		Wireless.print(String(VERSION_SHUTTER) + "#");
+		ReceiveWireless();
 
-        Wireless.print(String(REVERSED_SHUTTER) + "#");
-        ReceiveWireless();
+		Wireless.print(String(REVERSED_SHUTTER) + "#");
+		ReceiveWireless();
 
-        Wireless.print(String(STEPSPER_SHUTTER) + "#");
-        ReceiveWireless();
+		Wireless.print(String(STEPSPER_SHUTTER) + "#");
+		ReceiveWireless();
 
-        Wireless.print(String(SPEED_SHUTTER) + "#");
-        ReceiveWireless();
+		Wireless.print(String(SPEED_SHUTTER) + "#");
+		ReceiveWireless();
 
-        Wireless.print(String(ACCELERATION_SHUTTER) + "#");
-        ReceiveWireless();
+		Wireless.print(String(ACCELERATION_SHUTTER) + "#");
+		ReceiveWireless();
 
-        Wireless.print(String(VOLTS_SHUTTER) + "#");
-        ReceiveWireless();
+		Wireless.print(String(VOLTS_SHUTTER) + "#");
+		ReceiveWireless();
 
-        Wireless.print(String(SHUTTER_PANID) + "#");
-        ReceiveWireless();
+		Wireless.print(String(SHUTTER_PANID) + "#");
+		ReceiveWireless();
 }
 
 #endif // STANDALONE
 
 void CheckForCommands()
 {
-    ReceiveComputer();
+	ReceiveComputer();
 
 #ifndef STANDALONE
-    if (Wireless.available() > 0) {
-        ReceiveWireless();
-    }
+	if (Wireless.available() > 0) {
+		ReceiveWireless();
+	}
 #endif // STANDALONE
 #ifdef USE_ETHERNET
-    if(ethernetPresent ) {
-        ReceiveNetwork(domeClient);
-    }
+	if(ethernetPresent ) {
+		ReceiveNetwork(domeClient);
+	}
 
 #endif // USE_ETHERNET
 }
 
 void CheckForRain()
 {
-    int nPosition, nParkPos;
-    if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
-        bIsRaining = Rotator->GetRainStatus();
+	int nPosition, nParkPos;
+	if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
+		bIsRaining = Rotator->GetRainStatus();
 #ifndef STANDALONE
-        Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
-        ReceiveWireless();
+		Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+		ReceiveWireless();
 #endif // STANDALONE
-    }
-    if (bIsRaining) {
-        if (Rotator->GetRainAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
-            DBPrintln("Raining- > Homing");
-            Rotator->StartHoming();
-        }
+	}
+	if (bIsRaining) {
+		if (Rotator->GetRainAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
+			DBPrintln("Raining- > Homing");
+			Rotator->StartHoming();
+		}
 
-        if (Rotator->GetRainAction() == PARK && !bParked) {
-            nParkPos = Rotator->GetParkAzimuth();
-            DBPrintln("Raining -> Parking");
-            Rotator->GoToAzimuth(nParkPos);
-            bParked = true;
-        }
-    // keep telling the shutter that it's raining
+		if (Rotator->GetRainAction() == PARK && !bParked) {
+			nParkPos = Rotator->GetParkAzimuth();
+			DBPrintln("Raining -> Parking");
+			Rotator->GoToAzimuth(nParkPos);
+			bParked = true;
+		}
+	// keep telling the shutter that it's raining
 #ifndef STANDALONE
-        Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+		Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
 #endif // STANDALONE
-    }
+	}
 }
 
 #ifndef STANDALONE
 
 void checkShuterLowVoltage()
 {
-    bLowShutterVoltage = (RemoteShutter.lowVoltStateOrRaining.equals("L"));
-    if(bLowShutterVoltage) {
-         Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge tge shutter battery
-         bParked = true;
-    }
+	bLowShutterVoltage = (RemoteShutter.lowVoltStateOrRaining.equals("L"));
+	if(bLowShutterVoltage) {
+		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge tge shutter battery
+		 bParked = true;
+	}
 }
 
 void PingShutter()
 {
-    if(PingTimer.elapsed() >= pingInterval) {
-        Wireless.print(String(SHUTTER_PING) + "#");
-        ReceiveWireless();
-        PingTimer.reset();
-        }
+	if(PingTimer.elapsed() >= pingInterval) {
+		Wireless.print(String(SHUTTER_PING) + "#");
+		ReceiveWireless();
+		PingTimer.reset();
+		}
 }
 #endif // STANDALONE
 
 #ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client)
 {
-    char networkCharacter;
+	char networkCharacter;
 
-    if(!client.connected()) {
-        return;
-    }
+	if(!client.connected()) {
+		return;
+	}
 
-    if(client.available() < 1)
-        return; // no data
+	if(client.available() < 1)
+		return; // no data
 
-    while(client.available()>0) {
-        networkCharacter = client.read();
-        if (networkCharacter != ERR_NO_DATA) {
-            if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
-                // End of message
-                if (networkBuffer.length() > 0) {
-                    ProcessCommand(NETWORK_CMD);
-                    networkBuffer = "";
-                    return; // we'll read the next command on the next loop.
-                }
-            }
-            else {
-                networkBuffer += String(networkCharacter);
-            }
-        }
-    }
+	while(client.available()>0) {
+		networkCharacter = client.read();
+		if (networkCharacter != ERR_NO_DATA) {
+			if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
+				// End of message
+				if (networkBuffer.length() > 0) {
+					ProcessCommand(NETWORK_CMD);
+					networkBuffer = "";
+					return; // we'll read the next command on the next loop.
+				}
+			}
+			else {
+				networkBuffer += String(networkCharacter);
+			}
+		}
+	}
 }
 #endif // USE_ETHERNET
 
 // All comms are terminated with '#' but the '\r' and '\n' are for XBee config
 void ReceiveComputer()
 {
-    char computerCharacter;
+	char computerCharacter;
 
-    if(!Computer)
-        return;
+	if(!Computer)
+		return;
 
-    if(Computer.available() < 1)
-        return; // no data
+	if(Computer.available() < 1)
+		return; // no data
 
-    while(Computer.available() > 0 ) {
-        computerCharacter = Computer.read();
-        if (computerCharacter != ERR_NO_DATA) {
-            if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
-                // End of message
-                if (computerBuffer.length() > 0) {
-                    ProcessCommand(SERIAL_CMD);
-                    computerBuffer = "";
-                    return; // we'll read the next command on the next loop.
-                }
-            }
-            else {
-                computerBuffer += String(computerCharacter);
-            }
-        }
-    }
+	while(Computer.available() > 0 ) {
+		computerCharacter = Computer.read();
+		if (computerCharacter != ERR_NO_DATA) {
+			if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
+				// End of message
+				if (computerBuffer.length() > 0) {
+					ProcessCommand(SERIAL_CMD);
+					computerBuffer = "";
+					return; // we'll read the next command on the next loop.
+				}
+			}
+			else {
+				computerBuffer += String(computerCharacter);
+			}
+		}
+	}
 }
 
 void ProcessCommand(int nSource)
 {
-    float fTmp;
-    char command;
-    String value;
+	float fTmp;
+	char command;
+	String value;
 
 #ifndef STANDALONE
-    String wirelessMessage;
+	String wirelessMessage;
 #endif // STANDALONE
-    String serialMessage, sTmpString;
-    bool hasValue = false;
+	String serialMessage, sTmpString;
+	bool hasValue = false;
 
-    // Split the buffer into command char and value if present
-    // Command character
-    switch(nSource) {
-        case SERIAL_CMD:
-            command = computerBuffer.charAt(0);
-            // Payload
-            value = computerBuffer.substring(1);
-            break;
+	// Split the buffer into command char and value if present
+	// Command character
+	switch(nSource) {
+		case SERIAL_CMD:
+			command = computerBuffer.charAt(0);
+			// Payload
+			value = computerBuffer.substring(1);
+			break;
 #ifdef USE_ETHERNET
-        case NETWORK_CMD:
-            command = networkBuffer.charAt(0);
-            // Payload
-            value = networkBuffer.substring(1);
-            break;
+		case NETWORK_CMD:
+			command = networkBuffer.charAt(0);
+			// Payload
+			value = networkBuffer.substring(1);
+			break;
 #endif
 #ifdef USE_ALPACA
-        case ALPACA_CMD:
-            break;
+		case ALPACA_CMD:
+			break;
 #endif
-    }
+	}
 
-    // payload has data
-    if (value.length() > 0)
-        hasValue = true;
+	// payload has data
+	if (value.length() > 0)
+		hasValue = true;
 
-    serialMessage = "";
+	serialMessage = "";
 #ifndef STANDALONE
-    wirelessMessage = "";
+	wirelessMessage = "";
 #endif // STANDALONE
 
-    DBPrintln("\nProcessCommand");
-    DBPrintln("Command = \"" + String(command) +"\"");
-    DBPrintln("Value = \"" + String(value) +"\"");
-    DBPrintln("nSource = " + String(nSource));
+	DBPrintln("\nProcessCommand");
+	DBPrintln("Command = \"" + String(command) +"\"");
+	DBPrintln("Value = \"" + String(value) +"\"");
+	DBPrintln("nSource = " + String(nSource));
 
 
-    switch (command) {
-        case ABORT:
-            sTmpString = String(ABORT);
-            serialMessage = sTmpString;
-            Rotator->Stop();
+	switch (command) {
+		case ABORT:
+			sTmpString = String(ABORT);
+			serialMessage = sTmpString;
+			Rotator->Stop();
 #ifndef STANDALONE
-            wirelessMessage = sTmpString;
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
+			wirelessMessage = sTmpString;
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
 #endif // STANDALONE
-            break;
+			break;
 
-        case ACCELERATION_ROTATOR:
-            if (hasValue) {
-                Rotator->SetAcceleration(value.toInt());
-            }
-            serialMessage = String(ACCELERATION_ROTATOR) + String(Rotator->GetAcceleration());
-            break;
+		case ACCELERATION_ROTATOR:
+			if (hasValue) {
+				Rotator->SetAcceleration(value.toInt());
+			}
+			serialMessage = String(ACCELERATION_ROTATOR) + String(Rotator->GetAcceleration());
+			break;
 
-        case CALIBRATE_ROTATOR:
-            Rotator->StartCalibrating();
-            serialMessage = String(CALIBRATE_ROTATOR);
-            break;
+		case CALIBRATE_ROTATOR:
+			Rotator->StartCalibrating();
+			serialMessage = String(CALIBRATE_ROTATOR);
+			break;
 
-        case GOTO_ROTATOR:
-            if (hasValue && !bLowShutterVoltage) { // stay at park if shutter voltage is low.
-                fTmp = value.toFloat();
-                if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
-                    Rotator->GoToAzimuth(fTmp);
-                    }
-                bParked = false;
-            }
-            serialMessage = String(GOTO_ROTATOR) + String(Rotator->GetAzimuth());
-            break;
+		case GOTO_ROTATOR:
+			if (hasValue && !bLowShutterVoltage) { // stay at park if shutter voltage is low.
+				fTmp = value.toFloat();
+				if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
+					Rotator->GoToAzimuth(fTmp);
+					}
+				bParked = false;
+			}
+			serialMessage = String(GOTO_ROTATOR) + String(Rotator->GetAzimuth());
+			break;
 #ifndef STANDALONE
-        case HELLO:
-            SendHello();
-            serialMessage = String(HELLO);
-            break;
+		case HELLO:
+			SendHello();
+			serialMessage = String(HELLO);
+			break;
 #endif // STANDALONE
-        case HOME_ROTATOR:
-            Rotator->StartHoming();
-            serialMessage = String(HOME_ROTATOR);
-            break;
+		case HOME_ROTATOR:
+			Rotator->StartHoming();
+			serialMessage = String(HOME_ROTATOR);
+			break;
 
-        case HOMEAZ_ROTATOR:
-            if (hasValue) {
-                fTmp = value.toFloat();
-                if ((fTmp >= 0) && (fTmp < 360))
-                    Rotator->SetHomeAzimuth(fTmp);
-            }
-            serialMessage = String(HOMEAZ_ROTATOR) + String(Rotator->GetHomeAzimuth());
-            break;
+		case HOMEAZ_ROTATOR:
+			if (hasValue) {
+				fTmp = value.toFloat();
+				if ((fTmp >= 0) && (fTmp < 360))
+					Rotator->SetHomeAzimuth(fTmp);
+			}
+			serialMessage = String(HOMEAZ_ROTATOR) + String(Rotator->GetHomeAzimuth());
+			break;
 
-        case HOMESTATUS_ROTATOR:
-            serialMessage = String(HOMESTATUS_ROTATOR) + String(Rotator->GetHomeStatus());
-            break;
+		case HOMESTATUS_ROTATOR:
+			serialMessage = String(HOMESTATUS_ROTATOR) + String(Rotator->GetHomeStatus());
+			break;
 
-        case PARKAZ_ROTATOR:
-            sTmpString = String(PARKAZ_ROTATOR);
-            if (hasValue) {
-                fTmp = value.toFloat();
-                if ((fTmp >= 0) && (fTmp < 360)) {
-                    Rotator->SetParkAzimuth(fTmp);
-                    serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
-                }
-                else {
-                    serialMessage = sTmpString + "E";
-                }
-            }
-            else {
-                serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
-            }
-            break;
+		case PARKAZ_ROTATOR:
+			sTmpString = String(PARKAZ_ROTATOR);
+			if (hasValue) {
+				fTmp = value.toFloat();
+				if ((fTmp >= 0) && (fTmp < 360)) {
+					Rotator->SetParkAzimuth(fTmp);
+					serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
+				}
+				else {
+					serialMessage = sTmpString + "E";
+				}
+			}
+			else {
+				serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
+			}
+			break;
 
-        case RAIN_ROTATOR_ACTION:
-            if (hasValue) {
-                Rotator->SetRainAction(value.toInt());
-            }
-            serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator->GetRainAction());
-            break;
+		case RAIN_ROTATOR_ACTION:
+			if (hasValue) {
+				Rotator->SetRainAction(value.toInt());
+			}
+			serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator->GetRainAction());
+			break;
 
-        case SPEED_ROTATOR:
-            if (hasValue)
-                Rotator->SetMaxSpeed(value.toInt());
-            serialMessage = String(SPEED_ROTATOR) + String(Rotator->GetMaxSpeed());
-            break;
+		case SPEED_ROTATOR:
+			if (hasValue)
+				Rotator->SetMaxSpeed(value.toInt());
+			serialMessage = String(SPEED_ROTATOR) + String(Rotator->GetMaxSpeed());
+			break;
 
-        case REVERSED_ROTATOR:
-            if (hasValue)
-                Rotator->SetReversed(value.toInt());
-            serialMessage = String(REVERSED_ROTATOR) + String(Rotator->GetReversed());
-            break;
+		case REVERSED_ROTATOR:
+			if (hasValue)
+				Rotator->SetReversed(value.toInt());
+			serialMessage = String(REVERSED_ROTATOR) + String(Rotator->GetReversed());
+			break;
 
-        case RESTORE_MOTOR_DEFAULT:
-            Rotator->restoreDefaultMotorSettings();
-            serialMessage = String(RESTORE_MOTOR_DEFAULT);
-            break;
+		case RESTORE_MOTOR_DEFAULT:
+			Rotator->restoreDefaultMotorSettings();
+			serialMessage = String(RESTORE_MOTOR_DEFAULT);
+			break;
 
-        case SLEW_ROTATOR:
-            serialMessage = String(SLEW_ROTATOR) + String(Rotator->GetDirection());
-            break;
+		case SLEW_ROTATOR:
+			serialMessage = String(SLEW_ROTATOR) + String(Rotator->GetDirection());
+			break;
 
-        case STEPSPER_ROTATOR:
-            if (hasValue)
-                Rotator->SetStepsPerRotation(value.toInt());
-            serialMessage = String(STEPSPER_ROTATOR) + String(Rotator->GetStepsPerRotation());
-            break;
+		case STEPSPER_ROTATOR:
+			if (hasValue)
+				Rotator->SetStepsPerRotation(value.toInt());
+			serialMessage = String(STEPSPER_ROTATOR) + String(Rotator->GetStepsPerRotation());
+			break;
 
-        case SYNC_ROTATOR:
-            if (hasValue) {
-                fTmp = value.toFloat();
-                if (fTmp >= 0 && fTmp < 360) {
-                    Rotator->SyncPosition(fTmp);
-                    serialMessage = String(SYNC_ROTATOR) + String(Rotator->GetAzimuth());
-                }
-            }
-            else {
-                    serialMessage = String(SYNC_ROTATOR) + "E";
-            }
-            break;
+		case SYNC_ROTATOR:
+			if (hasValue) {
+				fTmp = value.toFloat();
+				if (fTmp >= 0 && fTmp < 360) {
+					Rotator->SyncPosition(fTmp);
+					serialMessage = String(SYNC_ROTATOR) + String(Rotator->GetAzimuth());
+				}
+			}
+			else {
+					serialMessage = String(SYNC_ROTATOR) + "E";
+			}
+			break;
 
-        case VERSION_ROTATOR:
-            serialMessage = String(VERSION_ROTATOR) + VERSION;
-            break;
+		case VERSION_ROTATOR:
+			serialMessage = String(VERSION_ROTATOR) + VERSION;
+			break;
 
-        case VOLTS_ROTATOR:
-            if (hasValue) {
-                Rotator->SetLowVoltageCutoff(value.toInt());
-            }
-            serialMessage = String(VOLTS_ROTATOR) + String(Rotator->GetVoltString());
-            break;
+		case VOLTS_ROTATOR:
+			if (hasValue) {
+				Rotator->SetLowVoltageCutoff(value.toInt());
+			}
+			serialMessage = String(VOLTS_ROTATOR) + String(Rotator->GetVoltString());
+			break;
 
-        case RAIN_SHUTTER:
-            serialMessage = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0");
-            break;
+		case RAIN_SHUTTER:
+			serialMessage = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0");
+			break;
 
-        case IS_SHUTTER_PRESENT:
-            serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
-            break;
+		case IS_SHUTTER_PRESENT:
+			serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
+			break;
 #ifdef USE_ETHERNET
-        case ETH_RECONFIG :
-            if(nbEthernetClient > 0) {
-                domeClient.stop();
-                nbEthernetClient--;
-            }
-            configureEthernet();
-            serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
-            break;
+		case ETH_RECONFIG :
+			if(nbEthernetClient > 0) {
+				domeClient.stop();
+				nbEthernetClient--;
+			}
+			configureEthernet();
+			serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
+			break;
 
-        case ETH_MAC_ADDRESS:
-            char macBuffer[20];
-            snprintf(macBuffer,20,"%02x:%02x:%02x:%02x:%02x:%02x",
-                    MAC_Address[0],
-                    MAC_Address[1],
-                    MAC_Address[2],
-                    MAC_Address[3],
-                    MAC_Address[4],
-                    MAC_Address[5]);
+		case ETH_MAC_ADDRESS:
+			char macBuffer[20];
+			snprintf(macBuffer,20,"%02x:%02x:%02x:%02x:%02x:%02x",
+					MAC_Address[0],
+					MAC_Address[1],
+					MAC_Address[2],
+					MAC_Address[3],
+					MAC_Address[4],
+					MAC_Address[5]);
 
-            serialMessage = String(ETH_MAC_ADDRESS) + String(macBuffer);
-            break;
+			serialMessage = String(ETH_MAC_ADDRESS) + String(macBuffer);
+			break;
 
-        case IP_DHCP:
-            if (hasValue) {
-                Rotator->setDHCPFlag(value.toInt() == 0 ? false : true);
-            }
-            serialMessage = String(IP_DHCP) + String( Rotator->getDHCPFlag()? "1" : "0");
-            break;
+		case IP_DHCP:
+			if (hasValue) {
+				Rotator->setDHCPFlag(value.toInt() == 0 ? false : true);
+			}
+			serialMessage = String(IP_DHCP) + String( Rotator->getDHCPFlag()? "1" : "0");
+			break;
 
-        case IP_ADDRESS:
-            if (hasValue) {
-                Rotator->setIPAddress(value);
-                Rotator->getIpConfig(ServerConfig);
-            }
-            if(!ServerConfig.bUseDHCP)
-                serialMessage = String(IP_ADDRESS) + String(Rotator->getIPAddress());
-            else {
-                serialMessage = String(IP_ADDRESS) + String(Rotator->IpAddress2String(Ethernet.localIP()));
-            }
-            break;
+		case IP_ADDRESS:
+			if (hasValue) {
+				Rotator->setIPAddress(value);
+				Rotator->getIpConfig(ServerConfig);
+			}
+			if(!ServerConfig.bUseDHCP)
+				serialMessage = String(IP_ADDRESS) + String(Rotator->getIPAddress());
+			else {
+				serialMessage = String(IP_ADDRESS) + String(Rotator->IpAddress2String(Ethernet.localIP()));
+			}
+			break;
 
-        case IP_SUBNET:
-            if (hasValue) {
-                Rotator->setIPSubnet(value);
-                Rotator->getIpConfig(ServerConfig);
-            }
-            if(!ServerConfig.bUseDHCP)
-                serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
-            else {
-                serialMessage = String(IP_SUBNET) + String(Rotator->IpAddress2String(Ethernet.subnetMask()));
-            }
-            break;
+		case IP_SUBNET:
+			if (hasValue) {
+				Rotator->setIPSubnet(value);
+				Rotator->getIpConfig(ServerConfig);
+			}
+			if(!ServerConfig.bUseDHCP)
+				serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
+			else {
+				serialMessage = String(IP_SUBNET) + String(Rotator->IpAddress2String(Ethernet.subnetMask()));
+			}
+			break;
 
-        case IP_GATEWAY:
-            if (hasValue) {
-                Rotator->setIPGateway(value);
-                Rotator->getIpConfig(ServerConfig);
-            }
-            if(!ServerConfig.bUseDHCP)
-                serialMessage = String(IP_GATEWAY) + String(Rotator->getIPGateway());
-            else {
-                serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
-            }
-            break;
+		case IP_GATEWAY:
+			if (hasValue) {
+				Rotator->setIPGateway(value);
+				Rotator->getIpConfig(ServerConfig);
+			}
+			if(!ServerConfig.bUseDHCP)
+				serialMessage = String(IP_GATEWAY) + String(Rotator->getIPGateway());
+			else {
+				serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
+			}
+			break;
 #endif // USE_ETHERNET
 
 #ifndef STANDALONE
-        case INIT_XBEE:
-            sTmpString = String(INIT_XBEE);
-            isConfiguringWireless = false;
-            XbeeStarted = false;
-            configStep = 0;
-            serialMessage = sTmpString;
-            Wireless.print(sTmpString + "#");
-            ReceiveWireless();
-            DBPrintln("trying to reconfigure radio");
-            resetChip(XBEE_RESET);
-            break;
+		case INIT_XBEE:
+			sTmpString = String(INIT_XBEE);
+			isConfiguringWireless = false;
+			XbeeStarted = false;
+			configStep = 0;
+			serialMessage = sTmpString;
+			Wireless.print(sTmpString + "#");
+			ReceiveWireless();
+			DBPrintln("trying to reconfigure radio");
+			resetChip(XBEE_RESET);
+			break;
 
-        case PANID:
-            sTmpString = String(PANID);
-            if (hasValue) {
-                RemoteShutter.panid = "0000";
-                wirelessMessage = String(SHUTTER_PANID) + value;
-                Wireless.print(wirelessMessage + "#");
-                setPANID(value); // shutter XBee should be doing the same thing
-            }
-            serialMessage = sTmpString + String(Rotator->GetPANID());
-            break;
+		case PANID:
+			sTmpString = String(PANID);
+			if (hasValue) {
+				RemoteShutter.panid = "0000";
+				wirelessMessage = String(SHUTTER_PANID) + value;
+				Wireless.print(wirelessMessage + "#");
+				setPANID(value); // shutter XBee should be doing the same thing
+			}
+			serialMessage = sTmpString + String(Rotator->GetPANID());
+			break;
 
-        case SHUTTER_PANID:
-            wirelessMessage = String(SHUTTER_PANID);
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = String(SHUTTER_PANID) + RemoteShutter.panid ;
-            break;
+		case SHUTTER_PANID:
+			wirelessMessage = String(SHUTTER_PANID);
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = String(SHUTTER_PANID) + RemoteShutter.panid ;
+			break;
 
 
-        case SHUTTER_PING:
-            wirelessMessage = String(SHUTTER_PING);
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = String(SHUTTER_PING);
-            break;
+		case SHUTTER_PING:
+			wirelessMessage = String(SHUTTER_PING);
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = String(SHUTTER_PING);
+			break;
 
-        case ACCELERATION_SHUTTER:
-            sTmpString = String(ACCELERATION_SHUTTER);
-            if (hasValue) {
-                RemoteShutter.acceleration = value;
-                wirelessMessage = sTmpString + RemoteShutter.acceleration;
-            }
-            else {
-                wirelessMessage = sTmpString;
-            }
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.acceleration;
-            break;
+		case ACCELERATION_SHUTTER:
+			sTmpString = String(ACCELERATION_SHUTTER);
+			if (hasValue) {
+				RemoteShutter.acceleration = value;
+				wirelessMessage = sTmpString + RemoteShutter.acceleration;
+			}
+			else {
+				wirelessMessage = sTmpString;
+			}
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.acceleration;
+			break;
 
-        case CLOSE_SHUTTER:
-            sTmpString = String(CLOSE_SHUTTER);
-            Wireless.print(sTmpString+ "#");
-            ReceiveWireless();
-            serialMessage = sTmpString;
-            break;
+		case CLOSE_SHUTTER:
+			sTmpString = String(CLOSE_SHUTTER);
+			Wireless.print(sTmpString+ "#");
+			ReceiveWireless();
+			serialMessage = sTmpString;
+			break;
 
-        case SHUTTER_RESTORE_MOTOR_DEFAULT :
-            sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
-            Wireless.print(sTmpString+ "#");
-            ReceiveWireless();
-            Wireless.print(String(SPEED_SHUTTER)+ "#");
-            ReceiveWireless();
-            Wireless.print(String(ACCELERATION_SHUTTER)+ "#");
-            ReceiveWireless();
-            serialMessage = sTmpString;
-            break;
+		case SHUTTER_RESTORE_MOTOR_DEFAULT :
+			sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
+			Wireless.print(sTmpString+ "#");
+			ReceiveWireless();
+			Wireless.print(String(SPEED_SHUTTER)+ "#");
+			ReceiveWireless();
+			Wireless.print(String(ACCELERATION_SHUTTER)+ "#");
+			ReceiveWireless();
+			serialMessage = sTmpString;
+			break;
 
 //      case ELEVATION_SHUTTER:
 //          sTmpString = String(ELEVATION_SHUTTER);
@@ -1240,124 +1254,124 @@ void ProcessCommand(int nSource)
 //          serialMessage = sTmpString + RemoteShutter.position;
 //          break;
 
-        case OPEN_SHUTTER:
-                sTmpString = String(OPEN_SHUTTER);
-                Wireless.print(sTmpString + "#");
-                ReceiveWireless();
-                serialMessage = sTmpString + RemoteShutter.lowVoltStateOrRaining;
-                break;
+		case OPEN_SHUTTER:
+				sTmpString = String(OPEN_SHUTTER);
+				Wireless.print(sTmpString + "#");
+				ReceiveWireless();
+				serialMessage = sTmpString + RemoteShutter.lowVoltStateOrRaining;
+				break;
 
-        case REVERSED_SHUTTER:
-            sTmpString = String(REVERSED_SHUTTER);
-            if (hasValue) {
-                RemoteShutter.reversed = value;
-                wirelessMessage = sTmpString + value;
-            }
-            else {
-                wirelessMessage = sTmpString;
-            }
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.reversed;
-            break;
+		case REVERSED_SHUTTER:
+			sTmpString = String(REVERSED_SHUTTER);
+			if (hasValue) {
+				RemoteShutter.reversed = value;
+				wirelessMessage = sTmpString + value;
+			}
+			else {
+				wirelessMessage = sTmpString;
+			}
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.reversed;
+			break;
 
-        case SPEED_SHUTTER:
-            sTmpString = String(SPEED_SHUTTER);
-            if (hasValue) {
-                RemoteShutter.speed = value;
-                wirelessMessage = sTmpString + String(value.toInt());
-            }
-            else {
-                wirelessMessage = sTmpString;
-            }
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.speed;
-            break;
+		case SPEED_SHUTTER:
+			sTmpString = String(SPEED_SHUTTER);
+			if (hasValue) {
+				RemoteShutter.speed = value;
+				wirelessMessage = sTmpString + String(value.toInt());
+			}
+			else {
+				wirelessMessage = sTmpString;
+			}
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.speed;
+			break;
 
-        case STATE_SHUTTER:
-            sTmpString = String(STATE_SHUTTER);
-            Wireless.print(sTmpString + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.state;
-            break;
+		case STATE_SHUTTER:
+			sTmpString = String(STATE_SHUTTER);
+			Wireless.print(sTmpString + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.state;
+			break;
 
-        case STEPSPER_SHUTTER:
-            sTmpString = String(STEPSPER_SHUTTER);
-            if (hasValue) {
-                RemoteShutter.stepsPerStroke = value;
-                wirelessMessage = sTmpString + value;
-            }
-            else {
-                wirelessMessage = sTmpString;
-            }
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.stepsPerStroke;
-            break;
+		case STEPSPER_SHUTTER:
+			sTmpString = String(STEPSPER_SHUTTER);
+			if (hasValue) {
+				RemoteShutter.stepsPerStroke = value;
+				wirelessMessage = sTmpString + value;
+			}
+			else {
+				wirelessMessage = sTmpString;
+			}
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.stepsPerStroke;
+			break;
 
-        case VERSION_SHUTTER:
-            sTmpString = String(VERSION_SHUTTER);
-            Wireless.print(sTmpString + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.version;
-            break;
+		case VERSION_SHUTTER:
+			sTmpString = String(VERSION_SHUTTER);
+			Wireless.print(sTmpString + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.version;
+			break;
 
-        case VOLTS_SHUTTER:
-            sTmpString = String(VOLTS_SHUTTER);
-            wirelessMessage = sTmpString;
-            if (hasValue)
-                wirelessMessage += String(value);
+		case VOLTS_SHUTTER:
+			sTmpString = String(VOLTS_SHUTTER);
+			wirelessMessage = sTmpString;
+			if (hasValue)
+				wirelessMessage += String(value);
 
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.volts;
-            break;
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.volts;
+			break;
 
-        case WATCHDOG_INTERVAL:
-            sTmpString = String(WATCHDOG_INTERVAL);
-            if (value.length() > 0) {
-                wirelessMessage = sTmpString + value;
-            }
-            else {
-                wirelessMessage = sTmpString;
-            }
-            Wireless.print(wirelessMessage + "#");
-            ReceiveWireless();
-            serialMessage = sTmpString + RemoteShutter.watchdogInterval;
-            break;
+		case WATCHDOG_INTERVAL:
+			sTmpString = String(WATCHDOG_INTERVAL);
+			if (value.length() > 0) {
+				wirelessMessage = sTmpString + value;
+			}
+			else {
+				wirelessMessage = sTmpString;
+			}
+			Wireless.print(wirelessMessage + "#");
+			ReceiveWireless();
+			serialMessage = sTmpString + RemoteShutter.watchdogInterval;
+			break;
 #endif // STANDALONE
 
-        default:
-            serialMessage = "Unknown command:" + String(command);
-            break;
-    }
+		default:
+			serialMessage = "Unknown command:" + String(command);
+			break;
+	}
 
 
-    // Send messages if they aren't empty.
-    if (serialMessage.length() > 0) {
+	// Send messages if they aren't empty.
+	if (serialMessage.length() > 0) {
 
-        switch(nSource) {
-            case SERIAL_CMD:
-                if(Computer) {
-                    Computer.print(serialMessage + "#");
-                }
-                break;
-    #ifdef USE_ETHERNET
-            case NETWORK_CMD:
-                if(domeClient.connected()) {
-                    DBPrintln("Network serialMessage = " + serialMessage);
-                    domeClient.print(serialMessage + "#");
-                    domeClient.flush();
-                }
-                break;
-    #endif
-    #ifdef USE_ALPACA
-            case ALPACA_CMD:
-                break;
-    #endif
-        }
-    }
+		switch(nSource) {
+			case SERIAL_CMD:
+				if(Computer) {
+					Computer.print(serialMessage + "#");
+				}
+				break;
+	#ifdef USE_ETHERNET
+			case NETWORK_CMD:
+				if(domeClient.connected()) {
+					DBPrintln("Network serialMessage = " + serialMessage);
+					domeClient.print(serialMessage + "#");
+					domeClient.flush();
+				}
+				break;
+	#endif
+	#ifdef USE_ALPACA
+			case ALPACA_CMD:
+				break;
+	#endif
+		}
+	}
 }
 
 
@@ -1365,168 +1379,168 @@ void ProcessCommand(int nSource)
 
 void ReceiveWireless()
 {
-    int timeout = 0;
-    char wirelessCharacter;
+	int timeout = 0;
+	char wirelessCharacter;
 
-    if (isConfiguringWireless) {
-        DBPrintln("[ReceiveWireless] Configuring XBee");
-        // read the response
-        do {
-            while(Wireless.available() < 1) {
-                delay(1);
-                timeout++;
-                if(timeout >= MAX_TIMEOUT*10) {
-                    DBPrintln("[ReceiveWireless] XBee timeout");
-                    return;
-                    }
-            }
-            wirelessCharacter = Wireless.read();
-            if (wirelessCharacter != ERR_NO_DATA) {
-                if(wirelessCharacter != '\r' && wirelessCharacter != ERR_NO_DATA) {
-                    wirelessBuffer += String(wirelessCharacter);
-                }
-            }
-        } while (wirelessCharacter != '\r');
+	if (isConfiguringWireless) {
+		DBPrintln("[ReceiveWireless] Configuring XBee");
+		// read the response
+		do {
+			while(Wireless.available() < 1) {
+				delay(1);
+				timeout++;
+				if(timeout >= MAX_TIMEOUT*10) {
+					DBPrintln("[ReceiveWireless] XBee timeout");
+					return;
+					}
+			}
+			wirelessCharacter = Wireless.read();
+			if (wirelessCharacter != ERR_NO_DATA) {
+				if(wirelessCharacter != '\r' && wirelessCharacter != ERR_NO_DATA) {
+					wirelessBuffer += String(wirelessCharacter);
+				}
+			}
+		} while (wirelessCharacter != '\r');
 
-        DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
+		DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
 
-        ConfigXBee();
-        wirelessBuffer = "";
-        return;
-    }
+		ConfigXBee();
+		wirelessBuffer = "";
+		return;
+	}
 
-    // wait for response
-    timeout = 0;
-    while(Wireless.available() < 1) {
-        delay(5);   // give time to the shutter to reply
-        timeout++;
-        if(timeout >= MAX_TIMEOUT) {
-            return;
-            }
-    }
+	// wait for response
+	timeout = 0;
+	while(Wireless.available() < 1) {
+		delay(5);   // give time to the shutter to reply
+		timeout++;
+		if(timeout >= MAX_TIMEOUT) {
+			return;
+			}
+	}
 
-    // read the response
-    timeout = 0;
-    while(Wireless.available() > 0) {
-        wirelessCharacter = Wireless.read();
-        if (wirelessCharacter != ERR_NO_DATA) {
-            if ( wirelessCharacter == '#') {
-                // End of message
-                if (wirelessBuffer.length() > 0) {
-                    ProcessWireless();
-                    wirelessBuffer = "";
-                    return; // we'll read the next response on the next loop.
-                }
-            }
-            if(wirelessCharacter!=0xFF) {
-                wirelessBuffer += String(wirelessCharacter);
-            }
-        } else {
-            delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
-            timeout++;
-        }
-        if(timeout >= MAX_TIMEOUT) {
-            return;
-        }
-    }
-    return;
+	// read the response
+	timeout = 0;
+	while(Wireless.available() > 0) {
+		wirelessCharacter = Wireless.read();
+		if (wirelessCharacter != ERR_NO_DATA) {
+			if ( wirelessCharacter == '#') {
+				// End of message
+				if (wirelessBuffer.length() > 0) {
+					ProcessWireless();
+					wirelessBuffer = "";
+					return; // we'll read the next response on the next loop.
+				}
+			}
+			if(wirelessCharacter!=0xFF) {
+				wirelessBuffer += String(wirelessCharacter);
+			}
+		} else {
+			delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
+			timeout++;
+		}
+		if(timeout >= MAX_TIMEOUT) {
+			return;
+		}
+	}
+	return;
 }
 
 void ProcessWireless()
 {
-    char command;
-    bool hasValue = false;
-    String value;
+	char command;
+	bool hasValue = false;
+	String value;
 
-    DBPrintln("<<< Received: '" + wirelessBuffer + "'");
-    command = wirelessBuffer.charAt(0);
-    value = wirelessBuffer.substring(1);
-    if (value.length() > 0)
-        hasValue = true;
+	DBPrintln("<<< Received: '" + wirelessBuffer + "'");
+	command = wirelessBuffer.charAt(0);
+	value = wirelessBuffer.substring(1);
+	if (value.length() > 0)
+		hasValue = true;
 
-    // we got data so the shutter is alive
-    ShutterWatchdog.reset();
-    bShutterPresent = true;
-    XbeeResets = 0;
+	// we got data so the shutter is alive
+	ShutterWatchdog.reset();
+	bShutterPresent = true;
+	XbeeResets = 0;
 
-    switch (command) {
-        case ACCELERATION_SHUTTER:
-            if (hasValue)
-                RemoteShutter.acceleration = value;
-            break;
+	switch (command) {
+		case ACCELERATION_SHUTTER:
+			if (hasValue)
+				RemoteShutter.acceleration = value;
+			break;
 
-        case HELLO:
-            gotHelloFromShutter = true;
-            bShutterPresent = true;
-            break;
+		case HELLO:
+			gotHelloFromShutter = true;
+			bShutterPresent = true;
+			break;
 
-        case SPEED_SHUTTER:
-            if (hasValue)
-                RemoteShutter.speed = value;
-            break;
+		case SPEED_SHUTTER:
+			if (hasValue)
+				RemoteShutter.speed = value;
+			break;
 
-        case RAIN_SHUTTER:
-            Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
-            break;
+		case RAIN_SHUTTER:
+			Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+			break;
 
-        case REVERSED_SHUTTER:
-            if (hasValue)
-                RemoteShutter.reversed = value;
-            break;
+		case REVERSED_SHUTTER:
+			if (hasValue)
+				RemoteShutter.reversed = value;
+			break;
 
-        case STATE_SHUTTER:
-            if (hasValue)
-                RemoteShutter.state = value;
-            break;
+		case STATE_SHUTTER:
+			if (hasValue)
+				RemoteShutter.state = value;
+			break;
 
-        case OPEN_SHUTTER:
-            if (hasValue)
-                RemoteShutter.lowVoltStateOrRaining = value;
-            else
-                RemoteShutter.lowVoltStateOrRaining = "";
-            break;
+		case OPEN_SHUTTER:
+			if (hasValue)
+				RemoteShutter.lowVoltStateOrRaining = value;
+			else
+				RemoteShutter.lowVoltStateOrRaining = "";
+			break;
 
-        case STEPSPER_SHUTTER:
-            if (hasValue)
-                RemoteShutter.stepsPerStroke = value;
-            break;
+		case STEPSPER_SHUTTER:
+			if (hasValue)
+				RemoteShutter.stepsPerStroke = value;
+			break;
 
-        case VERSION_SHUTTER:
-            if (hasValue)
-                RemoteShutter.version = value;
-            break;
+		case VERSION_SHUTTER:
+			if (hasValue)
+				RemoteShutter.version = value;
+			break;
 
-        case VOLTS_SHUTTER:
-            if (hasValue)
-                RemoteShutter.volts = value;
-            break;
+		case VOLTS_SHUTTER:
+			if (hasValue)
+				RemoteShutter.volts = value;
+			break;
 
 
-        case WATCHDOG_INTERVAL:
-            if (hasValue)
-                RemoteShutter.watchdogInterval = value;
-            break;
+		case WATCHDOG_INTERVAL:
+			if (hasValue)
+				RemoteShutter.watchdogInterval = value;
+			break;
 
-        case SHUTTER_PING:
-            bShutterPresent = true;
-            if (hasValue)
-                RemoteShutter.lowVoltStateOrRaining = value;
-            else
-                RemoteShutter.lowVoltStateOrRaining = "";
+		case SHUTTER_PING:
+			bShutterPresent = true;
+			if (hasValue)
+				RemoteShutter.lowVoltStateOrRaining = value;
+			else
+				RemoteShutter.lowVoltStateOrRaining = "";
 
-            break;
+			break;
 
-         case SHUTTER_RESTORE_MOTOR_DEFAULT:
-            break;
+		 case SHUTTER_RESTORE_MOTOR_DEFAULT:
+			break;
 
-        case SHUTTER_PANID:
-            if (hasValue)
-                 RemoteShutter.panid = value;
-            break;
+		case SHUTTER_PANID:
+			if (hasValue)
+				 RemoteShutter.panid = value;
+			break;
 
-        default:
-            break;
-    }
+		default:
+			break;
+	}
 
 }
 #endif // STANDALONE
