@@ -88,6 +88,8 @@ void doAction(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
+	String sAction;
+	String sParameters;
 	char name[ALPACA_VAR_BUF_LEN];
 	char value[ALPACA_VAR_BUF_LEN];
 
@@ -114,6 +116,13 @@ void doAction(Request &req, Response &res)
 		res.flush();
 		return;
 	}
+
+	sAction = String(FormData["Action"]);
+	sParameters = String(FormData["Parameters"]);
+#ifdef DEBUG
+	DBPrintln("sAction : " + sAction);
+	DBPrintln("sParameters : " + sParameters);
+#endif
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
