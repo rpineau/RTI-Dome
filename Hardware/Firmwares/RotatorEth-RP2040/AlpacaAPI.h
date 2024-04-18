@@ -476,7 +476,7 @@ void getAltitude(Request &req, Response &res)
 	String sResp;
 	char ClientID[64];
 	char ClientTransactionID[64];
-	sTmpString = String(STATE_SHUTTER);
+	String sTmpString = String(STATE_SHUTTER);
 
 	DBPrintln("getAltitude");
 	req.query("ClientID", ClientID, 64);
@@ -492,7 +492,7 @@ void getAltitude(Request &req, Response &res)
 
 	Wireless.print(sTmpString + "#");
 	ReceiveWireless();
-	switch (RemoteShutter.state) {
+	switch (RemoteShutter.state ) {
 		case OPEN:
 			AlpacaResp["Value"] = 90.0;
 			break;
@@ -531,7 +531,7 @@ void geAtHome(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "Ok";
 
-	if(String(Rotator->GetHomeStatus() == ATHOME) {
+	if(String(Rotator->GetHomeStatus() == ATHOME)) {
 		AlpacaResp["Value"] = true;
 	}
 	else {
@@ -830,41 +830,13 @@ void canSyncAzimuth(Request &req, Response &res)
 	res.flush(); 
 }
 
-void canSyncAzimuth(Request &req, Response &res)
-{
-	JsonDocument AlpacaResp;
-	String sResp;
-	char ClientID[64];
-	char ClientTransactionID[64];
-	
-	DBPrintln("canSyncAzimuth");
-	req.query("ClientID", ClientID, 64);
-	req.query("ClientTransactionID", ClientTransactionID, 64);
-	DBPrintln("ClientID : " + String(ClientID));
-	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "Ok";
-	
-	AlpacaResp["Value"] = true;
-
-	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
-
-	res.print(sResp);
-	res.flush(); 
-}
-
 void getShutterStatus(Request &req, Response &res)
 {
 	JsonDocument AlpacaResp;
 	String sResp;
 	char ClientID[64];
 	char ClientTransactionID[64];
-	sTmpString = String(STATE_SHUTTER);
+	String sTmpString = String(STATE_SHUTTER);
 
 	DBPrintln("getShutterStatus");
 	req.query("ClientID", ClientID, 64);
@@ -895,13 +867,13 @@ void getShutterStatus(Request &req, Response &res)
 		case BOTTOM_OPENING:
 		case FINISHING_OPEN:
 			AlpacaResp["Value"] = A_OPENING;
-			break
+			break;
 		case CLOSING:
 		case BOTTOM_CLOSED:
 		case BOTTOM_CLOSING:
 		case FINISHING_CLOSE:
 			AlpacaResp["Value"] = A_CLOSING;
-			break
+			break;
 		default:
 			AlpacaResp["Value"] = A_ERROR;
 			break;
@@ -912,3 +884,407 @@ void getShutterStatus(Request &req, Response &res)
 	res.print(sResp);
 	res.flush(); 
 }
+
+void Slaved(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	String sResp;
+	char ClientID[64];
+	char ClientTransactionID[64];
+	
+	DBPrintln("Slaved");
+	req.query("ClientID", ClientID, 64);
+	req.query("ClientTransactionID", ClientTransactionID, 64);
+	DBPrintln("ClientID : " + String(ClientID));
+	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 1;
+	AlpacaResp["ErrorMessage"] = "Can't slave";
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush(); 
+}
+
+void getSlewing(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	String sResp;
+	char ClientID[64];
+	char ClientTransactionID[64];
+	
+	DBPrintln("getSlewing");
+	req.query("ClientID", ClientID, 64);
+	req.query("ClientTransactionID", ClientTransactionID, 64);
+	DBPrintln("ClientID : " + String(ClientID));
+	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "Ok";
+	
+	if(Rotator->GetSeekMode() != NOT_MOVING) {
+		AlpacaResp["Value"] = true;
+	}
+	else {
+		AlpacaResp["Value"] = false;
+	}
+
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush(); 
+}
+
+void doAbort(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	String sResp;
+	char ClientID[64];
+	char ClientTransactionID[64];
+	
+	DBPrintln("doAbort");
+	req.query("ClientID", ClientID, 64);
+	req.query("ClientTransactionID", ClientTransactionID, 64);
+	DBPrintln("ClientID : " + String(ClientID));
+	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+	Rotator->Stop();
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush(); 
+}
+
+void doCloseShutter(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	String sResp;
+	char ClientID[64];
+	char ClientTransactionID[64];
+	String sTmpString = String(CLOSE_SHUTTER);
+
+	DBPrintln("doCloseShutter");
+	req.query("ClientID", ClientID, 64);
+	req.query("ClientTransactionID", ClientTransactionID, 64);
+	DBPrintln("ClientID : " + String(ClientID));
+	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+
+	Wireless.print(sTmpString+ "#");
+	ReceiveWireless();
+
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush(); 
+}
+
+void doFindHome(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	String sResp;
+	char ClientID[64];
+	char ClientTransactionID[64];
+	
+	DBPrintln("doFindHome");
+	req.query("ClientID", ClientID, 64);
+	req.query("ClientTransactionID", ClientTransactionID, 64);
+	DBPrintln("ClientID : " + String(ClientID));
+	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+	Rotator->StartHoming();
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush(); 
+}
+
+void doOpenShutter(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	String sResp;
+	char ClientID[64];
+	char ClientTransactionID[64];
+	String sTmpString = String(OPEN_SHUTTER);
+
+	DBPrintln("doOpenShutter");
+	req.query("ClientID", ClientID, 64);
+	req.query("ClientTransactionID", ClientTransactionID, 64);
+	DBPrintln("ClientID : " + String(ClientID));
+	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+
+	Wireless.print(sTmpString+ "#");
+	ReceiveWireless();
+
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush(); 
+}
+
+void doPark(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	String sResp;
+	float fParkPos;
+	char ClientID[64];
+	char ClientTransactionID[64];
+	
+	DBPrintln("doPark");
+	req.query("ClientID", ClientID, 64);
+	req.query("ClientTransactionID", ClientTransactionID, 64);
+	DBPrintln("ClientID : " + String(ClientID));
+	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+
+	fParkPos = Rotator->GetParkAzimuth();
+	Rotator->GoToAzimuth(fParkPos);
+	bParked = true;
+
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush(); 
+}
+
+void setPark(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	String sResp;
+	char name[ALPACA_VAR_BUF_LEN];
+	char value[ALPACA_VAR_BUF_LEN];
+	float fParkPos;
+
+	DBPrintln("setPark");
+	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+		DBPrintln("name : " + String(name));
+		DBPrintln("value : " + String(value));
+		FormData[name]=String(value);
+	}
+#ifdef DEBUG
+	serializeJson(FormData, sResp);
+	DBPrintln("FormData : " + sResp);
+	DBPrintln("FormData.size() : " + String(FormData.size()));
+	sResp="";
+#endif
+
+	fParkPos = Rotator->GetAzimuth();
+	Rotator->SetParkAzimuth(fParkPos);
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "Ok";
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush();
+}
+
+void doAltitudeSlew(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	String sResp;
+	char name[ALPACA_VAR_BUF_LEN];
+	char value[ALPACA_VAR_BUF_LEN];
+
+	DBPrintln("doAltitudeSlew");
+	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+		DBPrintln("name : " + String(name));
+		DBPrintln("value : " + String(value));
+		FormData[name]=String(value);
+	}
+#ifdef DEBUG
+	serializeJson(FormData, sResp);
+	DBPrintln("FormData : " + sResp);
+	DBPrintln("FormData.size() : " + String(FormData.size()));
+	sResp="";
+#endif
+
+	if(FormData.size()==0){
+		res.set("Content-Type", "application/json");
+		res.sendStatus(400);
+		AlpacaResp["ErrorNumber"] = 400;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
+	if(!FormData.containsKey("Altitude")) {
+		res.set("Content-Type", "application/json");
+		res.sendStatus(400);
+		AlpacaResp["ErrorNumber"] = 400;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "Ok";
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush();
+}
+
+void doGoTo(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	String sResp;
+	char name[ALPACA_VAR_BUF_LEN];
+	char value[ALPACA_VAR_BUF_LEN];
+	float fNewPos;
+
+	DBPrintln("doGoTo");
+	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+		DBPrintln("name : " + String(name));
+		DBPrintln("value : " + String(value));
+		FormData[name]=String(value);
+	}
+#ifdef DEBUG
+	serializeJson(FormData, sResp);
+	DBPrintln("FormData : " + sResp);
+	DBPrintln("FormData.size() : " + String(FormData.size()));
+	sResp="";
+#endif
+
+	if(FormData.size()==0){
+		res.set("Content-Type", "application/json");
+		res.sendStatus(400);
+		AlpacaResp["ErrorNumber"] = 400;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
+	if(!FormData.containsKey("Azimuth")) {
+		res.set("Content-Type", "application/json");
+		res.sendStatus(400);
+		AlpacaResp["ErrorNumber"] = 400;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
+	fNewPos = FormData["Azimuth"];
+	Rotator->GoToAzimuth(fNewPos);
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "Ok";
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush();
+}
+
+void doSyncAzimuth(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	String sResp;
+	char name[ALPACA_VAR_BUF_LEN];
+	char value[ALPACA_VAR_BUF_LEN];
+	float fNewPos;
+
+	DBPrintln("doSyncAzimuth");
+	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+		DBPrintln("name : " + String(name));
+		DBPrintln("value : " + String(value));
+		FormData[name]=String(value);
+	}
+#ifdef DEBUG
+	serializeJson(FormData, sResp);
+	DBPrintln("FormData : " + sResp);
+	DBPrintln("FormData.size() : " + String(FormData.size()));
+	sResp="";
+#endif
+
+	if(FormData.size()==0){
+		res.set("Content-Type", "application/json");
+		res.sendStatus(400);
+		AlpacaResp["ErrorNumber"] = 400;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
+	if(!FormData.containsKey("Azimuth")) {
+		res.set("Content-Type", "application/json");
+		res.sendStatus(400);
+		AlpacaResp["ErrorNumber"] = 400;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
+	fNewPos = FormData["Azimuth"];
+	Rotator->SyncPosition(fNewPos);
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "Ok";
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.print(sResp);
+	res.flush();
+}
+

@@ -346,15 +346,22 @@ void RTIDomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("api/v1/dome/0/cansetpark", &canSetPark);
 	m_AlpacaRestServer->get("api/v1/dome/0/cansetshutter", &canSetShutter);
 	m_AlpacaRestServer->get("api/v1/dome/0/canslave", &canSlave);
-	m_AlpacaRestServer->get("api/v1/dome/0/cansyncazimuth", canSyncAzimuth&);
+	m_AlpacaRestServer->get("api/v1/dome/0/cansyncazimuth", &canSyncAzimuth);
 	m_AlpacaRestServer->get("api/v1/dome/0/shutterstatus", &getShutterStatus);
-	m_AlpacaRestServer->get("api/v1/dome/0/slaved", &getSlaved);
-	
-	m_AlpacaRestServer->put("api/v1/dome/0/slaved", &setSlaved);
+
+	m_AlpacaRestServer->use("api/v1/dome/0/slaved", &Slaved);
 
 	m_AlpacaRestServer->get("api/v1/dome/0/slewing", &getSlewing);
-	m_AlpacaRestServer->get("api/v1/dome/0/", &);
-	m_AlpacaRestServer->get("api/v1/dome/0/", &);
+
+	m_AlpacaRestServer->put("api/v1/dome/0/abortslew", &doAbort);
+	m_AlpacaRestServer->put("api/v1/dome/0/closeshutter", &doCloseShutter);
+	m_AlpacaRestServer->put("api/v1/dome/0/findhonme", &doFindHome);
+	m_AlpacaRestServer->put("api/v1/dome/0/openshutter", &doOpenShutter);
+	m_AlpacaRestServer->put("api/v1/dome/0/park", &doPark);
+	m_AlpacaRestServer->put("api/v1/dome/0/setpark", &setPark);
+	m_AlpacaRestServer->put("api/v1/dome/0/slewtoaltitude", &doAltitudeSlew);
+	m_AlpacaRestServer->put("api/v1/dome/0/slewtoaltitude", &doGoTo);
+	m_AlpacaRestServer->put("api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
 	DBPrintln("m_AlpacaRestServer started");
 
@@ -1211,15 +1218,15 @@ void ProcessCommand(int nSource)
 		case ACCELERATION_SHUTTER:
 			sTmpString = String(ACCELERATION_SHUTTER);
 			if (hasValue) {
-				RemoteShutter.acceleration = value;
-				wirelessMessage = sTmpString + RemoteShutter.acceleration;
+				RemoteShutter.acceleration = value.toInt();
+				wirelessMessage = sTmpString + value;
 			}
 			else {
 				wirelessMessage = sTmpString;
 			}
 			Wireless.print(wirelessMessage + "#");
 			ReceiveWireless();
-			serialMessage = sTmpString + RemoteShutter.acceleration;
+			serialMessage = sTmpString + String(RemoteShutter.acceleration);
 			break;
 
 		case CLOSE_SHUTTER:
@@ -1278,8 +1285,8 @@ void ProcessCommand(int nSource)
 		case SPEED_SHUTTER:
 			sTmpString = String(SPEED_SHUTTER);
 			if (hasValue) {
-				RemoteShutter.speed = value;
-				wirelessMessage = sTmpString + String(value.toInt());
+				RemoteShutter.speed = value.toInt();
+				wirelessMessage = sTmpString + String(RemoteShutter.speed);
 			}
 			else {
 				wirelessMessage = sTmpString;
@@ -1299,7 +1306,7 @@ void ProcessCommand(int nSource)
 		case STEPSPER_SHUTTER:
 			sTmpString = String(STEPSPER_SHUTTER);
 			if (hasValue) {
-				RemoteShutter.stepsPerStroke = value;
+				RemoteShutter.stepsPerStroke = value.toInt();
 				wirelessMessage = sTmpString + value;
 			}
 			else {
@@ -1307,7 +1314,7 @@ void ProcessCommand(int nSource)
 			}
 			Wireless.print(wirelessMessage + "#");
 			ReceiveWireless();
-			serialMessage = sTmpString + RemoteShutter.stepsPerStroke;
+			serialMessage = sTmpString + String(RemoteShutter.stepsPerStroke);
 			break;
 
 		case VERSION_SHUTTER:
@@ -1466,7 +1473,7 @@ void ProcessWireless()
 	switch (command) {
 		case ACCELERATION_SHUTTER:
 			if (hasValue)
-				RemoteShutter.acceleration = value;
+				RemoteShutter.acceleration = value.toInt();
 			break;
 
 		case HELLO:
@@ -1476,7 +1483,7 @@ void ProcessWireless()
 
 		case SPEED_SHUTTER:
 			if (hasValue)
-				RemoteShutter.speed = value;
+				RemoteShutter.speed = value.toInt();
 			break;
 
 		case RAIN_SHUTTER:
@@ -1490,7 +1497,7 @@ void ProcessWireless()
 
 		case STATE_SHUTTER:
 			if (hasValue)
-				RemoteShutter.state = value;
+				RemoteShutter.state = value.toInt();
 			break;
 
 		case OPEN_SHUTTER:
@@ -1502,7 +1509,7 @@ void ProcessWireless()
 
 		case STEPSPER_SHUTTER:
 			if (hasValue)
-				RemoteShutter.stepsPerStroke = value;
+				RemoteShutter.stepsPerStroke = value.toInt();
 			break;
 
 		case VERSION_SHUTTER:
@@ -1512,13 +1519,13 @@ void ProcessWireless()
 
 		case VOLTS_SHUTTER:
 			if (hasValue)
-				RemoteShutter.volts = value;
+				RemoteShutter.volts = value.toFloat();
 			break;
 
 
 		case WATCHDOG_INTERVAL:
 			if (hasValue)
-				RemoteShutter.watchdogInterval = value;
+				RemoteShutter.watchdogInterval = value.toInt();
 			break;
 
 		case SHUTTER_PING:
