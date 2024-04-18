@@ -1153,7 +1153,7 @@ void doAltitudeSlew(Request &req, Response &res)
 		return;
 	}
 
-	if(!FormData.containsKey("Altitude")) {
+	if(!FormData["Altitude"]) {
 		res.set("Content-Type", "application/json");
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
@@ -1207,7 +1207,7 @@ void doGoTo(Request &req, Response &res)
 		return;
 	}
 
-	if(!FormData.containsKey("Azimuth")) {
+	if(!FormData["Azimuth"]) {
 		res.set("Content-Type", "application/json");
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
@@ -1264,7 +1264,7 @@ void doSyncAzimuth(Request &req, Response &res)
 		return;
 	}
 
-	if(!FormData.containsKey("Azimuth")) {
+	if(!FormData["Azimuth"]) {
 		res.set("Content-Type", "application/json");
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
