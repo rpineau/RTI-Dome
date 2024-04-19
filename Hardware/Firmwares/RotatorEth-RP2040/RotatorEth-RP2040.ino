@@ -99,10 +99,11 @@ String networkBuffer;
 #include <functional>
 #include <EthernetUdp.h>
 #include <ArduinoJson.h>
+#include <UUID.h>
 // Alpaca REST server
 #include <aWOT.h>
 int nTransactionID;
-String sUID;
+UUID uuid;
 #define SERVER_ERROR -1
 String sAlpacaDiscovery = "alpacadiscovery1";
 #define ALPACA_DISCOVERY_PORT 32227
@@ -310,6 +311,7 @@ void RTIDomeAlpacaServer::startServer()
 	mRestServer = new EthernetServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
 
+	uuid.generate();
 	DBPrintln("m_AlpacaRestServer starting");
 	mRestServer->begin();
 
@@ -414,14 +416,6 @@ void setup()
 
 #ifdef USE_ETHERNET
 	getMacAddress(MAC_Address, uidBuffer);
-#ifdef USE_ALPACA
-	sUID = String(MAC_Address[0], HEX) +
-					String(MAC_Address[1], HEX) +
-					String(MAC_Address[2], HEX) +
-					String(MAC_Address[3], HEX) +
-					String(MAC_Address[4], HEX) +
-					String(MAC_Address[5], HEX) ;
-#endif // USE_ALPACA
 #ifdef DEBUG
 	DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
 					String(MAC_Address[1], HEX) + String(":") +

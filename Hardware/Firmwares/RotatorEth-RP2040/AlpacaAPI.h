@@ -75,7 +75,7 @@ void getConfiguredDevice(Request &req, Response &res)
 	AlpacaResp["Value"][0] ["DeviceName"]= "RTIDome";
 	AlpacaResp["Value"][0] ["DeviceType"]= "dome";
 	AlpacaResp["Value"][0] ["DeviceNumber"]= 0;
-	AlpacaResp["Value"][0] ["UniqueID"]= sUID;
+	AlpacaResp["Value"][0] ["UniqueID"]= uuid;
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
 	serializeJson(AlpacaResp, sResp);
