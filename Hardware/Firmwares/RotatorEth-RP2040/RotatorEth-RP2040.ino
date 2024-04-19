@@ -16,7 +16,7 @@
 // if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
 // This us useful for people who only want to automate the rotation.
 
-// #define STANDALONE
+#define STANDALONE
 #ifdef STANDALONE
 #pragma message "Standalone mode, no shutter code"
 #endif // STANDALONE
@@ -133,7 +133,7 @@ int XbeeResets = 0;
 #endif // STANDALONE
 
 #if defined(ARDUINO_ARCH_RP2040)
-// volatile bool core0Ready = false;
+// atomic bool core0Ready = false;
 std::atomic<bool> core0Ready = false;
 #endif
 
@@ -168,18 +168,18 @@ static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
-volatile  bool SentHello = false;
+std::atomic<bool> SentHello = false;
 
 // Timer to periodically ping the shutter
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 #endif // STANDALONE
 
-volatile bool bShutterPresent = false;
+std::atomic<bool> bShutterPresent = false;
 // global variable for rain status
-volatile bool bIsRaining = false;
+std::atomic<bool> bIsRaining = false;
 // global variable for shutter voltage state
-volatile bool bLowShutterVoltage = false;
+std::atomic<bool> bLowShutterVoltage = false;
 
 #ifdef USE_ETHERNET
 // global variable for the IP config and to check if we detect the ethernet card
@@ -325,43 +325,43 @@ void RTIDomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/commandbool", &doCommandBool);
 	m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
 
-	m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConected);
+	m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConnected);
 	
-	m_AlpacaRestServer->put("/api/v1/dome/0/connected", &setConected);
+	m_AlpacaRestServer->put("/api/v1/dome/0/connected", &setConnected);
 	
 	m_AlpacaRestServer->get("/api/v1/dome/0/description", &getDeviceDescription);
 	m_AlpacaRestServer->get("/api/v1/dome/0/driverinfo", &getDriverInfo);
-	m_AlpacaRestServer->get("/api/v1/dome/0/driverVersion", &getDriverVersion);
+	m_AlpacaRestServer->get("/api/v1/dome/0/driverversion", &getDriverVersion);
 	m_AlpacaRestServer->get("/api/v1/dome/0/interfaceversion", &getInterfaceVersion);
 	m_AlpacaRestServer->get("/api/v1/dome/0/name", &getName);
 	m_AlpacaRestServer->get("/api/v1/dome/0/supportedactions", &getSupportedActions);
 	m_AlpacaRestServer->get("/api/v1/dome/0/altitude", &getAltitude);
-	m_AlpacaRestServer->get("api/v1/dome/0/athome", &geAtHome);
-	m_AlpacaRestServer->get("api/v1/dome/0/atpark", &geAtPark);
-	m_AlpacaRestServer->get("api/v1/dome/0/azimuth", &getAzimuth);
-	m_AlpacaRestServer->get("api/v1/dome/0/canfindhome", &canfindhome);
-	m_AlpacaRestServer->get("api/v1/dome/0/canpark", &canPark);
-	m_AlpacaRestServer->get("api/v1/dome/0/cansetaltitude", &canSetAltitude);
-	m_AlpacaRestServer->get("api/v1/dome/0/cansetazimuth", &canSetAzimuth);
-	m_AlpacaRestServer->get("api/v1/dome/0/cansetpark", &canSetPark);
-	m_AlpacaRestServer->get("api/v1/dome/0/cansetshutter", &canSetShutter);
-	m_AlpacaRestServer->get("api/v1/dome/0/canslave", &canSlave);
-	m_AlpacaRestServer->get("api/v1/dome/0/cansyncazimuth", &canSyncAzimuth);
-	m_AlpacaRestServer->get("api/v1/dome/0/shutterstatus", &getShutterStatus);
+	m_AlpacaRestServer->get("/api/v1/dome/0/athome", &geAtHome);
+	m_AlpacaRestServer->get("/api/v1/dome/0/atpark", &geAtPark);
+	m_AlpacaRestServer->get("/api/v1/dome/0/azimuth", &getAzimuth);
+	m_AlpacaRestServer->get("/api/v1/dome/0/canfindhome", &canfindhome);
+	m_AlpacaRestServer->get("/api/v1/dome/0/canpark", &canPark);
+	m_AlpacaRestServer->get("/api/v1/dome/0/cansetaltitude", &canSetAltitude);
+	m_AlpacaRestServer->get("/api/v1/dome/0/cansetazimuth", &canSetAzimuth);
+	m_AlpacaRestServer->get("/api/v1/dome/0/cansetpark", &canSetPark);
+	m_AlpacaRestServer->get("/api/v1/dome/0/cansetshutter", &canSetShutter);
+	m_AlpacaRestServer->get("/api/v1/dome/0/canslave", &canSlave);
+	m_AlpacaRestServer->get("/api/v1/dome/0/cansyncazimuth", &canSyncAzimuth);
+	m_AlpacaRestServer->get("/api/v1/dome/0/shutterstatus", &getShutterStatus);
 
-	m_AlpacaRestServer->use("api/v1/dome/0/slaved", &Slaved);
+	m_AlpacaRestServer->use("/api/v1/dome/0/slaved", &Slaved);
 
-	m_AlpacaRestServer->get("api/v1/dome/0/slewing", &getSlewing);
+	m_AlpacaRestServer->get("/api/v1/dome/0/slewing", &getSlewing);
 
-	m_AlpacaRestServer->put("api/v1/dome/0/abortslew", &doAbort);
-	m_AlpacaRestServer->put("api/v1/dome/0/closeshutter", &doCloseShutter);
-	m_AlpacaRestServer->put("api/v1/dome/0/findhonme", &doFindHome);
-	m_AlpacaRestServer->put("api/v1/dome/0/openshutter", &doOpenShutter);
-	m_AlpacaRestServer->put("api/v1/dome/0/park", &doPark);
-	m_AlpacaRestServer->put("api/v1/dome/0/setpark", &setPark);
-	m_AlpacaRestServer->put("api/v1/dome/0/slewtoaltitude", &doAltitudeSlew);
-	m_AlpacaRestServer->put("api/v1/dome/0/slewtoaltitude", &doGoTo);
-	m_AlpacaRestServer->put("api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
+	m_AlpacaRestServer->put("/api/v1/dome/0/abortslew", &doAbort);
+	m_AlpacaRestServer->put("/api/v1/dome/0/closeshutter", &doCloseShutter);
+	m_AlpacaRestServer->put("/api/v1/dome/0/findhome", &doFindHome);
+	m_AlpacaRestServer->put("/api/v1/dome/0/openshutter", &doOpenShutter);
+	m_AlpacaRestServer->put("/api/v1/dome/0/park", &doPark);
+	m_AlpacaRestServer->put("/api/v1/dome/0/setpark", &setPark);
+	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoaltitude", &doAltitudeSlew);
+	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoazimuth", &doGoTo);
+	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
 	DBPrintln("m_AlpacaRestServer started");
 
@@ -445,8 +445,9 @@ void setup()
 
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
+	Rotator->Stop();
 	Rotator->EnableMotor(false);
-
+	
 #if defined(ARDUINO_SAM_DUE)
 	noInterrupts();
 	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
@@ -923,7 +924,7 @@ void ReceiveComputer()
 
 void ProcessCommand(int nSource)
 {
-	float fTmp;
+	double fTmp;
 	char command;
 	String value;
 
@@ -995,12 +996,17 @@ void ProcessCommand(int nSource)
 
 		case GOTO_ROTATOR:
 			if (hasValue && !bLowShutterVoltage) { // stay at park if shutter voltage is low.
-				fTmp = value.toFloat();
-				if ((fTmp >= 0.0) && (fTmp <= 360.0)) {
-					Rotator->GoToAzimuth(fTmp);
-					}
+				fTmp = value.toDouble();
+				while(fTmp < 0) {
+					fTmp+=360.0;
+				}
+				while(fTmp > 360) {
+					fTmp-=360.0;
+				}
+				Rotator->GoToAzimuth(fTmp);
 				bParked = false;
 			}
+			DBPrintln("Azimuth : " + String(Rotator->GetAzimuth()));
 			serialMessage = String(GOTO_ROTATOR) + String(Rotator->GetAzimuth());
 			break;
 #ifndef STANDALONE
@@ -1016,7 +1022,7 @@ void ProcessCommand(int nSource)
 
 		case HOMEAZ_ROTATOR:
 			if (hasValue) {
-				fTmp = value.toFloat();
+				fTmp = value.toDouble();
 				if ((fTmp >= 0) && (fTmp < 360))
 					Rotator->SetHomeAzimuth(fTmp);
 			}
@@ -1030,7 +1036,7 @@ void ProcessCommand(int nSource)
 		case PARKAZ_ROTATOR:
 			sTmpString = String(PARKAZ_ROTATOR);
 			if (hasValue) {
-				fTmp = value.toFloat();
+				fTmp = value.toDouble();
 				if ((fTmp >= 0) && (fTmp < 360)) {
 					Rotator->SetParkAzimuth(fTmp);
 					serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
@@ -1080,7 +1086,7 @@ void ProcessCommand(int nSource)
 
 		case SYNC_ROTATOR:
 			if (hasValue) {
-				fTmp = value.toFloat();
+				fTmp = value.toDouble();
 				if (fTmp >= 0 && fTmp < 360) {
 					Rotator->SyncPosition(fTmp);
 					serialMessage = String(SYNC_ROTATOR) + String(Rotator->GetAzimuth());
@@ -1519,7 +1525,7 @@ void ProcessWireless()
 
 		case VOLTS_SHUTTER:
 			if (hasValue)
-				RemoteShutter.volts = value.toFloat();
+				RemoteShutter.volts = value.toDouble();
 			break;
 
 

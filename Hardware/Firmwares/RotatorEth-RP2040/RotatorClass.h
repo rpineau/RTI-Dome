@@ -137,8 +137,8 @@ typedef struct RotatorConfiguration {
 	long            acceleration;
 	long            maxSpeed;
 	bool            reversed;
-	float           homeAzimuth;
-	float           parkAzimuth;
+	double           homeAzimuth;
+	double           parkAzimuth;
 	int             cutOffVolts;
 	int             rainAction;
 #ifndef STANDALONE
@@ -200,14 +200,14 @@ uint8_t pickClock(uint32_t frequency, uint32_t& retRC)
 		{ TC_CMR_TCCLKS_TIMER_CLOCK3, 32 },
 		{ TC_CMR_TCCLKS_TIMER_CLOCK4, 128 }
 	};
-	float ticks;
-	float error;
+	double ticks;
+	double error;
 	int clkId = 3;
 	int bestClock = 3;
-	float bestError = 1.0;
+	double bestError = 1.0;
 	do
 	{
-		ticks = (float) VARIANT_MCK / (float) frequency / (float) clockConfig[clkId].divisor;
+		ticks = (double) VARIANT_MCK / (double) frequency / (double) clockConfig[clkId].divisor;
 		error = abs(ticks - round(ticks));
 		if (abs(error) < bestError)
 		{
@@ -215,7 +215,7 @@ uint8_t pickClock(uint32_t frequency, uint32_t& retRC)
 			bestError = error;
 		}
 	} while (clkId-- > 0);
-	ticks = (float) VARIANT_MCK / (float) frequency / (float) clockConfig[bestClock].divisor;
+	ticks = (double) VARIANT_MCK / (double) frequency / (double) clockConfig[bestClock].divisor;
 	retRC = (uint32_t) round(ticks);
 	return clockConfig[bestClock].flag;
 }
@@ -279,10 +279,10 @@ public:
 	void        SetMaxSpeed(const long);
 
 	long        GetPosition();
-	float       GetAzimuth();
-	long        GetAzimuthToPosition(const float);
-	void        SyncPosition(const float);
-	void        GoToAzimuth(const float);
+	double      GetAzimuth();
+	long        GetAzimuthToPosition(const double);
+	void        SyncPosition(const double);
+	void        GoToAzimuth(const double);
 
 	bool        GetReversed();
 	void        SetReversed(const bool reversed);
@@ -293,7 +293,7 @@ public:
 
 	void        restoreDefaultMotorSettings();
 
-	float       GetAngularDistance(const float fromAngle, const float toAngle);
+	double      GetAngularDistance(const double fromAngle, const double toAngle);
 
 	// Voltage methods
 	int         GetLowVoltageCutoff();
@@ -303,12 +303,12 @@ public:
 
 
 	// home and park methods
-	float       GetHomeAzimuth();
-	void        SetHomeAzimuth(const float);
+	double      GetHomeAzimuth();
+	void        SetHomeAzimuth(const double);
 	int         GetHomeStatus();
 
-	float       GetParkAzimuth();
-	void        SetParkAzimuth(const float);
+	double      GetParkAzimuth();
+	void        SetParkAzimuth(const double);
 
 	int         GetSeekMode();
 
@@ -355,22 +355,22 @@ private:
 	// Rotator
 	bool            m_bWasRunning;
 	bool            m_bisAtHome;
-	volatile enum Seeks	m_seekMode;
+	std::atomic<enum Seeks>	m_seekMode;
 	bool            m_bSetToHomeAzimuth;
 	bool            m_bDoStepsPerRotation;
 
-	float           m_fStepsPerDegree;
+	double           m_fStepsPerDegree;
 	StopWatch       m_MoveOffUntilTimer;
 	unsigned long   m_nMOVE_OFFUntilLapse = 2000;
 	int             m_nMoveDirection;
 
-	volatile long	m_nStepsAtHome;
-	volatile long	m_nHomePosEdgePass1;
-	volatile long	m_nHomePosEdgePass2;
-	volatile bool	m_HomeFound;
+	std::atomic<long>	m_nStepsAtHome;
+	std::atomic<long>	m_nHomePosEdgePass1;
+	volatile 	long	m_nHomePosEdgePass2;
+	std::atomic<bool>	m_HomeFound;
 
 	// Power values
-	float           m_fAdcConvert;
+	double           m_fAdcConvert;
 	int             m_nVolts;
 	int             ReadVolts();
 
@@ -383,7 +383,7 @@ private:
 	bool        LoadFromEEProm();
 	void        SetDefaultConfig();
 
-	volatile bool        m_bIsRaining;
+	std::atomic<bool>	m_bIsRaining;
 
 	bool        m_bDoEEPromSave;
 #ifdef USE_EXT_EEPROM
@@ -713,7 +713,7 @@ long RotatorClass::GetAcceleration()
 void RotatorClass::SetAcceleration(const long newAccel)
 {
 	m_Config.acceleration = newAccel;
-	stepper.setAcceleration(float(newAccel));
+	stepper.setAcceleration(double(newAccel));
 	SaveToEEProm();
 }
 
@@ -725,7 +725,7 @@ long RotatorClass::GetMaxSpeed()
 void RotatorClass::SetMaxSpeed(const long newSpeed)
 {
 	m_Config.maxSpeed = newSpeed;
-	stepper.setMaxSpeed(float(newSpeed));
+	stepper.setMaxSpeed(double(newSpeed));
 	SaveToEEProm();
 }
 
@@ -747,35 +747,27 @@ long RotatorClass::GetPosition()
 }
 
 
-float RotatorClass::GetAzimuth()
+double RotatorClass::GetAzimuth()
 {
 	double azimuth = 0.0;
 	long currentPosition = 0;
 
 	currentPosition = GetPosition();
-	if (currentPosition != 0)
-		azimuth = (double)currentPosition / (double)m_Config.stepsPerRotation * 360.0;
+	azimuth = (double)currentPosition / (double)m_Config.stepsPerRotation * 360.0;
 
-	while (azimuth < 0.0)
-		azimuth += 360.0;
-
-	while (azimuth >= 360.0) {
-		azimuth -= 360.0;
-	}
-
-	return float(azimuth);
+	return double(azimuth);
 }
 
-long RotatorClass::GetAzimuthToPosition(const float azimuth)
+long RotatorClass::GetAzimuthToPosition(const double azimuth)
 {
 	long newPosition;
 
-	newPosition = (float)m_Config.stepsPerRotation / (float)360 * azimuth;
+	newPosition = (double)m_Config.stepsPerRotation / (double)360 * azimuth;
 
 	return newPosition;
 }
 
-void RotatorClass::SyncPosition(const float newAzimuth)
+void RotatorClass::SyncPosition(const double newAzimuth)
 {
 	long newPosition;
 
@@ -783,15 +775,15 @@ void RotatorClass::SyncPosition(const float newAzimuth)
 	stepper.setCurrentPosition(newPosition);
 }
 
-void RotatorClass::GoToAzimuth(const float newHeading)
+void RotatorClass::GoToAzimuth(const double newHeading)
 {
 	// Goto new target
-	float currentHeading;
-	float delta;
+	double currentHeading;
+	double delta;
 
 	currentHeading = GetAzimuth();
-	delta = GetAngularDistance(currentHeading, newHeading) * m_fStepsPerDegree;
-	delta = delta - int(delta) % STEP_TYPE;
+	delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
+
 	if(delta == 0) {
 		m_nMoveDirection = MOVE_NONE;
 		return;
@@ -824,7 +816,7 @@ long RotatorClass::GetStepsPerRotation()
 
 void RotatorClass::SetStepsPerRotation(const long newCount)
 {
-	m_fStepsPerDegree = (float)newCount / 360.0;
+	m_fStepsPerDegree = (double)newCount / 360.0;
 	m_Config.stepsPerRotation = newCount;
 	SaveToEEProm();
 }
@@ -839,18 +831,18 @@ void RotatorClass::restoreDefaultMotorSettings()
 	SetStepsPerRotation(m_Config.stepsPerRotation);
 }
 
-float RotatorClass::GetAngularDistance(const float fromAngle, const float toAngle)
+double RotatorClass::GetAngularDistance(const double fromAngle, const double toAngle)
 {
-	float delta;
+	double delta;
 	delta = toAngle - fromAngle;
 	if (delta == 0)
 		return 0; //  we are already there
 
-	if (delta > 180)
-		delta -= 360;
+	if (delta > 180.0)
+		delta -= 360.0;
 
-	if (delta < -180)
-		delta += 360;
+	if (delta < -180.0)
+		delta += 360.0;
 
 	return delta;
 }
@@ -886,7 +878,7 @@ inline String RotatorClass::GetVoltString()
 int RotatorClass::ReadVolts()
 {
 	int adc;
-	float calc;
+	double calc;
 
 	adc = analogRead(VOLTAGE_MONITOR_PIN);
 	calc = adc * m_fAdcConvert;
@@ -896,12 +888,12 @@ int RotatorClass::ReadVolts()
 //
 // home and park methods
 //
-float RotatorClass::GetHomeAzimuth()
+double RotatorClass::GetHomeAzimuth()
 {
 	return m_Config.homeAzimuth;
 }
 
-void RotatorClass::SetHomeAzimuth(const float newHome)
+void RotatorClass::SetHomeAzimuth(const double newHome)
 {
 	m_Config.homeAzimuth = newHome;
 	SaveToEEProm();
@@ -921,12 +913,12 @@ int RotatorClass::GetHomeStatus()
 	return status;
 }
 
-float RotatorClass::GetParkAzimuth()
+double RotatorClass::GetParkAzimuth()
 {
 	return m_Config.parkAzimuth;
 }
 
-void RotatorClass::SetParkAzimuth(const float newPark)
+void RotatorClass::SetParkAzimuth(const double newPark)
 {
 	m_Config.parkAzimuth = newPark;
 	SaveToEEProm();
@@ -1080,7 +1072,7 @@ void RotatorClass::Run()
 {
 	long stepsFromZero;
 	long position;
-	float azimuthDelta;
+	double azimuthDelta;
 
 	if (m_periodicReadingTimer.elapsed() >= m_nNextPeriodicReadingLapse) {
 		m_nVolts = ReadVolts();
@@ -1115,7 +1107,7 @@ void RotatorClass::Run()
 		SetStepsPerRotation(m_nHomePosEdgePass2 - m_nHomePosEdgePass1);
 		SaveToEEProm();
 		position = stepper.currentPosition();
-		azimuthDelta = (float)(position - m_nHomePosEdgePass2) / m_fStepsPerDegree;
+		azimuthDelta = (double)(position - m_nHomePosEdgePass2) / m_fStepsPerDegree;
 		SyncPosition(azimuthDelta + m_Config.homeAzimuth);
 		m_nStepsAtHome = 0;
 	}
@@ -1123,7 +1115,7 @@ void RotatorClass::Run()
 	if (m_bSetToHomeAzimuth) {
 		m_bSetToHomeAzimuth = false;
 		position = stepper.currentPosition();
-		azimuthDelta = (float)(position - m_nStepsAtHome) / m_fStepsPerDegree;
+		azimuthDelta = (double)(position - m_nStepsAtHome) / m_fStepsPerDegree;
 		SyncPosition(azimuthDelta + m_Config.homeAzimuth);
 		position = stepper.currentPosition();
 		GoToAzimuth(m_Config.homeAzimuth); // moving to home now that we know where we are
@@ -1156,11 +1148,32 @@ void RotatorClass::Run()
 				// we're at the home position
 				m_bisAtHome = true;
 			}
+			position = stepper.currentPosition();
+			while (position >= m_Config.stepsPerRotation)
+				position -= m_Config.stepsPerRotation;
+
+			while (position < 0)
+				position += m_Config.stepsPerRotation;
+
+			if(position == (m_Config.stepsPerRotation -1))
+				position = 0;
+			stepper.setCurrentPosition(position);			
 		}
+
 		if(m_seekMode == MOVING_GOTO) {
 			m_nMoveDirection = MOVE_NONE;
 			EnableMotor(false);
 			m_seekMode = NOT_MOVING;
+			position = stepper.currentPosition();
+			while (position >= m_Config.stepsPerRotation)
+				position -= m_Config.stepsPerRotation;
+
+			while (position < 0)
+				position += m_Config.stepsPerRotation;
+
+			if(position == (m_Config.stepsPerRotation -1))
+				position = 0;
+			stepper.setCurrentPosition(position);			
 		}
 	} // end if (m_bWasRunning)
 }
