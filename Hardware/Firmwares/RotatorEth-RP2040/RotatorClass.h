@@ -560,7 +560,6 @@ bool RotatorClass::LoadFromEEProm()
 		SaveToEEProm();
 		response = false;
 	}
-#ifdef DEBUG
 	DBPrintln("signature         : " + String(m_Config.signature));
 	DBPrintln("maxSpeed          : " + String(m_Config.maxSpeed));
 	DBPrintln("acceleration      : " + String(m_Config.acceleration));
@@ -580,7 +579,7 @@ bool RotatorClass::LoadFromEEProm()
 	DBPrintln("ipConfig.gateway  : " + String(int(m_Config.ipConfig.gateway)));
 	DBPrintln("ipConfig.subnet   : " + String(int(m_Config.ipConfig.subnet)));
 #endif
-#endif
+
 	return response;
 }
 

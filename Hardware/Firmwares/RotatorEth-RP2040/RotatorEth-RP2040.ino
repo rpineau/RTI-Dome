@@ -312,7 +312,9 @@ void RTIDomeAlpacaServer::startServer()
 	m_AlpacaRestServer = new Application();
 
 	uuid.generate();
+	
 	DBPrintln("m_AlpacaRestServer starting");
+	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
 	mRestServer->begin();
 
 
@@ -416,14 +418,12 @@ void setup()
 
 #ifdef USE_ETHERNET
 	getMacAddress(MAC_Address, uidBuffer);
-#ifdef DEBUG
 	DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
 					String(MAC_Address[1], HEX) + String(":") +
 					String(MAC_Address[2], HEX) + String(":") +
 					String(MAC_Address[3], HEX) + String(":") +
 					String(MAC_Address[4], HEX) + String(":") +
 					String(MAC_Address[5], HEX) );
-#endif
 #endif // USE_ETHERNET
 
 	Computer.begin(115200);
