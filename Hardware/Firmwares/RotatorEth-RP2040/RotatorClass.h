@@ -651,11 +651,6 @@ void RotatorClass::GoToAzimuth(const double newHeading)
 
 	currentHeading = GetAzimuth();
 	delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
-
-	if(delta == 0) {
-		m_nMoveDirection = MOVE_NONE;
-		return;
-	}
 	m_seekMode = MOVING_GOTO;
 	MoveRelative(delta);
 }
@@ -912,12 +907,17 @@ void RotatorClass::MoveRelative(const long howFar)
 	// Tells dome to rotate more than 360 degrees
 	// from current position. Stopped only by
 	// homing or calibrating routine.
+
 	m_nMoveDirection = MOVE_NEGATIVE;
 	if (howFar > 0)
 		m_nMoveDirection = MOVE_POSITIVE;
-	else if(howFar == 0 )
+	else if(howFar == 0 ) {
 		m_nMoveDirection = MOVE_NONE;
+		m_seekMode = NOT_MOVING;
+		return;
+		}
 	m_bisAtHome = false;
+
 	motorMoveRelative(howFar);
 }
 
@@ -1062,6 +1062,7 @@ void RotatorClass::motorStop()
 
 void RotatorClass::motorMoveRelative(const long howFar)
 {
+	DBPrintln("motorMoveRelative");
 	EnableMotor(true);
 	stepper.move(howFar);
 }
