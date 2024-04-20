@@ -1392,7 +1392,6 @@ void doSetup(Request &req, Response &res)
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
 	DBPrintln("FormData.size() : " + String(FormData.size()));
-	sResp="";
 #endif
 	sHTML = "<!DOCTYPE html>\n<html>\n";
 	sHTML += "<head>";
