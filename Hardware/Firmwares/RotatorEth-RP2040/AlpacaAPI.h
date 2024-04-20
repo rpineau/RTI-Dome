@@ -1,10 +1,38 @@
 // Alpaca API prototype functions
 #include <aWOT.h>
 
+#define ALPACA_VAR_BUF_LEN 256
+
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 enum AlpacaShutterStates { A_OPEN=0, A_CLOSED, A_OPENING, A_CLOSING,  A_ERROR};
 
 volatile bool bAlpacaConnected = false;
+
+JsonDocument formDataToJson(Request &req)
+{
+	JsonDocument FormData;
+	char name[ALPACA_VAR_BUF_LEN];
+	char value[ALPACA_VAR_BUF_LEN];
+
+	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+		DBPrintln("name : " + String(name));
+		DBPrintln("value : " + String(value));
+		if(isDigit(value[0]) ) {
+			if(String(value).indexOf('.') == -1) {
+				// int
+				FormData[name]=String(value).toInt();
+			} else {
+				// double
+				FormData[name]=String(value).toDouble();
+			}
+		}
+		else {
+			// string
+			FormData[name]=String(value);
+		}
+	}
+	return FormData;
+}
 
 void getApiVersion(Request &req, Response &res)
 {
@@ -92,15 +120,10 @@ void doAction(Request &req, Response &res)
 	String sResp;
 	String sAction;
 	String sParameters;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
 
 	DBPrintln("doAction");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
+
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -142,15 +165,9 @@ void doCommandBlind(Request &req, Response &res)
 	 JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
 
 	DBPrintln("doCommandBlind");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -184,15 +201,9 @@ void doCommandBool(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
 
 	DBPrintln("doCommandBool");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -227,15 +238,9 @@ void doCommandString(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
 
 	DBPrintln("doCommandString");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -298,15 +303,9 @@ void setConnected(Request &req, Response &res)
 	String sResp;
 	char ClientID[64];
 	char ClientTransactionID[64];
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
 
 	DBPrintln("setConected");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -1175,16 +1174,10 @@ void setPark(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
 	double fParkPos;
 
 	DBPrintln("setPark");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -1210,15 +1203,9 @@ void doAltitudeSlew(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
 
 	DBPrintln("doAltitudeSlew");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -1273,16 +1260,10 @@ void doGoTo(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
-	double fNewPos;
+	double dNewPos;
 
 	DBPrintln("doGoTo");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -1312,8 +1293,8 @@ void doGoTo(Request &req, Response &res)
 		return;
 	}
 
-	fNewPos = FormData["Azimuth"];
-	if(fNewPos < 0 || fNewPos>360) {
+	dNewPos = FormData["Azimuth"];
+	if(dNewPos < 0 || dNewPos>360) {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ErrorNumber"] = 1025;
 		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
@@ -1323,7 +1304,7 @@ void doGoTo(Request &req, Response &res)
 		return;
 	}
 
-	Rotator->GoToAzimuth(fNewPos);
+	Rotator->GoToAzimuth(dNewPos);
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
@@ -1340,16 +1321,10 @@ void doSyncAzimuth(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char name[ALPACA_VAR_BUF_LEN];
-	char value[ALPACA_VAR_BUF_LEN];
-	double fNewPos;
+	double dNewPos;
 
 	DBPrintln("doSyncAzimuth");
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
-		DBPrintln("name : " + String(name));
-		DBPrintln("value : " + String(value));
-		FormData[name]=String(value);
-	}
+	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -1379,8 +1354,8 @@ void doSyncAzimuth(Request &req, Response &res)
 		return;
 	}
 
-	fNewPos = FormData["Azimuth"];
-	if(fNewPos<0 || fNewPos > 360) {
+	dNewPos = FormData["Azimuth"];
+	if(dNewPos<0 || dNewPos > 360) {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ErrorNumber"] = 1025;
 		AlpacaResp["ErrorMessage"] = "Invalid Azimuth";
@@ -1390,7 +1365,7 @@ void doSyncAzimuth(Request &req, Response &res)
 		return;
 	}
 
-	Rotator->SyncPosition(fNewPos);
+	Rotator->SyncPosition(dNewPos);
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
@@ -1402,3 +1377,38 @@ void doSyncAzimuth(Request &req, Response &res)
 	res.flush();
 }
 
+
+void doSetup(Request &req, Response &res)
+{
+	JsonDocument FormData;
+	String sResp;
+	String sHTML;
+
+	res.set("Content-Type", "text/html");
+
+	DBPrintln("doSetup");
+	FormData = formDataToJson(req);
+#ifdef DEBUG
+	serializeJson(FormData, sResp);
+	DBPrintln("FormData : " + sResp);
+	DBPrintln("FormData.size() : " + String(FormData.size()));
+	sResp="";
+#endif
+	sHTML = "<!DOCTYPE html>\n<html>\n";
+	sHTML += "<head>";
+	sHTML += "<title>RTI Dome Setup</title>\n";
+	sHTML += "</head>\n";
+	sHTML += "<body>\n";
+
+	sHTML += "<H1>RTI Dome Setup</H1>\n";
+
+	// display passed data
+	if(FormData.size()!=0){
+		sHTML += "<p>data passed : </p>\n";
+		sHTML += "<p>"+sResp+"</p>\n";
+	}
+
+	sHTML += "</body>\n</html>\n";
+	res.print(sHTML);
+	res.flush();
+}

@@ -8,31 +8,12 @@
 #ifdef USE_EXT_EEPROM
 
 #include <extEEPROM.h>
-#pragma message "External EEPROM enabled"
 #include <Wire.h>
 
-#if defined(ARDUINO_SAM_DUE)        // ARDUINO DUE
-#pragma message "Arduino DUE I2C"
-#define I2C_WIRE    Wire1
-
-#elif defined(ARDUINO_ARCH_RP2040)  // RP2040
-#pragma message "RP2040 I2C"
 #define I2C_WIRE    Wire
-
-#endif                      // ARDUINO_SAM_DUE - ARDUINO_ARCH_RP2040
 
 #define EEPROM_ADDR 0x50
 #define I2C_CHUNK_SIZE  8
-
-#else   // USE_EXT_EEPROM
-
-#if defined(ARDUINO_SAM_DUE)        // ARDUINO DUE
-#include <DueFlashStorage.h>
-DueFlashStorage dueFlashStorage;
-
-#elif defined(ARDUINO_ARCH_RP2040)  // RP2040
-
-#endif                      // ARDUINO_SAM_DUE - ARDUINO_ARCH_RP2040
 
 #endif // USE_EXT_EEPROM
 
@@ -46,29 +27,8 @@ DueFlashStorage dueFlashStorage;
 
 
 //
-// Arduino boards
-//
-#if defined(ARDUINO_SAM_DUE)
-// input
-#define HOME_PIN             2  // Also used for Shutter open status
-#define BUTTON_CCW           5  // Digital Input
-#define BUTTON_CW            6  // Digital Input
-#define RAIN_SENSOR_PIN      7  // Digital Input from RG11
-// ouput
-#define STEPPER_ENABLE_PIN  10  // Digital Output
-#define DIRECTION_PIN       11  // Digital Output
-#define STEP_PIN            12  // Digital Output
-
-// analog
-#define VOLTAGE_MONITOR_PIN A0
-#define AD_REF      3.3
-#define RES_MULT    5.0 // resistor voltage divider on the shield
-
-//
 // RP2040 boards
 //
-#elif defined(ARDUINO_ARCH_RP2040)
-#pragma message "RP2040 pin mapping"
 // input
 #define HOME_PIN            7  // Also used for Shutter open status
 #define BUTTON_CCW          11 // Digital Input
@@ -83,7 +43,6 @@ DueFlashStorage dueFlashStorage;
 #define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
 #define AD_REF      3.3
 #define RES_MULT    5.0 // resistor voltage divider on the shield
-#endif
 
 
 #define MOVE_NEGATIVE       -1
@@ -167,95 +126,6 @@ enum RainActions {DO_NOTHING=0, HOME, PARK};
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
-/*
-*
-*  Interrupt timer for AccelStepper
-*
-*
-*/
-#if defined(ARDUINO_SAM_DUE)
-#pragma message "Arduino DUE Timer"
-
-/*
- * As demonstrated by RCArduino and modified by BKM:
- * pick clock that provides the least error for specified frequency.
- * https://github.com/SomeRandomGuy/DueTimer
- * https://github.com/ivanseidel/DueTimer
- */
-uint8_t pickClock(uint32_t frequency, uint32_t& retRC)
-{
-	/*
-		Timer       Definition
-		TIMER_CLOCK1    MCK/2
-		TIMER_CLOCK2    MCK/8
-		TIMER_CLOCK3    MCK/32
-		TIMER_CLOCK4    MCK/128
-	*/
-	struct {
-		uint8_t flag;
-		uint8_t divisor;
-	} clockConfig[] = {
-		{ TC_CMR_TCCLKS_TIMER_CLOCK1, 2 },
-		{ TC_CMR_TCCLKS_TIMER_CLOCK2, 8 },
-		{ TC_CMR_TCCLKS_TIMER_CLOCK3, 32 },
-		{ TC_CMR_TCCLKS_TIMER_CLOCK4, 128 }
-	};
-	double ticks;
-	double error;
-	int clkId = 3;
-	int bestClock = 3;
-	double bestError = 1.0;
-	do
-	{
-		ticks = (double) VARIANT_MCK / (double) frequency / (double) clockConfig[clkId].divisor;
-		error = abs(ticks - round(ticks));
-		if (abs(error) < bestError)
-		{
-			bestClock = clkId;
-			bestError = error;
-		}
-	} while (clkId-- > 0);
-	ticks = (double) VARIANT_MCK / (double) frequency / (double) clockConfig[bestClock].divisor;
-	retRC = (uint32_t) round(ticks);
-	return clockConfig[bestClock].flag;
-}
-
-
-void startTimer(Tc *tc, uint32_t channel, IRQn_Type irq, uint32_t frequency)
-{
-	uint32_t rc = 0;
-	uint8_t clock;
-	pmc_set_writeprotect(false);
-	pmc_enable_periph_clk((uint32_t)irq);
-	clock = pickClock(frequency, rc);
-
-	TC_Configure(tc, channel, TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | clock);
-	TC_SetRA(tc, channel, rc/2); //50% high, 50% low
-	TC_SetRC(tc, channel, rc);
-	TC_Start(tc, channel);
-	tc->TC_CHANNEL[channel].TC_IER=TC_IER_CPCS;
-	tc->TC_CHANNEL[channel].TC_IDR=~TC_IER_CPCS;
-
-	NVIC_EnableIRQ(irq);
-}
-
-void stopTimer(Tc *tc, uint32_t channel, IRQn_Type irq)
-{
-	NVIC_DisableIRQ(irq);
-	TC_Stop(tc, channel);
-}
-
-// DUE stepper callback
-void TC3_Handler()
-{
-	TC_GetStatus(TC1, 0);
-	stepper.run();
-}
-
-#elif defined(ARDUINO_ARCH_RP2040)
-#endif // ARDUINO_SAM_DUE - ARDUINO_ARCH_RP2040
-
-
 class RotatorClass
 {
 
@@ -330,7 +200,6 @@ public:
 	void        Stop();
 	void        motorStop();
 	void        motorMoveRelative(const long howFar);
-	void        stopInterrupt();
 	void        homeInterrupt();
 
 	void		ButtonCheck();
@@ -1029,7 +898,6 @@ void RotatorClass::EnableMotor(const bool bEnabled)
 	if (!bEnabled) {
 		DBPrintln("Motor OFF");
 		digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
-		stopInterrupt();
 	}
 	else {
 		DBPrintln("Motor ON");
@@ -1081,10 +949,8 @@ void RotatorClass::Run()
 	if (m_seekMode > HOMING_HOME)
 		Calibrate();
 
-#if defined(ARDUINO_ARCH_RP2040)
-#pragma message "RP2040 Run"
 	stepper.run(); // RP2040 core1
-#endif
+
 	if (stepper.isRunning()) {
 		m_bWasRunning = true;
 		if (m_seekMode == HOMING_HOME && m_HomeFound) { // We're looking for home and found it
@@ -1179,11 +1045,6 @@ void RotatorClass::Run()
 
 void RotatorClass::Stop()
 {
-	// It takes approximately RunSpeed/3.95 steps to stop
-	// Use this to calculate a full step stopping position
-	// Actual divisor appears to be 3.997 but this leaves a
-	// few extra steps for getting to a full step position.
-	// DBPrintln("RotatorClass::Stop");
 	if (!stepper.isRunning())
 		return;
 
@@ -1198,32 +1059,11 @@ void RotatorClass::motorStop()
 	stepper.stop();
 }
 
-void RotatorClass::stopInterrupt()
-{
-#if defined(ARDUINO_SAM_DUE)
-#pragma message "Arduino DUE stopInterrupt"
-	// stop interrupt timer
-	stopTimer(TC1, 0, TC3_IRQn);
-#elif defined(ARDUINO_ARCH_RP2040)
-#pragma message "RP2040 stopInterrupt"
-#endif
-
-}
-
 
 void RotatorClass::motorMoveRelative(const long howFar)
 {
-	// AccelStepper run() is called under a timer interrupt
 	EnableMotor(true);
 	stepper.move(howFar);
-	// start interrupt timer
-#if defined(ARDUINO_SAM_DUE)
-#pragma message "Arduino DUE motorMoveRelative"
-	nStepperInterruptFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
-	startTimer(TC1, 0, TC3_IRQn, nStepperInterruptFreq);
-#elif defined(ARDUINO_ARCH_RP2040)
-#pragma message "RP2040 motorMoveRelative"
-#endif
 }
 
 #ifdef USE_EXT_EEPROM

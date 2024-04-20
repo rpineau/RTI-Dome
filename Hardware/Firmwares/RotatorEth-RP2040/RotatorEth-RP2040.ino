@@ -55,16 +55,9 @@
 #include "EtherMac.h"
 #endif // USE_ETHERNET
 
-#if defined(ARDUINO_ARCH_RP2040)
-#pragma message "RP2040 Serial2"
-#endif
 #define Computer Serial2     // USB FTDI
 
-#if defined(ARDUINO_ARCH_RP2040)
 #define FTDI_RESET  28
-#else
-#define FTDI_RESET  23
-#endif
 
 #ifndef STANDALONE
 #define Wireless Serial1    // XBEE Serial1 on pin 18/19 for Arduino DUE , or 0/1 on RP2040
@@ -79,13 +72,9 @@
 #include "RotatorClass.h"
 
 #ifdef USE_ETHERNET
-#if defined(ARDUINO_ARCH_RP2040)    // RP2040 SPI
+// RP2040 SPI
 #define ETHERNET_CS     17
 #define ETHERNET_RESET  20
-#else
-#define ETHERNET_CS     52
-#define ETHERNET_RESET  53
-#endif
 uint32_t uidBuffer[4];  // Board unique ID (DUE, RP2040)
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 
@@ -99,16 +88,15 @@ String networkBuffer;
 #include <functional>
 #include <EthernetUdp.h>
 #include <ArduinoJson.h>
-#include <UUID.h>
 // Alpaca REST server
+#include <UUID.h>
 #include <aWOT.h>
-int nTransactionID;
+uint32_t nTransactionID;
 UUID uuid;
 #define SERVER_ERROR -1
 String sAlpacaDiscovery = "alpacadiscovery1";
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
-#define ALPACA_VAR_BUF_LEN 256
 #endif // USE_ALPACA
 
 #endif // USE_ETHERNET
@@ -118,11 +106,7 @@ String computerBuffer;
 
 #ifndef STANDALONE
 
-#if defined(ARDUINO_ARCH_RP2040)
 #define XBEE_RESET  22
-#else
-#define XBEE_RESET  8
-#endif
 
 #include "RemoteShutterClass.h"
 RemoteShutterClass RemoteShutter;
@@ -133,10 +117,7 @@ bool isResetingXbee = false;
 int XbeeResets = 0;
 #endif // STANDALONE
 
-#if defined(ARDUINO_ARCH_RP2040)
-// atomic bool core0Ready = false;
 std::atomic<bool> core0Ready = false;
-#endif
 
 bool bParked = false; // use to the run check doesn't continuously try to park
 
@@ -324,6 +305,8 @@ void RTIDomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
 	m_AlpacaRestServer->get("/management/v1/description", &getDescription);
 
+	m_AlpacaRestServer->use("/api/v1/dome/0/setup", &doSetup);
+
 	m_AlpacaRestServer->put("/api/v1/dome/0/action", &doAction);
 	m_AlpacaRestServer->put("/api/v1/dome/0/commandblind", &doCommandBlind);
 	m_AlpacaRestServer->put("/api/v1/dome/0/commandbool", &doCommandBool);
@@ -395,9 +378,7 @@ RTIDomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 //
 void setup()
 {
-#if defined(ARDUINO_ARCH_RP2040)
 	core0Ready = false;
-#endif
 #ifndef STANDALONE
 	// set reset pins to output and low
 	digitalWrite(XBEE_RESET, 0);
@@ -469,13 +450,10 @@ void setup()
 	Computer.println("Online");
 #endif
 
-#if defined(ARDUINO_ARCH_RP2040)
 	core0Ready = true;
 	DBPrintln("========== Core 0 ready ==========");
-#endif
 }
 
-#if defined(ARDUINO_ARCH_RP2040)
 void setup1()
 {
 	while(!core0Ready)
@@ -491,7 +469,7 @@ void setup1()
 
 	DBPrintln("========== Core 1 ready ==========");
 }
-#endif
+
 //
 // This loop takes care of all communications and commands
 //
@@ -557,12 +535,10 @@ void loop()
 //
 // This loop does all the motor controls
 //
-#if defined(ARDUINO_ARCH_RP2040)
 void loop1()
 {   // all stepper motor code runs on core 1
 	Rotator->Run();
 }
-#endif
 
 //
 //
