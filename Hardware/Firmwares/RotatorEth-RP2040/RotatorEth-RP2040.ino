@@ -208,10 +208,10 @@ void ProcessWireless();
 #ifdef USE_ALPACA
 #include "AlpacaAPI.h"
 
-class RTIDomeAlpacaDiscoveryServer
+class DomeAlpacaDiscoveryServer
 {
 public:
-	RTIDomeAlpacaDiscoveryServer(int port);
+	DomeAlpacaDiscoveryServer(int port);
 	void startServer();
 	int checkForRequest();
 private:
@@ -220,13 +220,13 @@ private:
 };
 
 // ALPACA discovery server
-RTIDomeAlpacaDiscoveryServer::RTIDomeAlpacaDiscoveryServer(int port)
+DomeAlpacaDiscoveryServer::DomeAlpacaDiscoveryServer(int port)
 {
 	m_UDPPort = port;
 	discoveryServer = nullptr;
 }
 
-void RTIDomeAlpacaDiscoveryServer::startServer()
+void DomeAlpacaDiscoveryServer::startServer()
 {
 	discoveryServer = new EthernetUDP();
 	if(!discoveryServer) {
@@ -237,7 +237,7 @@ void RTIDomeAlpacaDiscoveryServer::startServer()
 	DBPrintln("discoveryServer started on port " + String(m_UDPPort));
 }
 
-int RTIDomeAlpacaDiscoveryServer::checkForRequest()
+int DomeAlpacaDiscoveryServer::checkForRequest()
 {
 	if(!discoveryServer)
 		return -1;
@@ -267,10 +267,10 @@ int RTIDomeAlpacaDiscoveryServer::checkForRequest()
 	return ALPACA_OK;
 }
 
-class RTIDomeAlpacaServer
+class DomeAlpacaServer
 {
 public :
-	RTIDomeAlpacaServer(int port);
+	DomeAlpacaServer(int port);
 	void startServer();
 	void checkForRequest();
 
@@ -281,7 +281,7 @@ private :
 	int m_nRestPort;
 };
 
-RTIDomeAlpacaServer::RTIDomeAlpacaServer(int port)
+DomeAlpacaServer::DomeAlpacaServer(int port)
 {
 	m_nRestPort = port;
 	mRestServer = nullptr;
@@ -289,7 +289,7 @@ RTIDomeAlpacaServer::RTIDomeAlpacaServer(int port)
 	nTransactionID = 0;
 }
 
-void RTIDomeAlpacaServer::startServer()
+void DomeAlpacaServer::startServer()
 {
 	mRestServer = new EthernetServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
@@ -361,7 +361,7 @@ void RTIDomeAlpacaServer::startServer()
 
 }
 
-void RTIDomeAlpacaServer::checkForRequest()
+void DomeAlpacaServer::checkForRequest()
 {
 	// process incoming connections one at a time
 	EthernetClient client = mRestServer->available();
@@ -373,8 +373,8 @@ void RTIDomeAlpacaServer::checkForRequest()
 
 }
 
-RTIDomeAlpacaServer *AlpacaServer;
-RTIDomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
+DomeAlpacaServer *AlpacaServer;
+DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 
 
 #endif // USE_ALPACA
@@ -447,8 +447,8 @@ void setup()
 #ifdef USE_ETHERNET
 	configureEthernet();
 #ifdef USE_ALPACA
-	AlpacaDiscoveryServer = new RTIDomeAlpacaDiscoveryServer(ALPACA_DISCOVERY_PORT);
-	AlpacaServer = new RTIDomeAlpacaServer(ALPACA_SERVER_PORT);
+	AlpacaDiscoveryServer = new DomeAlpacaDiscoveryServer(ALPACA_DISCOVERY_PORT);
+	AlpacaServer = new DomeAlpacaServer(ALPACA_SERVER_PORT);
 	AlpacaDiscoveryServer->startServer();
 	AlpacaServer->startServer();
 #endif // USE_ALPACA
