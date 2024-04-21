@@ -34,6 +34,11 @@ JsonDocument formDataToJson(Request &req)
 	return FormData;
 }
 
+void redirectToSetup(Request &req, Response &res)
+{
+	res.set("Location", redirectURL);
+    res.sendStatus(302);
+}
 void getApiVersion(Request &req, Response &res)
 {
 	JsonDocument AlpacaResp;

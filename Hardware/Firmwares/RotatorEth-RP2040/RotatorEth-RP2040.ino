@@ -83,6 +83,7 @@ EthernetServer domeServer(SERVER_PORT);
 EthernetClient domeClient;
 int nbEthernetClient;
 String networkBuffer;
+String sLocalIPAdress;
 
 #ifdef USE_ALPACA
 #include <functional>
@@ -97,6 +98,7 @@ UUID uuid;
 String sAlpacaDiscovery = "alpacadiscovery1";
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
+char redirectURL[128];
 #endif // USE_ALPACA
 
 #endif // USE_ETHERNET
@@ -289,6 +291,8 @@ RTIDomeAlpacaServer::RTIDomeAlpacaServer(int port)
 
 void RTIDomeAlpacaServer::startServer()
 {
+	String newURL;
+	
 	mRestServer = new EthernetServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
 
@@ -298,8 +302,15 @@ void RTIDomeAlpacaServer::startServer()
 	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
 	mRestServer->begin();
 
+	newURL = String("http://")+ sLocalIPAdress + String(":") + String(ALPACA_SERVER_PORT) + String("/api/v1/dome/0/setup");
+	DBPrintln("newLocation : " + newURL);
+	newURL.toCharArray(redirectURL,128);
+
 
 	DBPrintln("m_AlpacaRestServer mapping endpoints");
+
+	m_AlpacaRestServer->use("/", &redirectToSetup);
+	m_AlpacaRestServer->use("/setup", &redirectToSetup);
 
 	m_AlpacaRestServer->get("/management/apiversions", &getApiVersion);
 	m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
@@ -594,10 +605,12 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 	}
 #ifdef DEBUG
 	aTmp = Ethernet.localIP();
-	DBPrintln("IP = " + String(aTmp[0]) + String(".") +
+	sLocalIPAdress = String(aTmp[0]) + String(".") +
 						String(aTmp[1]) + String(".") +
 						String(aTmp[2]) + String(".") +
-						String(aTmp[3]) );
+						String(aTmp[3]);
+
+	DBPrintln("IP = " + sLocalIPAdress);
 #endif
 
 	Ethernet.setRetransmissionCount(3);
