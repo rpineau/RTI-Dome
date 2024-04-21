@@ -35,7 +35,6 @@
 
 
 #define MAX_TIMEOUT 10
-#define ALPACA_OK 0
 
 #define VERSION "2.645"
 
@@ -45,9 +44,6 @@
 
 #ifdef USE_ETHERNET
 #pragma message "Ethernet enabled"
-#ifdef USE_ALPACA
-#pragma message "Alpaca server enabled"
-#endif // USE_ALPACA
 // include and some defines for ethernet connection
 #include <SPI.h>    // RP2040 :  SCK: GP18, COPI/TX: GP19, CIPO/RX: GP16, CS: GP17
 #include <EthernetClient.h>
@@ -84,23 +80,6 @@ EthernetClient domeClient;
 int nbEthernetClient;
 String networkBuffer;
 String sLocalIPAdress;
-
-#ifdef USE_ALPACA
-#include <functional>
-#include <EthernetUdp.h>
-#include <ArduinoJson.h>
-// Alpaca REST server
-#include <UUID.h>
-#include <aWOT.h>
-uint32_t nTransactionID;
-UUID uuid;
-#define SERVER_ERROR -1
-String sAlpacaDiscovery = "alpacadiscovery1";
-#define ALPACA_DISCOVERY_PORT 32227
-#define ALPACA_SERVER_PORT 80
-String sRedirectURL;
-#endif // USE_ALPACA
-
 #endif // USE_ETHERNET
 
 String computerBuffer;
@@ -174,7 +153,7 @@ IPConfig ServerConfig;
 const char ERR_NO_DATA = -1;
 
 #include "dome_commands.h"
-enum CmdSource {SERIAL_CMD, NETWORK_CMD, ALPACA_CMD};
+enum CmdSource {SERIAL_CMD, NETWORK_CMD};
 // function prototypes
 #ifdef USE_ETHERNET
 void configureEthernet();
@@ -207,176 +186,8 @@ void ProcessWireless();
 
 #ifdef USE_ALPACA
 #include "AlpacaAPI.h"
-
-class DomeAlpacaDiscoveryServer
-{
-public:
-	DomeAlpacaDiscoveryServer(int port);
-	void startServer();
-	int checkForRequest();
-private:
-	EthernetUDP *discoveryServer;
-	int m_UDPPort;
-};
-
-// ALPACA discovery server
-DomeAlpacaDiscoveryServer::DomeAlpacaDiscoveryServer(int port)
-{
-	m_UDPPort = port;
-	discoveryServer = nullptr;
-}
-
-void DomeAlpacaDiscoveryServer::startServer()
-{
-	discoveryServer = new EthernetUDP();
-	if(!discoveryServer) {
-		discoveryServer = nullptr;
-		return;
-	}
-	discoveryServer->begin(m_UDPPort);
-	DBPrintln("discoveryServer started on port " + String(m_UDPPort));
-}
-
-int DomeAlpacaDiscoveryServer::checkForRequest()
-{
-	if(!discoveryServer)
-		return -1;
-	
-	String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
-	String sDiscoveryRequest;
-
-	char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
-	int packetSize = discoveryServer->parsePacket();
-	if (packetSize) {
-		DBPrintln("discoveryServer request");
-		memset(packetBuffer,0,sizeof(packetBuffer));
-		discoveryServer->read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-		// do stuff
-		sDiscoveryRequest = String(packetBuffer);
-		DBPrintln("discoveryServer sDiscoveryRequest : " + sDiscoveryRequest);
-		if(sDiscoveryRequest.indexOf(sAlpacaDiscovery)==-1) {
-			DBPrintln("discoveryServer request error");
-			return SERVER_ERROR; // wrong type of discovery message
-		}
-		DBPrintln("discoveryServer sending response : " + sDiscoveryResponse);
-		// send discovery reponse
-		discoveryServer->beginPacket(discoveryServer->remoteIP(), discoveryServer->remotePort());
-		discoveryServer->write(sDiscoveryResponse.c_str());
-		discoveryServer->endPacket();
-	}
-	return ALPACA_OK;
-}
-
-class DomeAlpacaServer
-{
-public :
-	DomeAlpacaServer(int port);
-	void startServer();
-	void checkForRequest();
-
-
-private :
-	EthernetServer *mRestServer;
-	Application  *m_AlpacaRestServer;
-	int m_nRestPort;
-};
-
-DomeAlpacaServer::DomeAlpacaServer(int port)
-{
-	m_nRestPort = port;
-	mRestServer = nullptr;
-	m_AlpacaRestServer = nullptr;
-	nTransactionID = 0;
-}
-
-void DomeAlpacaServer::startServer()
-{
-	mRestServer = new EthernetServer(m_nRestPort);
-	m_AlpacaRestServer = new Application();
-
-	uuid.generate();
-	
-	DBPrintln("m_AlpacaRestServer starting");
-	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
-	mRestServer->begin();
-
-	sRedirectURL = String("http://")+ sLocalIPAdress + String(":") + String(ALPACA_SERVER_PORT) + String("/api/v1/dome/0/setup");
-	DBPrintln("Redirect URL for setup : " + sRedirectURL);
-
-	DBPrintln("m_AlpacaRestServer mapping endpoints");
-
-	m_AlpacaRestServer->use("/", &redirectToSetup);
-	m_AlpacaRestServer->use("/setup", &redirectToSetup);
-
-	m_AlpacaRestServer->get("/management/apiversions", &getApiVersion);
-	m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
-	m_AlpacaRestServer->get("/management/v1/description", &getDescription);
-
-	m_AlpacaRestServer->use("/api/v1/dome/0/setup", &doSetup);
-
-	m_AlpacaRestServer->put("/api/v1/dome/0/action", &doAction);
-	m_AlpacaRestServer->put("/api/v1/dome/0/commandblind", &doCommandBlind);
-	m_AlpacaRestServer->put("/api/v1/dome/0/commandbool", &doCommandBool);
-	m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
-
-	m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConnected);
-	
-	m_AlpacaRestServer->put("/api/v1/dome/0/connected", &setConnected);
-	
-	m_AlpacaRestServer->get("/api/v1/dome/0/description", &getDeviceDescription);
-	m_AlpacaRestServer->get("/api/v1/dome/0/driverinfo", &getDriverInfo);
-	m_AlpacaRestServer->get("/api/v1/dome/0/driverversion", &getDriverVersion);
-	m_AlpacaRestServer->get("/api/v1/dome/0/interfaceversion", &getInterfaceVersion);
-	m_AlpacaRestServer->get("/api/v1/dome/0/name", &getName);
-	m_AlpacaRestServer->get("/api/v1/dome/0/supportedactions", &getSupportedActions);
-	m_AlpacaRestServer->get("/api/v1/dome/0/altitude", &getAltitude);
-	m_AlpacaRestServer->get("/api/v1/dome/0/athome", &geAtHome);
-	m_AlpacaRestServer->get("/api/v1/dome/0/atpark", &geAtPark);
-	m_AlpacaRestServer->get("/api/v1/dome/0/azimuth", &getAzimuth);
-	m_AlpacaRestServer->get("/api/v1/dome/0/canfindhome", &canfindhome);
-	m_AlpacaRestServer->get("/api/v1/dome/0/canpark", &canPark);
-	m_AlpacaRestServer->get("/api/v1/dome/0/cansetaltitude", &canSetAltitude);
-	m_AlpacaRestServer->get("/api/v1/dome/0/cansetazimuth", &canSetAzimuth);
-	m_AlpacaRestServer->get("/api/v1/dome/0/cansetpark", &canSetPark);
-	m_AlpacaRestServer->get("/api/v1/dome/0/cansetshutter", &canSetShutter);
-	m_AlpacaRestServer->get("/api/v1/dome/0/canslave", &canSlave);
-	m_AlpacaRestServer->get("/api/v1/dome/0/cansyncazimuth", &canSyncAzimuth);
-	m_AlpacaRestServer->get("/api/v1/dome/0/shutterstatus", &getShutterStatus);
-
-	m_AlpacaRestServer->use("/api/v1/dome/0/slaved", &Slaved);
-
-	m_AlpacaRestServer->get("/api/v1/dome/0/slewing", &getSlewing);
-
-	m_AlpacaRestServer->put("/api/v1/dome/0/abortslew", &doAbort);
-	m_AlpacaRestServer->put("/api/v1/dome/0/closeshutter", &doCloseShutter);
-	m_AlpacaRestServer->put("/api/v1/dome/0/findhome", &doFindHome);
-	m_AlpacaRestServer->put("/api/v1/dome/0/openshutter", &doOpenShutter);
-	m_AlpacaRestServer->put("/api/v1/dome/0/park", &doPark);
-	m_AlpacaRestServer->put("/api/v1/dome/0/setpark", &setPark);
-	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoaltitude", &doAltitudeSlew);
-	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoazimuth", &doGoTo);
-	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
-
-	DBPrintln("m_AlpacaRestServer started");
-
-}
-
-void DomeAlpacaServer::checkForRequest()
-{
-	// process incoming connections one at a time
-	EthernetClient client = mRestServer->available();
-	if (client.connected()) {
-		m_AlpacaRestServer->process(&client);
-		client.stop();
-		nTransactionID++;
-  }
-
-}
-
 DomeAlpacaServer *AlpacaServer;
 DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
-
-
 #endif // USE_ALPACA
 
 
@@ -928,10 +739,6 @@ void ProcessCommand(int nSource)
 			value = networkBuffer.substring(1);
 			break;
 #endif
-#ifdef USE_ALPACA
-		case ALPACA_CMD:
-			break;
-#endif
 	}
 
 	// payload has data
@@ -1356,10 +1163,6 @@ void ProcessCommand(int nSource)
 					domeClient.print(serialMessage + "#");
 					domeClient.flush();
 				}
-				break;
-	#endif
-	#ifdef USE_ALPACA
-			case ALPACA_CMD:
 				break;
 	#endif
 		}
