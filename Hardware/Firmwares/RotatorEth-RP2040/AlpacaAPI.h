@@ -28,7 +28,7 @@ volatile bool bAlpacaConnected = false;
 class DomeAlpacaDiscoveryServer
 {
 public:
-	DomeAlpacaDiscoveryServer(int port);
+	DomeAlpacaDiscoveryServer(int port=ALPACA_DISCOVERY_PORT);
 	void startServer();
 	int checkForRequest();
 private:
@@ -1499,7 +1499,7 @@ void doSetup(Request &req, Response &res)
 class DomeAlpacaServer
 {
 public :
-	DomeAlpacaServer(int port);
+	DomeAlpacaServer(int port=ALPACA_SERVER_PORT);
 	void startServer();
 	void checkForRequest();
 

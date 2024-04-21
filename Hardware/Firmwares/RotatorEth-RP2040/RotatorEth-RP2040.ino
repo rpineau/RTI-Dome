@@ -258,8 +258,8 @@ void setup()
 #ifdef USE_ETHERNET
 	configureEthernet();
 #ifdef USE_ALPACA
-	AlpacaDiscoveryServer = new DomeAlpacaDiscoveryServer(ALPACA_DISCOVERY_PORT);
-	AlpacaServer = new DomeAlpacaServer(ALPACA_SERVER_PORT);
+	AlpacaDiscoveryServer = new DomeAlpacaDiscoveryServer();
+	AlpacaServer = new DomeAlpacaServer();
 	AlpacaDiscoveryServer->startServer();
 	AlpacaServer->startServer();
 #endif // USE_ALPACA
