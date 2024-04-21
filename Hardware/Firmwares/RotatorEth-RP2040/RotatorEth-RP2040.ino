@@ -98,7 +98,7 @@ UUID uuid;
 String sAlpacaDiscovery = "alpacadiscovery1";
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
-char redirectURL[128];
+String sRedirectURL;
 #endif // USE_ALPACA
 
 #endif // USE_ETHERNET
@@ -291,8 +291,6 @@ RTIDomeAlpacaServer::RTIDomeAlpacaServer(int port)
 
 void RTIDomeAlpacaServer::startServer()
 {
-	String newURL;
-	
 	mRestServer = new EthernetServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
 
@@ -302,10 +300,8 @@ void RTIDomeAlpacaServer::startServer()
 	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
 	mRestServer->begin();
 
-	newURL = String("http://")+ sLocalIPAdress + String(":") + String(ALPACA_SERVER_PORT) + String("/api/v1/dome/0/setup");
-	DBPrintln("newLocation : " + newURL);
-	newURL.toCharArray(redirectURL,128);
-
+	sRedirectURL = String("http://")+ sLocalIPAdress + String(":") + String(ALPACA_SERVER_PORT) + String("/api/v1/dome/0/setup");
+	DBPrintln("Redirect URL for setup : " + sRedirectURL);
 
 	DBPrintln("m_AlpacaRestServer mapping endpoints");
 

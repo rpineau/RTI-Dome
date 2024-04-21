@@ -36,7 +36,7 @@ JsonDocument formDataToJson(Request &req)
 
 void redirectToSetup(Request &req, Response &res)
 {
-	res.set("Location", redirectURL);
+	res.set("Location", sRedirectURL.c_str());
     res.sendStatus(302);
 }
 void getApiVersion(Request &req, Response &res)
