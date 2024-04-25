@@ -72,7 +72,7 @@ public:
 	CRTIDome();
 	~CRTIDome();
 
-	int         Connect(const char *pszPort);
+	int         Connect(const std::string sPortName);
 	void        Disconnect(void);
 	const bool  IsConnected(void) { return m_bIsConnected; }
 

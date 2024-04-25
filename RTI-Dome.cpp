@@ -99,7 +99,7 @@ CRTIDome::~CRTIDome()
 #endif
 }
 
-int CRTIDome::Connect(const char *pszPort)
+int CRTIDome::Connect(const std::string sPortName)
 {
 	int nErr;
 	bool bDummy;
@@ -110,7 +110,7 @@ int CRTIDome::Connect(const char *pszPort)
 #endif
 
 	// 115200 8N1 DTR
-	nErr = m_pSerx->open(pszPort, 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
+	nErr = m_pSerx->open(sPortName.c_str(), 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Connection failed, nErr = " << nErr <<  std::endl;
@@ -120,7 +120,7 @@ int CRTIDome::Connect(const char *pszPort)
 		return nErr;
 	}
 
-	m_Port.assign(pszPort);
+	m_Port.assign(sPortName);
 
 	m_bIsConnected = true;
 	m_bCalibrating = false;
@@ -133,7 +133,7 @@ int CRTIDome::Connect(const char *pszPort)
 		m_bNetworkConnected = false;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] connected to " << pszPort << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] connected to " << sPortName << std::endl;
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] connected via network : " << (m_bNetworkConnected?"Yes":"No") << std::endl;
 	m_sLogFile.flush();
 #endif

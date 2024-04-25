@@ -80,6 +80,8 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
 #define EEPROM_SIGNATURE    2646
 
+#define DEFAULT_PANID   0x4242
+
 #ifdef USE_ETHERNET
 typedef struct IPCONFIG {
 	bool            bUseDHCP;
@@ -310,7 +312,7 @@ RotatorClass::RotatorClass()
 
 #ifndef STANDALONE
 	if(m_Config.panid <= 0) { // set to default.. there was something bad in eeprom.
-		m_Config.panid = 0x4242;
+		m_Config.panid = DEFAULT_PANID;
 	}
 #endif // STANDALONE
 	m_bDoEEPromSave = true;
@@ -466,7 +468,7 @@ void RotatorClass::SetDefaultConfig()
 	m_Config.cutOffVolts = 1150;
 	m_Config.rainAction = DO_NOTHING;
 #ifndef STANDALONE
-	m_Config.panid = 0x4242;
+	m_Config.panid = DEFAULT_PANID;
 #endif // STANDALONE
 #ifdef USE_ETHERNET
 	m_Config.ipConfig.bUseDHCP = true;

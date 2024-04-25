@@ -64,12 +64,12 @@ X2Dome::~X2Dome()
 int X2Dome::establishLink(void)
 {
 	int nErr;
-	char szPort[SERIAL_BUFFER_SIZE];
+    std::string sPortName;
 	X2MutexLocker ml(GetMutex());
 	
 	// get serial port device name, and IP and port if the connection is over TCP.
-	portNameOnToCharPtr(szPort,SERIAL_BUFFER_SIZE);
-	nErr = m_RTIDome.Connect(szPort);
+    getPortName(sPortName);
+	nErr = m_RTIDome.Connect(sPortName);
 	if(nErr) {
 		m_bLinked = false;
 	}
@@ -1015,11 +1015,9 @@ int X2Dome::dapiSync(double dAz, double dEl)
 
 void X2Dome::portName(BasicStringInterface& str) const
 {
-	char szPortName[SERIAL_BUFFER_SIZE];
-	
-	portNameOnToCharPtr(szPortName, SERIAL_BUFFER_SIZE);
-	
-	str = szPortName;
+    std::string sPortName;
+    getPortName(sPortName);
+	str = sPortName.c_str();
 	
 }
 
@@ -1030,17 +1028,18 @@ void X2Dome::setPortName(const char* szPort)
 }
 
 
-void X2Dome::portNameOnToCharPtr(char* pszPort, const int& nMaxSize) const
+void X2Dome::getPortName(std::string &sPortName) const
 {
-	if (NULL == pszPort)
-		return;
-	
-	snprintf(pszPort, nMaxSize, DEF_PORT_NAME);
-	
-	if (m_pIniUtil)
-		m_pIniUtil->readString(PARENT_KEY, CHILD_KEY_PORTNAME, pszPort, pszPort, nMaxSize);
-	
+    sPortName.assign(DEF_PORT_NAME);
+
+    if (m_pIniUtil) {
+        char port[255];
+        m_pIniUtil->readString(PARENT_KEY, CHILD_KEY_PORTNAME, sPortName.c_str(), port, 255);
+        sPortName.assign(port);
+    }
+
 }
+
 
 
 

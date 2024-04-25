@@ -16,7 +16,7 @@
 // if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
 // This us useful for people who only want to automate the rotation.
 
-#define STANDALONE
+// #define STANDALONE
 #ifdef STANDALONE
 #pragma message "Standalone mode, no shutter code"
 #endif // STANDALONE
@@ -241,15 +241,6 @@ void setup()
 	Rotator->Stop();
 	Rotator->EnableMotor(false);
 	
-#if defined(ARDUINO_SAM_DUE)
-	noInterrupts();
-	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
-	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-	interrupts();
-#endif
-
 #ifdef DEBUG
 	DebugPort.begin(115200);
 	DBPrintln("========== RTI-Zone controller booting ==========");

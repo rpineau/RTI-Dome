@@ -139,7 +139,7 @@ private:
 	MutexInterface									*	m_pIOMutex;
 	TickCountInterface								*	m_pTickCount;
 
-	void portNameOnToCharPtr(char* pszPort, const int& nMaxSize) const;
+    void getPortName(std::string &sPortName) const;
 
 
 	int         m_nPrivateISIndex;
