@@ -29,14 +29,14 @@
 // RP2040 boards
 //
 // input
-#define		CLOSED_PIN			7  // Also used for Shutter open status
-#define 	OPENED_PIN 			9 // FIXME        
+#define		CLOSED_PIN			 7	// Digital Input
+#define 	OPENED_PIN 			14	// Digital Input
 
-#define		BUTTON_CLOSE		11 // Digital Input
-#define 	BUTTON_OPEN			10 // Digital Input
+#define		BUTTON_CLOSE		10	// Digital Input
+#define 	BUTTON_OPEN			11	// Digital Input
 // ouput
-#define STEPPER_ENABLE_PIN  	2  // Digital Output
-#define STEPPER_DIRECTION_PIN	3  // Digital Output
+#define STEPPER_ENABLE_PIN		 2  // Digital Output
+#define STEPPER_DIRECTION_PIN	 3  // Digital Output
 #define STEPPER_STEP_PIN		21  // Digital Output
 
 // analog
