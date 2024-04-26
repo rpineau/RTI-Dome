@@ -381,7 +381,15 @@ int X2Dome::execModalSettingsDialog()
 		nReverseDir = dx->isChecked("needReverse");
 		m_bLogRainStatus = dx->isChecked("checkBox");
 		m_RTIDome.enableRainStatusFile(m_bLogRainStatus);
-		
+#ifdef PLUGIN_DEBUG
+		std::stringstream().swap(sTmpBuf);
+		sTmpBuf << "lowRotBatCutOff = " << std::fixed << std::setprecision(2) << batRotCutOff;
+		m_RTIDome.log( sTmpBuf.str());
+
+		std::stringstream().swap(sTmpBuf);
+		sTmpBuf << "lowShutBatCutOff = " << std::fixed << std::setprecision(2) <<  batShutCutOff;
+		m_RTIDome.log( sTmpBuf.str());
+#endif
 		if(m_bLinked) {
 			m_RTIDome.setDefaultDir(!nReverseDir);
 			m_RTIDome.setHomeAz(dHomeAz);

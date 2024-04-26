@@ -728,10 +728,14 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 	if(m_bCalibrating)
 		return nErr;
 
-	nRotCutOff = dDomeCutOff * 100.0;
-	nShutCutOff = dShutterCutOff * 100.0;
+	nRotCutOff = int(dDomeCutOff * 100.0);
+	nShutCutOff = int(dShutterCutOff * 100.0);
 
 	// Dome
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] nRotCutOff = " << std::dec << nRotCutOff << std::endl;
+	m_sLogFile.flush();
+#endif
 	ssCmd << VOLTS_ROTATOR << nRotCutOff  << "#";
 	nErr = deviceCommand(ssCmd.str(), sResp, VOLTS_ROTATOR);
 	if(nErr) {
@@ -744,12 +748,16 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 
 	if(m_bShutterPresent) {
 		// Shutter
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] nShutCutOff = " << std::dec << nShutCutOff << std::endl;
+		m_sLogFile.flush();
+#endif
 		std::stringstream().swap(ssCmd);
-		ssCmd << VOLTS_SHUTTER << nRotCutOff  << "#";
+		ssCmd << VOLTS_SHUTTER << nShutCutOff  << "#";
 		nErr = deviceCommand(ssCmd.str(), sResp, VOLTS_SHUTTER);
 		if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] dDomeCutOff ERROR = " << sResp << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] dShutterCutOff ERROR = " << sResp << std::endl;
 			m_sLogFile.flush();
 #endif
 			return nErr;
@@ -2600,6 +2608,13 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
 }
 
 #ifdef PLUGIN_DEBUG
+void CRTIDome::log(std::string sLogString)
+{
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [log] " << sLogString << std::endl;
+	m_sLogFile.flush();
+
+}
+
 const std::string CRTIDome::getTimeStamp()
 {
 	time_t     now = time(0);

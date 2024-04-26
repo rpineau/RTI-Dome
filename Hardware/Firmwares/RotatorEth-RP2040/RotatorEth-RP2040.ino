@@ -628,7 +628,7 @@ void checkShuterLowVoltage()
 {
 	bLowShutterVoltage = (RemoteShutter.lowVoltStateOrRaining.equals("L"));
 	if(bLowShutterVoltage) {
-		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge tge shutter battery
+		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge the shutter battery
 		 bParked = true;
 	}
 }
@@ -1110,12 +1110,13 @@ void ProcessCommand(int nSource)
 		case VOLTS_SHUTTER:
 			sTmpString = String(VOLTS_SHUTTER);
 			wirelessMessage = sTmpString;
-			if (hasValue)
-				wirelessMessage += String(value);
-
+			if (hasValue) {
+				wirelessMessage += value;
+				RemoteShutter.voltsCutOff = value.toDouble();
+			}
 			Wireless.print(wirelessMessage + "#");
 			ReceiveWireless();
-			serialMessage = sTmpString + RemoteShutter.volts;
+			serialMessage = sTmpString +  String(RemoteShutter.volts) + "," + String(RemoteShutter.voltsCutOff);
 			break;
 
 		case WATCHDOG_INTERVAL:
@@ -1297,8 +1298,12 @@ void ProcessWireless()
 			break;
 
 		case VOLTS_SHUTTER:
-			if (hasValue)
-				RemoteShutter.volts = value.toDouble();
+			if (hasValue) {
+				String sVolts = value.substring(0,value.indexOf(","));
+				String sVoltsCutOff = value.substring(value.indexOf(",")+1);
+				RemoteShutter.volts = sVolts.toDouble();
+				RemoteShutter.voltsCutOff = sVoltsCutOff.toDouble();
+			}
 			break;
 
 

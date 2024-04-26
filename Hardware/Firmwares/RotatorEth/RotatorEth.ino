@@ -1197,8 +1197,12 @@ void ProcessWireless()
 			break;
 
 		case VOLTS_SHUTTER:
-			if (hasValue)
-				RemoteShutter.volts = value;
+			if (hasValue) {
+				String sVolts = value.substring(0,value.indexOf(","));
+				String sVoltsCutOff = value.substring(value.indexOf(",")+1);
+				RemoteShutter.volts = sVolts.toDouble();
+				RemoteShutter.sVoltsCutOff = sVoltsCutOff.toDouble();
+			}
 			break;
 
 

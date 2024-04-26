@@ -51,7 +51,7 @@
 #define PLUGIN_VERSION      1.34
 #define PLUGIN_ID   1
 
-#define PLUGIN_DEBUG 2
+// #define PLUGIN_DEBUG 2
 
 
 #include "dome_commands.h"
@@ -174,6 +174,9 @@ public:
 
 	int getIPGateway(std::string &IpAddress);
 	int setIPGateway(std::string IpAddress);
+#ifdef PLUGIN_DEBUG
+	void log(std::string sLogString);
+#endif
 
 
 protected:

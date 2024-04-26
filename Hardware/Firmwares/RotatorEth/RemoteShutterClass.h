@@ -25,6 +25,7 @@ public:
 	// ASCOM checks version and if it's blank then shutter doesn't exist
 	String	version = "";
 	String	volts = "";
+	String  sVoltsCutOff = "";
 	String	watchdogInterval = "90"; // set proper default.. just in case.
 	String  panid = "0000";
 	String  lowVoltStateOrRaining = "";

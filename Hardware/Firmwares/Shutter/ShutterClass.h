@@ -392,19 +392,6 @@ void ShutterClass::LoadFromEEProm()
 	byte* data = dueFlashStorage.readAddress(0);
 	memcpy(&m_Config, data, sizeof(Configuration));
 #endif
-
-	DBPrintln("ShutterClass::LoadFromEEProm expected signature          : " + String(EEPROM_SIGNATURE));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.signature          : " + String(m_Config.signature));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.stepsPerStroke     : " + String(m_Config.stepsPerStroke));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.acceleration       : " + String(m_Config.acceleration));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.maxSpeed           : " + String(m_Config.maxSpeed));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.reversed           : " + String(m_Config.reversed?"Yes":"No"));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.cutoffVolts        : " + String(m_Config.cutoffVolts));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.watchdogInterval   : " + String(m_Config.watchdogInterval));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.panid              : 0x" + String(m_Config.panid, HEX));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.bHasDropShutter    : " + String(m_Config.bHasDropShutter?"Yes":"No"));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.bTopShutterOpenFirst   : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
-
 	if (m_Config.signature != EEPROM_SIGNATURE) {
 		SetDefaultConfig();
 		SaveToEEProm();
@@ -420,7 +407,17 @@ void ShutterClass::LoadFromEEProm()
 	if(m_Config.watchdogInterval < MIN_WATCHDOG_INTERVAL)
 		m_Config.watchdogInterval = MIN_WATCHDOG_INTERVAL;
 
-
+	DBPrintln("ShutterClass::LoadFromEEProm expected signature          : " + String(EEPROM_SIGNATURE));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.signature          : " + String(m_Config.signature));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.stepsPerStroke     : " + String(m_Config.stepsPerStroke));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.acceleration       : " + String(m_Config.acceleration));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.maxSpeed           : " + String(m_Config.maxSpeed));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.reversed           : " + String(m_Config.reversed?"Yes":"No"));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.cutoffVolts        : " + String(m_Config.cutoffVolts));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.watchdogInterval   : " + String(m_Config.watchdogInterval));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.panid              : 0x" + String(m_Config.panid, HEX));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.bHasDropShutter    : " + String(m_Config.bHasDropShutter?"Yes":"No"));
+	DBPrintln("ShutterClass::LoadFromEEProm m_Config.bTopShutterOpenFirst   : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
 }
 
 void ShutterClass::SaveToEEProm()

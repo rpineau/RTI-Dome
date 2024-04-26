@@ -1178,6 +1178,16 @@ void doFindHome(Request &req, Response &res)
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
 
+	if(bLowShutterVoltage) {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ErrorNumber"] = 1032;
+		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
@@ -1205,11 +1215,22 @@ void doOpenShutter(Request &req, Response &res)
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
 
+	if(bLowShutterVoltage) {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ErrorNumber"] = 1032;
+		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+
 #ifndef STANDALONE
 	Wireless.print(sTmpString+ "#");
 	ReceiveWireless();
@@ -1359,6 +1380,16 @@ void doGoTo(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.print(sResp);
+		res.flush();
+		return;
+	}
+
+	if(bLowShutterVoltage) {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ErrorNumber"] = 1032;
+		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1529,7 +1560,7 @@ void DomeAlpacaServer::startServer()
 	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
 	mRestServer->begin();
 
-	sRedirectURL = String("http://")+ sLocalIPAdress + String(":") + String(ALPACA_SERVER_PORT) + String("/api/v1/dome/0/setup");
+	sRedirectURL = String("http://")+ sLocalIPAdress + String(":") + String(ALPACA_SERVER_PORT) + String("/setup/v1/dome/0/setup");
 	DBPrintln("Redirect URL for setup : " + sRedirectURL);
 
 	DBPrintln("m_AlpacaRestServer mapping endpoints");
@@ -1541,7 +1572,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("/management/v1/configureddevices", &getConfiguredDevice);
 	m_AlpacaRestServer->get("/management/v1/description", &getDescription);
 
-	m_AlpacaRestServer->use("/api/v1/dome/0/setup", &doSetup);
+	m_AlpacaRestServer->use("/setup/v1/dome/0/setup", &doSetup);
 
 	m_AlpacaRestServer->put("/api/v1/dome/0/action", &doAction);
 	m_AlpacaRestServer->put("/api/v1/dome/0/commandblind", &doCommandBlind);
