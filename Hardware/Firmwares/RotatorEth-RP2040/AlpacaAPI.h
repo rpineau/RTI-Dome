@@ -1002,44 +1002,54 @@ void getShutterStatus(Request &req, Response &res)
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-
+#ifdef STANDALONE
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-
-#ifndef STANDALONE
-	Wireless.print(sTmpString + "#");
-	ReceiveWireless();
-	switch (RemoteShutter.state) {
-		case OPEN:
-			AlpacaResp["Value"] = A_OPEN;
-			break;
-		case CLOSED:
-			AlpacaResp["Value"] = A_CLOSED;
-			break;
-		case ERROR:
-			AlpacaResp["Value"] = A_ERROR;
-			break;
-		case OPENING:
-		case BOTTOM_OPEN:
-		case BOTTOM_OPENING:
-		case FINISHING_OPEN:
-			AlpacaResp["Value"] = A_OPENING;
-			break;
-		case CLOSING:
-		case BOTTOM_CLOSED:
-		case BOTTOM_CLOSING:
-		case FINISHING_CLOSE:
-			AlpacaResp["Value"] = A_CLOSING;
-			break;
-		default:
-			AlpacaResp["Value"] = A_ERROR;
-			break;
-	}
+	AlpacaResp["ErrorNumber"] = 1024;
+	AlpacaResp["ErrorMessage"] = "Not implemented";
 #else
-	AlpacaResp["Value"] = A_OPEN;
+	if(!bShutterPresent) {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		AlpacaResp["ErrorNumber"] = 1035;
+		AlpacaResp["ErrorMessage"] = "Shutter not connected";
+	} else {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		AlpacaResp["ErrorNumber"] = 0;
+		AlpacaResp["ErrorMessage"] = "";
+		Wireless.print(sTmpString + "#");
+		ReceiveWireless();
+		switch (RemoteShutter.state) {
+			case OPEN:
+				AlpacaResp["Value"] = A_OPEN;
+				break;
+			case CLOSED:
+				AlpacaResp["Value"] = A_CLOSED;
+				break;
+			case ERROR:
+				AlpacaResp["Value"] = A_ERROR;
+				break;
+			case OPENING:
+			case BOTTOM_OPEN:
+			case BOTTOM_OPENING:
+			case FINISHING_OPEN:
+				AlpacaResp["Value"] = A_OPENING;
+				break;
+			case CLOSING:
+			case BOTTOM_CLOSED:
+			case BOTTOM_CLOSING:
+			case FINISHING_CLOSE:
+				AlpacaResp["Value"] = A_CLOSING;
+				break;
+			default:
+				AlpacaResp["Value"] = A_ERROR;
+				break;
+		}
+	}
 #endif
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -1147,16 +1157,30 @@ void doCloseShutter(Request &req, Response &res)
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-
+#ifdef STANDALONE
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["ErrorNumber"] = 1024;
+	AlpacaResp["ErrorMessage"] = "Not implemented";
+#else
+	if(!bShutterPresent) {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		AlpacaResp["ErrorNumber"] = 1035;
+		AlpacaResp["ErrorMessage"] = "Shutter not connected";
+	}
+	else {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		AlpacaResp["ErrorNumber"] = 0;
+		AlpacaResp["ErrorMessage"] = "";
 
-#ifndef STANDALONE
-	Wireless.print(sTmpString+ "#");
-	ReceiveWireless();
+		Wireless.print(sTmpString+ "#");
+		ReceiveWireless();
+	}
 #endif
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -1214,8 +1238,21 @@ void doOpenShutter(Request &req, Response &res)
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-
-	if(bLowShutterVoltage) {
+#ifdef STANDALONE
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	AlpacaResp["ErrorNumber"] = 1024;
+	AlpacaResp["ErrorMessage"] = "Not implemented";
+#else
+	if(!bShutterPresent) {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		AlpacaResp["ErrorNumber"] = 1035;
+		AlpacaResp["ErrorMessage"] = "Shutter not connected";
+	}
+	else if(bLowShutterVoltage) {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ErrorNumber"] = 1032;
 		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
@@ -1224,16 +1261,16 @@ void doOpenShutter(Request &req, Response &res)
 		res.flush();
 		return;
 	}
+	else {
+		res.set("Content-Type", "application/json");
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		AlpacaResp["ErrorNumber"] = 0;
+		AlpacaResp["ErrorMessage"] = "";
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-
-#ifndef STANDALONE
-	Wireless.print(sTmpString+ "#");
-	ReceiveWireless();
+		Wireless.print(sTmpString+ "#");
+		ReceiveWireless();
+	}
 #endif
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
