@@ -1856,8 +1856,8 @@ void DomeAlpacaServer::startServer()
 void DomeAlpacaServer::checkForRequest()
 {
 	// process incoming connections one at a time
-	EthernetClient client = mRestServer->available();
-	if (client.connected()) {
+	EthernetClient client = mRestServer->accept();
+	if (client) {
 		m_AlpacaRestServer->process(&client);
 		client.stop();
 		nTransactionID++;
