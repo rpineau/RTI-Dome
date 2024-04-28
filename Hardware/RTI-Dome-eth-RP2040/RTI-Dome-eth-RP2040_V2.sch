@@ -22785,7 +22785,8 @@ at 30/07/2012 11:22:31</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -25294,35 +25295,35 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <label x="360.68" y="147.32" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="N$56" class="0">
+<net name="INT_N" class="0">
 <segment>
 <pinref part="IC4" gate="G$1" pin="I2C1_SCL_/ADC1/GP_27"/>
 <wire x1="161.29" y1="40.64" x2="158.75" y2="40.64" width="0.1524" layer="91"/>
 <label x="161.29" y="40.64" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="N$59" class="0">
+<net name="ADC_REF" class="0">
 <segment>
 <pinref part="IC4" gate="G$1" pin="ADC_VREF"/>
 <wire x1="161.29" y1="48.26" x2="158.75" y2="48.26" width="0.1524" layer="91"/>
 <label x="161.29" y="48.26" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="N$60" class="0">
+<net name="3V3_OUT" class="0">
 <segment>
 <pinref part="IC4" gate="G$1" pin="3V3(OUT)"/>
 <wire x1="161.29" y1="50.8" x2="158.75" y2="50.8" width="0.1524" layer="91"/>
 <label x="161.29" y="50.8" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="N$61" class="0">
+<net name="3V3_EN" class="0">
 <segment>
 <pinref part="IC4" gate="G$1" pin="3V3_EN"/>
 <wire x1="161.29" y1="53.34" x2="158.75" y2="53.34" width="0.1524" layer="91"/>
 <label x="161.29" y="53.34" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="N$64" class="0">
+<net name="VBUS" class="0">
 <segment>
 <pinref part="IC4" gate="G$1" pin="VBUS"/>
 <wire x1="161.29" y1="60.96" x2="158.75" y2="60.96" width="0.1524" layer="91"/>

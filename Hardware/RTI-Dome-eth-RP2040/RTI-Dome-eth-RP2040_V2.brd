@@ -4833,7 +4833,8 @@ at 30/07/2012 11:22:31</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -6845,6 +6846,30 @@ design rules under a new name.</description>
 </signal>
 <signal name="INT_N">
 <contactref element="U1" pad="36"/>
+<contactref element="IC4" pad="32"/>
+<wire x1="61.79" y1="39.795" x2="60.96" y2="38.965" width="0.254" layer="1"/>
+<wire x1="60.96" y1="38.965" x2="60.96" y2="38.735" width="0.254" layer="1"/>
+<via x="60.96" y="38.735" extent="1-16" drill="0.35"/>
+<via x="56.515" y="52.705" extent="1-16" drill="0.35"/>
+<wire x1="56.515" y1="57.15" x2="56.515" y2="52.705" width="0.254" layer="1"/>
+<wire x1="56.515" y1="57.15" x2="51.435" y2="62.23" width="0.254" layer="1"/>
+<wire x1="33.655" y1="62.23" x2="33.02" y2="61.595" width="0.254" layer="1"/>
+<wire x1="51.435" y1="62.23" x2="45.50513125" y2="62.23" width="0.254" layer="1"/>
+<wire x1="45.50513125" y1="62.23" x2="45.36573125" y2="62.3694" width="0.254" layer="1"/>
+<wire x1="45.36573125" y1="62.3694" x2="43.53426875" y2="62.3694" width="0.254" layer="1"/>
+<wire x1="43.53426875" y1="62.3694" x2="43.39486875" y2="62.23" width="0.254" layer="1"/>
+<wire x1="43.39486875" y1="62.23" x2="33.655" y2="62.23" width="0.254" layer="1"/>
+<wire x1="33.02" y1="61.595" x2="33.02" y2="57.785" width="0.254" layer="1"/>
+<wire x1="33.02" y1="57.785" x2="32.0294" y2="56.7944" width="0.254" layer="1"/>
+<wire x1="32.0294" y1="56.7944" x2="31.3712375" y2="56.7944" width="0.254" layer="1"/>
+<wire x1="29.1868375" y1="54.61" x2="22.86" y2="54.61" width="0.254" layer="1"/>
+<wire x1="31.3712375" y1="56.7944" x2="29.1868375" y2="54.61" width="0.254" layer="1"/>
+<wire x1="22.86" y1="54.61" x2="21.59" y2="55.88" width="0.254" layer="1"/>
+<wire x1="21.59" y1="55.88" x2="21.59" y2="60.49" width="0.254" layer="1"/>
+<wire x1="60.96" y1="38.735" x2="56.515" y2="38.735" width="0.254" layer="16"/>
+<wire x1="56.515" y1="38.735" x2="55.245" y2="40.005" width="0.254" layer="16"/>
+<wire x1="55.245" y1="40.005" x2="55.245" y2="51.435" width="0.254" layer="16"/>
+<wire x1="55.245" y1="51.435" x2="56.515" y2="52.705" width="0.254" layer="16"/>
 </signal>
 <signal name="N$17">
 <contactref element="U1" pad="26"/>
@@ -7291,19 +7316,16 @@ design rules under a new name.</description>
 <contactref element="X12" pad="2"/>
 <wire x1="91.8464" y1="70.28" x2="91.8464" y2="64.8564" width="1.016" layer="1"/>
 </signal>
-<signal name="N$56">
-<contactref element="IC4" pad="32"/>
-</signal>
-<signal name="N$59">
+<signal name="ADC_REF">
 <contactref element="IC4" pad="35"/>
 </signal>
-<signal name="N$60">
+<signal name="3V3_OUT">
 <contactref element="IC4" pad="36"/>
 </signal>
-<signal name="N$61">
+<signal name="3V3_EN">
 <contactref element="IC4" pad="37"/>
 </signal>
-<signal name="N$64">
+<signal name="VBUS">
 <contactref element="IC4" pad="40"/>
 </signal>
 <signal name="USB_VCC">
