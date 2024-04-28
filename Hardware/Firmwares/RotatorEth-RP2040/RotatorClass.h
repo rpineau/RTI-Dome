@@ -78,7 +78,7 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 
 // used to offset the config location.. at some point.
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
-#define EEPROM_SIGNATURE    2646
+#define EEPROM_SIGNATURE    2648
 
 #define DEFAULT_PANID   0x4242
 
@@ -216,7 +216,6 @@ public:
 	void        setIPSubnet(String ipSubnet);
 	String      getIPGateway();
 	void        setIPGateway(String ipGateway);
-	String      IpAddress2String(const IPAddress& ipAddress);
 #endif // USE_ETHERNET
 
 	std::atomic<int>    nStepperInterruptFreq;
@@ -445,10 +444,10 @@ bool RotatorClass::LoadFromEEProm()
 #endif
 #ifdef USE_ETHERNET
 	DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP));
-	DBPrintln("ipConfig.ip       : " + String(int(m_Config.ipConfig.ip)));
-	DBPrintln("ipConfig.dns      : " + String(int(m_Config.ipConfig.dns)));
-	DBPrintln("ipConfig.gateway  : " + String(int(m_Config.ipConfig.gateway)));
-	DBPrintln("ipConfig.subnet   : " + String(int(m_Config.ipConfig.subnet)));
+	DBPrintln("ipConfig.ip       : " + IpAddress2String(m_Config.ipConfig.ip));
+	DBPrintln("ipConfig.dns      : " + IpAddress2String(m_Config.ipConfig.dns));
+	DBPrintln("ipConfig.gateway  : " + IpAddress2String(m_Config.ipConfig.gateway));
+	DBPrintln("ipConfig.subnet   : " + IpAddress2String(m_Config.ipConfig.subnet));
 #endif
 
 	return response;
@@ -541,10 +540,6 @@ void RotatorClass::setIPGateway(String ipGateway)
 	SaveToEEProm();
 }
 
-String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
-{
-	return String() + ipAddress[0] + "." + ipAddress[1] + "." + ipAddress[2] + "." + ipAddress[3];;
-}
 #endif // USE_ETHERNET
 
 //

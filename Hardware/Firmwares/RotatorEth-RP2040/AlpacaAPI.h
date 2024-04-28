@@ -45,12 +45,19 @@ DomeAlpacaDiscoveryServer::DomeAlpacaDiscoveryServer(int port)
 
 void DomeAlpacaDiscoveryServer::startServer()
 {
+	int nBeginOk = 0;
 	discoveryServer = new EthernetUDP();
 	if(!discoveryServer) {
 		discoveryServer = nullptr;
 		return;
 	}
-	discoveryServer->begin(m_UDPPort);
+	DBPrintln("Binding Alpaca UDP discovery server to " + IpAddress2String(Ethernet.localIP()));
+	nBeginOk =  discoveryServer->begin(m_UDPPort);
+	if(!nBeginOk) {
+		DBPrintln("Error binding UDP Alapca server to  " + IpAddress2String(Ethernet.localIP()) + " on port " + String(m_UDPPort));
+		return;
+	}
+
 	DBPrintln("Alpaca discovery server started on port " + String(m_UDPPort));
 }
 
@@ -62,7 +69,7 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 	String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
 	String sDiscoveryRequest;
 
-	char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
+	char packetBuffer[UDP_TX_PACKET_MAX_SIZE+1];
 	int packetSize = discoveryServer->parsePacket();
 	if (packetSize) {
 		DBPrintln("Alpaca discovery server request");
@@ -117,6 +124,7 @@ void redirectToSetup(Request &req, Response &res)
 	res.set("Location", sRedirectURL.c_str());
     res.sendStatus(302);
 }
+
 void getApiVersion(Request &req, Response &res)
 {
 	JsonDocument AlpacaResp;
@@ -131,9 +139,15 @@ void getApiVersion(Request &req, Response &res)
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
 
 	res.set("Content-Type", "application/json");
+
 	AlpacaResp["Value"][0] = 1;
+
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+
 	serializeJson(AlpacaResp, sResp);
 
 	DBPrintln("sResp : " + sResp);
@@ -149,7 +163,7 @@ void getDescription(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getDescription");
+	DBPrintln("[getDescription]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -160,8 +174,13 @@ void getDescription(Request &req, Response &res)
 	AlpacaResp["Value"]["Manufacturer"]= "RTI-Zone";
 	AlpacaResp["Value"]["ManufacturerVersion"]= VERSION;
 	AlpacaResp["Value"]["Location"]= "Earth";
+
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -176,7 +195,7 @@ void getConfiguredDevice(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getConfiguredDevice");
+	DBPrintln("[getConfiguredDevice]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -187,8 +206,11 @@ void getConfiguredDevice(Request &req, Response &res)
 	AlpacaResp["Value"][0] ["DeviceType"]= "dome";
 	AlpacaResp["Value"][0] ["DeviceNumber"]= 0;
 	AlpacaResp["Value"][0] ["UniqueID"]= uuid;
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -204,7 +226,7 @@ void doAction(Request &req, Response &res)
 	String sAction;
 	String sParameters;
 
-	DBPrintln("doAction");
+	DBPrintln("[doAction]");
 	FormData = formDataToJson(req);
 
 #ifdef DEBUG
@@ -219,6 +241,7 @@ void doAction(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -236,6 +259,11 @@ void doAction(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = "Ok";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -249,8 +277,9 @@ void doCommandBlind(Request &req, Response &res)
 	JsonDocument FormData;
 	String sResp;
 
-	DBPrintln("doCommandBlind");
+	DBPrintln("[doCommandBlind]");
 	FormData = formDataToJson(req);
+
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
 	DBPrintln("FormData : " + sResp);
@@ -263,6 +292,7 @@ void doCommandBlind(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -272,6 +302,11 @@ void doCommandBlind(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -285,7 +320,7 @@ void doCommandBool(Request &req, Response &res)
 	JsonDocument FormData;
 	String sResp;
 
-	DBPrintln("doCommandBool");
+	DBPrintln("[doCommandBool]");
 	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
@@ -299,6 +334,7 @@ void doCommandBool(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -309,6 +345,11 @@ void doCommandBool(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = true;
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -322,7 +363,7 @@ void doCommandString(Request &req, Response &res)
 	JsonDocument FormData;
 	String sResp;
 
-	DBPrintln("doCommandString");
+	DBPrintln("[doCommandString]");
 	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
@@ -336,6 +377,7 @@ void doCommandString(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -346,6 +388,11 @@ void doCommandString(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = "Ok";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -360,7 +407,7 @@ void getConnected(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getConected");
+	DBPrintln("[getConected]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -368,7 +415,10 @@ void getConnected(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = bAlpacaConnected;
@@ -384,10 +434,8 @@ void setConnected(Request &req, Response &res)
 	JsonDocument AlpacaResp;
 	JsonDocument FormData;
 	String sResp;
-	char ClientID[64];
-	char ClientTransactionID[64];
 
-	DBPrintln("setConected");
+	DBPrintln("[setConected]");
 	FormData = formDataToJson(req);
 #ifdef DEBUG
 	serializeJson(FormData, sResp);
@@ -401,6 +449,7 @@ void setConnected(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -412,6 +461,11 @@ void setConnected(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		if(FormData["ClientID"])
+			AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+		if(FormData["ClientTransactionID"])
+			AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -419,12 +473,16 @@ void setConnected(Request &req, Response &res)
 	}
 
 	bAlpacaConnected = (FormData["Connected"] == String("True"));
-#ifdef DEBUG
-		DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("True"):String("False")));
-#endif
+	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("True"):String("False")));
+
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"]) 
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -439,7 +497,7 @@ void getDeviceDescription(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getDeviceDescription");
+	DBPrintln("[getDeviceDescription]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -447,7 +505,8 @@ void getDeviceDescription(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(abs(atoi(ClientTransactionID)));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= "RTI-Zone dome controller";
@@ -465,7 +524,7 @@ void getDriverInfo(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getDriverInfo");
+	DBPrintln("[getDriverInfo]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -473,7 +532,10 @@ void getDriverInfo(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= "RTI-Zone Dome controller";
@@ -491,7 +553,7 @@ void getDriverVersion(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getDriverVersion");
+	DBPrintln("[getDriverVersion]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -499,7 +561,10 @@ void getDriverVersion(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= String(VERSION);
@@ -517,7 +582,7 @@ void getInterfaceVersion(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getInterfaceVersion");
+	DBPrintln("[getInterfaceVersion]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -525,7 +590,10 @@ void getInterfaceVersion(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= 1;
@@ -543,7 +611,7 @@ void getName(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getName");
+	DBPrintln("[getName]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -551,7 +619,10 @@ void getName(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= "RTI-Zone Dome controller";
@@ -569,7 +640,7 @@ void getSupportedActions(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getSupportedActions");
+	DBPrintln("[getSupportedActions]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -616,7 +687,10 @@ void getSupportedActions(Request &req, Response &res)
 	AlpacaResp["Value"].add("SetShutterReverse");
 
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
@@ -634,7 +708,7 @@ void getAltitude(Request &req, Response &res)
 	char ClientTransactionID[64];
 	String sTmpString = String(STATE_SHUTTER);
 
-	DBPrintln("getAltitude");
+	DBPrintln("[getAltitude]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -642,13 +716,16 @@ void getAltitude(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 
-#ifndef STANDALONE
-	Wireless.print(sTmpString + "#");
-	ReceiveWireless();
+#ifdef USE_WIFI
+	shutterClient.print(sTmpString + "#");
+	ReceiveWiFi(shutterClient);
 	switch (RemoteShutter.state ) {
 		case OPEN:
 			AlpacaResp["Value"] = 90.0;
@@ -678,7 +755,7 @@ void geAtHome(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("geAtHome");
+	DBPrintln("[geAtHome]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -686,7 +763,10 @@ void geAtHome(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 
@@ -711,7 +791,7 @@ void geAtPark(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("geAtPark");
+	DBPrintln("[geAtPark]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -719,7 +799,8 @@ void geAtPark(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(abs(atoi(ClientTransactionID)));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 
@@ -744,7 +825,7 @@ void getAzimuth(Request &req, Response &res)
 	char ClientID[64];
 	char ClientTransactionID[64];
 	
-	DBPrintln("getAzimuth");
+	DBPrintln("[getAzimuth]");
 	req.query("ClientID", ClientID, 64);
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
@@ -752,7 +833,10 @@ void getAzimuth(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -780,7 +864,10 @@ void canfindhome(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -808,7 +895,10 @@ void canPark(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -836,7 +926,10 @@ void canSetAltitude(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -864,7 +957,10 @@ void canSetAzimuth(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -892,7 +988,10 @@ void canSetPark(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -920,7 +1019,10 @@ void canSetShutter(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -948,7 +1050,10 @@ void canSlave(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 1024;
 	AlpacaResp["ErrorMessage"] = "Not implemented";
 	
@@ -976,7 +1081,10 @@ void canSyncAzimuth(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	
@@ -1002,27 +1110,36 @@ void getShutterStatus(Request &req, Response &res)
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-#ifdef STANDALONE
+#ifndef USE_WIFI
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 1024;
 	AlpacaResp["ErrorMessage"] = "Not implemented";
 #else
-	if(!bShutterPresent) {
+	if(!nbWiFiClient) {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ServerTransactionID"] = nTransactionID;
-		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		if(strlen(ClientID))
+			AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+		if(strlen(ClientTransactionID))
+			AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 		AlpacaResp["ErrorNumber"] = 1035;
 		AlpacaResp["ErrorMessage"] = "Shutter not connected";
 	} else {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ServerTransactionID"] = nTransactionID;
-		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		if(strlen(ClientID))
+			AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+		if(strlen(ClientTransactionID))
+			AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 		AlpacaResp["ErrorNumber"] = 0;
 		AlpacaResp["ErrorMessage"] = "";
-		Wireless.print(sTmpString + "#");
-		ReceiveWireless();
+		shutterClient.print(sTmpString + "#");
+		ReceiveWiFi(shutterClient);
 		switch (RemoteShutter.state) {
 			case OPEN:
 				AlpacaResp["Value"] = A_OPEN;
@@ -1073,7 +1190,10 @@ void Slaved(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 1024;
 	AlpacaResp["ErrorMessage"] = "Can't slave";
 	serializeJson(AlpacaResp, sResp);
@@ -1098,7 +1218,10 @@ void getSlewing(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 
@@ -1133,7 +1256,10 @@ void doAbort(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	Rotator->Stop();
@@ -1157,29 +1283,36 @@ void doCloseShutter(Request &req, Response &res)
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-#ifdef STANDALONE
+#ifndef USE_WIFI
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 1024;
 	AlpacaResp["ErrorMessage"] = "Not implemented";
 #else
-	if(!bShutterPresent) {
+	if(!nbWiFiClient) {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ServerTransactionID"] = nTransactionID;
-		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		if(strlen(ClientID))
+			AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+		if(strlen(ClientTransactionID))
+			AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 		AlpacaResp["ErrorNumber"] = 1035;
 		AlpacaResp["ErrorMessage"] = "Shutter not connected";
-	}
-	else {
+	} else {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ServerTransactionID"] = nTransactionID;
-		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		if(strlen(ClientID))
+			AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+		if(strlen(ClientTransactionID))
+			AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 		AlpacaResp["ErrorNumber"] = 0;
 		AlpacaResp["ErrorMessage"] = "";
-
-		Wireless.print(sTmpString+ "#");
-		ReceiveWireless();
+		shutterClient.print(sTmpString+ "#");
+		ReceiveWiFi(shutterClient);
 	}
 #endif
 	serializeJson(AlpacaResp, sResp);
@@ -1214,7 +1347,10 @@ void doFindHome(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	Rotator->StartHoming();
@@ -1238,17 +1374,24 @@ void doOpenShutter(Request &req, Response &res)
 	req.query("ClientTransactionID", ClientTransactionID, 64);
 	DBPrintln("ClientID : " + String(ClientID));
 	DBPrintln("ClientTransactionID : " + String(ClientTransactionID));
-#ifdef STANDALONE
+
+#ifndef USE_WIFI
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 1024;
 	AlpacaResp["ErrorMessage"] = "Not implemented";
 #else
-	if(!bShutterPresent) {
+	if(!nbWiFiClient) {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ServerTransactionID"] = nTransactionID;
-		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		if(strlen(ClientID))
+			AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+		if(strlen(ClientTransactionID))
+			AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 		AlpacaResp["ErrorNumber"] = 1035;
 		AlpacaResp["ErrorMessage"] = "Shutter not connected";
 	}
@@ -1259,17 +1402,19 @@ void doOpenShutter(Request &req, Response &res)
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
-		return;
 	}
 	else {
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ServerTransactionID"] = nTransactionID;
-		AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+		if(strlen(ClientID))
+			AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+		if(strlen(ClientTransactionID))
+			AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 		AlpacaResp["ErrorNumber"] = 0;
 		AlpacaResp["ErrorMessage"] = "";
 
-		Wireless.print(sTmpString+ "#");
-		ReceiveWireless();
+		shutterClient.print(sTmpString+ "#");
+		ReceiveWiFi(shutterClient);
 	}
 #endif
 	serializeJson(AlpacaResp, sResp);
@@ -1295,7 +1440,10 @@ void doPark(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	AlpacaResp["ClientTransactionID"] = atoi(ClientTransactionID);
+	if(strlen(ClientID))
+		AlpacaResp["ClientID"] = uint32_t(atoi(ClientID)<0?0:atoi(ClientID));
+	if(strlen(ClientTransactionID))
+		AlpacaResp["ClientTransactionID"] = uint32_t(atoi(ClientTransactionID)<0?0:atoi(ClientTransactionID));
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 
@@ -1332,6 +1480,11 @@ void setPark(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1353,7 +1506,7 @@ void doAltitudeSlew(Request &req, Response &res)
 	DBPrintln("FormData.size() : " + String(FormData.size()));
 	sResp="";
 #endif
-#ifndef STANDALONE
+#ifndef USE_WIFI
 	if(FormData.size()==0){
 		res.set("Content-Type", "application/json");
 		res.sendStatus(400);
@@ -1370,6 +1523,10 @@ void doAltitudeSlew(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid value";
+		if(FormData["ClientID"])
+			AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+		if(FormData["ClientTransactionID"])
+			AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1379,6 +1536,11 @@ void doAltitudeSlew(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1427,6 +1589,11 @@ void doGoTo(Request &req, Response &res)
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ErrorNumber"] = 1032;
 		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		if(FormData["ClientID"])
+			AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+		if(FormData["ClientTransactionID"])
+			AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1438,6 +1605,11 @@ void doGoTo(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		if(FormData["ClientID"])
+			AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+		if(FormData["ClientTransactionID"])
+			AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1449,6 +1621,9 @@ void doGoTo(Request &req, Response &res)
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ErrorNumber"] = 1025;
 		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		if(FormData["ClientTransactionID"])
+			AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1460,6 +1635,11 @@ void doGoTo(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1488,6 +1668,7 @@ void doSyncAzimuth(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1499,6 +1680,11 @@ void doSyncAzimuth(Request &req, Response &res)
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 1025;
 		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		if(FormData["ClientID"])
+			AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+		if(FormData["ClientTransactionID"])
+			AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1510,6 +1696,11 @@ void doSyncAzimuth(Request &req, Response &res)
 		res.set("Content-Type", "application/json");
 		AlpacaResp["ErrorNumber"] = 1025;
 		AlpacaResp["ErrorMessage"] = "Invalid Azimuth";
+		AlpacaResp["ServerTransactionID"] = nTransactionID;
+		if(FormData["ClientID"])
+			AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+		if(FormData["ClientTransactionID"])
+			AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
@@ -1521,6 +1712,11 @@ void doSyncAzimuth(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	if(FormData["ClientID"])
+		AlpacaResp["ClientID"] = uint32_t(FormData["ClientID"]);
+	if(FormData["ClientTransactionID"])
+		AlpacaResp["ClientTransactionID"] = uint32_t(FormData["ClientTransactionID"]);
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1562,7 +1758,6 @@ void doSetup(Request &req, Response &res)
 	res.print(sHTML);
 	res.flush();
 }
-
 
 class DomeAlpacaServer
 {

@@ -64,6 +64,13 @@
 #define XBEE_S1
 // #define XBEE_S2C
 #endif // STANDALONE
+String IpAddress2String(const IPAddress& ipAddress)
+{
+  return String(ipAddress[0]) + String(".") +\
+  String(ipAddress[1]) + String(".") +\
+  String(ipAddress[2]) + String(".") +\
+  String(ipAddress[3])  ; 
+}
 
 #include "RotatorClass.h"
 
@@ -88,7 +95,6 @@ String computerBuffer;
 #ifndef STANDALONE
 
 #define XBEE_RESET  22
-
 #include "RemoteShutterClass.h"
 RemoteShutterClass RemoteShutter;
 String wirelessBuffer;
@@ -401,16 +407,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 		 DBPrintln("NO HARDWARE !!!");
 		return false;
 	}
-#ifdef DEBUG
-	aTmp = Ethernet.localIP();
-	sLocalIPAdress = String(aTmp[0]) + String(".") +
-						String(aTmp[1]) + String(".") +
-						String(aTmp[2]) + String(".") +
-						String(aTmp[3]);
-
-	DBPrintln("IP = " + sLocalIPAdress);
-#endif
-
+	DBPrintln("IP = " + IpAddress2String(Ethernet.localIP()));
 	Ethernet.setRetransmissionCount(3);
 	DBPrintln("Server ready, calling begin()");
 	domeServer.begin();
@@ -930,7 +927,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_ADDRESS) + String(Rotator->getIPAddress());
 			else {
-				serialMessage = String(IP_ADDRESS) + String(Rotator->IpAddress2String(Ethernet.localIP()));
+				serialMessage = String(IP_ADDRESS) + String(IpAddress2String(Ethernet.localIP()));
 			}
 			break;
 
@@ -942,7 +939,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
 			else {
-				serialMessage = String(IP_SUBNET) + String(Rotator->IpAddress2String(Ethernet.subnetMask()));
+				serialMessage = String(IP_SUBNET) + String(IpAddress2String(Ethernet.subnetMask()));
 			}
 			break;
 
@@ -954,7 +951,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_GATEWAY) + String(Rotator->getIPGateway());
 			else {
-				serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(Ethernet.gatewayIP()));
+				serialMessage = String(IP_GATEWAY) + String(IpAddress2String(Ethernet.gatewayIP()));
 			}
 			break;
 #endif // USE_ETHERNET
