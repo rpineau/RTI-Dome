@@ -54,31 +54,17 @@ String IpAddress2String(const IPAddress& ipAddress)
 
 #ifdef USE_ETHERNET
 #pragma message "Ethernet enabled"
-/*
-// edit the places where it's defined to avoid redefinition conflict
-#ifndef __EthernetLinkStatus__
-#define __EthernetLinkStatus__
-enum EthernetLinkStatus {
-    Unknown,
-    LinkON,
-    LinkOFF
-};
-#endif
-*/
 // include and some defines for ethernet connection
 #include <SPI.h>    // RP2040 :  SCK: GP18, COPI/TX: GP19, CIPO/RX: GP16, CS: GP17
-#include <WiFi.h>
 #include <W5500lwIP.h>
-//#include <EthernetClient.h>
-//#include <Ethernet.h>
 #include "EtherMac.h"
 // RP2040 SPI CS
 #define ETHERNET_CS     17
+#define ETHERNET_INT	27
 #define ETHERNET_RESET  20
-Wiznet5500lwIP domeEthernet(ETHERNET_CS);
-// Wiznet5500lwIP domeEthernet(ETHERNET_CS, SPI, 27);
+Wiznet5500lwIP domeEthernet(ETHERNET_CS, SPI, ETHERNET_INT);
 #define EthernetClient WiFiClient
-uint32_t uidBuffer[4];  // Board unique ID (DUE, RP2040)
+uint32_t uidBuffer[4];  // Board unique ID
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 #define SERVER_PORT 2323
 // global variable for the IP config and to check if we detect the ethernet card
