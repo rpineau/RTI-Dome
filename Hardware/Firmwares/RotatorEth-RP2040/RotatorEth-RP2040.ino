@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware.
-// Support RP2040
+// for Raspberry Pi Pico W (RP2040)
 //
 
 // Uncomment #define DEBUG to enable printing debug messages in serial

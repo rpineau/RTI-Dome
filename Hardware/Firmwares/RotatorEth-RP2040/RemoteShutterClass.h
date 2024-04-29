@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware.
-// Support Arduino DUE and RP2040
+// for Raspberry Pi Pico W (RP2040)
 //
 
 class RemoteShutterClass

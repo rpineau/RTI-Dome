@@ -1,29 +1,34 @@
-// Alpaca API prototype functions
+#include <atomic>
+// Alpaca API
+// for Raspberry Pi Pico W (RP2040)
+
 #include <aWOT.h>
 
 #pragma message "Alpaca server enabled"
 
-#define ALPACA_VAR_BUF_LEN 256
-#define ALPACA_OK 0
 
-String sAlpacaDiscovery = "alpacadiscovery1";
 #include <functional>
 #include <WiFiUdp.h>
 #include <ArduinoJson.h>
 // Alpaca REST server
 #include <UUID.h>
 #include <aWOT.h>
-uint32_t nTransactionID;
-UUID uuid;
-#define SERVER_ERROR -1
+
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
-String sRedirectURL;
+#define ALPACA_VAR_BUF_LEN 256
+#define ALPACA_OK 0
+#define DISCOVERY_ERROR -1
 
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 enum AlpacaShutterStates { A_OPEN=0, A_CLOSED, A_OPENING, A_CLOSING,  A_ERROR};
 
+uint32_t nTransactionID;
+UUID uuid;
+String sAlpacaDiscovery = "alpacadiscovery1";
+String sRedirectURL;
 volatile bool bAlpacaConnected = false;
+
 
 class DomeAlpacaDiscoveryServer
 {
@@ -79,7 +84,7 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 		DBPrintln("Alpaca discovery server sDiscoveryRequest : " + sDiscoveryRequest);
 		if(sDiscoveryRequest.indexOf(sAlpacaDiscovery)==-1) {
 			DBPrintln("Alpaca discovery server request error");
-			return SERVER_ERROR; // wrong type of discovery message
+			return DISCOVERY_ERROR; // wrong type of discovery message
 		}
 		DBPrintln("Alpaca discovery server sending response to " +  IpAddress2String(discoveryServer->remoteIP()) + " on port " + String(discoveryServer->remotePort()) +" : '" + sDiscoveryResponse + "'");
 		// send discovery reponse
@@ -89,7 +94,6 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 	}
 	return ALPACA_OK;
 }
-
 
 
 JsonDocument formDataToJson(Request &req)
@@ -143,7 +147,7 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 		if(sClientTransactionId.length())
 			AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
 	}
-	else {
+	else { // this is a PUT, therefore there should be some form data
 		FormData = formDataToJson(req);
 	#ifdef DEBUG
 		String sTmp;
@@ -174,6 +178,7 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 
 	return bPAramOk;
 }
+
 void redirectToSetup(Request &req, Response &res)
 {
 	res.set("Location", sRedirectURL.c_str());
