@@ -78,9 +78,11 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 
 // used to offset the config location.. at some point.
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
-#define EEPROM_SIGNATURE    2648
+#define EEPROM_SIGNATURE    2646
 
 #define DEFAULT_PANID   0x4242
+
+#define WIFI_VAR_LEN 64
 
 #ifdef USE_ETHERNET
 typedef struct IPCONFIG {
@@ -92,6 +94,14 @@ typedef struct IPCONFIG {
 } IPConfig;
 #endif // USE_ETHERNET
 
+#ifdef USE_WIFI
+typedef struct WIFICONFIG {
+	IPAddress       ip;
+	char 			sSSID[WIFI_VAR_LEN];
+	char			sPassword[WIFI_VAR_LEN];
+} WIFIConfig;
+#endif // USE_WIFI
+
 typedef struct RotatorConfiguration {
 	int             signature;
 	long            stepsPerRotation;
@@ -102,12 +112,13 @@ typedef struct RotatorConfiguration {
 	double           parkAzimuth;
 	int             cutOffVolts;
 	int             rainAction;
-#ifndef STANDALONE
-	int             panid;
-#endif // STANDALONE
 #ifdef USE_ETHERNET
 	IPConfig        ipConfig;
 #endif // USE_ETHERNET
+#ifdef USE_WIFI
+	// Use WiFi instead of XBee
+	WIFIConfig		wifiIpConfig;
+#endif
 } Configuration;
 
 
@@ -184,12 +195,6 @@ public:
 
 	int         GetSeekMode();
 
-#ifndef STANDALONE
-	// Xbee
-	String      GetPANID();
-	void        setPANID(const String panID);
-#endif // STANDALONE
-
 	// Homing and Calibration
 	void        StartHoming();
 	void        StartCalibrating();
@@ -216,8 +221,12 @@ public:
 	void        setIPSubnet(String ipSubnet);
 	String      getIPGateway();
 	void        setIPGateway(String ipGateway);
+	String      IpAddress2String(const IPAddress& ipAddress);
 #endif // USE_ETHERNET
 
+#ifdef USE_WIFI
+	void		getWiFiConfig(WIFIConfig &config);
+#endif // USE_WIFI
 	std::atomic<int>    nStepperInterruptFreq;
 private:
 	Configuration   m_Config;
@@ -309,11 +318,6 @@ RotatorClass::RotatorClass()
 	// set pulse width
 	stepper.setMinPulseWidth(MIN_PULSE_WIDTH); // 5uS to test. Default in the source seems to be set to 1 ...
 
-#ifndef STANDALONE
-	if(m_Config.panid <= 0) { // set to default.. there was something bad in eeprom.
-		m_Config.panid = DEFAULT_PANID;
-	}
-#endif // STANDALONE
 	m_bDoEEPromSave = true;
 
 	if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
@@ -426,6 +430,7 @@ bool RotatorClass::LoadFromEEProm()
 #endif
 
 	if (m_Config.signature != EEPROM_SIGNATURE) {
+		DBPrintln("Setting default value for new signature");
 		SetDefaultConfig();
 		SaveToEEProm();
 		response = false;
@@ -439,17 +444,18 @@ bool RotatorClass::LoadFromEEProm()
 	DBPrintln("parkAzimuth       : " + String(m_Config.parkAzimuth));
 	DBPrintln("cutOffVolts       : " + String(m_Config.cutOffVolts));
 	DBPrintln("rainAction        : " + String(m_Config.rainAction));
-#ifndef STANDALONE
-	DBPrintln("panid             : " + String(m_Config.panid, HEX));
-#endif
 #ifdef USE_ETHERNET
-	DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP));
+	DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP?"Yes":"No"));
 	DBPrintln("ipConfig.ip       : " + IpAddress2String(m_Config.ipConfig.ip));
 	DBPrintln("ipConfig.dns      : " + IpAddress2String(m_Config.ipConfig.dns));
 	DBPrintln("ipConfig.gateway  : " + IpAddress2String(m_Config.ipConfig.gateway));
 	DBPrintln("ipConfig.subnet   : " + IpAddress2String(m_Config.ipConfig.subnet));
 #endif
-
+#ifdef USE_WIFI
+	DBPrintln("wifiIpConfig.ip        : " + IpAddress2String(m_Config.wifiIpConfig.ip));
+	DBPrintln("wifiIpConfig.sSSID     : " + String(m_Config.wifiIpConfig.sSSID));
+	DBPrintln("wifiIpConfig.sPassword : " + String(m_Config.wifiIpConfig.sPassword));
+#endif
 	return response;
 }
 
@@ -466,9 +472,6 @@ void RotatorClass::SetDefaultConfig()
 	m_Config.parkAzimuth = 0;
 	m_Config.cutOffVolts = 1150;
 	m_Config.rainAction = DO_NOTHING;
-#ifndef STANDALONE
-	m_Config.panid = DEFAULT_PANID;
-#endif // STANDALONE
 #ifdef USE_ETHERNET
 	m_Config.ipConfig.bUseDHCP = true;
 	m_Config.ipConfig.ip.fromString("192.168.0.99");
@@ -476,6 +479,11 @@ void RotatorClass::SetDefaultConfig()
 	m_Config.ipConfig.gateway.fromString("192.168.0.1");
 	m_Config.ipConfig.subnet.fromString("255.255.255.0");
 #endif // USE_ETHERNET
+#ifdef USE_WIFI
+	m_Config.wifiIpConfig.ip.fromString("172.31.255.1");
+	strncpy(m_Config.wifiIpConfig.sSSID,"RTIShutter", WIFI_VAR_LEN);
+	strncpy(m_Config.wifiIpConfig.sPassword,"RTIShutter", WIFI_VAR_LEN);
+#endif
 }
 
 #ifdef USE_ETHERNET
@@ -540,8 +548,20 @@ void RotatorClass::setIPGateway(String ipGateway)
 	SaveToEEProm();
 }
 
+String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
+{
+	return String() + ipAddress[0] + "." + ipAddress[1] + "." + ipAddress[2] + "." + ipAddress[3];;
+}
 #endif // USE_ETHERNET
 
+#ifdef USE_WIFI
+void RotatorClass::getWiFiConfig(WIFIConfig &config)
+{
+	config.ip = m_Config.wifiIpConfig.ip;
+	strncpy(config.sSSID, m_Config.wifiIpConfig.sSSID, WIFI_VAR_LEN);
+	strncpy(config.sPassword, m_Config.wifiIpConfig.sPassword, WIFI_VAR_LEN);
+}
+#endif
 //
 // rain sensor methods
 //
@@ -788,24 +808,6 @@ int RotatorClass::GetSeekMode()
 {
 	return m_seekMode;
 }
-
-//
-// Xbee
-//
-#ifndef STANDALONE
-String RotatorClass::GetPANID()
-{
-	return String(m_Config.panid, HEX);
-}
-
-
-void RotatorClass::setPANID(const String panID)
-{
-	m_Config.panid = strtol(panID.c_str(), 0, 16);
-	SaveToEEProm();
-}
-
-#endif // STANDALONE
 
 
 //

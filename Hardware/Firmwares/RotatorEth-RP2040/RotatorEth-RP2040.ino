@@ -1,6 +1,6 @@
 //
 // RTI-Zone Dome Rotator firmware.
-// Support Arduino DUE and RP2040
+// Support RP2040
 //
 
 // Uncomment #define DEBUG to enable printing debug messages in serial
@@ -13,13 +13,6 @@
 #define DebugPort Serial    // Programming port
 #endif
 
-// if uncommented, STANDALONE will disable all code related to the XBee and the shutter.
-// This us useful for people who only want to automate the rotation.
-
-// #define STANDALONE
-#ifdef STANDALONE
-#pragma message "Standalone mode, no shutter code"
-#endif // STANDALONE
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -33,7 +26,6 @@
 #define DBPrintHex(x)
 #endif // DEBUG
 
-
 #define MAX_TIMEOUT 10
 
 #define VERSION "2.645"
@@ -41,29 +33,16 @@
 #define USE_EXT_EEPROM
 #define USE_ETHERNET
 #define USE_ALPACA
+#define USE_WIFI
 
-#ifdef USE_ETHERNET
-#pragma message "Ethernet enabled"
-// include and some defines for ethernet connection
-#include <SPI.h>    // RP2040 :  SCK: GP18, COPI/TX: GP19, CIPO/RX: GP16, CS: GP17
-#include <EthernetClient.h>
-#include <Ethernet.h>
-#include "EtherMac.h"
-#endif // USE_ETHERNET
+// if uncommented, USE_WIFI will enable all code related to the shutter over WiFi.
+// This is useful for people who only want to automate the rotation.
+#ifdef USE_WIFI
+#pragma message "Local WiFi shutter enable"
+#endif
 
 #define Computer Serial2     // USB FTDI
-
 #define FTDI_RESET  28
-
-#ifndef STANDALONE
-#define Wireless Serial1    // XBEE Serial1 on pin 18/19 for Arduino DUE , or 0/1 on RP2040
-// The Xbee S1 were the original one used on the NexDome controller.
-// I have since tested with a pair of S2C that are easier to find and
-// fix the Xbee init command to make it work.
-// Also the XBee3 model XB3-24Z8PT-J work as the S1
-#define XBEE_S1
-// #define XBEE_S2C
-#endif // STANDALONE
 String IpAddress2String(const IPAddress& ipAddress)
 {
   return String(ipAddress[0]) + String(".") +\
@@ -71,38 +50,49 @@ String IpAddress2String(const IPAddress& ipAddress)
   String(ipAddress[2]) + String(".") +\
   String(ipAddress[3])  ; 
 }
-
 #include "RotatorClass.h"
 
 #ifdef USE_ETHERNET
-// RP2040 SPI
+#pragma message "Ethernet enabled"
+// include and some defines for ethernet connection
+#include <SPI.h>    // RP2040 :  SCK: GP18, COPI/TX: GP19, CIPO/RX: GP16, CS: GP17
+#include <W5500lwIP.h>
+#include "EtherMac.h"
+// RP2040 SPI CS
 #define ETHERNET_CS     17
+#define ETHERNET_INT	27
 #define ETHERNET_RESET  20
-uint32_t uidBuffer[4];  // Board unique ID (DUE, RP2040)
+Wiznet5500lwIP domeEthernet(ETHERNET_CS, SPI, ETHERNET_INT);
+#define EthernetClient WiFiClient
+uint32_t uidBuffer[4];  // Board unique ID
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
-
 #define SERVER_PORT 2323
-EthernetServer domeServer(SERVER_PORT);
+// global variable for the IP config and to check if we detect the ethernet card
+std::atomic<bool> ethernetPresent;
+IPConfig ServerConfig;
+WiFiServer *domeServer = nullptr;
 EthernetClient domeClient;
 int nbEthernetClient;
 String networkBuffer;
 String sLocalIPAdress;
 #endif // USE_ETHERNET
 
-String computerBuffer;
-
-
-#ifndef STANDALONE
-
-#define XBEE_RESET  22
+#ifdef USE_WIFI
 #include "RemoteShutterClass.h"
 RemoteShutterClass RemoteShutter;
-String wirelessBuffer;
-bool XbeeStarted, sentHello, isConfiguringWireless, gotHelloFromShutter;
-int configStep = 0;
-bool isResetingXbee = false;
-int XbeeResets = 0;
-#endif // STANDALONE
+#include <WiFi.h>
+#define SHUTTER_PORT 2424
+std::atomic<bool> wifiPresent;
+WIFIConfig wifiConfig;
+WiFiServer *shutterServer = nullptr;
+WiFiClient shutterClient;
+String wifiBuffer;
+int nbWiFiClient;
+String sLocalWifiIPAddress;
+std::atomic<bool> bGotHelloFromShutter;
+#endif
+
+String computerBuffer;
 
 std::atomic<bool> core0Ready = false;
 
@@ -110,39 +100,18 @@ bool bParked = false; // use to the run check doesn't continuously try to park
 
 RotatorClass *Rotator = NULL;
 
-//
-// XBee init AT commands
-///
-#ifndef STANDALONE
-#if defined(XBEE_S1)
-#define NB_AT_OK  17
-/// ATAC,CE1,ID4242,CH0C,MY0,DH0,DLFFFF,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
-String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATCH0C","ATMY0","ATDH0","ATDLFFFF",
-						"ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
-#endif
-#if defined(XBEE_S2C)
-#define NB_AT_OK  13
-/// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
-String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATDH0","ATDLFFFF",
-						"ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
-#endif
-
-// index in array above where the command is empty.
-// This allows us to change the Pan ID and store it in the EEPROM/Flash
-#define PANID_STEP 4
-
 static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed with command
 
-#define MAX_XBEE_RESET  10
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
-std::atomic<bool> SentHello = false;
+std::atomic<bool> bSentHello = false;
 
+#ifdef USE_WIFI
 // Timer to periodically ping the shutter
 StopWatch PingTimer;
 StopWatch ShutterWatchdog;
-#endif // STANDALONE
+#endif
 
 std::atomic<bool> bShutterPresent = false;
 // global variable for rain status
@@ -151,9 +120,6 @@ std::atomic<bool> bIsRaining = false;
 std::atomic<bool> bLowShutterVoltage = false;
 
 #ifdef USE_ETHERNET
-// global variable for the IP config and to check if we detect the ethernet card
-bool ethernetPresent;
-IPConfig ServerConfig;
 #endif // USE_ETHERNET
 
 const char ERR_NO_DATA = -1;
@@ -166,6 +132,11 @@ void configureEthernet();
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
 void checkForNewTCPClient();
 #endif // USE_ETHERNET
+#ifdef USE_WIFI
+void configureWiFi();
+bool initWiFi(IPAddress ip, String sSSID, String sPassword);
+void checkForNewWifiClient();
+#endif
 void homeIntHandler();
 void rainIntHandler();
 void buttonHandler();
@@ -178,17 +149,18 @@ void SendHello();
 void requestShutterData();
 void CheckForCommands();
 void CheckForRain();
-#ifndef STANDALONE
-void checkShuterLowVoltage();
-void PingShutter();
-#endif // STANDALONE
 #ifdef USE_ETHERNET
-void ReceiveNetwork(EthernetClient);
+void ReceiveNetwork(EthernetClient client);
 #endif // USE_ETHERNET
 void ReceiveComputer();
 void ProcessCommand(int nSource);
-void ReceiveWireless();
-void ProcessWireless();
+#ifdef USE_WIFI
+void checkShuterLowVoltage();
+void ReceiveWiFi(WiFiClient client);
+void ProcessWifi();
+void PingWiFiShutter();
+void requestWiFiShutterData();
+#endif
 
 #ifdef USE_ALPACA
 #include "AlpacaAPI.h"
@@ -203,22 +175,16 @@ DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 void setup()
 {
 	core0Ready = false;
-#ifndef STANDALONE
-	// set reset pins to output and low
-	digitalWrite(XBEE_RESET, 0);
-	pinMode(XBEE_RESET, OUTPUT);
-#endif // STANDALONE
 	digitalWrite(FTDI_RESET, 0);
 	pinMode(FTDI_RESET, OUTPUT);
 
 #ifdef USE_ETHERNET
+	domeEthernet.setSPISpeed(30000000);
+	lwipPollingPeriod(3);
 	digitalWrite(ETHERNET_RESET, 0);
 	pinMode(ETHERNET_RESET, OUTPUT);
 #endif // USE_ETHERNET
 
-#ifndef STANDALONE
-	resetChip(XBEE_RESET);
-#endif // STANDALONE
 	resetFTDI(FTDI_RESET);
 
 #ifdef USE_ETHERNET
@@ -233,14 +199,6 @@ void setup()
 
 	Computer.begin(115200);
 
-#ifndef STANDALONE
-	Wireless.begin(9600);
-	PingTimer.reset();
-	XbeeStarted = false;
-	sentHello = false;
-	isConfiguringWireless = false;
-	gotHelloFromShutter = false;
-#endif // STANDALONE
 
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
@@ -251,6 +209,12 @@ void setup()
 	DebugPort.begin(115200);
 	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
+
+#ifdef USE_WIFI
+	bSentHello = false;
+	bGotHelloFromShutter = false;
+	configureWiFi();
+#endif 
 
 #ifdef USE_ETHERNET
 	configureEthernet();
@@ -301,50 +265,33 @@ void loop()
 	}
 #endif // USE_ETHERNET
 
-#ifndef STANDALONE
-	if (!XbeeStarted) {
-		if (!isConfiguringWireless) {
-			DBPrintln("Xbee reconfiguring");
-			StartWirelessConfig();
-			DBPrintln("isConfiguringWireless : " + String(isConfiguringWireless));
-		}
-	}
-#endif // STANDALONE
-#if defined(ARDUINO_SAM_DUE)
-	Rotator->Run();
+#ifdef USE_WIFI
+	if(wifiPresent)
+		checkForNewWifiClient();
 #endif
 	CheckForCommands();
 	CheckForRain();
-#ifndef STANDALONE
-	checkShuterLowVoltage();
-	if(XbeeStarted) {
-		if(ShutterWatchdog.elapsed() > (pingInterval*5) && XbeeResets < MAX_XBEE_RESET) { // try 10 times max
-			// lets try to recover
-			if(!isResetingXbee && XbeeResets < MAX_XBEE_RESET) {
-				DBPrintln("watchdogTimer triggered");
-				DBPrintln("Resetting XBee reset #" + String(XbeeResets));
-				bShutterPresent = false;
-				SentHello = false;
-				XbeeResets++;
-				isResetingXbee = true;
-				resetChip(XBEE_RESET);
-				isConfiguringWireless = false;
-				XbeeStarted = false;
-				configStep = 0;
-				StartWirelessConfig();
-			}
-		}
-		else if(!SentHello && XbeeResets < MAX_XBEE_RESET) // if after 10 reset we didn't get an answer there is no point sending more hello.
-			SendHello();
-		else
-			PingShutter();
 
-		if(gotHelloFromShutter) {
-			requestShutterData();
-			gotHelloFromShutter = false;
+#ifdef USE_WIFI
+	if(wifiPresent) {
+		if(nbWiFiClient)
+			checkShuterLowVoltage();
+		if(ShutterWatchdog.elapsed() > (pingInterval*5)) {
+			// not sure what to do if the shutter has timed out
 		}
+		if(!bSentHello) {
+				SendHello();
+		}
+		else {
+			PingWiFiShutter();
+		}
+		if(bGotHelloFromShutter) {
+			requestWiFiShutterData();
+			bGotHelloFromShutter = false;
+		}
+
 	}
-#endif // STANDALONE
+#endif
 }
 
 //
@@ -361,37 +308,47 @@ void loop1()
 #ifdef USE_ETHERNET
 void configureEthernet()
 {
-	DBPrintln("========== Configureing Ethernet ==========");
-	Rotator->getIpConfig(ServerConfig);
-	ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
-									ServerConfig.ip,
-									ServerConfig.dns,
-									ServerConfig.gateway,
-									ServerConfig.subnet);
+        DBPrintln("========== Configuring Ethernet ==========");
+        Rotator->getIpConfig(ServerConfig);
+        ethernetPresent =  initEthernet(ServerConfig.bUseDHCP,
+										ServerConfig.ip,
+										ServerConfig.dns,
+										ServerConfig.gateway,
+										ServerConfig.subnet);
 }
 
 
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
 {
-	int dhcpOk;
-#ifdef DEBUG
-	IPAddress aTmp;
-#endif
-
+	bool bDhcpOk;
+	int nTimeout = 0;
 	DBPrintln("========== Init Ethernet ==========");
 	resetChip(ETHERNET_RESET);
 	// network configuration
 	nbEthernetClient = 0;
-	Ethernet.init(ETHERNET_CS);
+	// Ethernet.init(ETHERNET_CS);
+	domeEthernet.setHostname("RTI-Dome");
 
 	DBPrintln("========== Setting IP config ==========");
 	// try DHCP if set
 	if(bUseDHCP) {
-		dhcpOk = Ethernet.begin(MAC_Address, 10000, 4000); // short timeout
-		if(!dhcpOk) {
+		domeEthernet.config(INADDR_NONE);
+		bDhcpOk = domeEthernet.begin(MAC_Address);
+		while (domeEthernet.status() == WL_DISCONNECTED) {
+			DBPrintln("Waiting for DHCP");
+			delay(1000);
+			nTimeout++;
+			if(nTimeout>15) { // 15 seconds should be plenty
+				bDhcpOk = false;
+				break;
+			}
+		}
+		if(!bDhcpOk) {
 			DBPrintln("DHCP Failed!");
-			if(Ethernet.linkStatus() == LinkON )
-				Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
+			if(domeEthernet.linkStatus() == LinkON ) {
+				domeEthernet.config(ip, dns, gateway, subnet);
+				domeEthernet.begin(MAC_Address);
+			}
 			else {
 				DBPrintln("No cable");
 				return false;
@@ -399,28 +356,33 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 		}
 	}
 	else {
-		Ethernet.begin(MAC_Address, ip, dns, gateway, subnet);
+		domeEthernet.config(ip, dns, gateway, subnet);
+		domeEthernet.begin(MAC_Address);
 	}
 
 	DBPrintln("========== Checking hardware status ==========");
-	if(Ethernet.hardwareStatus() == EthernetNoHardware) {
+	if(domeEthernet.status() == WL_NO_SHIELD) {
 		 DBPrintln("NO HARDWARE !!!");
 		return false;
 	}
-	DBPrintln("IP = " + IpAddress2String(Ethernet.localIP()));
-	Ethernet.setRetransmissionCount(3);
-	DBPrintln("Server ready, calling begin()");
-	domeServer.begin();
+	DBPrintln("W5500 Ok.");
+
+	DBPrintln("IP = " + IpAddress2String(domeEthernet.localIP()));
+	domeServer = new WiFiServer(domeEthernet.localIP(), SERVER_PORT);
+	domeServer->begin();
+	DBPrintln("Server ready");
 	return true;
 }
 
 
 void checkForNewTCPClient()
 {
-	if(ServerConfig.bUseDHCP)
-		Ethernet.maintain();
-
-	EthernetClient newClient = domeServer.accept();
+	//if(ServerConfig.bUseDHCP)
+	//	domeEthernet.maintain();
+	if(!domeServer)
+		return;
+		
+	EthernetClient newClient = domeServer->accept();
 	if(newClient) {
 		DBPrintln("new client");
 		if(nbEthernetClient > 0) { // we only accept 1 client
@@ -441,11 +403,69 @@ void checkForNewTCPClient()
 		DBPrintln("client disconnected");
 		domeClient.stop();
 		nbEthernetClient--;
-		configureEthernet();
+		// configureEthernet();
 	}
 }
 #endif // USE_ETHERNET
 
+#ifdef USE_WIFI
+void configureWiFi()
+{
+	DBPrintln("========== Configuring WiFi ==========");
+	Rotator->getWiFiConfig(wifiConfig);
+
+	wifiPresent = initWiFi(wifiConfig.ip,
+								String(wifiConfig.sSSID),
+								String(wifiConfig.sPassword));
+}
+
+bool initWiFi(IPAddress ip, String sSSID, String sPassword)
+{
+	WiFi.mode(WIFI_AP);
+	WiFi.setHostname("RTI-Dome");
+	WiFi.config(ip);
+	WiFi.beginAP(sSSID.c_str(), sPassword.c_str());
+	if(WiFi.status() != WL_CONNECTED) {
+		DBPrintln("========== Failed to start WiFi AP ==========");
+		return false;
+	}
+	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
+
+	shutterServer = new WiFiServer(ip,SHUTTER_PORT);
+	shutterServer->begin();
+	return true;
+}
+
+void checkForNewWifiClient()
+{
+	if(!shutterServer)
+		return;
+
+	WiFiClient newClient = shutterServer->accept();
+	if(newClient) {
+		DBPrintln("new WiFi client");
+		if(nbWiFiClient > 0) { // we only accept 1 client
+			newClient.print("Already in use#");
+			newClient.flush();
+			newClient.stop();
+			DBPrintln("new client rejected");
+		}
+		else {
+			nbWiFiClient++;
+			shutterClient = newClient;
+			DBPrintln("new wiFi client accepted");
+			DBPrintln("nb WiFi client = " + String(nbWiFiClient));
+		}
+	}
+
+	if((nbWiFiClient>0) && !shutterClient.connected()) {
+		DBPrintln("WiFi client disconnected");
+		shutterClient.stop();
+		nbWiFiClient--;
+	}
+}
+
+#endif
 void homeIntHandler()
 {
    if(Rotator)
@@ -482,112 +502,60 @@ void resetFTDI(int nPin)
 	digitalWrite(nPin,1);
 }
 
-#ifndef STANDALONE
-void StartWirelessConfig()
-{
-	DBPrintln("Xbee configuration started");
-	delay(1100); // guard time before and after
-	isConfiguringWireless = true;
-	DBPrintln("Sending +++");
-	Wireless.print("+++");
-	delay(1100);
-	ShutterWatchdog.reset();
-	DBPrintln("Xbee +++ sent");
-}
 
-inline void ConfigXBee()
-{
 
-	DBPrintln("Sending ");
-	if ( configStep == PANID_STEP) {
-		String ATCmd = "ATID" + String(Rotator->GetPANID());
-		DBPrintln(ATCmd);
-		Wireless.println(ATCmd);
-		Wireless.flush();
-		configStep++;
-	}
-	else {
-		DBPrintln(ATString[configStep]);
-		Wireless.println(ATString[configStep]);
-		Wireless.flush();
-		configStep++;
-	}
-	if (configStep > NB_AT_OK) {
-		isConfiguringWireless = false;
-		XbeeStarted = true;
-		Rotator->SaveToEEProm();
-		DBPrintln("Xbee configuration finished");
-		while(Wireless.available() > 0) {
-			Wireless.read();
-		}
-		SentHello = false;
-		gotHelloFromShutter = false;
-		isResetingXbee = false;
-	}
-	delay(100);
-}
-
-void setPANID(String value)
-{
-	Rotator->setPANID(value);
-	resetChip(XBEE_RESET);
-	isConfiguringWireless = false;
-	XbeeStarted = false;
-	configStep = 0;
-}
+#ifdef USE_WIFI
 
 void SendHello()
 {
 	DBPrintln("Sending hello");
-	Wireless.print(String(HELLO) + "#");
-	ReceiveWireless();
-	SentHello = true;
+	shutterClient.print(String(HELLO) + "#");
+	ReceiveWiFi(shutterClient);
+	bSentHello = true;
 }
 
-void requestShutterData()
+void requestWiFiShutterData()
 {
-		Wireless.print(String(STATE_SHUTTER) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(STATE_SHUTTER) + "#");
+		ReceiveWiFi(shutterClient);
 
-		Wireless.print(String(VERSION_SHUTTER) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(VERSION_SHUTTER) + "#");
+		ReceiveWiFi(shutterClient);
 
-		Wireless.print(String(REVERSED_SHUTTER) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(REVERSED_SHUTTER) + "#");
+		ReceiveWiFi(shutterClient);
 
-		Wireless.print(String(STEPSPER_SHUTTER) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(STEPSPER_SHUTTER) + "#");
+		ReceiveWiFi(shutterClient);
 
-		Wireless.print(String(SPEED_SHUTTER) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(SPEED_SHUTTER) + "#");
+		ReceiveWiFi(shutterClient);
 
-		Wireless.print(String(ACCELERATION_SHUTTER) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(ACCELERATION_SHUTTER) + "#");
+		ReceiveWiFi(shutterClient);
 
-		Wireless.print(String(VOLTS_SHUTTER) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(VOLTS_SHUTTER) + "#");
+		ReceiveWiFi(shutterClient);
 
-		Wireless.print(String(SHUTTER_PANID) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(SHUTTER_PANID) + "#");
+		ReceiveWiFi(shutterClient);
 }
-
-#endif // STANDALONE
+#endif
 
 void CheckForCommands()
 {
 	ReceiveComputer();
 
-#ifndef STANDALONE
-	if (Wireless.available() > 0) {
-		ReceiveWireless();
-	}
-#endif // STANDALONE
 #ifdef USE_ETHERNET
 	if(ethernetPresent ) {
 		ReceiveNetwork(domeClient);
 	}
-
 #endif // USE_ETHERNET
+#ifdef USE_WIFI
+	if(wifiPresent) {
+		ReceiveWiFi(shutterClient);
+	}
+#endif // USE_WIFI
 }
 
 void CheckForRain()
@@ -595,10 +563,10 @@ void CheckForRain()
 	int nPosition, nParkPos;
 	if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
 		bIsRaining = Rotator->GetRainStatus();
-#ifndef STANDALONE
-		Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
-		ReceiveWireless();
-#endif // STANDALONE
+#ifdef USE_WIFI
+		shutterClient.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+		ReceiveWiFi(shutterClient);
+#endif // USE_WIFI
 	}
 	if (bIsRaining) {
 		if (Rotator->GetRainAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
@@ -613,13 +581,13 @@ void CheckForRain()
 			bParked = true;
 		}
 	// keep telling the shutter that it's raining
-#ifndef STANDALONE
-		Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
-#endif // STANDALONE
+#ifdef USE_WIFI
+		shutterClient.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+#endif // USE_WIFI
 	}
 }
 
-#ifndef STANDALONE
+#ifdef USE_WIFI
 
 void checkShuterLowVoltage()
 {
@@ -630,16 +598,15 @@ void checkShuterLowVoltage()
 	}
 }
 
-void PingShutter()
+void PingWiFiShutter()
 {
 	if(PingTimer.elapsed() >= pingInterval) {
-		Wireless.print(String(SHUTTER_PING) + "#");
-		ReceiveWireless();
+		shutterClient.print(String(SHUTTER_PING) + "#");
+		ReceiveWiFi(shutterClient);
 		PingTimer.reset();
 		}
 }
-#endif // STANDALONE
-
+#endif
 #ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client)
 {
@@ -670,6 +637,37 @@ void ReceiveNetwork(EthernetClient client)
 	}
 }
 #endif // USE_ETHERNET
+
+#ifdef USE_WIFI
+void ReceiveWiFi(WiFiClient client)
+{
+	char networkCharacter;
+
+	if(!client.connected()) {
+		return;
+	}
+
+	if(client.available() < 1)
+		return; // no data
+
+	while(client.available()>0) {
+		networkCharacter = client.read();
+		if (networkCharacter != ERR_NO_DATA) {
+			if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
+				// End of message
+				if (wifiBuffer.length() > 0) {
+					ProcessWifi();
+					wifiBuffer = "";
+					return; // we'll read the next command on the next loop.
+				}
+			}
+			else {
+				wifiBuffer += String(networkCharacter);
+			}
+		}
+	}
+}
+#endif
 
 // All comms are terminated with '#' but the '\r' and '\n' are for XBee config
 void ReceiveComputer()
@@ -706,9 +704,9 @@ void ProcessCommand(int nSource)
 	char command;
 	String value;
 
-#ifndef STANDALONE
-	String wirelessMessage;
-#endif // STANDALONE
+#ifdef USE_WIFI
+	String shutterMessage;
+#endif // USE_WIFI
 	String serialMessage, sTmpString;
 	bool hasValue = false;
 
@@ -734,9 +732,9 @@ void ProcessCommand(int nSource)
 		hasValue = true;
 
 	serialMessage = "";
-#ifndef STANDALONE
-	wirelessMessage = "";
-#endif // STANDALONE
+#ifdef USE_WIFI
+	shutterMessage = "";
+#endif // USE_WIFI
 
 	DBPrintln("\nProcessCommand");
 	DBPrintln("Command = \"" + String(command) +"\"");
@@ -749,11 +747,11 @@ void ProcessCommand(int nSource)
 			sTmpString = String(ABORT);
 			serialMessage = sTmpString;
 			Rotator->Stop();
-#ifndef STANDALONE
-			wirelessMessage = sTmpString;
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
-#endif // STANDALONE
+#ifdef USE_WIFI
+			shutterMessage = sTmpString;
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
+#endif // USE_WIFI
 			break;
 
 		case ACCELERATION_ROTATOR:
@@ -783,12 +781,12 @@ void ProcessCommand(int nSource)
 			DBPrintln("Azimuth : " + String(Rotator->GetAzimuth()));
 			serialMessage = String(GOTO_ROTATOR) + String(Rotator->GetAzimuth());
 			break;
-#ifndef STANDALONE
+#ifdef USE_WIFI
 		case HELLO:
 			SendHello();
 			serialMessage = String(HELLO);
 			break;
-#endif // STANDALONE
+#endif // USE_WIFI
 		case HOME_ROTATOR:
 			Rotator->StartHoming();
 			serialMessage = String(HOME_ROTATOR);
@@ -895,6 +893,10 @@ void ProcessCommand(int nSource)
 				domeClient.stop();
 				nbEthernetClient--;
 			}
+			domeServer->stop();
+			delete domeServer;
+			domeServer = nullptr;
+			domeEthernet.end();
 			configureEthernet();
 			serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
 			break;
@@ -927,7 +929,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_ADDRESS) + String(Rotator->getIPAddress());
 			else {
-				serialMessage = String(IP_ADDRESS) + String(IpAddress2String(Ethernet.localIP()));
+				serialMessage = String(IP_ADDRESS) + String(Rotator->IpAddress2String(domeEthernet.localIP()));
 			}
 			break;
 
@@ -939,7 +941,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
 			else {
-				serialMessage = String(IP_SUBNET) + String(IpAddress2String(Ethernet.subnetMask()));
+				serialMessage = String(IP_SUBNET) + String(Rotator->IpAddress2String(domeEthernet.subnetMask()));
 			}
 			break;
 
@@ -951,47 +953,16 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_GATEWAY) + String(Rotator->getIPGateway());
 			else {
-				serialMessage = String(IP_GATEWAY) + String(IpAddress2String(Ethernet.gatewayIP()));
+				serialMessage = String(IP_GATEWAY) + String(Rotator->IpAddress2String(domeEthernet.gatewayIP()));
 			}
 			break;
 #endif // USE_ETHERNET
 
-#ifndef STANDALONE
-		case INIT_XBEE:
-			sTmpString = String(INIT_XBEE);
-			isConfiguringWireless = false;
-			XbeeStarted = false;
-			configStep = 0;
-			serialMessage = sTmpString;
-			Wireless.print(sTmpString + "#");
-			ReceiveWireless();
-			DBPrintln("trying to reconfigure radio");
-			resetChip(XBEE_RESET);
-			break;
-
-		case PANID:
-			sTmpString = String(PANID);
-			if (hasValue) {
-				RemoteShutter.panid = "0000";
-				wirelessMessage = String(SHUTTER_PANID) + value;
-				Wireless.print(wirelessMessage + "#");
-				setPANID(value); // shutter XBee should be doing the same thing
-			}
-			serialMessage = sTmpString + String(Rotator->GetPANID());
-			break;
-
-		case SHUTTER_PANID:
-			wirelessMessage = String(SHUTTER_PANID);
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
-			serialMessage = String(SHUTTER_PANID) + RemoteShutter.panid ;
-			break;
-
-
+#ifdef USE_WIFI
 		case SHUTTER_PING:
-			wirelessMessage = String(SHUTTER_PING);
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
+			shutterMessage = String(SHUTTER_PING);
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = String(SHUTTER_PING);
 			break;
 
@@ -999,31 +970,31 @@ void ProcessCommand(int nSource)
 			sTmpString = String(ACCELERATION_SHUTTER);
 			if (hasValue) {
 				RemoteShutter.acceleration = value.toInt();
-				wirelessMessage = sTmpString + value;
+				shutterMessage = sTmpString + value;
 			}
 			else {
-				wirelessMessage = sTmpString;
+				shutterMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString + String(RemoteShutter.acceleration);
 			break;
 
 		case CLOSE_SHUTTER:
 			sTmpString = String(CLOSE_SHUTTER);
-			Wireless.print(sTmpString+ "#");
-			ReceiveWireless();
+			shutterClient.print(sTmpString+ "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString;
 			break;
 
 		case SHUTTER_RESTORE_MOTOR_DEFAULT :
 			sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
-			Wireless.print(sTmpString+ "#");
-			ReceiveWireless();
-			Wireless.print(String(SPEED_SHUTTER)+ "#");
-			ReceiveWireless();
-			Wireless.print(String(ACCELERATION_SHUTTER)+ "#");
-			ReceiveWireless();
+			shutterClient.print(sTmpString+ "#");
+			ReceiveWiFi(shutterClient);
+			shutterClient.print(String(SPEED_SHUTTER)+ "#");
+			ReceiveWiFi(shutterClient);
+			shutterClient.print(String(ACCELERATION_SHUTTER)+ "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString;
 			break;
 
@@ -1036,15 +1007,15 @@ void ProcessCommand(int nSource)
 //          else {
 //              wirelessMessage = sTmpString;
 //          }
-//          Wireless.print(wirelessMessage + "#");
-//          ReceiveWireless();
+//          shutterClient.print(wirelessMessage + "#");
+//          ReceiveWiFi(shutterClient);
 //          serialMessage = sTmpString + RemoteShutter.position;
 //          break;
 
 		case OPEN_SHUTTER:
 				sTmpString = String(OPEN_SHUTTER);
-				Wireless.print(sTmpString + "#");
-				ReceiveWireless();
+				shutterClient.print(sTmpString + "#");
+				ReceiveWiFi(shutterClient);
 				serialMessage = sTmpString + RemoteShutter.lowVoltStateOrRaining;
 				break;
 
@@ -1052,13 +1023,13 @@ void ProcessCommand(int nSource)
 			sTmpString = String(REVERSED_SHUTTER);
 			if (hasValue) {
 				RemoteShutter.reversed = value;
-				wirelessMessage = sTmpString + value;
+				shutterMessage = sTmpString + value;
 			}
 			else {
-				wirelessMessage = sTmpString;
+				shutterMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString + RemoteShutter.reversed;
 			break;
 
@@ -1066,20 +1037,20 @@ void ProcessCommand(int nSource)
 			sTmpString = String(SPEED_SHUTTER);
 			if (hasValue) {
 				RemoteShutter.speed = value.toInt();
-				wirelessMessage = sTmpString + String(RemoteShutter.speed);
+				shutterMessage = sTmpString + String(RemoteShutter.speed);
 			}
 			else {
-				wirelessMessage = sTmpString;
+				shutterMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString + RemoteShutter.speed;
 			break;
 
 		case STATE_SHUTTER:
 			sTmpString = String(STATE_SHUTTER);
-			Wireless.print(sTmpString + "#");
-			ReceiveWireless();
+			shutterClient.print(sTmpString + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString + RemoteShutter.state;
 			break;
 
@@ -1087,48 +1058,48 @@ void ProcessCommand(int nSource)
 			sTmpString = String(STEPSPER_SHUTTER);
 			if (hasValue) {
 				RemoteShutter.stepsPerStroke = value.toInt();
-				wirelessMessage = sTmpString + value;
+				shutterMessage = sTmpString + value;
 			}
 			else {
-				wirelessMessage = sTmpString;
+				shutterMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString + String(RemoteShutter.stepsPerStroke);
 			break;
 
 		case VERSION_SHUTTER:
 			sTmpString = String(VERSION_SHUTTER);
-			Wireless.print(sTmpString + "#");
-			ReceiveWireless();
+			shutterClient.print(sTmpString + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString + RemoteShutter.version;
 			break;
 
 		case VOLTS_SHUTTER:
 			sTmpString = String(VOLTS_SHUTTER);
-			wirelessMessage = sTmpString;
+			shutterMessage = sTmpString;
 			if (hasValue) {
-				wirelessMessage += value;
+				shutterMessage += value;
 				RemoteShutter.voltsCutOff = value.toDouble();
 			}
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString +  String(RemoteShutter.volts) + "," + String(RemoteShutter.voltsCutOff);
 			break;
 
 		case WATCHDOG_INTERVAL:
 			sTmpString = String(WATCHDOG_INTERVAL);
 			if (value.length() > 0) {
-				wirelessMessage = sTmpString + value;
+				shutterMessage = sTmpString + value;
 			}
 			else {
-				wirelessMessage = sTmpString;
+				shutterMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
-			ReceiveWireless();
+			shutterClient.print(shutterMessage + "#");
+			ReceiveWiFi(shutterClient);
 			serialMessage = sTmpString + RemoteShutter.watchdogInterval;
 			break;
-#endif // STANDALONE
+#endif // USE_WIFI
 
 		default:
 			serialMessage = "Unknown command:" + String(command);
@@ -1158,94 +1129,22 @@ void ProcessCommand(int nSource)
 	}
 }
 
-
-#ifndef STANDALONE
-
-void ReceiveWireless()
-{
-	int timeout = 0;
-	char wirelessCharacter;
-
-	if (isConfiguringWireless) {
-		DBPrintln("[ReceiveWireless] Configuring XBee");
-		// read the response
-		do {
-			while(Wireless.available() < 1) {
-				delay(1);
-				timeout++;
-				if(timeout >= MAX_TIMEOUT*10) {
-					DBPrintln("[ReceiveWireless] XBee timeout");
-					return;
-					}
-			}
-			wirelessCharacter = Wireless.read();
-			if (wirelessCharacter != ERR_NO_DATA) {
-				if(wirelessCharacter != '\r' && wirelessCharacter != ERR_NO_DATA) {
-					wirelessBuffer += String(wirelessCharacter);
-				}
-			}
-		} while (wirelessCharacter != '\r');
-
-		DBPrintln("[ReceiveWireless] wirelessBuffer = " + wirelessBuffer);
-
-		ConfigXBee();
-		wirelessBuffer = "";
-		return;
-	}
-
-	// wait for response
-	timeout = 0;
-	while(Wireless.available() < 1) {
-		delay(5);   // give time to the shutter to reply
-		timeout++;
-		if(timeout >= MAX_TIMEOUT) {
-			return;
-			}
-	}
-
-	// read the response
-	timeout = 0;
-	while(Wireless.available() > 0) {
-		wirelessCharacter = Wireless.read();
-		if (wirelessCharacter != ERR_NO_DATA) {
-			if ( wirelessCharacter == '#') {
-				// End of message
-				if (wirelessBuffer.length() > 0) {
-					ProcessWireless();
-					wirelessBuffer = "";
-					return; // we'll read the next response on the next loop.
-				}
-			}
-			if(wirelessCharacter!=0xFF) {
-				wirelessBuffer += String(wirelessCharacter);
-			}
-		} else {
-			delay(5);   // give time to the shutter to send data as a character takes about 1ms at 9600
-			timeout++;
-		}
-		if(timeout >= MAX_TIMEOUT) {
-			return;
-		}
-	}
-	return;
-}
-
-void ProcessWireless()
+#ifdef USE_WIFI
+void ProcessWifi()
 {
 	char command;
 	bool hasValue = false;
 	String value;
 
-	DBPrintln("<<< Received: '" + wirelessBuffer + "'");
-	command = wirelessBuffer.charAt(0);
-	value = wirelessBuffer.substring(1);
+	DBPrintln("<<< Received: '" + wifiBuffer + "'");
+	command = wifiBuffer.charAt(0);
+	value = wifiBuffer.substring(1);
 	if (value.length() > 0)
 		hasValue = true;
 
 	// we got data so the shutter is alive
 	ShutterWatchdog.reset();
 	bShutterPresent = true;
-	XbeeResets = 0;
 
 	switch (command) {
 		case ACCELERATION_SHUTTER:
@@ -1254,7 +1153,7 @@ void ProcessWireless()
 			break;
 
 		case HELLO:
-			gotHelloFromShutter = true;
+			bGotHelloFromShutter = true;
 			bShutterPresent = true;
 			break;
 
@@ -1264,7 +1163,7 @@ void ProcessWireless()
 			break;
 
 		case RAIN_SHUTTER:
-			Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+			shutterClient.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
 			break;
 
 		case REVERSED_SHUTTER:
@@ -1331,4 +1230,4 @@ void ProcessWireless()
 	}
 
 }
-#endif // STANDALONE
+#endif
