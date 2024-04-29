@@ -1461,6 +1461,8 @@ void getShutterStatus(Request &req, Response &res)
 void Slaved(Request &req, Response &res)
 {
 	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+
 	String sResp;
 	char ClientID[64];
 	char ClientTransactionID[64];
@@ -1469,24 +1471,59 @@ void Slaved(Request &req, Response &res)
 
 	DBPrintln("[ ********** Slaved ********** ]");
 	DBPrintln("req.query() : " + String(req.query()));
-	req.query("ClientID", ClientID, 64);
-	req.query("ClientTransactionID", ClientTransactionID, 64);
 
-	sClientId=String(ClientID);
-	sClientId.trim();
-	sClientTransactionId=String(ClientTransactionID);
-	sClientTransactionId.trim();
+	AlpacaResp["ServerTransactionID"] = nTransactionID;
 
-	DBPrintln("sClientId : " + sClientId);
-	DBPrintln("sClientTransactionId : " + sClientTransactionId);
+	if(req.method() == Request::GET) {
+		req.query("ClientID", ClientID, 64);
+		req.query("ClientTransactionID", ClientTransactionID, 64);
+
+		sClientId=String(ClientID);
+		sClientId.trim();
+		sClientTransactionId=String(ClientTransactionID);
+		sClientTransactionId.trim();
+
+		DBPrintln("sClientId : " + sClientId);
+		DBPrintln("sClientTransactionId : " + sClientTransactionId);
+		if(sClientId.length())
+			AlpacaResp["ClientID"] = sClientId.toInt()<0?-(sClientId.toInt()):sClientId.toInt();
+		if(sClientTransactionId.length())
+			AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
+	}
+	else {
+		FormData = formDataToJson(req);
+	#ifdef DEBUG
+		serializeJson(FormData, sResp);
+		DBPrintln("FormData : " + sResp);
+		DBPrintln("FormData.size() : " + String(FormData.size()));
+		sResp="";
+	#endif
+
+		if(FormData.size()==0){
+			res.set("Content-Type", "application/json");
+			res.sendStatus(400);
+			AlpacaResp["ErrorNumber"] = 400;
+			AlpacaResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(AlpacaResp, sResp);
+			res.print(sResp);
+			res.flush();
+			return;
+		}
+		if(FormData["ClientID"]) {
+			sClientId = String(FormData["ClientID"]);
+			sClientId.trim();
+			AlpacaResp["ClientID"] = sClientId.toInt()<0?-(sClientId.toInt()):sClientId.toInt();
+		}
+		if(FormData["ClientTransactionID"]) {
+			sClientTransactionId = String(FormData["ClientTransactionID"]);
+			sClientTransactionId.trim();
+			AlpacaResp["ClientID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
+		}
+
+	}
+
 
 	res.set("Content-Type", "application/json");
-	AlpacaResp["ServerTransactionID"] = nTransactionID;
-	if(sClientId.length())
-		AlpacaResp["ClientID"] = sClientId.toInt()<0?-(sClientId.toInt()):sClientId.toInt();
-	if(sClientTransactionId.length())
-		AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
-
 	AlpacaResp["ErrorNumber"] = 1024;
 	AlpacaResp["ErrorMessage"] = "Can't slave";
 	serializeJson(AlpacaResp, sResp);
