@@ -121,7 +121,6 @@ JsonDocument formDataToJson(Request &req)
 	}
 	return FormData;
 }
-
 bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 {
 	char ClientID[64];
@@ -149,13 +148,6 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 	}
 	else { // this is a PUT, therefore there should be some form data
 		FormData = formDataToJson(req);
-	#ifdef DEBUG
-		String sTmp;
-		serializeJson(FormData, sTmp);
-		DBPrintln("FormData : " + sTmp);
-		DBPrintln("FormData.size() : " + String(FormData.size()));
-	#endif
-
 		if(FormData.size()==0){
 			bPAramOk = false;
 		}
@@ -172,6 +164,13 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 			}
 		}
 	}
+
+	#ifdef DEBUG
+		String sTmp;
+		serializeJson(FormData, sTmp);
+		DBPrintln("FormData : " + sTmp);
+		DBPrintln("FormData.size() : " + String(FormData.size()));
+	#endif
 
 	DBPrintln("sClientId : " + sClientId);
 	DBPrintln("sClientTransactionId : " + sClientTransactionId);
@@ -442,13 +441,16 @@ void setConnected(Request &req, Response &res)
 	if(!FormData["Connected"]) {
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		AlpacaResp["ErrorMessage"] = "Invalid parameters, missing 'Connected'";
 		serializeJson(AlpacaResp, sResp);
 		res.print(sResp);
 		res.flush();
 		return;
 	}
-	if(FormData["Connected"] != String("True") && FormData["Connected"] != String("False")) {
+	if(FormData["Connected"] != String("true") &&
+		FormData["Connected"] != String("True") &&
+		FormData["Connected"] != String("false") &&
+		FormData["Connected"] != String("False")) {
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
@@ -458,8 +460,8 @@ void setConnected(Request &req, Response &res)
 		return;
 	}
 
-	bAlpacaConnected = (FormData["Connected"] == String("True"));
-	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("True"):String("False")));
+	bAlpacaConnected = (FormData["Connected"] == String("true"));
+	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
 
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
