@@ -128,7 +128,7 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 	String sClientId;
 	String sClientTransactionId;
 
-	bool bPAramOk = true;
+	bool bParamOk = true;
 
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 
@@ -149,7 +149,7 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 	else { // this is a PUT, therefore there should be some form data
 		FormData = formDataToJson(req);
 		if(FormData.size()==0){
-			bPAramOk = false;
+			bParamOk = false;
 		}
 		else {
 			if(FormData["ClientID"]) {
@@ -163,19 +163,19 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 				AlpacaResp["ClientID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
 			}
 		}
-	}
-
-	#ifdef DEBUG
+#ifdef DEBUG
 		String sTmp;
 		serializeJson(FormData, sTmp);
 		DBPrintln("FormData : " + sTmp);
 		DBPrintln("FormData.size() : " + String(FormData.size()));
-	#endif
+#endif
+	}
 
+	DBPrintln("bParamOk : " + String(bParamOk?"Ok":"Error"));
 	DBPrintln("sClientId : " + sClientId);
 	DBPrintln("sClientTransactionId : " + sClientTransactionId);
 
-	return bPAramOk;
+	return bParamOk;
 }
 
 void redirectToSetup(Request &req, Response &res)
