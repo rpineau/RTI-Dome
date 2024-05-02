@@ -7,8 +7,6 @@
 
 #include <atomic>
 
-#ifdef USE_EXT_EEPROM
-
 #include <extEEPROM.h>
 #include <Wire.h>
 
@@ -17,13 +15,10 @@
 #define EEPROM_ADDR 0x50
 #define I2C_CHUNK_SIZE  8
 
-#endif // USE_EXT_EEPROM
-
+#define WIFI_VAR_LEN 64
 
 #include <AccelStepper.h>
 #include "StopWatch.h"
-
-#define DEFAULT_PANID   0x4242
 
 //
 // RP2040 boards
@@ -62,6 +57,12 @@
 // ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
 // TB6600 tepper controller min pulse width = 5uS
 #define MIN_PULSE_WIDTH 5
+typedef struct WIFICONFIG {
+	IPAddress       ip;
+	char 			sSSID[WIFI_VAR_LEN];
+	char			sPassword[WIFI_VAR_LEN];
+} WIFIConfig;
+
 
 typedef struct ShutterConfiguration {
 	int             signature;
@@ -71,9 +72,9 @@ typedef struct ShutterConfiguration {
 	bool            reversed;
 	int             cutoffVolts;
 	unsigned long   watchdogInterval;
-	int             panid;
 	bool            bHasDropShutter;
 	bool            bTopShutterOpenFirst;
+	WIFIConfig		wifiIpConfig;
 } Configuration;
 
 
@@ -81,9 +82,8 @@ AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_P
 
 // All possible Shutter state, including option got a dropout
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
-volatile ShutterStates shutterState = ERROR;
+std::atomic<ShutterStates> shutterState = ERROR;
 
-StopWatch watchdogTimer;
 StopWatch buttonStopTimer;
 
 
@@ -124,34 +124,32 @@ public:
 	String      GetVoltString();
 	void        SetVoltsFromString(const String);
 
-	String      GetPANID();
-	void        setPANID(const String panID);
-
 	unsigned long   getWatchdogInterval();
 	void            SetWatchdogInterval(const unsigned long);
 
 	// Move
-	void        DoButtons();
-	void        EnableMotor(const bool);
-	void        Open();
-	void        Close();
-	void        Run();
-	static void motorStop();
-	void        motorMoveTo(const long newPosition);
-	void        motorMoveRelative(const long amount);
+	void		DoButtons();
+	void		EnableMotor(const bool);
+	void		Open();
+	void		Close();
+	void		Run();
+	static void	motorStop();
+	void		motorMoveTo(const long newPosition);
+	void		motorMoveRelative(const long amount);
 
 	// persistent data
-	void        LoadFromEEProm();
-	void        SaveToEEProm();
-	void        restoreDefaultMotorSettings();
+	void		LoadFromEEProm();
+	void		SaveToEEProm();
+	void		restoreDefaultMotorSettings();
 
 	// interrupts
-	void     ClosedInterrupt();
-	void     OpenInterrupt();
-	volatile bool     m_bButtonUsed;
+	void		ClosedInterrupt();
+	void		OpenInterrupt();
+	std::atomic<bool>     m_bButtonUsed;
 
-	void    Abort();
+	void    	Abort();
 
+	void		getWiFiConfig(WIFIConfig &config);
 private:
 
 	Configuration   m_Config;
@@ -271,9 +269,11 @@ void ShutterClass::SetDefaultConfig()
 	m_Config.reversed = false;
 	m_Config.cutoffVolts = 1150;
 	m_Config.watchdogInterval = 90000;
-	m_Config.panid = DEFAULT_PANID;
 	m_Config.bHasDropShutter = false;
 	m_Config.bTopShutterOpenFirst = true;
+	m_Config.wifiIpConfig.ip.fromString("172.31.255.2"); // rotator is 172.31.255.1
+	strncpy(m_Config.wifiIpConfig.sSSID,"RTIShutter", WIFI_VAR_LEN);
+	strncpy(m_Config.wifiIpConfig.sPassword,"RTIShutter", WIFI_VAR_LEN);
 }
 
 void ShutterClass::restoreDefaultMotorSettings()
@@ -290,28 +290,25 @@ void ShutterClass::restoreDefaultMotorSettings()
 
 void ShutterClass::LoadFromEEProm()
 {
+	DBPrintln("LoadFromEEProm");
 	//  zero the structure so currently unused parts
 	//  dont end up loaded with random garbage
 	memset(&m_Config, 0, sizeof(Configuration));
-#ifdef USE_EXT_EEPROM
 	readEEPROMBuffer(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration) );
 
-#else
-	byte* data = dueFlashStorage.readAddress(0);
-	memcpy(&m_Config, data, sizeof(Configuration));
-#endif
-
-	DBPrintln("ShutterClass::LoadFromEEProm expected signature          : " + String(EEPROM_SIGNATURE));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.signature          : " + String(m_Config.signature));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.stepsPerStroke     : " + String(m_Config.stepsPerStroke));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.acceleration       : " + String(m_Config.acceleration));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.maxSpeed           : " + String(m_Config.maxSpeed));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.reversed           : " + String(m_Config.reversed?"Yes":"No"));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.cutoffVolts        : " + String(m_Config.cutoffVolts));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.watchdogInterval   : " + String(m_Config.watchdogInterval));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.panid              : 0x" + String(m_Config.panid, HEX));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.bHasDropShutter    : " + String(m_Config.bHasDropShutter?"Yes":"No"));
-	DBPrintln("ShutterClass::LoadFromEEProm m_Config.bTopShutterOpenFirst   : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
+	DBPrintln("expected signature            : " + String(EEPROM_SIGNATURE));
+	DBPrintln("m_Config.signature            : " + String(m_Config.signature));
+	DBPrintln("m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
+	DBPrintln("m_Config.acceleration         : " + String(m_Config.acceleration));
+	DBPrintln("m_Config.maxSpeed             : " + String(m_Config.maxSpeed));
+	DBPrintln("m_Config.reversed             : " + String(m_Config.reversed?"Yes":"No"));
+	DBPrintln("m_Config.cutoffVolts          : " + String(m_Config.cutoffVolts));
+	DBPrintln("m_Config.watchdogInterval     : " + String(m_Config.watchdogInterval));
+	DBPrintln("m_Config.bHasDropShutter      : " + String(m_Config.bHasDropShutter?"Yes":"No"));
+	DBPrintln("m_Config.bTopShutterOpenFirst : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
+	DBPrintln("wifiIpConfig.ip               : " + IpAddress2String(m_Config.wifiIpConfig.ip));
+	DBPrintln("wifiIpConfig.sSSID            : " + String(m_Config.wifiIpConfig.sSSID));
+	DBPrintln("wifiIpConfig.sPassword        : " + String(m_Config.wifiIpConfig.sPassword));
 
 	if (m_Config.signature != EEPROM_SIGNATURE) {
 		SetDefaultConfig();
@@ -319,16 +316,10 @@ void ShutterClass::LoadFromEEProm()
 		return;
 	}
 
-	if(m_Config.panid == 0x0000) {// this is not valid, something is wrong
-		m_Config.panid = DEFAULT_PANID;
-		SaveToEEProm();
-	}
 	if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL)
 		m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
 	if(m_Config.watchdogInterval < MIN_WATCHDOG_INTERVAL)
 		m_Config.watchdogInterval = MIN_WATCHDOG_INTERVAL;
-
-
 }
 
 void ShutterClass::SaveToEEProm()
@@ -340,16 +331,15 @@ void ShutterClass::SaveToEEProm()
 
 	m_Config.signature = EEPROM_SIGNATURE;
 
-#ifdef USE_EXT_EEPROM
 	DBPrintln("Saving config to external AT24AA128 eeprom");
 	writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
-#else
-	DBPrintln("Saving config to DUE flash");
-	byte data[sizeof(Configuration)];
-	memcpy(data, &m_Config, sizeof(Configuration));
-	dueFlashStorage.write(0, data, sizeof(Configuration));
-#endif
+}
 
+void ShutterClass::getWiFiConfig(WIFIConfig &config)
+{
+	config.ip = m_Config.wifiIpConfig.ip;
+	strncpy(config.sSSID, m_Config.wifiIpConfig.sSSID, WIFI_VAR_LEN);
+	strncpy(config.sPassword, m_Config.wifiIpConfig.sPassword, WIFI_VAR_LEN);
 }
 
 float ShutterClass::PositionToAltitude(const long pos)
@@ -502,22 +492,6 @@ int ShutterClass::MeasureVoltage()
 	calc = adc * m_fAdcConvert;
 	DBPrintln("ADC volts = " + String(calc/100));
 	return int(calc);
-}
-
-String ShutterClass::GetPANID()
-{
-	return String(m_Config.panid, HEX);
-}
-
-void ShutterClass::setPANID(const String panID)
-{
-	int newPanID = int(strtol(panID.c_str(), 0, 16));
-	if(newPanID == 0)
-		m_Config.panid = DEFAULT_PANID;
-	else
-		m_Config.panid = newPanID;
-
-	SaveToEEProm();
 }
 
 
@@ -704,7 +678,6 @@ void ShutterClass::motorMoveRelative(const long amount)
 
 
 
-#ifdef USE_EXT_EEPROM
 
 //
 // EEProm code to access the AT24AA128 I2C eeprom
@@ -809,8 +782,6 @@ void ShutterClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, b
 		DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
 	}
 }
-
-#endif
 
 
 

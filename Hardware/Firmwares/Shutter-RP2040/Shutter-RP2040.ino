@@ -17,24 +17,23 @@
 #endif // DEBUG
 
 
-// The Xbee S1 were the original one used on the NexDome controller.
-// I have since tested with a pair of S2C that are easier to find and
-// fix the Xbee init command to make it work.
-// Also the XBee3 model XB3-24Z8PT-J work as the S1
-#define XBEE_S1
-// #define XBEE_S2C
-
-#define Wireless Serial1    // XBEE
-
 #define ERR_NO_DATA	-1
 #define USE_EXT_EEPROM
+
+String IpAddress2String(const IPAddress& ipAddress)
+{
+  return String(ipAddress[0]) + String(".") +
+  		String(ipAddress[1]) + String(".") +
+		String(ipAddress[2]) + String(".") +
+		String(ipAddress[3]); 
+}
 
 #include "ShutterClass.h"
 
 #ifdef DEBUG
 String serialBuffer;
 #endif
-String wirelessBuffer;
+String wifiBuffer;
 
 const String version = "2.645";
 
@@ -62,60 +61,40 @@ const char INIT_XBEE				= 'x'; // force a ConfigXBee
 const char REVERSED_SHUTTER		= 'Y'; // Get/Set stepper reversed status
 */
 
-#if defined(XBEE_S1)
-#define NB_AT_OK  17
-// ATAC,CE0,ID4242,CH0C,MY1,DH0,DL0,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
-String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATCH0C","ATMY1","ATDH0","ATDL0",
-						"ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
-#endif
-
-#if defined(XBEE_S2C)
-#define NB_AT_OK  14
-/// ATAC,CE1,ID4242,DH0,DLFFFF,PL4,AP0,SM0,BD3,WR,FR,CN
-String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATDH0","ATDL0","ATJV1",
-						"ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
-#endif
-
-
-// index in array above where the command is empty.
-// This allows us to change the Pan ID and store it in the EEPROM/Flash
-#define PANID_STEP 4
-
-#define XBEE_RESET_PIN  8
+#include <WiFi.h>
+#define SHUTTER_PORT 2424
+WIFIConfig wifiConfig;
+void configureWiFi();
+bool initWiFi(IPAddress ip, String sSSID, String sPassword);
+void ReceiveWiFi(WiFiClient client);
+void ProcessWifi();
+WiFiMulti shutterWiFi;
+WiFiClient shutterClient;
+std::atomic<bool> bNeedReconnect = false;
 
 ShutterClass *Shutter = NULL;
 
-int configStep = 0;
-
-std::atomic<bool> XbeeStarted, isConfiguringWireless;
 std::atomic<bool> isRaining = false;
-std::atomic<bool> isResetingXbee = false;
-int XbeeResets = 0;
 std::atomic<bool> needFirstPing = true;
-
 std::atomic<bool> core0Ready = false;
+StopWatch watchdogTimer;
+StopWatch reconnectTimer;
+
 
 void setup()
 {
 	core0Ready = false;
-
-	digitalWrite(XBEE_RESET_PIN, 0);
-	pinMode(XBEE_RESET_PIN, OUTPUT);
+	bNeedReconnect = false;
 
 #ifdef DEBUG
 	DebugPort.begin(115200);
 #endif
-	ResetXbee();
-	Wireless.begin(9600);
-
-	XbeeStarted = false;
-	XbeeResets = 0;
-	isConfiguringWireless = false;
-
 	Shutter = new ShutterClass();
 	watchdogTimer.reset();
+	reconnectTimer.reset();
 	Shutter->motorStop();
 	Shutter->EnableMotor(false);
+	configureWiFi();
 	needFirstPing = true;
 
 	core0Ready = true;
@@ -143,63 +122,26 @@ void setup1()
 
 void loop()
 {
-#ifdef DEBUG
-	if(DebugPort) {
-		if (DebugPort.available() > 0) {
-			ReceiveSerial();
-		}
-	}
-#endif
-
-	if (Wireless.available() > 0)
-		ReceiveWireless();
-
-	if (!XbeeStarted) {
-		if (!isConfiguringWireless) {
-			StartWirelessConfig();
-			needFirstPing = true;
-		}
-	}
-
-	// if we lost 3 pings and had no coms for that long.. reset XBee close if we've already reset the XBee
-	if((watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) && (Shutter->GetState() != CLOSED) && (Shutter->GetState() != CLOSING)) {
-			DBPrintln("watchdogTimer triggered");
-			// lets try to recover
-			if(!isResetingXbee && XbeeResets == 0) {
-				XbeeResets++;
-				isResetingXbee = true;
-				ResetXbee();
-				isConfiguringWireless = false;
-				XbeeStarted = false;
-				configStep = 0;
-				StartWirelessConfig();
-			}
-			else if (!isResetingXbee){
-				// we lost communication with the rotator.. close everything.
-				if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING) {
-					DBPrintln("watchdogTimer triggered.. closing");
-					DBPrintln("watchdogTimer.elapsed() = " + String(watchdogTimer.elapsed()));
-					DBPrintln("Shutter->getWatchdogInterval() = " + String(Shutter->getWatchdogInterval()));
-					Shutter->Close();
-					}
-			}
-		delay(1000);
-	}
-	else if(watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) {
-		// could be the case is the rotator was off for a whille
+	// Check if we lost connection or didn't connect and need to reconnect
+	if((watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3) )|| (bNeedReconnect && reconnectTimer.elapsed() > 30.0)) {
 		watchdogTimer.reset();
+		if(shutterClient.connected()) {
+			shutterClient.stop();
+		}
+		shutterWiFi.clearAPList();
+		configureWiFi();
 		PingRotator();
 		delay(1000);
 	}
 
-	if(needFirstPing && XbeeStarted) {
+	if(needFirstPing) {
 		PingRotator();
 	}
 
 	if(Shutter->m_bButtonUsed)
 		watchdogTimer.reset();
-
-
+	
+	CheckForCommands();
 }
 
 //
@@ -210,6 +152,41 @@ void loop1()
 	Shutter->Run();
 }
 
+// WiFi connection to rotator
+void configureWiFi()
+{
+	DBPrintln("========== Configuring WiFi ==========");
+	Shutter->getWiFiConfig(wifiConfig);
+
+	initWiFi(wifiConfig.ip,
+			String(wifiConfig.sSSID),
+			String(wifiConfig.sPassword));
+}
+
+bool initWiFi(IPAddress ip, String sSSID, String sPassword)
+{
+	WiFi.mode(WIFI_STA);
+	WiFi.setHostname("RTI-Shutter");
+	WiFi.config(ip);
+	shutterWiFi.addAP(sSSID.c_str(), sPassword.c_str());
+	if(shutterWiFi.run()!=WL_CONNECTED) {
+		DBPrintln("========== Failed to start WiFi AP ==========");
+		bNeedReconnect=true;
+		reconnectTimer.reset();
+		return false;
+	}
+	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
+
+	if (!shutterClient.connect("172.31.255.1", SHUTTER_PORT)) {
+		DBPrintln("connection failed");
+		bNeedReconnect=true;
+		return false;
+	}
+	shutterClient.setNoDelay(true);
+	return true;
+}
+
+// interrupt
 void handleClosedInterrupt()
 {
 	Shutter->ClosedInterrupt();
@@ -226,61 +203,7 @@ void handleButtons()
 }
 
 
-void StartWirelessConfig()
-{
-	DBPrintln("Xbee configuration started");
-	delay(1100); // guard time before and after
-	isConfiguringWireless = true;
-	DBPrintln("Sending +++");
-	Wireless.print("+++");
-	delay(1100);
-	watchdogTimer.reset();
-}
 
-inline void ConfigXBee(String result)
-{
-	DBPrint("Sending : ");
-	if ( configStep == PANID_STEP) {
-		String ATCmd = "ATID" + String(Shutter->GetPANID());
-		DBPrintln(ATCmd);
-		Wireless.println(ATCmd);
-		Wireless.flush();
-		configStep++;
-	}
-	else {
-		DBPrintln(ATString[configStep]);
-		Wireless.println(ATString[configStep]);
-		Wireless.flush();
-		configStep++;
-	}
-	if (configStep > NB_AT_OK) {
-		isConfiguringWireless = false;
-		XbeeStarted = true;
-		DBPrintln("Xbee configuration finished");
-
-		isResetingXbee = false;
-		while(Wireless.available() > 0) {
-			Wireless.read();
-		}
-	}
-	delay(100);
-}
-
-void ResetXbee()
-{
-	DBPrintln("Resetting Xbee");
-	digitalWrite(XBEE_RESET_PIN, 0);
-	delay(250);
-	digitalWrite(XBEE_RESET_PIN, 1);
-}
-
-void setPANID(String value)
-{
-	Shutter->setPANID(value);
-	isConfiguringWireless = false;
-	XbeeStarted = false;
-	configStep = 0;
-}
 
 void PingRotator()
 {
@@ -291,83 +214,60 @@ void PingRotator()
 		wirelessMessage += "L"; // low voltage detected
 	}
 
-	Wireless.print(wirelessMessage + "#");
+	shutterClient.print(wirelessMessage + "#");
 	// ask if it's raining
-	Wireless.print( String(RAIN_SHUTTER) + "#");
+	shutterClient.print( String(RAIN_SHUTTER) + "#");
 
 	// say hello :)
-	Wireless.print( String(HELLO) + "#");
+	shutterClient.print( String(HELLO) + "#");
+	shutterClient.flush();
 	needFirstPing = false;
 }
 
-#ifdef DEBUG
-void ReceiveSerial()
+void CheckForCommands()
 {
-	char computerCharacter;
-	if(DebugPort.available() < 1)
+	ReceiveWiFi(shutterClient);
+}
+
+void ReceiveWiFi(WiFiClient client)
+{
+	char networkCharacter;
+
+	if(!client.connected()) {
+		return;
+	}
+
+	if(client.available() < 1)
 		return; // no data
 
-	while(DebugPort.available() > 0 ) {
-		computerCharacter = DebugPort.read();
-		if (computerCharacter != ERR_NO_DATA) {
-			if (computerCharacter == '\r' || computerCharacter == '\n' || computerCharacter == '#') {
-				// End of command
-				if (serialBuffer.length() > 0) {
-					ProcessMessages(serialBuffer);
-					serialBuffer = "";
+	while(client.available()>0) {
+		networkCharacter = client.read();
+		if (networkCharacter != ERR_NO_DATA) {
+			if (networkCharacter == '\r' || networkCharacter == '\n' || networkCharacter == '#') {
+				// End of message
+				if (wifiBuffer.length() > 0) {
+					ProcessWifi();
+					wifiBuffer = "";
 					return; // we'll read the next command on the next loop.
 				}
 			}
 			else {
-				serialBuffer += String(computerCharacter);
+				wifiBuffer += String(networkCharacter);
 			}
 		}
 	}
 }
-#endif
 
-void ReceiveWireless()
+void ProcessWifi()
 {
-	char character;
-	// read as much as possible in one call to ReceiveWireless()
-	while(Wireless.available() > 0) {
-		character = Wireless.read();
-		if (character != ERR_NO_DATA) {
-			watchdogTimer.reset(); // communication are working
-			needFirstPing = false; // if we're getting messages from the rotator we don't need to ping
-			if (character == '\r' || character == '#') {
-				if (wirelessBuffer.length() > 0) {
-					if (isConfiguringWireless) {
-						DBPrint("Configuring XBee");
-						ConfigXBee(wirelessBuffer);
-					}
-					else {
-						ProcessMessages(wirelessBuffer);
-					}
-					wirelessBuffer = "";
-				}
-			}
-			else {
-				wirelessBuffer += String(character);
-			}
-		}
-	} // end while
-}
-
-void ProcessMessages(String buffer)
-{
-	String value, wirelessMessage="";
 	char command;
 	bool hasValue = false;
+	String value;
+	String sRotatorMessage;
 
-	if (buffer.equals("OK")) {
-		DBPrint("Buffer == OK");
-		return;
-	}
-
-	command = buffer.charAt(0);
-	value = buffer.substring(1); // Payload if the command has data.
-
+	DBPrintln("<<< Received: '" + wifiBuffer + "'");
+	command = wifiBuffer.charAt(0);
+	value = wifiBuffer.substring(1);
 	if (value.length() > 0)
 		hasValue = true;
 
@@ -379,14 +279,14 @@ void ProcessMessages(String buffer)
 				DBPrintln("Set acceleration to " + value);
 				Shutter->SetAcceleration(value.toInt());
 			}
-			wirelessMessage = String(ACCELERATION_SHUTTER) + String(Shutter->GetAcceleration());
+			sRotatorMessage = String(ACCELERATION_SHUTTER) + String(Shutter->GetAcceleration());
 			DBPrintln("Acceleration is " + String(Shutter->GetAcceleration()));
 			break;
 
 		case ABORT:
 			DBPrintln("STOP!");
 			Shutter->Abort();
-			wirelessMessage = String(ABORT);
+			sRotatorMessage = String(ABORT);
 			break;
 
 		case CLOSE_SHUTTER:
@@ -394,27 +294,27 @@ void ProcessMessages(String buffer)
 			if (Shutter->GetState() != CLOSED) {
 				Shutter->Close();
 			}
-			wirelessMessage = String(STATE_SHUTTER) + String(Shutter->GetState());
+			sRotatorMessage = String(STATE_SHUTTER) + String(Shutter->GetState());
 			break;
 
 		case HELLO:
 			DBPrintln("Rotator says hello!");
-			wirelessMessage = String(HELLO);
+			sRotatorMessage = String(HELLO);
 			DBPrintln("Sending hello back");
 			break;
 
 		case OPEN_SHUTTER:
 			DBPrintln("Received Open Shutter Command");
 			if (isRaining) {
-				wirelessMessage = "OR"; // (O)pen command (R)ain cancel
+				sRotatorMessage = "OR"; // (O)pen command (R)ain cancel
 				DBPrintln("Raining");
 			}
 			else if (Shutter->GetVoltsAreLow()) {
-				wirelessMessage = "OL"; // (O)pen command (L)ow voltage cancel
+				sRotatorMessage = "OL"; // (O)pen command (L)ow voltage cancel
 				DBPrintln("Voltage Low");
 			}
 			else {
-				wirelessMessage = "O"; // (O)pen command
+				sRotatorMessage = "O"; // (O)pen command
 				if (Shutter->GetState() != OPEN)
 					Shutter->Open();
 			}
@@ -422,8 +322,8 @@ void ProcessMessages(String buffer)
 			break;
 
 		case POSITION_SHUTTER:
-			wirelessMessage = String(POSITION_SHUTTER) + String(Shutter->GetPosition());
-			DBPrintln(wirelessMessage);
+			sRotatorMessage = String(POSITION_SHUTTER) + String(Shutter->GetPosition());
+			DBPrintln(sRotatorMessage);
 			break;
 
 		case WATCHDOG_INTERVAL:
@@ -434,7 +334,7 @@ void ProcessMessages(String buffer)
 			else {
 				DBPrintln("Watchdog interval " + String(Shutter->getWatchdogInterval()) + " ms");
 			}
-			wirelessMessage = String(WATCHDOG_INTERVAL) + String(Shutter->getWatchdogInterval());
+			sRotatorMessage = String(WATCHDOG_INTERVAL) + String(Shutter->getWatchdogInterval());
 			break;
 
 		case RAIN_SHUTTER:
@@ -459,8 +359,8 @@ void ProcessMessages(String buffer)
 				Shutter->SetReversed(value.equals("1"));
 				DBPrintln("Set Reversed to " + value);
 			}
-			wirelessMessage = String(REVERSED_SHUTTER) + String(Shutter->GetReversed());
-			DBPrintln(wirelessMessage);
+			sRotatorMessage = String(REVERSED_SHUTTER) + String(Shutter->GetReversed());
+			DBPrintln(sRotatorMessage);
 			break;
 
 		case SPEED_SHUTTER:
@@ -468,13 +368,13 @@ void ProcessMessages(String buffer)
 				DBPrintln("Set speed to " + value);
 				if (value.toInt() > 0) Shutter->SetMaxSpeed(value.toInt());
 			}
-			wirelessMessage = String(SPEED_SHUTTER) + String(Shutter->GetMaxSpeed());
-			DBPrintln(wirelessMessage);
+			sRotatorMessage = String(SPEED_SHUTTER) + String(Shutter->GetMaxSpeed());
+			DBPrintln(sRotatorMessage);
 			break;
 
 		case STATE_SHUTTER:
-			wirelessMessage = String(STATE_SHUTTER) + String(Shutter->GetState());
-			DBPrintln(wirelessMessage);
+			sRotatorMessage = String(STATE_SHUTTER) + String(Shutter->GetState());
+			DBPrintln(sRotatorMessage);
 			break;
 
 		case STEPSPER_SHUTTER:
@@ -486,12 +386,12 @@ void ProcessMessages(String buffer)
 			else {
 				DBPrintln("Get Steps " + String(Shutter->GetStepsPerStroke()));
 			}
-			wirelessMessage = String(STEPSPER_SHUTTER) + String(Shutter->GetStepsPerStroke());
+			sRotatorMessage = String(STEPSPER_SHUTTER) + String(Shutter->GetStepsPerStroke());
 			break;
 
 		case VERSION_SHUTTER:
-			wirelessMessage = "V" + version;
-			DBPrintln(wirelessMessage);
+			sRotatorMessage = "V" + version;
+			DBPrintln(sRotatorMessage);
 			break;
 
 		case VOLTS_SHUTTER:
@@ -499,58 +399,39 @@ void ProcessMessages(String buffer)
 				Shutter->SetVoltsFromString(value);
 				DBPrintln("Set volts to " + value);
 			}
-			wirelessMessage = "K" + Shutter->GetVoltString();
-			DBPrintln(wirelessMessage);
-			break;
-
-		case INIT_XBEE:
-			isConfiguringWireless = false;
-			XbeeStarted = false;
-			configStep = 0;
-			wirelessMessage = String(INIT_XBEE);
+			sRotatorMessage = "K" + Shutter->GetVoltString();
+			DBPrintln(sRotatorMessage);
 			break;
 
 		case SHUTTER_PING:
-			wirelessMessage = String(SHUTTER_PING);
+			sRotatorMessage = String(SHUTTER_PING);
 			// make sure the rotator knows as soon as possible
 			if (Shutter->GetVoltsAreLow()) {
-				wirelessMessage += "L"; // low voltage detected
+				sRotatorMessage += "L"; // low voltage detected
 			}
 			else if(isRaining) {
-				wirelessMessage += "R"; // Raining
+				sRotatorMessage += "R"; // Raining
 			}
 
 			DBPrintln("Got Ping");
 			watchdogTimer.reset();
-			XbeeResets = 0;
 			break;
 
 		case RESTORE_MOTOR_DEFAULT:
 			DBPrintln("Restore default motor settings");
 			Shutter->restoreDefaultMotorSettings();
-			wirelessMessage = String(RESTORE_MOTOR_DEFAULT);
+			sRotatorMessage = String(RESTORE_MOTOR_DEFAULT);
 			break;
-
-		case PANID:
-			if (hasValue) {
-				wirelessMessage = String(PANID);
-				setPANID(value);
-			}
-			else {
-				wirelessMessage = String(PANID) + Shutter->GetPANID();
-			}
-			DBPrintln("PAN ID '" + String(Shutter->GetPANID()) + "'");
-			break;
-
 
 		default:
 			DBPrintln("Unknown command " + String(command));
 			break;
 	}
 
-	if (wirelessMessage.length() > 0) {
-		DBPrintln(">>> Sending " + wirelessMessage);
-		Wireless.print(wirelessMessage +"#");
+	if (sRotatorMessage.length() > 0 && shutterClient.connected()) {
+		DBPrintln(">>> Sending " + sRotatorMessage);
+		shutterClient.print(sRotatorMessage +"#");
+		shutterClient.flush();
 	}
 }
 

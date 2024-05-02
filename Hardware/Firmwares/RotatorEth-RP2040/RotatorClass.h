@@ -221,7 +221,6 @@ public:
 	void        setIPSubnet(String ipSubnet);
 	String      getIPGateway();
 	void        setIPGateway(String ipGateway);
-	String      IpAddress2String(const IPAddress& ipAddress);
 #endif // USE_ETHERNET
 
 #ifdef USE_WIFI
@@ -548,10 +547,6 @@ void RotatorClass::setIPGateway(String ipGateway)
 	SaveToEEProm();
 }
 
-String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
-{
-	return String() + ipAddress[0] + "." + ipAddress[1] + "." + ipAddress[2] + "." + ipAddress[3];;
-}
 #endif // USE_ETHERNET
 
 #ifdef USE_WIFI
