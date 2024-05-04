@@ -21287,15 +21287,15 @@ Source: AVX .. aphvc.pdf</description>
 <library name="samacsys" urn="urn:adsk.eagle:library:37256869">
 <description>&lt;b&gt;https://eagle.componentsearchengine.com&lt;/b&gt;&lt;p&gt;&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
 <packages>
-<package name="XT60PWM" urn="urn:adsk.eagle:footprint:37256916/3" library_version="42">
+<package name="XT60PWM" urn="urn:adsk.eagle:footprint:37256916/5" library_version="119">
 <description>&lt;b&gt;XT60PW-M-2&lt;/b&gt;&lt;br&gt;
 </description>
 <pad name="1" x="-3.6" y="0" drill="2.7" diameter="4.05"/>
 <pad name="2" x="3.6" y="0" drill="2.7" diameter="4.05"/>
 <pad name="3" x="6.75" y="6" drill="1.8" diameter="2.7"/>
 <pad name="4" x="-6.75" y="6" drill="1.8" diameter="2.7"/>
-<text x="0" y="7.62" size="1.27" layer="25" align="center">&gt;NAME</text>
-<text x="0" y="5.08" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<text x="0" y="6.985" size="1.27" layer="25" rot="R180" align="center">&gt;NAME</text>
+<text x="0" y="4.445" size="1.27" layer="27" rot="R180" align="center">&gt;VALUE</text>
 <text x="3.81" y="2.54" size="1.27" layer="21">+</text>
 <text x="-3.81" y="2.54" size="1.27" layer="21">-</text>
 <wire x1="-8.0675" y1="16.35" x2="8.0675" y2="16.35" width="0.2" layer="21"/>
@@ -21351,7 +21351,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <vertex x="-4.606628125" y="-1.768646875"/>
 </polygon>
 </package>
-<package name="RASPBERRYPIPICO" urn="urn:adsk.eagle:footprint:40546187/5" library_version="108">
+<package name="RASPBERRYPIPICO" urn="urn:adsk.eagle:footprint:40546187/5" library_version="119">
 <description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-9.69" y="24.13" dx="1.6" dy="1.6" layer="1"/>
@@ -21486,9 +21486,110 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <text x="-3.81" y="0" size="0.635" layer="25" rot="R90">&gt;NAME</text>
 <text x="3.175" y="0" size="0.635" layer="27" rot="R90">&gt;VALUE</text>
 </package>
+<package name="EVQP2H02B" urn="urn:adsk.eagle:footprint:44159642/1" library_version="119">
+<description>&lt;b&gt;EVQ-P2H02B-2&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-0.85" y="2.575" dx="1.45" dy="1" layer="1" rot="R90"/>
+<smd name="2" x="0.85" y="2.575" dx="1.45" dy="1" layer="1" rot="R90"/>
+<smd name="3" x="-0.85" y="-2.575" dx="1.45" dy="1" layer="1" rot="R90"/>
+<smd name="4" x="0.85" y="-2.575" dx="1.45" dy="1" layer="1" rot="R90"/>
+<text x="0" y="-4.445" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="4.445" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-1.75" y1="-2.35" x2="1.75" y2="-2.35" width="0.2" layer="51"/>
+<wire x1="1.75" y1="-2.35" x2="1.75" y2="2.35" width="0.2" layer="51"/>
+<wire x1="1.75" y1="2.35" x2="-1.75" y2="2.35" width="0.2" layer="51"/>
+<wire x1="-1.75" y1="2.35" x2="-1.75" y2="-2.35" width="0.2" layer="51"/>
+<wire x1="1.75" y1="1.5" x2="1.75" y2="-1.25" width="0.1" layer="21"/>
+<wire x1="1.75" y1="-1.25" x2="1.75" y2="1.5" width="0.1" layer="21"/>
+<wire x1="-1.75" y1="1.5" x2="-1.75" y2="-1.25" width="0.1" layer="21"/>
+<wire x1="-1.75" y1="-1.25" x2="-1.75" y2="1.5" width="0.1" layer="21"/>
+<wire x1="-1.889" y1="3.115" x2="-1.789" y2="3.115" width="0.2" layer="21" curve="180"/>
+<wire x1="-1.789" y1="3.115" x2="-1.889" y2="3.115" width="0.2" layer="21" curve="180"/>
+<wire x1="-1.889" y1="3.115" x2="-1.789" y2="3.115" width="0.2" layer="21" curve="180"/>
+</package>
+<package name="SOT96P240X115-3N" urn="urn:adsk.eagle:footprint:44159709/1" library_version="121">
+<description>&lt;b&gt;DMG2305UX-7&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-1.1" y="0.96" dx="1.15" dy="0.6" layer="1"/>
+<smd name="2" x="-1.1" y="-0.96" dx="1.15" dy="0.6" layer="1"/>
+<smd name="3" x="1.1" y="0" dx="1.15" dy="0.6" layer="1"/>
+<text x="0" y="2.54" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="-2.54" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-0.65" y1="1.45" x2="0.65" y2="1.45" width="0.1" layer="51"/>
+<wire x1="0.65" y1="1.45" x2="0.65" y2="-1.45" width="0.1" layer="51"/>
+<wire x1="0.65" y1="-1.45" x2="-0.65" y2="-1.45" width="0.1" layer="51"/>
+<wire x1="-0.65" y1="-1.45" x2="-0.65" y2="1.45" width="0.1" layer="51"/>
+<wire x1="-0.65" y1="0.49" x2="0.31" y2="1.45" width="0.1" layer="51"/>
+</package>
+<package name="RASPBERRYPIPICO-W" urn="urn:adsk.eagle:footprint:44159719/1" library_version="123">
+<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-9.69" y="24.13" dx="1.6" dy="1.6" layer="1"/>
+<smd name="2" x="-9.69" y="21.59" dx="1.6" dy="1.6" layer="1"/>
+<smd name="3" x="-9.69" y="19.05" dx="3.2" dy="1.6" layer="1"/>
+<smd name="4" x="-9.69" y="16.51" dx="1.6" dy="1.6" layer="1"/>
+<smd name="5" x="-9.69" y="13.97" dx="1.6" dy="1.6" layer="1"/>
+<smd name="6" x="-9.69" y="11.43" dx="1.6" dy="1.6" layer="1"/>
+<smd name="7" x="-9.69" y="8.89" dx="1.6" dy="1.6" layer="1"/>
+<smd name="8" x="-9.69" y="6.35" dx="3.2" dy="1.6" layer="1"/>
+<smd name="9" x="-9.69" y="3.81" dx="1.6" dy="1.6" layer="1"/>
+<smd name="10" x="-9.69" y="1.27" dx="1.6" dy="1.6" layer="1"/>
+<smd name="11" x="-9.69" y="-1.27" dx="1.6" dy="1.6" layer="1"/>
+<smd name="12" x="-9.69" y="-3.81" dx="1.6" dy="1.6" layer="1"/>
+<smd name="13" x="-9.69" y="-6.35" dx="3.2" dy="1.6" layer="1"/>
+<smd name="14" x="-9.69" y="-8.89" dx="1.6" dy="1.6" layer="1"/>
+<smd name="15" x="-9.69" y="-11.43" dx="1.6" dy="1.6" layer="1"/>
+<smd name="16" x="-9.69" y="-13.97" dx="1.6" dy="1.6" layer="1"/>
+<smd name="17" x="-9.69" y="-16.51" dx="1.6" dy="1.6" layer="1"/>
+<smd name="18" x="-9.69" y="-19.05" dx="3.2" dy="1.6" layer="1"/>
+<smd name="19" x="-9.69" y="-21.59" dx="1.6" dy="1.6" layer="1"/>
+<smd name="20" x="-9.69" y="-24.13" dx="1.6" dy="1.6" layer="1"/>
+<smd name="21" x="9.69" y="-24.13" dx="1.6" dy="1.6" layer="1"/>
+<smd name="22" x="9.69" y="-21.59" dx="1.6" dy="1.6" layer="1"/>
+<smd name="23" x="9.69" y="-19.05" dx="3.2" dy="1.6" layer="1"/>
+<smd name="24" x="9.69" y="-16.51" dx="1.6" dy="1.6" layer="1"/>
+<smd name="25" x="9.69" y="-13.97" dx="1.6" dy="1.6" layer="1"/>
+<smd name="26" x="9.69" y="-11.43" dx="1.6" dy="1.6" layer="1"/>
+<smd name="27" x="9.69" y="-8.89" dx="1.6" dy="1.6" layer="1"/>
+<smd name="28" x="9.69" y="-6.35" dx="3.2" dy="1.6" layer="1"/>
+<smd name="29" x="9.69" y="-3.81" dx="1.6" dy="1.6" layer="1"/>
+<smd name="30" x="9.69" y="-1.27" dx="1.6" dy="1.6" layer="1"/>
+<smd name="31" x="9.69" y="1.27" dx="1.6" dy="1.6" layer="1"/>
+<smd name="32" x="9.69" y="3.81" dx="1.6" dy="1.6" layer="1"/>
+<smd name="33" x="9.69" y="6.35" dx="3.2" dy="1.6" layer="1"/>
+<smd name="34" x="9.69" y="8.89" dx="1.6" dy="1.6" layer="1"/>
+<smd name="35" x="9.69" y="11.43" dx="1.6" dy="1.6" layer="1"/>
+<smd name="36" x="9.69" y="13.97" dx="1.6" dy="1.6" layer="1"/>
+<smd name="37" x="9.69" y="16.51" dx="1.6" dy="1.6" layer="1"/>
+<smd name="38" x="9.69" y="19.05" dx="3.2" dy="1.6" layer="1"/>
+<smd name="39" x="9.69" y="21.59" dx="1.6" dy="1.6" layer="1"/>
+<smd name="40" x="9.69" y="24.13" dx="1.6" dy="1.6" layer="1"/>
+<text x="-5.08" y="0" size="1.27" layer="25" rot="R90" align="center">&gt;NAME</text>
+<text x="3.81" y="0" size="1.27" layer="27" rot="R90" align="center">&gt;VALUE</text>
+<wire x1="-10.5" y1="-25.5" x2="10.5" y2="-25.5" width="0.1" layer="51"/>
+<wire x1="10.5" y1="-25.5" x2="10.5" y2="25.5" width="0.1" layer="51"/>
+<wire x1="10.5" y1="25.5" x2="-10.5" y2="25.5" width="0.1" layer="51"/>
+<wire x1="-10.5" y1="25.5" x2="-10.5" y2="-25.5" width="0.1" layer="51"/>
+<wire x1="-7.455" y1="24.13" x2="-7.355" y2="24.13" width="0.2" layer="21" curve="180"/>
+<wire x1="-7.355" y1="24.13" x2="-7.455" y2="24.13" width="0.2" layer="21" curve="180"/>
+<wire x1="-7.455" y1="24.13" x2="-7.355" y2="24.13" width="0.2" layer="21" curve="180"/>
+<wire x1="-2.54" y1="25.4" x2="-2.54" y2="22.86" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="22.86" x2="3.175" y2="22.86" width="0.127" layer="21"/>
+<wire x1="3.175" y1="22.86" x2="3.175" y2="25.273" width="0.127" layer="21"/>
+<wire x1="3.175" y1="25.273" x2="3.175" y2="25.4" width="0.127" layer="21"/>
+<wire x1="10.414" y1="25.4" x2="-2.54" y2="25.4" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="25.4" x2="-10.414" y2="25.4" width="0.127" layer="21"/>
+<wire x1="-10.414" y1="25.4" x2="-10.414" y2="-25.4" width="0.127" layer="21"/>
+<wire x1="-10.414" y1="-25.4" x2="10.414" y2="-25.4" width="0.127" layer="21"/>
+<wire x1="10.414" y1="-25.4" x2="10.414" y2="25.4" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="25.4" x2="-2.54" y2="22.86" width="0.127" layer="21"/>
+<wire x1="-2.54" y1="22.86" x2="3.175" y2="22.86" width="0.127" layer="21"/>
+<wire x1="3.175" y1="22.86" x2="3.175" y2="25.273" width="0.127" layer="21"/>
+<circle x="-7.62" y="24.13" radius="0.254" width="0.127" layer="21"/>
+</package>
 </packages>
 <packages3d>
-<package3d name="XT60PWM" urn="urn:adsk.eagle:package:37256940/5" type="model" library_version="42">
+<package3d name="XT60PWM" urn="urn:adsk.eagle:package:37256940/7" type="model" library_version="119">
 <description>&lt;b&gt;XT60PW-M-2&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="XT60PWM"/>
@@ -21501,9 +21602,8 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <packageinstance name="UD-10X10_NICHICON"/>
 </packageinstances>
 </package3d>
-<package3d name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:package:40546189/7" type="model" library_version="108">
-<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:package:40546189/7" type="model" library_version="119">
+<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="RASPBERRYPIPICO"/>
 </packageinstances>
@@ -21517,6 +21617,24 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <package3d name="RASPBERRYPIPICOPIN" urn="urn:adsk.eagle:package:40546190/6" type="model" library_version="108">
 <packageinstances>
 <packageinstance name="RASPBERRYPIPICOPIN"/>
+</packageinstances>
+</package3d>
+<package3d name="EVQP2H02B" urn="urn:adsk.eagle:package:44159643/2" type="model" library_version="119">
+<description>&lt;b&gt;EVQ-P2H02B-2&lt;/b&gt;&lt;br&gt;</description>
+<packageinstances>
+<packageinstance name="EVQP2H02B"/>
+</packageinstances>
+</package3d>
+<package3d name="SOT96P240X115-3N" urn="urn:adsk.eagle:package:44159710/2" type="model" library_version="121">
+<description>&lt;b&gt;DMG2305UX-7&lt;/b&gt;&lt;br&gt;</description>
+<packageinstances>
+<packageinstance name="SOT96P240X115-3N"/>
+</packageinstances>
+</package3d>
+<package3d name="RASPBERRYPIPICO-W" urn="urn:adsk.eagle:package:44159720/2" type="model" library_version="123">
+<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;</description>
+<packageinstances>
+<packageinstance name="RASPBERRYPIPICO-W"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -21621,9 +21739,54 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <pin name="E" x="2.54" y="-5.08" visible="off" length="short" direction="pas" swaplevel="3" rot="R90"/>
 <pin name="C" x="2.54" y="5.08" visible="off" length="short" direction="pas" swaplevel="2" rot="R270"/>
 </symbol>
+<symbol name="EVQ-P2H02B" urn="urn:adsk.eagle:symbol:44159641/1" library_version="119">
+<wire x1="-8.89" y1="3.81" x2="11.43" y2="3.81" width="0.254" layer="94"/>
+<wire x1="11.43" y1="-3.81" x2="11.43" y2="3.81" width="0.254" layer="94"/>
+<wire x1="11.43" y1="-3.81" x2="-8.89" y2="-3.81" width="0.254" layer="94"/>
+<wire x1="-8.89" y1="3.81" x2="-8.89" y2="-3.81" width="0.254" layer="94"/>
+<text x="-3.81" y="5.08" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="-3.81" y="-5.08" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="NO_1" x="-13.97" y="1.27" length="middle"/>
+<pin name="COM_1" x="16.51" y="1.27" length="middle" rot="R180"/>
+<pin name="NO_2" x="-13.97" y="-1.27" length="middle"/>
+<pin name="COM_2" x="16.51" y="-1.27" length="middle" rot="R180"/>
+</symbol>
+<symbol name="DMG2305UX-7" urn="urn:adsk.eagle:symbol:44159708/1" library_version="121">
+<wire x1="1.27" y1="0" x2="1.27" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="1.27" y1="2.54" x2="1.27" y2="5.08" width="0.254" layer="94"/>
+<wire x1="-3.81" y1="-2.54" x2="-1.27" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="-1.27" y1="2.54" x2="-1.27" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="-0.508" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="2.54" x2="-0.508" y2="2.54" width="0.254" layer="94"/>
+<wire x1="-0.508" y1="-2.54" x2="1.27" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="-0.508" y1="3.048" x2="-0.508" y2="2.032" width="0.254" layer="94"/>
+<wire x1="-0.508" y1="-3.048" x2="-0.508" y2="-2.032" width="0.254" layer="94"/>
+<wire x1="-0.508" y1="-0.508" x2="-0.508" y2="0.508" width="0.254" layer="94"/>
+<wire x1="1.778" y1="-0.508" x2="2.794" y2="-0.508" width="0.254" layer="94"/>
+<wire x1="2.286" y1="0.508" x2="2.286" y2="2.54" width="0.254" layer="94"/>
+<wire x1="1.27" y1="2.54" x2="2.286" y2="2.54" width="0.254" layer="94"/>
+<wire x1="2.286" y1="-0.508" x2="2.286" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-2.54" x2="2.286" y2="-2.54" width="0.254" layer="94"/>
+<circle x="0" y="0" radius="3.81" width="0.254" layer="94"/>
+<text x="5.08" y="1.27" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="5.08" y="-1.27" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="G" x="-6.35" y="-2.54" visible="pad" length="short"/>
+<pin name="S" x="1.27" y="-7.62" visible="pad" length="short" rot="R90"/>
+<pin name="D" x="1.27" y="7.62" visible="pad" length="short" rot="R270"/>
+<polygon width="0.254" layer="94">
+<vertex x="1.27" y="0"/>
+<vertex x="0.254" y="0.508"/>
+<vertex x="0.254" y="-0.508"/>
+</polygon>
+<polygon width="0.254" layer="94">
+<vertex x="2.286" y="-0.508"/>
+<vertex x="1.778" y="0.508"/>
+<vertex x="2.794" y="0.508"/>
+</polygon>
+</symbol>
 </symbols>
 <devicesets>
-<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/6" prefix="J" library_version="108">
+<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/8" prefix="J" library_version="119">
 <description>&lt;b&gt;Socket; DC supply; XT60; male; PIN: 2; on PCBs; THT; Colour: yellow&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade/XT60PW SPEC.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21638,7 +21801,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 <connect gate="G$1" pin="4" pad="4"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37256940/5"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37256940/7"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21679,7 +21842,7 @@ Source: &lt;a href="https://www.vishay.com/docs/28395/150crz.pdf"&gt; Datasheet 
 </device>
 </devices>
 </deviceset>
-<deviceset name="RASPBERRY_PI_PICO" urn="urn:adsk.eagle:component:40546191/9" prefix="IC" library_version="108">
+<deviceset name="RASPBERRY_PI_PICO" urn="urn:adsk.eagle:component:40546191/11" prefix="IC" library_version="123">
 <description>&lt;b&gt;RASPBERRY-PI - RASPBERRY PI PICO W - Raspberry Pi Board, Raspberry Pi Pico W, RP2040, 32bit, ARM Cortex-M0+&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21797,6 +21960,56 @@ Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pd
 <technology name=""/>
 </technologies>
 </device>
+<device name="W" package="RASPBERRYPIPICO-W">
+<connects>
+<connect gate="G$1" pin="3V3(OUT)" pad="36"/>
+<connect gate="G$1" pin="3V3_EN" pad="37"/>
+<connect gate="G$1" pin="ADC_VREF" pad="35"/>
+<connect gate="G$1" pin="GND/AGND" pad="33"/>
+<connect gate="G$1" pin="GND_1" pad="3"/>
+<connect gate="G$1" pin="GND_2" pad="8"/>
+<connect gate="G$1" pin="GND_3" pad="13"/>
+<connect gate="G$1" pin="GND_4" pad="18"/>
+<connect gate="G$1" pin="GND_5" pad="23"/>
+<connect gate="G$1" pin="GND_6" pad="28"/>
+<connect gate="G$1" pin="GND_7" pad="38"/>
+<connect gate="G$1" pin="GP22" pad="29"/>
+<connect gate="G$1" pin="GP28/ADC2" pad="34"/>
+<connect gate="G$1" pin="I2C0_SCL/GP21" pad="27"/>
+<connect gate="G$1" pin="I2C0_SCL_/SPI0_TX/GP3" pad="5"/>
+<connect gate="G$1" pin="I2C0_SDA/GP20" pad="26"/>
+<connect gate="G$1" pin="I2C1_SCL/SPI1_TX/GP15" pad="20"/>
+<connect gate="G$1" pin="I2C1_SCL/_SPI0_TX/GP19" pad="25"/>
+<connect gate="G$1" pin="I2C1_SCL_/ADC1/GP_27" pad="32"/>
+<connect gate="G$1" pin="I2C1_SCL_/SPI0_TX/GP7" pad="10"/>
+<connect gate="G$1" pin="I2C1_SCL_/SPI1__TX/GP11" pad="15"/>
+<connect gate="G$1" pin="I2C1_SDA/ADC0/GP26" pad="31"/>
+<connect gate="G$1" pin="I2C1_SDA/SPI1_SCK/GP14" pad="19"/>
+<connect gate="G$1" pin="I2C1_SDA/_SPI0_SCK/GP18" pad="24"/>
+<connect gate="G$1" pin="I2C1_SDA_/SPI0_SCK/GP2" pad="4"/>
+<connect gate="G$1" pin="I2C1_SDA_/SPI0_SCK/GP6" pad="9"/>
+<connect gate="G$1" pin="I2C1_SDA_/SPI1__SCK/GP10" pad="14"/>
+<connect gate="G$1" pin="RUN" pad="30"/>
+<connect gate="G$1" pin="UART0_RX/I2C0_SCL/SPIO_CSN/GP17" pad="22"/>
+<connect gate="G$1" pin="UART0_RX/I2C0_SCL_/SPI0_CSN/GP1" pad="2"/>
+<connect gate="G$1" pin="UART0_RX/I2C0_SCL_/SPI1_CSN/GP13" pad="17"/>
+<connect gate="G$1" pin="UART0_TX/I2C0_SDA_/SPI0_RX/GP0" pad="1"/>
+<connect gate="G$1" pin="UART0_TX/I2C0_SDA_/SPI0_RX_/GP16" pad="21"/>
+<connect gate="G$1" pin="UART0_TX/I2C0_SDA_/SPI1_RX_/GP12" pad="16"/>
+<connect gate="G$1" pin="UART1_RX/I2C0_SCL_/SPI0_CSN/GP5" pad="7"/>
+<connect gate="G$1" pin="UART1_RX/I2C0_SCL_/SPI1_CSN/GP9" pad="12"/>
+<connect gate="G$1" pin="UART1_TX/I2C0_SDA_/SPI0_RX/GP4" pad="6"/>
+<connect gate="G$1" pin="UART1_TX/I2C0_SDA_/SPI1_RX/GP8" pad="11"/>
+<connect gate="G$1" pin="VBUS" pad="40"/>
+<connect gate="G$1" pin="VSYS" pad="39"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:44159720/2"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
 </devices>
 </deviceset>
 <deviceset name="MMBT3904LT1" urn="urn:adsk.eagle:component:43140559/1" prefix="T" library_version="108">
@@ -21817,6 +22030,69 @@ Source: &lt;a href="https://datasheets.raspberrypi.com/picow/pico-w-datasheet.pd
 <technologies>
 <technology name="">
 <attribute name="POPULARITY" value="13" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="EVQ-P2H02B" urn="urn:adsk.eagle:component:44159644/2" prefix="S" library_version="119">
+<description>&lt;b&gt;Tactile Switches 2.5NF 4.7x3.5x2.5mm&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href="https://www.mouser.com/datasheet/2/315/sw_lt_eng_4735s-1288983.pdf"&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="EVQ-P2H02B" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="EVQP2H02B">
+<connects>
+<connect gate="G$1" pin="COM_1" pad="2"/>
+<connect gate="G$1" pin="COM_2" pad="4"/>
+<connect gate="G$1" pin="NO_1" pad="1"/>
+<connect gate="G$1" pin="NO_2" pad="3"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:44159643/2"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="ARROW_PART_NUMBER" value="EVQ-P2H02B" constant="no"/>
+<attribute name="ARROW_PRICE-STOCK" value="https://www.arrow.com/en/products/evq-p2h02b/panasonic?region=nac" constant="no"/>
+<attribute name="DESCRIPTION" value="Tactile Switches 2.5NF 4.7x3.5x2.5mm" constant="no"/>
+<attribute name="HEIGHT" value="2.7mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="Panasonic" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="EVQ-P2H02B" constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="667-EVQ-P2H02B" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.co.uk/ProductDetail/Panasonic/EVQ-P2H02B?qs=WwqriLBepZtQ2aXTL4JXCg%3D%3D" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="DMG2305UX-7" urn="urn:adsk.eagle:component:44159711/2" prefix="Q" library_version="121">
+<description>&lt;b&gt;MOSFET P-Ch 20V 5A Enhancement SOT23 Diodes Inc DMG2305UX-7 P-channel MOSFET Transistor, -3.3 A, -20 V, 3-Pin SOT-23&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href="https://www.diodes.com//assets/Datasheets/DMG2305UX.pdf"&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="DMG2305UX-7" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOT96P240X115-3N">
+<connects>
+<connect gate="G$1" pin="D" pad="3"/>
+<connect gate="G$1" pin="G" pad="1"/>
+<connect gate="G$1" pin="S" pad="2"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:44159710/2"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="ARROW_PART_NUMBER" value="DMG2305UX-7" constant="no"/>
+<attribute name="ARROW_PRICE-STOCK" value="https://www.arrow.com/en/products/dmg2305ux-7/diodes-incorporated?region=nac" constant="no"/>
+<attribute name="DESCRIPTION" value="MOSFET P-Ch 20V 5A Enhancement SOT23 Diodes Inc DMG2305UX-7 P-channel MOSFET Transistor, -3.3 A, -20 V, 3-Pin SOT-23" constant="no"/>
+<attribute name="HEIGHT" value="1.15mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="Diodes Incorporated" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="DMG2305UX-7" constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="621-DMG2305UX-7" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.co.uk/ProductDetail/Diodes-Incorporated/DMG2305UX-7?qs=L1DZKBg7t5F%2FNBHrjfxC%252Bg%3D%3D" constant="no"/>
 </technology>
 </technologies>
 </device>
@@ -22785,8 +23061,7 @@ at 30/07/2012 11:22:31</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
-</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -23420,7 +23695,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="FRAME2" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA3_L" device=""/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="J2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/5"/>
+<part name="J2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/7"/>
 <part name="X2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6"/>
 <part name="X10" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6"/>
 <part name="IC2" library="Microchip_By_element14_Batch_1" deviceset="24LC64T-I/SN" device=""/>
@@ -23607,13 +23882,8 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <attribute name="MPN" value="CC0805KKX5R8BB106"/>
 </part>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="RASPBERRY_PI_PICO" device="" package3d_urn="urn:adsk.eagle:package:40546189/7" value="RASPBERRY_PI_PICO">
-<attribute name="DESCRIPTION" value="RASPBERRY-PI - RASPBERRY PI PICO - Raspberry Pi Board, Raspberry Pi Pic, RP2040, 32bit, ARM Cortex-M0+"/>
+<part name="IC4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="RASPBERRY_PI_PICO" device="W" package3d_urn="urn:adsk.eagle:package:44159720/2" value="RASPBERRY_PI_PICOW">
 <attribute name="JLCPCBPN" value="C7203003"/>
-<attribute name="MANUFACTURER_NAME" value="RASPBERRY-PI PICO"/>
-<attribute name="MANUFACTURER_PART_NUMBER" value="SC0916"/>
-<attribute name="MOUSER_PART_NUMBER" value="SC0915"/>
-<attribute name="MPN" value="SC0916"/>
 </part>
 <part name="X13" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="PN61729-S" device="" package3d_urn="urn:adsk.eagle:package:37504981/2">
 <attribute name="MPN" value="SS-52300-001"/>
@@ -23656,6 +23926,9 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 </part>
 <part name="IC1" library="REG1117FA-5.0_500" library_urn="urn:adsk.eagle:library:43937876" deviceset="REG1117FA-5.0_500" device="" package3d_urn="urn:adsk.eagle:package:43937879/3"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="S1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="EVQ-P2H02B" device="" package3d_urn="urn:adsk.eagle:package:44159643/2"/>
+<part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="Q1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="DMG2305UX-7" device="" package3d_urn="urn:adsk.eagle:package:44159710/2"/>
 </parts>
 <sheets>
 <sheet>
@@ -23708,8 +23981,8 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <attribute name="NAME" x="250.444" y="105.791" size="1.778" layer="95"/>
 <attribute name="VALUE" x="250.444" y="100.711" size="1.778" layer="96"/>
 </instance>
-<instance part="GND2" gate="1" x="248.92" y="97.79" smashed="yes">
-<attribute name="VALUE" x="246.38" y="95.25" size="1.778" layer="96"/>
+<instance part="GND2" gate="1" x="248.92" y="95.25" smashed="yes">
+<attribute name="VALUE" x="246.38" y="92.71" size="1.778" layer="96"/>
 </instance>
 <instance part="R5" gate="G$1" x="241.3" y="110.49" smashed="yes" rot="R180">
 <attribute name="MPN" x="241.3" y="110.49" size="1.778" layer="96" rot="R180" display="off"/>
@@ -23982,8 +24255,8 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <attribute name="NAME" x="252.984" y="72.771" size="1.778" layer="95"/>
 <attribute name="VALUE" x="252.984" y="67.691" size="1.778" layer="96"/>
 </instance>
-<instance part="GND34" gate="1" x="251.46" y="64.77" smashed="yes">
-<attribute name="VALUE" x="248.92" y="62.23" size="1.778" layer="96"/>
+<instance part="GND34" gate="1" x="251.46" y="62.23" smashed="yes">
+<attribute name="VALUE" x="248.92" y="59.69" size="1.778" layer="96"/>
 </instance>
 <instance part="R47" gate="G$1" x="241.3" y="166.37" smashed="yes" rot="R180">
 <attribute name="MPN" x="241.3" y="166.37" size="1.778" layer="96" rot="R180" display="off"/>
@@ -24040,7 +24313,6 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <instance part="IC4" gate="G$1" x="109.22" y="40.64" smashed="yes">
 <attribute name="NAME" x="83.82" y="68.58" size="1.778" layer="95" align="center-left"/>
 <attribute name="VALUE" x="83.82" y="66.04" size="1.778" layer="96" align="center-left"/>
-<attribute name="MPN" x="109.22" y="40.64" size="1.778" layer="96" display="off"/>
 <attribute name="JLCPCBPN" x="109.22" y="40.64" size="1.778" layer="96" display="off"/>
 </instance>
 <instance part="X13" gate="G$1" x="335.28" y="180.34" smashed="yes" rot="R180">
@@ -24112,6 +24384,17 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <instance part="GND3" gate="1" x="31.75" y="128.27" smashed="yes">
 <attribute name="VALUE" x="29.21" y="125.73" size="1.778" layer="96"/>
 </instance>
+<instance part="S1" gate="G$1" x="203.2" y="36.83" smashed="yes">
+<attribute name="NAME" x="201.93" y="43.18" size="1.778" layer="95" align="center-left"/>
+<attribute name="VALUE" x="198.12" y="31.75" size="1.778" layer="96" align="center-left"/>
+</instance>
+<instance part="GND8" gate="1" x="222.25" y="30.48" smashed="yes">
+<attribute name="VALUE" x="219.71" y="27.94" size="1.778" layer="96"/>
+</instance>
+<instance part="Q1" gate="G$1" x="171.45" y="69.85" smashed="yes" rot="R90">
+<attribute name="NAME" x="170.18" y="74.93" size="1.778" layer="95" rot="R90" align="center-left"/>
+<attribute name="VALUE" x="172.72" y="74.93" size="1.778" layer="96" rot="R90" align="center-left"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -24173,6 +24456,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <segment>
 <pinref part="C1" gate="G$1" pin="2"/>
 <pinref part="GND2" gate="1" pin="GND"/>
+<wire x1="248.92" y1="97.79" x2="248.92" y2="100.33" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="X5" gate="-3" pin="KL"/>
@@ -24371,6 +24655,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <segment>
 <pinref part="GND34" gate="1" pin="GND"/>
 <pinref part="C42" gate="G$1" pin="2"/>
+<wire x1="251.46" y1="64.77" x2="251.46" y2="67.31" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND35" gate="1" pin="GND"/>
@@ -24482,6 +24767,16 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <pinref part="C28" gate="G$1" pin="2"/>
 <wire x1="31.75" y1="132.08" x2="53.34" y2="132.08" width="0.1524" layer="91"/>
 <wire x1="53.34" y1="132.08" x2="53.34" y2="133.35" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="S1" gate="G$1" pin="COM_1"/>
+<wire x1="219.71" y1="38.1" x2="222.25" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="222.25" y1="38.1" x2="222.25" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="S1" gate="G$1" pin="COM_2"/>
+<wire x1="222.25" y1="35.56" x2="222.25" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="219.71" y1="35.56" x2="222.25" y2="35.56" width="0.1524" layer="91"/>
+<junction x="222.25" y="35.56"/>
+<pinref part="GND8" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="+12V" class="1">
@@ -24833,11 +25128,6 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <label x="15.24" y="116.84" size="1.016" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="G$1" pin="VSYS"/>
-<wire x1="161.29" y1="58.42" x2="158.75" y2="58.42" width="0.1524" layer="91"/>
-<label x="161.29" y="58.42" size="1.016" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="X6" gate="-3" pin="KL"/>
 <wire x1="295.91" y1="186.69" x2="298.45" y2="186.69" width="0.1524" layer="91"/>
 <label x="295.91" y="186.69" size="1.016" layer="95" ratio="7" rot="R180" xref="yes"/>
@@ -24874,6 +25164,11 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <wire x1="53.34" y1="143.51" x2="53.34" y2="140.97" width="0.1524" layer="91"/>
 <junction x="53.34" y="143.51"/>
 <pinref part="C28" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<pinref part="Q1" gate="G$1" pin="D"/>
+<wire x1="160.02" y1="71.12" x2="163.83" y2="71.12" width="0.1524" layer="91"/>
+<label x="160.02" y="71.12" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -25079,6 +25374,11 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <pinref part="IC4" gate="G$1" pin="RUN"/>
 <wire x1="161.29" y1="35.56" x2="158.75" y2="35.56" width="0.1524" layer="91"/>
 <label x="161.29" y="35.56" size="1.016" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="S1" gate="G$1" pin="NO_2"/>
+<wire x1="189.23" y1="35.56" x2="186.69" y2="35.56" width="0.1524" layer="91"/>
+<label x="186.69" y="35.56" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="FTDI_RESET" class="0">
@@ -25323,13 +25623,6 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <label x="161.29" y="53.34" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="VBUS" class="0">
-<segment>
-<pinref part="IC4" gate="G$1" pin="VBUS"/>
-<wire x1="161.29" y1="60.96" x2="158.75" y2="60.96" width="0.1524" layer="91"/>
-<label x="161.29" y="60.96" size="1.016" layer="95" xref="yes"/>
-</segment>
-</net>
 <net name="USB_VCC" class="0">
 <segment>
 <pinref part="X13" gate="G$1" pin="1"/>
@@ -25417,6 +25710,23 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <pinref part="X6" gate="-2" pin="KL"/>
 <wire x1="295.91" y1="181.61" x2="298.45" y2="181.61" width="0.1524" layer="91"/>
 <label x="295.91" y="181.61" size="1.016" layer="95" ratio="7" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="VBUS" class="0">
+<segment>
+<pinref part="IC4" gate="G$1" pin="VBUS"/>
+<pinref part="Q1" gate="G$1" pin="G"/>
+<wire x1="158.75" y1="60.96" x2="173.99" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="173.99" y1="60.96" x2="173.99" y2="63.5" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="VSYS" class="0">
+<segment>
+<pinref part="Q1" gate="G$1" pin="S"/>
+<wire x1="179.07" y1="71.12" x2="182.88" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="182.88" y1="71.12" x2="182.88" y2="58.42" width="0.1524" layer="91"/>
+<pinref part="IC4" gate="G$1" pin="VSYS"/>
+<wire x1="182.88" y1="58.42" x2="158.75" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

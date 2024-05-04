@@ -31,14 +31,9 @@
 #define DEF_PORT_NAME				"No port found"
 
 #define LOG_BUFFER_SIZE 256
-/*!
- \brief The X2Dome example.
 
- \ingroup Example
 
- Use this example to write an X2Dome driver.
- */
-class X2Dome: public DomeDriverInterface, public SerialPortParams2Interface, public ModalSettingsDialogInterface, public X2GUIEventInterface, public DomeHasHighlyRelaibleOpenCloseSensors
+class __attribute__((weak,visibility("default"))) X2Dome: public DomeDriverInterface, public SerialPortParams2Interface, public ModalSettingsDialogInterface, public X2GUIEventInterface, public DomeHasHighlyRelaibleOpenCloseSensors
 {
 public:
 
