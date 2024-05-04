@@ -403,6 +403,7 @@ void checkForNewTCPClient()
 		else {
 			nbEthernetClient++;
 			domeClient = newClient;
+			domeClient.setNoDelay(true);
 			DBPrintln("new client accepted");
 			DBPrintln("nb client = " + String(nbEthernetClient));
 		}
@@ -463,6 +464,7 @@ void checkForNewWifiClient()
 		else {
 			nbWiFiClient++;
 			shutterClient = newClient;
+			shutterClient.setNoDelay(true);
 			DBPrintln("new wiFi client accepted");
 			DBPrintln("nb WiFi client = " + String(nbWiFiClient));
 			SendHello();

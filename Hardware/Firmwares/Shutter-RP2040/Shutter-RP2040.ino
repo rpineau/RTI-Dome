@@ -131,7 +131,6 @@ void loop()
 		shutterWiFi.clearAPList();
 		configureWiFi();
 		PingRotator();
-		delay(1000);
 	}
 
 	if(needFirstPing) {
