@@ -12607,19 +12607,22 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </packageinstances>
 </package3d>
 <package3d name="RASPBERRYPIPICOW" urn="urn:adsk.eagle:package:40546189/7" type="model" library_version="123">
-<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="RASPBERRYPIPICO"/>
 </packageinstances>
 </package3d>
 <package3d name="SOT96P240X115-3N" urn="urn:adsk.eagle:package:44159710/2" type="model" library_version="123">
-<description>&lt;b&gt;DMG2305UX-7&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;DMG2305UX-7&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="SOT96P240X115-3N"/>
 </packageinstances>
 </package3d>
 <package3d name="EVQP2H02B" urn="urn:adsk.eagle:package:44159643/2" type="model" library_version="123">
-<description>&lt;b&gt;EVQ-P2H02B-2&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;EVQ-P2H02B-2&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="EVQP2H02B"/>
 </packageinstances>
@@ -12630,7 +12633,8 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </packageinstances>
 </package3d>
 <package3d name="RASPBERRYPIPICO-W" urn="urn:adsk.eagle:package:44159720/2" type="model" library_version="123">
-<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;RASPBERRY PI PICO W-6&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="RASPBERRYPIPICO-W"/>
 </packageinstances>
@@ -15408,6 +15412,87 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="REG1117FA-5.0_500" urn="urn:adsk.eagle:library:43937876">
+<description>&lt;800mA and 1A Low Dropout Positive Regulator 1.8V, 2.5V, 2.85, 3.3V, 5V, and Adjustable&lt;/b&gt;&lt;p&gt;
+&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
+<packages>
+<package name="REG1117FA50500" urn="urn:adsk.eagle:footprint:43937877/2" library_version="3">
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-2.54" y="-6.745" dx="3.4" dy="1" layer="1" rot="R90"/>
+<smd name="2" x="0" y="-6.745" dx="3.4" dy="1" layer="1" rot="R90"/>
+<smd name="3" x="2.54" y="-6.745" dx="3.4" dy="1" layer="1" rot="R90"/>
+<smd name="4" x="0" y="3.855" dx="10.7" dy="8.6" layer="1"/>
+<text x="-0.635" y="9.38" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="-3.32" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-4.825" y1="6.745" x2="4.825" y2="6.745" width="0.1" layer="51"/>
+<wire x1="4.825" y1="6.745" x2="4.825" y2="-2.27" width="0.1" layer="51"/>
+<wire x1="4.825" y1="-2.27" x2="-4.825" y2="-2.27" width="0.1" layer="51"/>
+<wire x1="-4.825" y1="-2.27" x2="-4.825" y2="6.745" width="0.1" layer="51"/>
+<wire x1="-2.54" y1="-9" x2="-2.54" y2="-8.9" width="0.1" layer="21" curve="180"/>
+<wire x1="-2.54" y1="-8.9" x2="-2.54" y2="-9" width="0.1" layer="21" curve="180"/>
+<wire x1="-4.825" y1="-0.8" x2="-4.825" y2="-2.27" width="0.2" layer="21"/>
+<wire x1="-4.825" y1="-2.27" x2="4.825" y2="-2.27" width="0.2" layer="21"/>
+<wire x1="4.825" y1="-2.27" x2="4.825" y2="-0.8" width="0.2" layer="21"/>
+</package>
+</packages>
+<packages3d>
+<package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
+<packageinstances>
+<packageinstance name="REG1117FA50500"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="REG1117FA-5.0_500" urn="urn:adsk.eagle:symbol:43937878/2" library_version="3">
+<wire x1="5.08" y1="2.54" x2="27.94" y2="2.54" width="0.254" layer="94"/>
+<wire x1="27.94" y1="-7.62" x2="27.94" y2="2.54" width="0.254" layer="94"/>
+<wire x1="27.94" y1="-7.62" x2="5.08" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="5.08" y1="2.54" x2="5.08" y2="-7.62" width="0.254" layer="94"/>
+<text x="12.7" y="5.08" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="17.78" y="-10.16" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="GND" x="15.24" y="-12.7" length="middle" rot="R90"/>
+<pin name="VOUT_1" x="33.02" y="-2.54" length="middle" rot="R180"/>
+<pin name="VIN" x="0" y="0" length="middle"/>
+<pin name="VOUT_2" x="33.02" y="0" length="middle" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="REG1117FA-5.0_500" urn="urn:adsk.eagle:component:43937880/3" prefix="IC" library_version="3">
+<description>&lt;b&gt;800mA and 1A Low Dropout Positive Regulator 1.8V, 2.5V, 2.85, 3.3V, 5V, and Adjustable&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080445"&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="REG1117FA-5.0_500" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="REG1117FA50500">
+<connects>
+<connect gate="G$1" pin="GND" pad="1"/>
+<connect gate="G$1" pin="VIN" pad="3"/>
+<connect gate="G$1" pin="VOUT_1" pad="2"/>
+<connect gate="G$1" pin="VOUT_2" pad="4"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:43937879/3"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="ARROW_PART_NUMBER" value="REG1117FA-5.0/500" constant="no"/>
+<attribute name="ARROW_PRICE-STOCK" value="https://www.arrow.com/en/products/reg1117fa-5.0500/texas-instruments?region=nac" constant="no"/>
+<attribute name="DESCRIPTION" value="800mA and 1A Low Dropout Positive Regulator 1.8V, 2.5V, 2.85, 3.3V, 5V, and Adjustable" constant="no"/>
+<attribute name="HEIGHT" value="5.08mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="Texas Instruments" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="REG1117FA-5.0/500" constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="595-REG1117FA50/500" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.co.uk/ProductDetail/Texas-Instruments/REG1117FA-5.0-500?qs=PVVDbbWpW3KD0gSKmem36g%3D%3D" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -15676,9 +15761,6 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 <attribute name="MPN" value="CC0805KKX5R8BB106"/>
 </part>
 <part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC9" library="burr-brown" library_urn="urn:adsk.eagle:library:37504555" deviceset="REG1117" device="" package3d_urn="urn:adsk.eagle:package:37504714/1" value="REG1117-5V">
-<attribute name="MPN" value="REG1117-3.3/2K5"/>
-</part>
 <part name="C27" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="C-EU" device="'0603'" package3d_urn="urn:adsk.eagle:package:41513588/2" value="10uF">
 <spice>
 <pinmapping spiceprefix="C">
@@ -15880,6 +15962,7 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 <part name="Q1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="DMG2305UX-7" device="" package3d_urn="urn:adsk.eagle:package:44159710/2"/>
 <part name="S1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="EVQ-P2H02B" device="" package3d_urn="urn:adsk.eagle:package:44159643/2"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="IC1" library="REG1117FA-5.0_500" library_urn="urn:adsk.eagle:library:43937876" deviceset="REG1117FA-5.0_500" device="" package3d_urn="urn:adsk.eagle:package:43937879/3"/>
 </parts>
 <sheets>
 <sheet>
@@ -16123,19 +16206,15 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 <instance part="GND22" gate="1" x="30.48" y="96.52" smashed="yes">
 <attribute name="VALUE" x="27.94" y="93.98" size="1.778" layer="96"/>
 </instance>
-<instance part="IC9" gate="G$1" x="30.48" y="152.4" smashed="yes">
-<attribute name="NAME" x="22.86" y="158.115" size="1.778" layer="95" ratio="10"/>
-<attribute name="VALUE" x="25.4" y="154.94" size="1.778" layer="96" ratio="10"/>
+<instance part="C27" gate="G$1" x="12.7" y="144.78" smashed="yes">
+<attribute name="MPN" x="12.7" y="144.78" size="1.778" layer="96" display="off"/>
+<attribute name="NAME" x="14.224" y="145.161" size="1.778" layer="95"/>
+<attribute name="VALUE" x="14.224" y="140.081" size="1.778" layer="96"/>
 </instance>
-<instance part="C27" gate="G$1" x="15.24" y="144.78" smashed="yes">
-<attribute name="MPN" x="15.24" y="144.78" size="1.778" layer="96" display="off"/>
-<attribute name="NAME" x="16.764" y="145.161" size="1.778" layer="95"/>
-<attribute name="VALUE" x="16.764" y="140.081" size="1.778" layer="96"/>
-</instance>
-<instance part="C28" gate="G$1" x="45.72" y="144.78" smashed="yes">
-<attribute name="MPN" x="45.72" y="144.78" size="1.778" layer="96" display="off"/>
-<attribute name="NAME" x="47.244" y="145.161" size="1.778" layer="95"/>
-<attribute name="VALUE" x="47.244" y="140.081" size="1.778" layer="96"/>
+<instance part="C28" gate="G$1" x="52.07" y="144.78" smashed="yes">
+<attribute name="MPN" x="52.07" y="144.78" size="1.778" layer="96" display="off"/>
+<attribute name="NAME" x="53.594" y="145.161" size="1.778" layer="95"/>
+<attribute name="VALUE" x="53.594" y="140.081" size="1.778" layer="96"/>
 </instance>
 <instance part="GND23" gate="1" x="30.48" y="134.62" smashed="yes">
 <attribute name="VALUE" x="27.94" y="132.08" size="1.778" layer="96"/>
@@ -16308,6 +16387,10 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 </instance>
 <instance part="GND3" gate="1" x="219.71" y="30.48" smashed="yes">
 <attribute name="VALUE" x="217.17" y="27.94" size="1.778" layer="96"/>
+</instance>
+<instance part="IC1" gate="G$1" x="15.24" y="152.4" smashed="yes">
+<attribute name="NAME" x="27.94" y="157.48" size="1.778" layer="95" align="center-left"/>
+<attribute name="VALUE" x="33.02" y="142.24" size="1.778" layer="96" align="center-left"/>
 </instance>
 </instances>
 <busses>
@@ -16512,16 +16595,16 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 <pinref part="GND22" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="IC9" gate="G$1" pin="GND"/>
 <wire x1="30.48" y1="137.16" x2="30.48" y2="139.7" width="0.1524" layer="91"/>
 <pinref part="C28" gate="G$1" pin="2"/>
-<wire x1="45.72" y1="139.7" x2="45.72" y2="137.16" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="137.16" x2="30.48" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="52.07" y1="139.7" x2="52.07" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="52.07" y1="137.16" x2="30.48" y2="137.16" width="0.1524" layer="91"/>
 <junction x="30.48" y="137.16"/>
 <pinref part="C27" gate="G$1" pin="2"/>
-<wire x1="15.24" y1="139.7" x2="15.24" y2="137.16" width="0.1524" layer="91"/>
-<wire x1="15.24" y1="137.16" x2="30.48" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="139.7" x2="12.7" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="137.16" x2="30.48" y2="137.16" width="0.1524" layer="91"/>
 <pinref part="GND23" gate="1" pin="GND"/>
+<pinref part="IC1" gate="G$1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="GND32" gate="1" pin="GND"/>
@@ -16664,12 +16747,12 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 </segment>
 <segment>
 <pinref part="C27" gate="G$1" pin="1"/>
-<pinref part="IC9" gate="G$1" pin="VIN"/>
-<wire x1="15.24" y1="147.32" x2="15.24" y2="152.4" width="0.1524" layer="91"/>
-<wire x1="15.24" y1="152.4" x2="17.78" y2="152.4" width="0.1524" layer="91"/>
-<wire x1="15.24" y1="154.94" x2="15.24" y2="152.4" width="0.1524" layer="91"/>
-<junction x="15.24" y="152.4"/>
-<label x="15.24" y="154.94" size="1.016" layer="95" rot="R90" xref="yes"/>
+<wire x1="12.7" y1="147.32" x2="12.7" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="152.4" x2="15.24" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="154.94" x2="12.7" y2="152.4" width="0.1524" layer="91"/>
+<junction x="12.7" y="152.4"/>
+<label x="12.7" y="154.94" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="IC1" gate="G$1" pin="VIN"/>
 </segment>
 </net>
 <net name="SHUTTER_OPENED" class="0">
@@ -16958,13 +17041,18 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 <label x="15.24" y="116.84" size="1.016" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC9" gate="G$1" pin="VOUT"/>
 <pinref part="C28" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="152.4" x2="45.72" y2="152.4" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="152.4" x2="45.72" y2="147.32" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="152.4" x2="45.72" y2="152.4" width="0.1524" layer="91"/>
-<junction x="45.72" y="152.4"/>
-<label x="48.26" y="152.4" size="1.016" layer="95" ratio="4" xref="yes"/>
+<wire x1="52.07" y1="152.4" x2="52.07" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="54.61" y1="152.4" x2="52.07" y2="152.4" width="0.1524" layer="91"/>
+<label x="54.61" y="152.4" size="1.016" layer="95" ratio="4" xref="yes"/>
+<pinref part="IC1" gate="G$1" pin="VOUT_2"/>
+<wire x1="48.26" y1="152.4" x2="50.8" y2="152.4" width="0.1524" layer="91"/>
+<junction x="52.07" y="152.4"/>
+<pinref part="IC1" gate="G$1" pin="VOUT_1"/>
+<wire x1="50.8" y1="152.4" x2="52.07" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="149.86" x2="50.8" y2="149.86" width="0.1524" layer="91"/>
+<wire x1="50.8" y1="149.86" x2="50.8" y2="152.4" width="0.1524" layer="91"/>
+<junction x="50.8" y="152.4"/>
 </segment>
 <segment>
 <pinref part="X6" gate="-3" pin="KL"/>
