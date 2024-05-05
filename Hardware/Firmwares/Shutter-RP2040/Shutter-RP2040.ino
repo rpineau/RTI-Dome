@@ -38,33 +38,11 @@ String wifiBuffer;
 const String version = "2.645";
 
 #include "dome_commands.h"
-/*
-// available A B J N S U W X Z
-const char ABORT				= 'a';
-const char CLOSE_SHUTTER		= 'C'; // Close shutter
-const char RESTORE_MOTOR_DEFAULT    = 'D'; // restore default values for motor controll.
-const char ACCELERATION_SHUTTER = 'E'; // Get/Set stepper acceleration
-const char RAIN_ROTATOR			= 'F'; // Rotator telling us if it's raining or not
-// const char ELEVATION_SHUTTER	= 'G'; // Get/Set altitude
-const char HELLO				= 'H'; // Let rotator know we're here
-const char WATCHDOG_INTERVAL_SET	= 'I'; // Tell us how long between checks in seconds
-const char VOLTS_SHUTTER		= 'K'; // Get volts and get/set cutoff
-const char SHUTTER_PING				= 'L'; // use to reset watchdong timer.
-const char STATE_SHUTTER		= 'M'; // Get shutter state
-const char OPEN_SHUTTER			= 'O'; // Open the shutter
-const char POSITION_SHUTTER		= 'P'; // Get step position
-const char PANID                = 'Q'; // get and set the XBEE PAN ID
-const char SPEED_SHUTTER		= 'R'; // Get/Set step rate (speed)
-const char STEPSPER_SHUTTER		= 'T'; // Get/Set steps per stroke
-const char VERSION_SHUTTER		= 'V'; // Get version string
-const char INIT_XBEE				= 'x'; // force a ConfigXBee
-const char REVERSED_SHUTTER		= 'Y'; // Get/Set stepper reversed status
-*/
 
 #include <WiFi.h>
 #define SHUTTER_PORT 2424
 WIFIConfig wifiConfig;
-void configureWiFi();
+bool configureWiFi();
 bool initWiFi(IPAddress ip, String sSSID, String sPassword);
 void ReceiveWiFi(WiFiClient client);
 void ProcessWifi();
@@ -94,9 +72,10 @@ void setup()
 	reconnectTimer.reset();
 	Shutter->motorStop();
 	Shutter->EnableMotor(false);
-	configureWiFi();
-	needFirstPing = true;
-
+	WiFi.mode(WIFI_STA);
+	WiFi.setHostname("RTI-Shutter");
+	if(configureWiFi())
+		needFirstPing = true;
 	core0Ready = true;
 	DBPrintln("========== Core 0 ready ==========");
 }
@@ -123,14 +102,18 @@ void setup1()
 void loop()
 {
 	// Check if we lost connection or didn't connect and need to reconnect
-	if((watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3) )|| (bNeedReconnect && reconnectTimer.elapsed() > 30.0)) {
+	if((watchdogTimer.elapsed() >= Shutter->getWatchdogInterval()) || (bNeedReconnect && reconnectTimer.elapsed() > 15000)) {
+		DBPrintln("Shutter->getWatchdogInterval() : " + String(Shutter->getWatchdogInterval()));
+		DBPrintln("watchdogTimer.elapsed() : " + String(watchdogTimer.elapsed()));
+		DBPrintln("bNeedReconnect : " + String(bNeedReconnect?"Yes":"No"));
+		DBPrintln("reconnectTimer.elapsed() : " + String(reconnectTimer.elapsed()));
+
 		watchdogTimer.reset();
 		if(shutterClient.connected()) {
 			shutterClient.stop();
 		}
-		shutterWiFi.clearAPList();
-		configureWiFi();
-		PingRotator();
+		if(configureWiFi())
+			PingRotator();
 	}
 
 	if(needFirstPing) {
@@ -147,26 +130,26 @@ void loop()
 // This loop does all the motor controls
 //
 void loop1()
-{   // all stepper motor code runs on core 1
+{
+	   // all stepper motor code runs on core 1
 	Shutter->Run();
 }
 
 // WiFi connection to rotator
-void configureWiFi()
+bool configureWiFi()
 {
 	DBPrintln("========== Configuring WiFi ==========");
 	Shutter->getWiFiConfig(wifiConfig);
 
-	initWiFi(wifiConfig.ip,
+	return initWiFi(wifiConfig.ip,
 			String(wifiConfig.sSSID),
 			String(wifiConfig.sPassword));
 }
 
 bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 {
-	WiFi.mode(WIFI_STA);
-	WiFi.setHostname("RTI-Shutter");
-	WiFi.config(ip);
+	shutterClient.stopAll();
+	// WiFi.config(ip);
 	shutterWiFi.addAP(sSSID.c_str(), sPassword.c_str());
 	if(shutterWiFi.run()!=WL_CONNECTED) {
 		DBPrintln("========== Failed to start WiFi AP ==========");
@@ -175,13 +158,17 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 		return false;
 	}
 	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
-
-	if (!shutterClient.connect("172.31.255.1", SHUTTER_PORT)) {
+	delay(500);
+	
+	if (!shutterClient.connect(WiFi.gatewayIP(), SHUTTER_PORT)) {
 		DBPrintln("connection failed");
 		bNeedReconnect=true;
+		shutterClient.stop();
+		reconnectTimer.reset();
 		return false;
 	}
 	shutterClient.setNoDelay(true);
+	bNeedReconnect=false;
 	return true;
 }
 

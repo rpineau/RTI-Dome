@@ -43,7 +43,7 @@
 #define     EEPROM_LOCATION         0  // not used with Arduino Due flash
 #define     EEPROM_SIGNATURE        2645
 
-#define MIN_WATCHDOG_INTERVAL       60000
+#define MIN_WATCHDOG_INTERVAL       15000
 #define MAX_WATCHDOG_INTERVAL       300000
 
 #define BATTERY_CHECK_INTERVAL      60000   // check battery once a minute
@@ -268,7 +268,7 @@ void ShutterClass::SetDefaultConfig()
 	m_Config.maxSpeed = 6400;
 	m_Config.reversed = false;
 	m_Config.cutoffVolts = 1150;
-	m_Config.watchdogInterval = 90000;
+	m_Config.watchdogInterval = 30000;
 	m_Config.bHasDropShutter = false;
 	m_Config.bTopShutterOpenFirst = true;
 	m_Config.wifiIpConfig.ip.fromString("172.31.255.2"); // rotator is 172.31.255.1

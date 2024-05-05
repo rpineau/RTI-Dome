@@ -100,7 +100,7 @@ bool bParked = false; // use to the run check doesn't continuously try to park
 
 RotatorClass *Rotator = NULL;
 
-static const unsigned long pingInterval = 15000; // 15 seconds, can't be changed with command
+static const unsigned long pingInterval = 5000; // 5 seconds, can't be changed with command
 
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
@@ -413,7 +413,6 @@ void checkForNewTCPClient()
 		DBPrintln("client disconnected");
 		domeClient.stop();
 		nbEthernetClient--;
-		// configureEthernet();
 	}
 }
 #endif // USE_ETHERNET
@@ -431,6 +430,7 @@ void configureWiFi()
 
 bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 {
+	WiFi.disconnect();
 	WiFi.mode(WIFI_AP);
 	WiFi.setHostname("RTI-Dome");
 	WiFi.config(ip);
@@ -440,11 +440,23 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 		return false;
 	}
 	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
-
+	if(shutterServer) {
+		shutterServer->stop();
+		delete shutterServer;
+		shutterServer = nullptr;
+	}
 	shutterServer = new WiFiServer(ip,SHUTTER_PORT);
-	shutterServer->begin();
-	shutterServer->setNoDelay(true);
+	if(!shutterServer) {
+		DBPrintln("========== Failed to start shutterServer ==========");
+		return false;
+	}
+	else {
+		shutterServer->begin();
+		shutterServer->setNoDelay(true);
+	}
+	shutterClient.stop();
 	return true;
+
 }
 
 void checkForNewWifiClient()
@@ -456,6 +468,7 @@ void checkForNewWifiClient()
 	if(newClient) {
 		DBPrintln("new WiFi client");
 		if(nbWiFiClient > 0) { // we only accept 1 client
+			DBPrintln("========== Only 1 client allowed ==========");
 			newClient.print("Already in use#");
 			newClient.flush();
 			newClient.stop();
@@ -465,13 +478,14 @@ void checkForNewWifiClient()
 			nbWiFiClient++;
 			shutterClient = newClient;
 			shutterClient.setNoDelay(true);
+			shutterClient.setTimeout(250);
 			DBPrintln("new wiFi client accepted");
 			DBPrintln("nb WiFi client = " + String(nbWiFiClient));
 			SendHello();
 		}
 	}
 
-	if((nbWiFiClient>0) && !shutterClient.connected()) {
+	if(nbWiFiClient>0 && !shutterClient.connected()) {
 		DBPrintln("WiFi client disconnected");
 		shutterClient.stop();
 		nbWiFiClient--;
@@ -560,10 +574,6 @@ void requestWiFiShutterData()
 		shutterClient.print(String(VOLTS_SHUTTER) + "#");
 		shutterClient.flush();
 		ReceiveWiFi(shutterClient);
-
-		shutterClient.print(String(SHUTTER_PANID) + "#");
-		shutterClient.flush();
-		ReceiveWiFi(shutterClient);
 	}
 }
 #endif
@@ -628,16 +638,33 @@ void checkShuterLowVoltage()
 
 void PingWiFiShutter()
 {
+	int nTime = 0;
 	if(PingTimer.elapsed() >= pingInterval) {
+		if(nbWiFiClient>0) {
+			nTime = WiFi.ping(shutterClient.remoteIP());
+			DBPrintln("WiFi client (" + IpAddress2String(shutterClient.remoteIP()) +") ping time : " + String(nTime));
+			if(nTime<0) {
+				DBPrintln("WiFi client disconnected");
+				shutterClient.stop();
+				nbWiFiClient--;
+			}
+		}
 		if(nbWiFiClient && shutterClient.connected()) {
+			DBPrintln("PingWiFiShutter");
 			shutterClient.print(String(SHUTTER_PING) + "#");
 			shutterClient.flush();
 			ReceiveWiFi(shutterClient);
 			PingTimer.reset();
 		}
+		else if(nbWiFiClient && !shutterClient.connected()) {
+			DBPrintln("shutterClient is gone");
+			shutterClient.stop();
+			nbWiFiClient--;
+		}
 	}
 }
 #endif
+
 #ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client)
 {
