@@ -175,10 +175,19 @@ DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 void setup()
 {
 	core0Ready = false;
+#ifdef USE_WIFI
 	nbWiFiClient = 0;
+#endif
 	nbEthernetClient = 0;
 	digitalWrite(FTDI_RESET, 0);
 	pinMode(FTDI_RESET, OUTPUT);
+
+#ifdef DEBUG
+	DebugPort.begin(115200);
+	delay(1000);
+	DBPrintln("========== RTI-Zone controller booting ==========");
+#endif
+
 
 #ifdef USE_ETHERNET
 	domeEthernet.setSPISpeed(30000000);
@@ -207,10 +216,6 @@ void setup()
 	Rotator->Stop();
 	Rotator->EnableMotor(false);
 	
-#ifdef DEBUG
-	DebugPort.begin(115200);
-	DBPrintln("========== RTI-Zone controller booting ==========");
-#endif
 
 #ifdef USE_WIFI
 	bSentHello = false;
@@ -434,6 +439,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	WiFi.mode(WIFI_AP);
 	WiFi.setHostname("RTI-Dome");
 	WiFi.config(ip);
+	lwipPollingPeriod(3);
 	WiFi.beginAP(sSSID.c_str(), sPassword.c_str());
 	if(WiFi.status() != WL_CONNECTED) {
 		DBPrintln("========== Failed to start WiFi AP ==========");

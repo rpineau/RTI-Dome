@@ -16,9 +16,7 @@
 #define DBPrintln(x)
 #endif // DEBUG
 
-
 #define ERR_NO_DATA	-1
-#define USE_EXT_EEPROM
 
 String IpAddress2String(const IPAddress& ipAddress)
 {
@@ -63,9 +61,10 @@ void setup()
 {
 	core0Ready = false;
 	bNeedReconnect = false;
-
 #ifdef DEBUG
 	DebugPort.begin(115200);
+	delay(1000);
+	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
 	Shutter = new ShutterClass();
 	watchdogTimer.reset();
@@ -149,7 +148,7 @@ bool configureWiFi()
 bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 {
 	shutterClient.stopAll();
-	// WiFi.config(ip);
+	WiFi.config(ip);
 	shutterWiFi.addAP(sSSID.c_str(), sPassword.c_str());
 	if(shutterWiFi.run()!=WL_CONNECTED) {
 		DBPrintln("========== Failed to start WiFi AP ==========");
@@ -158,8 +157,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 		return false;
 	}
 	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
-	delay(500);
-	
+	lwipPollingPeriod(3);	
 	if (!shutterClient.connect(WiFi.gatewayIP(), SHUTTER_PORT)) {
 		DBPrintln("connection failed");
 		bNeedReconnect=true;
@@ -201,8 +199,11 @@ void PingRotator()
 	}
 
 	shutterClient.print(wirelessMessage + "#");
+	shutterClient.flush();
+
 	// ask if it's raining
 	shutterClient.print( String(RAIN_SHUTTER) + "#");
+	shutterClient.flush();
 
 	// say hello :)
 	shutterClient.print( String(HELLO) + "#");

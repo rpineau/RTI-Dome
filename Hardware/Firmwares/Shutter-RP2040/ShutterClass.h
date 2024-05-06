@@ -13,7 +13,7 @@
 #define I2C_WIRE    Wire
 
 #define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  8
+#define I2C_CHUNK_SIZE  4
 
 #define WIFI_VAR_LEN 64
 
@@ -40,8 +40,8 @@
 #define RES_MULT    5.0 // resistor voltage divider on the shield
 
 
-#define     EEPROM_LOCATION         0  // not used with Arduino Due flash
-#define     EEPROM_SIGNATURE        2645
+#define     EEPROM_LOCATION         0
+#define     EEPROM_SIGNATURE        0002
 
 #define MIN_WATCHDOG_INTERVAL       15000
 #define MAX_WATCHDOG_INTERVAL       300000
@@ -163,16 +163,13 @@ private:
 	void            SetDefaultConfig();
 
 	bool        m_bDoEEPromSave;
-#ifdef USE_EXT_EEPROM
 	// eeprom
 	byte        m_EEPROMpageSize;
-
 	byte        readEEPROMByte(int deviceaddress, unsigned int eeaddress);
 	void        readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
 	void        readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
 	void        writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
 	void        writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
-#endif
 
 };
 
@@ -181,12 +178,11 @@ ShutterClass::ShutterClass()
 {
 	int sw1, sw2;
 
-#ifdef USE_EXT_EEPROM
 	DBPrintln("Using external AT24AA128 eeprom");
-	Wire1.begin();
+	Wire.setClock(100000);
+	Wire.begin();
 	// AT24AA128 page size is 64 byte
 	m_EEPROMpageSize = 64;
-#endif
 
 	m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
 
@@ -296,6 +292,12 @@ void ShutterClass::LoadFromEEProm()
 	memset(&m_Config, 0, sizeof(Configuration));
 	readEEPROMBuffer(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration) );
 
+	if (m_Config.signature != EEPROM_SIGNATURE) {
+		DBPrintln("Setting default value for new signature");
+		SetDefaultConfig();
+		SaveToEEProm();
+	}
+
 	DBPrintln("expected signature            : " + String(EEPROM_SIGNATURE));
 	DBPrintln("m_Config.signature            : " + String(m_Config.signature));
 	DBPrintln("m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
@@ -306,15 +308,14 @@ void ShutterClass::LoadFromEEProm()
 	DBPrintln("m_Config.watchdogInterval     : " + String(m_Config.watchdogInterval));
 	DBPrintln("m_Config.bHasDropShutter      : " + String(m_Config.bHasDropShutter?"Yes":"No"));
 	DBPrintln("m_Config.bTopShutterOpenFirst : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
+
+	DBPrintln("wifiIpConfig.ip        : " + IpAddress2String(m_Config.wifiIpConfig.ip));
+	DBPrintln("wifiIpConfig.sSSID     : " + String(m_Config.wifiIpConfig.sSSID));
+	DBPrintln("wifiIpConfig.sPassword : " + String(m_Config.wifiIpConfig.sPassword));
+
 	DBPrintln("wifiIpConfig.ip               : " + IpAddress2String(m_Config.wifiIpConfig.ip));
 	DBPrintln("wifiIpConfig.sSSID            : " + String(m_Config.wifiIpConfig.sSSID));
 	DBPrintln("wifiIpConfig.sPassword        : " + String(m_Config.wifiIpConfig.sPassword));
-
-	if (m_Config.signature != EEPROM_SIGNATURE) {
-		SetDefaultConfig();
-		SaveToEEProm();
-		return;
-	}
 
 	if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL)
 		m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
@@ -677,8 +678,6 @@ void ShutterClass::motorMoveRelative(const long amount)
 }
 
 
-
-
 //
 // EEProm code to access the AT24AA128 I2C eeprom
 //
@@ -687,14 +686,13 @@ void ShutterClass::motorMoveRelative(const long amount)
 byte ShutterClass::readEEPROMByte(int deviceaddress, unsigned int eeaddress)
 {
 	byte rdata = 0xFF;
-
-	Wire1.beginTransmission(deviceaddress);
-	Wire1.write((int)(eeaddress >> 8)); // MSB
-	Wire1.write((int)(eeaddress & 0xFF)); // LSB
-	Wire1.endTransmission();
-	Wire1.requestFrom(deviceaddress,1);
-	if (Wire1.available()) {
-		rdata = Wire1.read();
+	Wire.beginTransmission(deviceaddress);
+	Wire.write(byte(eeaddress >> 8)); // MSB
+	Wire.write(byte(eeaddress & 0xFF)); // LSB
+	Wire.endTransmission();
+	Wire.requestFrom(deviceaddress,1);
+	if (Wire.available()) {
+		rdata = Wire.read();
 	}
 	return rdata;
 }
@@ -725,16 +723,18 @@ void ShutterClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, b
 void ShutterClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
 {
 	int r = 0;
-	Wire1.beginTransmission(deviceaddress);
-	if (Wire1.endTransmission()==0) {
-	 	Wire1.beginTransmission(deviceaddress);
-		Wire1.write(eeaddress >> 8);
-		Wire1.write(eeaddress & 0xFF);
-		if (Wire1.endTransmission()==0) {
+
+
+	Wire.beginTransmission(deviceaddress);
+	if (Wire.endTransmission()==0) {
+	 	Wire.beginTransmission(deviceaddress);
+		Wire.write(byte(eeaddress >> 8));
+		Wire.write(byte(eeaddress & 0xFF));
+		if (Wire.endTransmission()==0) {
 			r = 0;
-			Wire1.requestFrom(deviceaddress, length);
-			while (Wire1.available() > 0 && r<length) {
-				data[offset+r] = (byte)Wire1.read();
+			Wire.requestFrom(deviceaddress, length);
+			while (Wire.available() > 0 && r<length) {
+				data[offset+r] = (byte)Wire.read();
 				r++;
 			}
 		}
@@ -756,7 +756,7 @@ void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *
 	while (c > 0) {
 		// calc offset in page
 		offP = eeaddress % m_EEPROMpageSize;
-		// maximal I2C_CHUNK_SIZE bytes to write
+		// maximal 30 bytes to write
 		nc = min(min(c, I2C_CHUNK_SIZE), m_EEPROMpageSize - offP);
 		writeEEPROMBlock(deviceaddress, eeaddress, data, offD, nc);
 		c-=nc;
@@ -769,19 +769,17 @@ void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *
 void ShutterClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
 {
 
-	Wire1.beginTransmission(deviceaddress);
-	if (Wire1.endTransmission()==0) {
-	 	Wire1.beginTransmission(deviceaddress);
-		Wire1.write(eeaddress >> 8);
-		Wire1.write(eeaddress & 0xFF);
+	Wire.beginTransmission(deviceaddress);
+	if (Wire.endTransmission()==0) {
+	 	Wire.beginTransmission(deviceaddress);
+		Wire.write(byte(eeaddress >> 8));
+		Wire.write(byte(eeaddress & 0xFF));
 		byte *adr = data+offset;
-		Wire1.write(adr, length);
-		Wire1.endTransmission();
+		Wire.write(adr, length);
+		Wire.endTransmission();
 		delay(20);
 	} else {
 		DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
 	}
 }
-
-
 

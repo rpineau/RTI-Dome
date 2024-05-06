@@ -5,17 +5,13 @@
 
 #include <atomic>
 
-#ifdef USE_EXT_EEPROM
-
 #include <extEEPROM.h>
 #include <Wire.h>
 
 #define I2C_WIRE    Wire
 
 #define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  8
-
-#endif // USE_EXT_EEPROM
+#define I2C_CHUNK_SIZE  4
 
 
 #include <AccelStepper.h>
@@ -78,7 +74,7 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 
 // used to offset the config location.. at some point.
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
-#define EEPROM_SIGNATURE    2646
+#define EEPROM_SIGNATURE    0001
 
 #define DEFAULT_PANID   0x4242
 
@@ -264,7 +260,6 @@ private:
 	std::atomic<bool>	m_bIsRaining;
 
 	bool        m_bDoEEPromSave;
-#ifdef USE_EXT_EEPROM
 	// eeprom
 	byte        m_EEPROMpageSize;
 
@@ -273,19 +268,17 @@ private:
 	void        readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
 	void        writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
 	void        writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
-#endif
 };
 
 
 
 RotatorClass::RotatorClass()
 {
-#ifdef USE_EXT_EEPROM
 	DBPrintln("Using external AT24AA128 eeprom");
-	I2C_WIRE.begin();
+	Wire.setClock(100000);
+	Wire.begin();
 	// AT24AA128 page size is 64 byte
 	m_EEPROMpageSize = 64;
-#endif
 
 	m_seekMode = NOT_MOVING;
 	m_bWasRunning = false;
@@ -403,13 +396,7 @@ void RotatorClass::SaveToEEProm()
 
 	m_Config.signature = EEPROM_SIGNATURE;
 
-#ifdef USE_EXT_EEPROM
 	writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
-#else
-	byte data[sizeof(Configuration)];
-	memcpy(data, &m_Config, sizeof(Configuration));
-	dueFlashStorage.write(0, data, sizeof(Configuration));
-#endif
 }
 
 bool RotatorClass::LoadFromEEProm()
@@ -420,13 +407,7 @@ bool RotatorClass::LoadFromEEProm()
 	//  zero the structure so currently unused parts
 	//  dont end up loaded with random garbage
 	memset(&m_Config, 0, sizeof(Configuration));
-#ifdef USE_EXT_EEPROM
 	readEEPROMBuffer(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration) );
-
-#else
-	byte* data = dueFlashStorage.readAddress(0);
-	memcpy(&m_Config, data, sizeof(Configuration));
-#endif
 
 	if (m_Config.signature != EEPROM_SIGNATURE) {
 		DBPrintln("Setting default value for new signature");
@@ -434,7 +415,8 @@ bool RotatorClass::LoadFromEEProm()
 		SaveToEEProm();
 		response = false;
 	}
-	DBPrintln("signature         : " + String(m_Config.signature));
+	DBPrintln("expected signature : " + String(EEPROM_SIGNATURE));
+	DBPrintln("m_Config.signature : " + String(m_Config.signature));
 	DBPrintln("maxSpeed          : " + String(m_Config.maxSpeed));
 	DBPrintln("acceleration      : " + String(m_Config.acceleration));
 	DBPrintln("stepsPerRotation  : " + String(m_Config.stepsPerRotation));
@@ -1061,8 +1043,6 @@ void RotatorClass::motorMoveRelative(const long howFar)
 	stepper.move(howFar);
 }
 
-#ifdef USE_EXT_EEPROM
-
 //
 // EEProm code to access the AT24AA128 I2C eeprom
 //
@@ -1071,13 +1051,13 @@ void RotatorClass::motorMoveRelative(const long howFar)
 byte RotatorClass::readEEPROMByte(int deviceaddress, unsigned int eeaddress)
 {
 	byte rdata = 0xFF;
-	I2C_WIRE.beginTransmission(deviceaddress);
-	I2C_WIRE.write(byte(eeaddress >> 8)); // MSB
-	I2C_WIRE.write(byte(eeaddress & 0xFF)); // LSB
-	I2C_WIRE.endTransmission();
-	I2C_WIRE.requestFrom(deviceaddress,1);
-	if (I2C_WIRE.available()) {
-		rdata = I2C_WIRE.read();
+	Wire.beginTransmission(deviceaddress);
+	Wire.write(byte(eeaddress >> 8)); // MSB
+	Wire.write(byte(eeaddress & 0xFF)); // LSB
+	Wire.endTransmission();
+	Wire.requestFrom(deviceaddress,1);
+	if (Wire.available()) {
+		rdata = Wire.read();
 	}
 	return rdata;
 }
@@ -1110,16 +1090,16 @@ void RotatorClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, by
 	int r = 0;
 
 
-	I2C_WIRE.beginTransmission(deviceaddress);
-	if (I2C_WIRE.endTransmission()==0) {
-	 	I2C_WIRE.beginTransmission(deviceaddress);
-		I2C_WIRE.write(byte(eeaddress >> 8));
-		I2C_WIRE.write(byte(eeaddress & 0xFF));
-		if (I2C_WIRE.endTransmission()==0) {
+	Wire.beginTransmission(deviceaddress);
+	if (Wire.endTransmission()==0) {
+	 	Wire.beginTransmission(deviceaddress);
+		Wire.write(byte(eeaddress >> 8));
+		Wire.write(byte(eeaddress & 0xFF));
+		if (Wire.endTransmission()==0) {
 			r = 0;
-			I2C_WIRE.requestFrom(deviceaddress, length);
-			while (I2C_WIRE.available() > 0 && r<length) {
-				data[offset+r] = (byte)I2C_WIRE.read();
+			Wire.requestFrom(deviceaddress, length);
+			while (Wire.available() > 0 && r<length) {
+				data[offset+r] = (byte)Wire.read();
 				r++;
 			}
 		}
@@ -1154,21 +1134,20 @@ void RotatorClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *
 void RotatorClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
 {
 
-	I2C_WIRE.beginTransmission(deviceaddress);
-	if (I2C_WIRE.endTransmission()==0) {
-	 	I2C_WIRE.beginTransmission(deviceaddress);
-		I2C_WIRE.write(byte(eeaddress >> 8));
-		I2C_WIRE.write(byte(eeaddress & 0xFF));
+	Wire.beginTransmission(deviceaddress);
+	if (Wire.endTransmission()==0) {
+	 	Wire.beginTransmission(deviceaddress);
+		Wire.write(byte(eeaddress >> 8));
+		Wire.write(byte(eeaddress & 0xFF));
 		byte *adr = data+offset;
-		I2C_WIRE.write(adr, length);
-		I2C_WIRE.endTransmission();
+		Wire.write(adr, length);
+		Wire.endTransmission();
 		delay(20);
 	} else {
 		DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
 	}
 }
 
-#endif
 
 
 

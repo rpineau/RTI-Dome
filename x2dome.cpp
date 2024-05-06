@@ -246,13 +246,13 @@ int X2Dome::execModalSettingsDialog()
 		}
 		
 		// panID
-		dx->setEnabled("panID", true);
-		dx->setEnabled("pushButton_2", true);
-		nErr = m_RTIDome.getPanId(m_nPanId);
-		if(nErr)
-			m_nPanId = 0;
-		dx->setPropertyInt("panID", "value", m_nPanId);
-		
+		//dx->setEnabled("panID", true);
+		//dx->setEnabled("pushButton_2", true);
+		//nErr = m_RTIDome.getPanId(m_nPanId);
+		//if(nErr)
+		//	m_nPanId = 0;
+		//dx->setPropertyInt("panID", "value", m_nPanId);
+
 		m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
 		dx->setPropertyDouble("lowRotBatCutOff","value", dDomeCutOff);
 		sTmpBuf << std::fixed << std::setprecision(2) << dDomeBattery << " V";
