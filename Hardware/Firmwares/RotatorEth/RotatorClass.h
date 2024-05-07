@@ -278,7 +278,6 @@ public:
 	void        Run();
 	void        Stop();
 	void        motorStop();
-	void        motorMoveTo(const long newPosition);
 	void        motorMoveRelative(const long howFar);
 	void        stopInterrupt();
 	void        homeInterrupt();
@@ -720,19 +719,12 @@ void RotatorClass::SyncPosition(const float newAzimuth)
 void RotatorClass::GoToAzimuth(const float newHeading)
 {
 	// Goto new target
-	float currentHeading;
-	float delta;
+	double currentHeading;
+	double delta;
 
-	DBPrintln("GoToAzimuth");
 	currentHeading = GetAzimuth();
-	delta = GetAngularDistance(currentHeading, newHeading) * m_fStepsPerDegree;
-	delta = delta - int(delta) % STEP_TYPE;
-	if(delta == 0) {
-		m_nMoveDirection = MOVE_NONE;
-		return;
-	}
+	delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
 	m_seekMode = MOVING_GOTO;
-
 	MoveRelative(delta);
 }
 
@@ -990,12 +982,17 @@ void RotatorClass::MoveRelative(const long howFar)
 	// Tells dome to rotate more than 360 degrees
 	// from current position. Stopped only by
 	// homing or calibrating routine.
+
 	m_nMoveDirection = MOVE_NEGATIVE;
 	if (howFar > 0)
 		m_nMoveDirection = MOVE_POSITIVE;
-	else if(howFar == 0 )
+	else if(howFar == 0 ) {
 		m_nMoveDirection = MOVE_NONE;
+		m_seekMode = NOT_MOVING;
+		return;
+		}
 	m_bisAtHome = false;
+
 	motorMoveRelative(howFar);
 }
 
@@ -1097,11 +1094,32 @@ void RotatorClass::Run()
 				// we're at the home position
 				m_bisAtHome = true;
 			}
+			position = stepper.currentPosition();
+			while (position >= m_Config.stepsPerRotation)
+				position -= m_Config.stepsPerRotation;
+
+			while (position < 0)
+				position += m_Config.stepsPerRotation;
+
+			if(position == (m_Config.stepsPerRotation -1))
+				position = 0;
+			stepper.setCurrentPosition(position);
 		}
+
 		if(m_seekMode == MOVING_GOTO) {
 			m_nMoveDirection = MOVE_NONE;
 			EnableMotor(false);
 			m_seekMode = NOT_MOVING;
+			position = stepper.currentPosition();
+			while (position >= m_Config.stepsPerRotation)
+				position -= m_Config.stepsPerRotation;
+
+			while (position < 0)
+				position += m_Config.stepsPerRotation;
+
+			if(position == (m_Config.stepsPerRotation -1))
+				position = 0;
+			stepper.setCurrentPosition(position);
 		}
 	} // end if (m_bWasRunning)
 }
@@ -1133,18 +1151,6 @@ void RotatorClass::stopInterrupt()
 	DBPrintln("Stopping motor interrupt");
 	// stop interrupt timer
 	stopTimer(TC1, 0, TC3_IRQn);
-}
-
-void RotatorClass::motorMoveTo(const long newPosition)
-{
-	EnableMotor(true);
-	stepper.moveTo(newPosition);
-	DBPrintln("Starting motor interrupt");
-	int nFreq;
-	nFreq = m_Config.maxSpeed *3 >20000 ? 20000 : m_Config.maxSpeed*3;
-	// start interrupt timer
-	// AccelStepper run() is called under a timer interrupt
-	startTimer(TC1, 0, TC3_IRQn, nFreq);
 }
 
 void RotatorClass::motorMoveRelative(const long howFar)
