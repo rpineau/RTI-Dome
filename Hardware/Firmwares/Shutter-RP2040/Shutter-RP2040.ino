@@ -154,6 +154,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	}
 	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
 	lwipPollingPeriod(3);	
+	WiFi.setTimeout(25);
 	if (!shutterClient.connect(WiFi.gatewayIP(), SHUTTER_PORT)) {
 		DBPrintln("connection failed");
 		bNeedReconnect=true;

@@ -437,6 +437,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 		return false;
 	}
 	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
+	WiFi.setTimeout(25);
 	if(shutterServer) {
 		shutterServer->stop();
 		delete shutterServer;
