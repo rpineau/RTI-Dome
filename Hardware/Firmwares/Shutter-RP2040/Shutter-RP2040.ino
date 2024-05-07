@@ -26,16 +26,14 @@ String IpAddress2String(const IPAddress& ipAddress)
 		String(ipAddress[3]); 
 }
 
+const String version = "2.645";
+#include "dome_commands.h"
 #include "ShutterClass.h"
 
 #ifdef DEBUG
 String serialBuffer;
 #endif
 String wifiBuffer;
-
-const String version = "2.645";
-
-#include "dome_commands.h"
 
 #include <WiFi.h>
 #define SHUTTER_PORT 2424
@@ -47,14 +45,12 @@ void ProcessWifi();
 WiFiMulti shutterWiFi;
 WiFiClient shutterClient;
 std::atomic<bool> bNeedReconnect = false;
-
-ShutterClass *Shutter = NULL;
-
 std::atomic<bool> isRaining = false;
 std::atomic<bool> needFirstPing = true;
 std::atomic<bool> core0Ready = false;
 StopWatch watchdogTimer;
 StopWatch reconnectTimer;
+ShutterClass *Shutter = nullptr;
 
 
 void setup()

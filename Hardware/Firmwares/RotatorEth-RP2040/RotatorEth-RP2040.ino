@@ -9,13 +9,10 @@
 #include "Arduino.h"
 
 #define DEBUG   // enable debug to DebugPort serial port
-#ifdef DEBUG
-#define DebugPort Serial    // Programming port
-#endif
-
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
+#define DebugPort Serial    // Programming port
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
@@ -26,20 +23,15 @@
 #define DBPrintHex(x)
 #endif // DEBUG
 
-#define MAX_TIMEOUT 10
-
 #define VERSION "2.645"
+#define MAX_TIMEOUT 10
 
 #define USE_EXT_EEPROM
 #define USE_ETHERNET
 #define USE_ALPACA
-#define USE_WIFI
-
 // if uncommented, USE_WIFI will enable all code related to the shutter over WiFi.
 // This is useful for people who only want to automate the rotation.
-#ifdef USE_WIFI
-#pragma message "Local WiFi shutter enable"
-#endif
+#define USE_WIFI
 
 #define Computer Serial2     // USB FTDI
 #define FTDI_RESET  28
@@ -62,37 +54,37 @@ String IpAddress2String(const IPAddress& ipAddress)
 #define ETHERNET_CS     17
 #define ETHERNET_INT	27
 #define ETHERNET_RESET  20
-Wiznet5500lwIP domeEthernet(ETHERNET_CS, SPI, ETHERNET_INT);
 #define EthernetClient WiFiClient
+#define CMD_SERVER_PORT 2323
+Wiznet5500lwIP domeEthernet(ETHERNET_CS, SPI, ETHERNET_INT);
 uint32_t uidBuffer[4];  // Board unique ID
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
-#define CMD_SERVER_PORT 2323
-// global variable for the IP config and to check if we detect the ethernet card
-std::atomic<bool> ethernetPresent;
 IPConfig ServerConfig;
+std::atomic<bool> ethernetPresent = false;
 WiFiServer *domeServer = nullptr;
 EthernetClient domeClient;
-int nbEthernetClient;
-String networkBuffer;
-String sLocalIPAdress;
+int nbEthernetClient = 0;
+String networkBuffer = "";
+String sLocalIPAdress = "";
 #endif // USE_ETHERNET
 
 #ifdef USE_WIFI
+#pragma message "Local WiFi shutter enable"
 #include "RemoteShutterClass.h"
-RemoteShutterClass RemoteShutter;
 #include <WiFi.h>
 #define SHUTTER_PORT 2424
-std::atomic<bool> wifiPresent;
+std::atomic<bool> wifiPresent = false;
 WIFIConfig wifiConfig;
 WiFiServer *shutterServer = nullptr;
 WiFiClient shutterClient;
-String wifiBuffer;
-int nbWiFiClient;
+String wifiBuffer = "";
+int nbWiFiClient = 0;
 String sLocalWifiIPAddress;
-std::atomic<bool> bGotHelloFromShutter;
+std::atomic<bool> bGotHelloFromShutter = false;
+RemoteShutterClass RemoteShutter;
 #endif
 
-String computerBuffer;
+String computerBuffer = "";
 
 std::atomic<bool> core0Ready = false;
 
@@ -233,7 +225,7 @@ void setup()
 #endif // USE_ALPACA
 #endif // USE_ETHERNET
 #ifdef DEBUG
-	Computer.println("Online");
+	DBPrintln("Online");
 #endif
 
 	core0Ready = true;
@@ -439,7 +431,6 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	WiFi.mode(WIFI_AP);
 	WiFi.setHostname("RTI-Dome");
 	WiFi.config(ip);
-	lwipPollingPeriod(3);
 	WiFi.beginAP(sSSID.c_str(), sPassword.c_str());
 	if(WiFi.status() != WL_CONNECTED) {
 		DBPrintln("========== Failed to start WiFi AP ==========");
