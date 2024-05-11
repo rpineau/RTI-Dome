@@ -9226,6 +9226,40 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <rectangle x1="4.1951" y1="-5.0749" x2="4.6949" y2="-3.745" layer="51"/>
 <rectangle x1="5.4651" y1="-5.0749" x2="5.9649" y2="-3.745" layer="51"/>
 </package>
+<package name="JP2" urn="urn:adsk.eagle:footprint:37318300/1" library_version="37">
+<description>&lt;b&gt;JUMPER&lt;/b&gt;</description>
+<wire x1="-3.81" y1="-1.016" x2="-3.81" y2="1.016" width="0.1524" layer="21"/>
+<wire x1="3.556" y1="1.27" x2="1.524" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="1.016" x2="1.524" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="3.556" y1="-1.27" x2="1.524" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="1.27" y1="-1.016" x2="1.524" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="3.556" y1="-1.27" x2="3.81" y2="-1.016" width="0.1524" layer="21"/>
+<wire x1="3.556" y1="1.27" x2="3.81" y2="1.016" width="0.1524" layer="21"/>
+<wire x1="3.81" y1="1.016" x2="3.81" y2="-1.016" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="1.27" x2="1.27" y2="1.016" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="1.27" x2="-1.016" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="1.016" x2="-1.016" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-1.524" y1="1.27" x2="-1.27" y2="1.016" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="1.016" x2="-3.556" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-1.524" y1="1.27" x2="-3.556" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="-1.27" x2="1.27" y2="-1.016" width="0.1524" layer="21"/>
+<wire x1="-1.27" y1="-1.016" x2="-1.016" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-1.524" y1="-1.27" x2="-1.27" y2="-1.016" width="0.1524" layer="21"/>
+<wire x1="-3.81" y1="-1.016" x2="-3.556" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="1.016" y1="-1.27" x2="-1.016" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-1.524" y1="-1.27" x2="-3.556" y2="-1.27" width="0.1524" layer="21"/>
+<pad name="1" x="-2.54" y="0" drill="0.9144" shape="octagon" rot="R90"/>
+<pad name="2" x="0" y="0" drill="0.9144" shape="octagon" rot="R90"/>
+<pad name="3" x="2.54" y="0" drill="0.9144" shape="octagon" rot="R90"/>
+<text x="-3.556" y="1.651" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-2.54" y="-2.667" size="0.9906" layer="21" ratio="12">1</text>
+<text x="0" y="-2.667" size="0.9906" layer="21" ratio="12">2</text>
+<text x="2.54" y="-2.667" size="0.9906" layer="21" ratio="12">3</text>
+<text x="-3.556" y="-4.318" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<rectangle x1="-2.8448" y1="-0.3048" x2="-2.2352" y2="0.3048" layer="51"/>
+<rectangle x1="-0.3048" y1="-0.3048" x2="0.3048" y2="0.3048" layer="51"/>
+<rectangle x1="2.2352" y1="-0.3048" x2="2.8448" y2="0.3048" layer="51"/>
+</package>
 </packages>
 <packages3d>
 <package3d name="LOGO_BIG" urn="urn:adsk.eagle:package:37318421/1" type="empty" library_version="2" library_locally_modified="yes">
@@ -9272,6 +9306,12 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <package3d name="SOIC20" urn="urn:adsk.eagle:package:37318369/1" type="box" library_version="25">
 <packageinstances>
 <packageinstance name="SOIC20"/>
+</packageinstances>
+</package3d>
+<package3d name="JP2" urn="urn:adsk.eagle:package:37318384/1" type="box" library_version="37">
+<description>&lt;b&gt;JUMPER&lt;/b&gt;</description>
+<packageinstances>
+<packageinstance name="JP2"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -12088,6 +12128,23 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <pin name="VCC" x="-7.62" y="0" visible="off" length="middle" direction="pwr"/>
 <pin name="GND" x="7.62" y="0" visible="off" length="middle" direction="pwr" rot="R180"/>
 </symbol>
+<symbol name="JP3E" urn="urn:adsk.eagle:symbol:37318221/1" library_version="37">
+<wire x1="2.54" y1="0" x2="2.54" y2="1.27" width="0.1524" layer="94"/>
+<wire x1="0" y1="0" x2="0" y2="1.27" width="0.1524" layer="94"/>
+<wire x1="-2.54" y1="0" x2="-2.54" y2="1.27" width="0.1524" layer="94"/>
+<wire x1="2.54" y1="2.54" x2="2.54" y2="1.27" width="0.4064" layer="94"/>
+<wire x1="0" y1="2.54" x2="0" y2="1.27" width="0.4064" layer="94"/>
+<wire x1="-2.54" y1="2.54" x2="-2.54" y2="1.27" width="0.4064" layer="94"/>
+<wire x1="-3.175" y1="0" x2="3.175" y2="0" width="0.4064" layer="94"/>
+<wire x1="3.175" y1="0" x2="3.175" y2="0.635" width="0.4064" layer="94"/>
+<wire x1="3.175" y1="0.635" x2="-3.175" y2="0.635" width="0.4064" layer="94"/>
+<wire x1="-3.175" y1="0.635" x2="-3.175" y2="0" width="0.4064" layer="94"/>
+<text x="-3.81" y="0" size="1.778" layer="95" rot="R90">&gt;NAME</text>
+<text x="5.715" y="0" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
+<pin name="1" x="-2.54" y="-2.54" visible="pad" length="short" direction="pas" rot="R90"/>
+<pin name="2" x="0" y="-2.54" visible="pad" length="short" direction="pas" rot="R90"/>
+<pin name="3" x="2.54" y="-2.54" visible="pad" length="short" direction="pas" rot="R90"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="RTI-LOGO" urn="urn:adsk.eagle:component:37318498/1" library_version="2" library_locally_modified="yes">
@@ -12286,6 +12343,27 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </connects>
 <package3dinstances>
 <package3dinstance package3d_urn="urn:adsk.eagle:package:37318369/1"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="JP2E" urn="urn:adsk.eagle:component:37318441/1" prefix="JP" uservalue="yes" library_version="37">
+<description>&lt;b&gt;JUMPER&lt;/b&gt;</description>
+<gates>
+<gate name="1" symbol="JP3E" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="JP2">
+<connects>
+<connect gate="1" pin="1" pad="1"/>
+<connect gate="1" pin="2" pad="2"/>
+<connect gate="1" pin="3" pad="3"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37318384/1"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -21012,7 +21090,8 @@ at 30/07/2012 11:22:31</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -21236,9 +21315,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value="
-WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
-"/>
+<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>
@@ -22013,6 +22090,8 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <part name="IC1" library="REG1117FA-5.0_500" library_urn="urn:adsk.eagle:library:43937876" deviceset="REG1117FA-5.0_500" device="" package3d_urn="urn:adsk.eagle:package:43937879/3"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32D" device="" package3d_urn="urn:adsk.eagle:package:44270578/3"/>
+<part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/1"/>
+<part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -22431,6 +22510,13 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <attribute name="NAME" x="96.5028" y="80.6743" size="1.78" layer="95"/>
 <attribute name="VALUE" x="96.5037" y="26.6402" size="1.7799" layer="96"/>
 </instance>
+<instance part="JP1" gate="1" x="168.91" y="71.12" smashed="yes">
+<attribute name="NAME" x="165.1" y="71.12" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="174.625" y="71.12" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="GND6" gate="1" x="171.45" y="59.69" smashed="yes">
+<attribute name="VALUE" x="168.91" y="57.15" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -22719,6 +22805,11 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <wire x1="134.62" y1="77.47" x2="132.08" y2="77.47" width="0.1524" layer="91"/>
 <label x="134.62" y="77.47" size="1.016" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="JP1" gate="1" pin="3"/>
+<wire x1="171.45" y1="68.58" x2="171.45" y2="62.23" width="0.1524" layer="91"/>
+<pinref part="GND6" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="+12V" class="1">
 <segment>
@@ -22768,8 +22859,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y6"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="15.24" x2="59.69" y2="15.24" width="0.1524" layer="91"/>
-<label x="57.15" y="15.24" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="88.9" y1="59.69" x2="91.44" y2="59.69" width="0.1524" layer="91"/>
+<label x="88.9" y="59.69" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO33"/>
 </segment>
 </net>
 <net name="HOME_SHUTTER_CLOSED" class="0">
@@ -22779,8 +22871,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y1"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="38.1" x2="59.69" y2="38.1" width="0.1524" layer="91"/>
-<label x="57.15" y="38.1" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="88.9" y1="46.99" x2="91.44" y2="46.99" width="0.1524" layer="91"/>
+<label x="88.9" y="46.99" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO12"/>
 </segment>
 </net>
 <net name="BUTTON_EAST_OPEN" class="0">
@@ -22790,8 +22883,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y3"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="25.4" x2="59.69" y2="25.4" width="0.1524" layer="91"/>
-<label x="57.15" y="25.4" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="88.9" y1="52.07" x2="91.44" y2="52.07" width="0.1524" layer="91"/>
+<label x="88.9" y="52.07" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO27"/>
 </segment>
 </net>
 <net name="BUTTON_WEST_CLOSE" class="0">
@@ -22801,8 +22895,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y2"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="27.94" x2="59.69" y2="27.94" width="0.1524" layer="91"/>
-<label x="57.15" y="27.94" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="88.9" y1="49.53" x2="91.44" y2="49.53" width="0.1524" layer="91"/>
+<label x="88.9" y="49.53" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO14"/>
 </segment>
 </net>
 <net name="RG-11" class="0">
@@ -22812,9 +22907,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y5"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="20.32" x2="58.42" y2="20.32" width="0.1524" layer="91"/>
-<wire x1="58.42" y1="20.32" x2="59.69" y2="20.32" width="0.1524" layer="91"/>
-<label x="57.15" y="20.32" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO25"/>
+<wire x1="88.9" y1="57.15" x2="91.44" y2="57.15" width="0.1524" layer="91"/>
+<label x="88.9" y="57.15" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -23113,8 +23208,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y7"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="12.7" x2="59.69" y2="12.7" width="0.1524" layer="91"/>
-<label x="57.15" y="12.7" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="134.62" y1="41.91" x2="132.08" y2="41.91" width="0.1524" layer="91"/>
+<label x="134.62" y="41.91" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO2"/>
 </segment>
 </net>
 <net name="SDA" class="0">
@@ -23223,8 +23319,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y0"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="40.64" x2="59.69" y2="40.64" width="0.1524" layer="91"/>
-<label x="57.15" y="40.64" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="88.9" y1="41.91" x2="91.44" y2="41.91" width="0.1524" layer="91"/>
+<label x="88.9" y="41.91" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO13"/>
 </segment>
 </net>
 <net name="SPARE2" class="0">
@@ -23234,8 +23331,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y4"/>
 </segment>
 <segment>
-<wire x1="57.15" y1="22.86" x2="59.69" y2="22.86" width="0.1524" layer="91"/>
-<label x="57.15" y="22.86" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="88.9" y1="54.61" x2="91.44" y2="54.61" width="0.1524" layer="91"/>
+<label x="88.9" y="54.61" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO26"/>
 </segment>
 </net>
 <net name="SDI" class="0">
@@ -23437,17 +23535,11 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <label x="295.91" y="181.61" size="1.016" layer="95" ratio="7" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="ETHERNET_CS" class="0">
+<net name="ETH_CS" class="0">
 <segment>
 <pinref part="U2" gate="G$1" pin="IO5"/>
 <wire x1="134.62" y1="54.61" x2="132.08" y2="54.61" width="0.1524" layer="91"/>
 <label x="134.62" y="54.61" size="1.016" layer="95" xref="yes"/>
-</segment>
-</net>
-<net name="N$14" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO2"/>
-<wire x1="134.62" y1="41.91" x2="132.08" y2="41.91" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$15" class="0">
@@ -23474,48 +23566,6 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <wire x1="88.9" y1="69.85" x2="91.44" y2="69.85" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$40" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO33"/>
-<wire x1="88.9" y1="59.69" x2="91.44" y2="59.69" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$41" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO25"/>
-<wire x1="88.9" y1="57.15" x2="91.44" y2="57.15" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$42" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO26"/>
-<wire x1="88.9" y1="54.61" x2="91.44" y2="54.61" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$43" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO27"/>
-<wire x1="88.9" y1="52.07" x2="91.44" y2="52.07" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$44" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO14"/>
-<wire x1="88.9" y1="49.53" x2="91.44" y2="49.53" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$45" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO12"/>
-<wire x1="88.9" y1="46.99" x2="91.44" y2="46.99" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$46" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO13"/>
-<wire x1="88.9" y1="41.91" x2="91.44" y2="41.91" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="TX2" class="0">
 <segment>
 <pinref part="U2" gate="G$1" pin="IO17"/>
@@ -23528,6 +23578,32 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U2" gate="G$1" pin="IO16"/>
 <wire x1="134.62" y1="49.53" x2="132.08" y2="49.53" width="0.1524" layer="91"/>
 <label x="134.62" y="49.53" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="TXD0" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="TXD0"/>
+<wire x1="134.62" y1="69.85" x2="132.08" y2="69.85" width="0.1524" layer="91"/>
+<label x="134.62" y="69.85" size="1.016" layer="95" ratio="4" xref="yes"/>
+</segment>
+<segment>
+<pinref part="JP1" gate="1" pin="1"/>
+<wire x1="163.83" y1="66.04" x2="166.37" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="166.37" y1="66.04" x2="166.37" y2="68.58" width="0.1524" layer="91"/>
+<label x="163.83" y="66.04" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="RXD0" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="RXD0"/>
+<wire x1="134.62" y1="67.31" x2="132.08" y2="67.31" width="0.1524" layer="91"/>
+<label x="134.62" y="67.31" size="1.016" layer="95" ratio="4" xref="yes"/>
+</segment>
+<segment>
+<pinref part="JP1" gate="1" pin="2"/>
+<wire x1="163.83" y1="63.5" x2="168.91" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="168.91" y1="63.5" x2="168.91" y2="68.58" width="0.1524" layer="91"/>
+<label x="163.83" y="63.5" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
