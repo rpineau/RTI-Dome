@@ -21090,8 +21090,7 @@ at 30/07/2012 11:22:31</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
-</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -21204,6 +21203,62 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <pad name="21" x="12.7" y="-23.42" drill="1.04"/>
 <pad name="20" x="12.7" y="-25.96" drill="1.04"/>
 </package>
+<package name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:footprint:44294360/1" library_version="5">
+<wire x1="-13.95" y1="21.435" x2="13.95" y2="21.435" width="0.127" layer="51"/>
+<wire x1="13.95" y1="21.435" x2="13.95" y2="-27.25" width="0.127" layer="51"/>
+<wire x1="13.95" y1="-27.25" x2="-13.95" y2="-27.25" width="0.127" layer="51"/>
+<wire x1="-13.95" y1="-27.25" x2="-13.95" y2="21.435" width="0.127" layer="51"/>
+<wire x1="-13.95" y1="-27.25" x2="-13.95" y2="21.435" width="0.127" layer="21"/>
+<wire x1="-13.95" y1="21.435" x2="13.95" y2="21.435" width="0.127" layer="21"/>
+<wire x1="13.95" y1="21.435" x2="13.95" y2="-27.25" width="0.127" layer="21"/>
+<wire x1="13.95" y1="-27.25" x2="-13.95" y2="-27.25" width="0.127" layer="21"/>
+<wire x1="-14.2" y1="21.685" x2="14.2" y2="21.685" width="0.05" layer="39"/>
+<wire x1="14.2" y1="21.685" x2="14.2" y2="-27.5" width="0.05" layer="39"/>
+<wire x1="14.2" y1="-27.5" x2="-14.2" y2="-27.5" width="0.05" layer="39"/>
+<wire x1="-14.2" y1="-27.5" x2="-14.2" y2="21.685" width="0.05" layer="39"/>
+<text x="-14.0054" y="22.0958" size="1.270490625" layer="25">&gt;NAME</text>
+<text x="-14.0146" y="-28.9302" size="1.27133125" layer="27">&gt;VALUE</text>
+<circle x="-14.6" y="19.76" radius="0.1" width="0.2" layer="21"/>
+<circle x="-14.6" y="19.76" radius="0.1" width="0.2" layer="51"/>
+<pad name="1" x="-12.7" y="19.76" drill="1.04" shape="square"/>
+<pad name="2" x="-12.7" y="17.22" drill="1.04"/>
+<pad name="19" x="-12.7" y="-25.96" drill="1.04"/>
+<pad name="3" x="-12.7" y="14.68" drill="1.04"/>
+<pad name="4" x="-12.7" y="12.14" drill="1.04"/>
+<pad name="5" x="-12.7" y="9.6" drill="1.04"/>
+<pad name="6" x="-12.7" y="7.06" drill="1.04"/>
+<pad name="7" x="-12.7" y="4.52" drill="1.04"/>
+<pad name="8" x="-12.7" y="1.98" drill="1.04"/>
+<pad name="9" x="-12.7" y="-0.56" drill="1.04"/>
+<pad name="10" x="-12.7" y="-3.1" drill="1.04"/>
+<pad name="11" x="-12.7" y="-5.64" drill="1.04"/>
+<pad name="12" x="-12.7" y="-8.18" drill="1.04"/>
+<pad name="13" x="-12.7" y="-10.72" drill="1.04"/>
+<pad name="14" x="-12.7" y="-13.26" drill="1.04"/>
+<pad name="15" x="-12.7" y="-15.8" drill="1.04"/>
+<pad name="16" x="-12.7" y="-18.34" drill="1.04"/>
+<pad name="17" x="-12.7" y="-20.88" drill="1.04"/>
+<pad name="18" x="-12.7" y="-23.42" drill="1.04"/>
+<pad name="38" x="12.7" y="19.76" drill="1.04"/>
+<pad name="37" x="12.7" y="17.22" drill="1.04"/>
+<pad name="36" x="12.7" y="14.68" drill="1.04"/>
+<pad name="35" x="12.7" y="12.14" drill="1.04"/>
+<pad name="34" x="12.7" y="9.6" drill="1.04"/>
+<pad name="33" x="12.7" y="7.06" drill="1.04"/>
+<pad name="32" x="12.7" y="4.52" drill="1.04"/>
+<pad name="31" x="12.7" y="1.98" drill="1.04"/>
+<pad name="30" x="12.7" y="-0.56" drill="1.04"/>
+<pad name="29" x="12.7" y="-3.1" drill="1.04"/>
+<pad name="28" x="12.7" y="-5.64" drill="1.04"/>
+<pad name="27" x="12.7" y="-8.18" drill="1.04"/>
+<pad name="26" x="12.7" y="-10.72" drill="1.04"/>
+<pad name="25" x="12.7" y="-13.26" drill="1.04"/>
+<pad name="24" x="12.7" y="-15.8" drill="1.04"/>
+<pad name="23" x="12.7" y="-18.34" drill="1.04"/>
+<pad name="22" x="12.7" y="-20.88" drill="1.04"/>
+<pad name="21" x="12.7" y="-23.42" drill="1.04"/>
+<pad name="20" x="12.7" y="-25.96" drill="1.04"/>
+</package>
 </packages>
 <packages3d>
 <package3d name="MODULE_ESP32-DEVKITC-32D" urn="urn:adsk.eagle:package:44270578/3" type="model" library_version="3">
@@ -21211,9 +21266,14 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <packageinstance name="MODULE_ESP32-DEVKITC-32D"/>
 </packageinstances>
 </package3d>
+<package3d name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:package:44294361/2" type="model" library_version="5">
+<packageinstances>
+<packageinstance name="MODULE_ESP32-DEVKITC-32U"/>
+</packageinstances>
+</package3d>
 </packages3d>
 <symbols>
-<symbol name="ESP32-DEVKITC-32D" urn="urn:adsk.eagle:symbol:44270577/1" library_version="2">
+<symbol name="ESP32-DEVKITC-32" urn="urn:adsk.eagle:symbol:44270577/2" library_version="5">
 <wire x1="-15.24" y1="25.4" x2="15.24" y2="25.4" width="0.254" layer="94"/>
 <wire x1="15.24" y1="25.4" x2="15.24" y2="-25.4" width="0.254" layer="94"/>
 <wire x1="15.24" y1="-25.4" x2="-15.24" y2="-25.4" width="0.254" layer="94"/>
@@ -21261,13 +21321,13 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="ESP32-DEVKITC-32D" urn="urn:adsk.eagle:component:44270579/3" prefix="U" library_version="3">
+<deviceset name="ESP32-DEVKITC-32" urn="urn:adsk.eagle:component:44270579/7" prefix="U" library_version="7">
 <description> &lt;a href="https://pricing.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif%20Systems/view-part?ref=eda"&gt;Check availability&lt;/a&gt;</description>
 <gates>
-<gate name="G$1" symbol="ESP32-DEVKITC-32D" x="0" y="0"/>
+<gate name="G$1" symbol="ESP32-DEVKITC-32" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="MODULE_ESP32-DEVKITC-32D">
+<device name="D" package="MODULE_ESP32-DEVKITC-32D">
 <connects>
 <connect gate="G$1" pin="3V3" pad="1"/>
 <connect gate="G$1" pin="CLK" pad="20"/>
@@ -21315,13 +21375,63 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
+<attribute name="DESCRIPTION" value="
+WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
+"/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>
 <attribute name="PRICE" value="None"/>
 <attribute name="SNAPEDA_LINK" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=snap"/>
 </technology>
+</technologies>
+</device>
+<device name="U" package="MODULE_ESP32-DEVKITC-32U">
+<connects>
+<connect gate="G$1" pin="3V3" pad="1"/>
+<connect gate="G$1" pin="CLK" pad="20"/>
+<connect gate="G$1" pin="CMD" pad="18"/>
+<connect gate="G$1" pin="EN" pad="2"/>
+<connect gate="G$1" pin="EXT_5V" pad="19"/>
+<connect gate="G$1" pin="GND1" pad="14"/>
+<connect gate="G$1" pin="GND2" pad="32"/>
+<connect gate="G$1" pin="GND3" pad="38"/>
+<connect gate="G$1" pin="IO0" pad="25"/>
+<connect gate="G$1" pin="IO12" pad="13"/>
+<connect gate="G$1" pin="IO13" pad="15"/>
+<connect gate="G$1" pin="IO14" pad="12"/>
+<connect gate="G$1" pin="IO15" pad="23"/>
+<connect gate="G$1" pin="IO16" pad="27"/>
+<connect gate="G$1" pin="IO17" pad="28"/>
+<connect gate="G$1" pin="IO18" pad="30"/>
+<connect gate="G$1" pin="IO19" pad="31"/>
+<connect gate="G$1" pin="IO2" pad="24"/>
+<connect gate="G$1" pin="IO21" pad="33"/>
+<connect gate="G$1" pin="IO22" pad="36"/>
+<connect gate="G$1" pin="IO23" pad="37"/>
+<connect gate="G$1" pin="IO25" pad="9"/>
+<connect gate="G$1" pin="IO26" pad="10"/>
+<connect gate="G$1" pin="IO27" pad="11"/>
+<connect gate="G$1" pin="IO32" pad="7"/>
+<connect gate="G$1" pin="IO33" pad="8"/>
+<connect gate="G$1" pin="IO34" pad="5"/>
+<connect gate="G$1" pin="IO35" pad="6"/>
+<connect gate="G$1" pin="IO4" pad="26"/>
+<connect gate="G$1" pin="IO5" pad="29"/>
+<connect gate="G$1" pin="RXD0" pad="34"/>
+<connect gate="G$1" pin="SD0" pad="21"/>
+<connect gate="G$1" pin="SD1" pad="22"/>
+<connect gate="G$1" pin="SD2" pad="16"/>
+<connect gate="G$1" pin="SD3" pad="17"/>
+<connect gate="G$1" pin="SENSOR_VN" pad="4"/>
+<connect gate="G$1" pin="SENSOR_VP" pad="3"/>
+<connect gate="G$1" pin="TXD0" pad="35"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:44294361/2"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
 </technologies>
 </device>
 </devices>
@@ -22089,7 +22199,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 </part>
 <part name="IC1" library="REG1117FA-5.0_500" library_urn="urn:adsk.eagle:library:43937876" deviceset="REG1117FA-5.0_500" device="" package3d_urn="urn:adsk.eagle:package:43937879/3"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32D" device="" package3d_urn="urn:adsk.eagle:package:44270578/3" value="ESP32-DevKitC ESP32-WROOM-32U"/>
+<part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="U" package3d_urn="urn:adsk.eagle:package:44294361/2" value="ESP32-DevKitC ESP32-WROOM-32U"/>
 <part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/1"/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
