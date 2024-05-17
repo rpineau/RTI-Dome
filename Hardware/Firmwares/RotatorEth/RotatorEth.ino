@@ -359,7 +359,7 @@ void checkForNewTCPClient()
 
 	if((nbEthernetClient>0) && !domeClient.connected()) {
 		DBPrintln("client disconnected");
-		domeClient.stop();
+		// domeClient.stop();
 		nbEthernetClient--;
 		configureEthernet();
 	}

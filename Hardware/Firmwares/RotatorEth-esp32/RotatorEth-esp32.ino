@@ -58,7 +58,7 @@ uint32_t uidBuffer[4];  // Board unique ID
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 IPConfig ServerConfig;
 std::atomic<bool> ethernetPresent;
-EthernetServer domeServer(CMD_SERVER_PORT);
+EthernetServer *domeServer = nullptr;
 EthernetClient domeClient;
 int nbEthernetClient = 0;
 String networkBuffer = "";
@@ -84,8 +84,6 @@ RemoteShutterClass RemoteShutter;
 #endif
 
 String computerBuffer = "";
-
-volatile bool core0Ready = false;
 
 bool bParked = false; // use to the run check doesn't continuously try to park
 
@@ -120,7 +118,7 @@ enum CmdSource {SERIAL_CMD, NETWORK_CMD};
 // function prototypes
 #ifdef USE_ETHERNET
 void configureEthernet();
-bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet);
+bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet, bool bReconfigure);
 void checkForNewTCPClient();
 #endif // USE_ETHERNET
 #ifdef USE_WIFI
@@ -156,12 +154,8 @@ void requestWiFiShutterData();
 #include "AlpacaAPI.h"
 DomeAlpacaServer *AlpacaServer;
 DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
-#endif // USE_ALPACA
-
-#ifdef USE_ALPACA
-void AlpacaDiscovery(void*);
-void AlpacaAPI(void*);
 #endif
+
 void MotorTask(void *);
 
 //
@@ -169,7 +163,6 @@ void MotorTask(void *);
 //
 void setup()
 {
-	core0Ready = false;
 	wifiPresent = false;
 	ethernetPresent = false;
 	bGotHelloFromShutter = false;
@@ -222,27 +215,22 @@ void setup()
 
 #ifdef USE_ETHERNET
 	configureEthernet();
-#ifdef USE_ALPACA
-	AlpacaDiscoveryServer = new DomeAlpacaDiscoveryServer();
-	AlpacaServer = new DomeAlpacaServer();
-	AlpacaDiscoveryServer->startServer();
-	AlpacaServer->startServer();
-#endif // USE_ALPACA
 #endif // USE_ETHERNET
 
 	disableCore0WDT();
 	disableCore1WDT();
-
-	#ifdef USE_ALPACA
-	xTaskCreatePinnedToCore(AlpacaDiscovery, "AlpacaDiscovery", 10000, NULL, 1, NULL,  1); 
-	xTaskCreatePinnedToCore(AlpacaAPI, "AlpacaAPI", 10000, NULL, 1, NULL,  1); 
-	#endif
-
 	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0); 
 
-#ifdef DEBUG
-	Computer.println("Online");
+#ifdef USE_ALPACA
+	// xTaskCreatePinnedToCore(AlpacaDiscovery, "AlpacaDiscovery", 10000, NULL, 1, &AlpacaDiscovery_h,  1); 
+	// xTaskCreatePinnedToCore(AlpacaAPI, "AlpacaAPI", 10000, NULL, 1, &AlpacaAPI_h,  1); 
 #endif
+	domeServer = new EthernetServer(CMD_SERVER_PORT);
+	domeServer->begin();
+	AlpacaDiscoveryServer = new DomeAlpacaDiscoveryServer();
+	AlpacaDiscoveryServer->startServer();
+	AlpacaServer = new DomeAlpacaServer();
+	AlpacaServer->startServer();
 	DBPrintln("========== Ready ==========");
 }
 
@@ -253,21 +241,17 @@ void setup()
 
 void loop()
 {
-	#ifdef USE_ETHERNET
-		if(ethernetPresent) {
-			checkForNewTCPClient();
-		}
-	#endif // USE_ETHERNET
+#ifdef USE_ETHERNET
+	if(ethernetPresent) {
+		checkForNewTCPClient();
+		AlpacaDiscoveryServer->checkForRequest();
+		AlpacaServer->checkForRequest();
+	}
+#endif //USE_ETHERNET
 
-	#ifdef USE_WIFI
-		if(wifiPresent)
-			checkForNewWifiClient();
-	#endif
-		CheckForCommands();
-		CheckForRain();
-
-	#ifdef USE_WIFI
+#ifdef USE_WIFI
 		if(wifiPresent) {
+			checkForNewWifiClient();
 			if(nbWiFiClient && shutterClient.connected())
 				checkShuterLowVoltage();
 			if(ShutterWatchdog.elapsed() > (pingInterval*5)) {
@@ -289,35 +273,12 @@ void loop()
 				requestWiFiShutterData();
 				bGotHelloFromShutter = false;
 			}
-
 		}
-#endif
+#endif // USE_WIFI
+
+		CheckForCommands();
+		CheckForRain();
 }
-
-
-#ifdef USE_ALPACA
-void AlpacaDiscovery(void*)
-{
-	DBPrintln("========== Alpaca Discovery server task starting ==========");
-
-	for(;;) {
-		if(ethernetPresent) {
-			AlpacaDiscoveryServer->checkForRequest();
-		}
-	}
-}
-
-void AlpacaAPI(void*)
-{
-	DBPrintln("========== Alpaca API server task starting ==========");
-	for(;;) {
-		if(ethernetPresent) {
-			AlpacaServer->checkForRequest();
-		}
-	}
-}
-#endif
-
 
 //
 // This task does all the motor controls
@@ -336,6 +297,7 @@ void MotorTask(void *)
 	DBPrintln("========== Motor task ready ==========");
 	for(;;) {
 		Rotator->Run();
+		taskYIELD();
 	}
 }
 
@@ -362,9 +324,8 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 	DBPrintln("========== Init Ethernet ==========");
 	resetChip(ETHERNET_RESET);
 	// network configuration
-	nbEthernetClient = 0;
 	Ethernet.init(ETHERNET_CS);
-
+	nbEthernetClient = 0;
 	DBPrintln("========== Setting IP config ==========");
 	// try DHCP if set
 	if(bUseDHCP) {
@@ -393,7 +354,6 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 	DBPrintln("W5500 IP = " + IpAddress2String(Ethernet.localIP()));
 	Ethernet.setRetransmissionCount(3);
 
-	domeServer.begin();
 	DBPrintln("Server ready");
 	return true;
 }
@@ -403,10 +363,11 @@ void checkForNewTCPClient()
 {
 	if(ServerConfig.bUseDHCP)
 		domeEthernet.maintain();
+
 	if(!domeServer)
 		return;
-		
-	EthernetClient newClient = domeServer.accept();
+
+	EthernetClient newClient = domeServer->accept();
 	if(newClient) {
 		DBPrintln("new client");
 		if(nbEthernetClient > 0) { // we only accept 1 client
@@ -427,6 +388,7 @@ void checkForNewTCPClient()
 		DBPrintln("client disconnected");
 		domeClient.stop();
 		nbEthernetClient--;
+		DBPrintln("nb client = " + String(nbEthernetClient));
 	}
 }
 #endif // USE_ETHERNET
@@ -724,7 +686,7 @@ void ReceiveWiFi(WiFiClient client)
 }
 #endif
 
-// All comms are terminated with '#' but the '\r' and '\n' are for XBee config
+// All comms are terminated with '#' but the '\r' and '\n' are for debugging
 void ReceiveComputer()
 {
 	char computerCharacter;
@@ -951,8 +913,9 @@ void ProcessCommand(int nSource)
 				domeClient.stop();
 				nbEthernetClient--;
 			}
-			configureEthernet();
-			serialMessage = String(ETH_RECONFIG)  + String(ethernetPresent?"1":"0");
+			DBPrintln("Rebooting for Ethernet reconfiguration");
+			delay(500);
+			ESP.restart();
 			break;
 
 		case ETH_MAC_ADDRESS:
