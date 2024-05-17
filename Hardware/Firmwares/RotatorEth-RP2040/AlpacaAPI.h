@@ -160,7 +160,7 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 			if(FormData["ClientTransactionID"]) {
 				sClientTransactionId = String(FormData["ClientTransactionID"]);
 				sClientTransactionId.trim();
-				AlpacaResp["ClientID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
+				AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
 			}
 		}
 #ifdef DEBUG

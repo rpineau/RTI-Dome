@@ -86,13 +86,15 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 }
 
 
-JsonDocument formDataToJson(Request &req)
+void formDataToJson(Request &req, JsonDocument &FormData)
 {
-	JsonDocument FormData;
 	char name[ALPACA_VAR_BUF_LEN];
 	char value[ALPACA_VAR_BUF_LEN];
 
-	while(req.form(name, ALPACA_VAR_BUF_LEN, value, ALPACA_VAR_BUF_LEN)){
+	memset(name,0,ALPACA_VAR_BUF_LEN);
+	memset(value,0,ALPACA_VAR_BUF_LEN);
+	
+	while(req.form(name, ALPACA_VAR_BUF_LEN-1, value, ALPACA_VAR_BUF_LEN-1)){
 		DBPrintln("name : " + String(name));
 		DBPrintln("value : " + String(value));
 		if(isDigit(value[0]) ) {
@@ -109,8 +111,8 @@ JsonDocument formDataToJson(Request &req)
 			FormData[name]=String(value);
 		}
 	}
-	return FormData;
 }
+
 bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 {
 	char ClientID[64];
@@ -119,6 +121,8 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 	String sClientTransactionId;
 
 	bool bParamOk = true;
+
+	DBPrintln("getIDs");
 
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 
@@ -137,20 +141,21 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 			AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
 	}
 	else { // this is a PUT, therefore there should be some form data
-		FormData = formDataToJson(req);
+		formDataToJson(req, FormData);
 		if(FormData.size()==0){
 			bParamOk = false;
 		}
 		else {
 			if(FormData["ClientID"]) {
-				sClientId = String(FormData["ClientID"].as<const char*>());
+				serializeJson(FormData["ClientID"], sClientId);
 				sClientId.trim();
 				AlpacaResp["ClientID"] = sClientId.toInt()<0?-(sClientId.toInt()):sClientId.toInt();
+
 			}
 			if(FormData["ClientTransactionID"]) {
-				sClientTransactionId = String(FormData["ClientTransactionID"].as<const char*>());
+				serializeJson(FormData["ClientTransactionID"], sClientTransactionId);
 				sClientTransactionId.trim();
-				AlpacaResp["ClientID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
+				AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?-(sClientTransactionId.toInt()):sClientTransactionId.toInt();
 			}
 		}
 #ifdef DEBUG
@@ -266,8 +271,8 @@ void doAction(Request &req, Response &res)
 		return;
 	}
 
-	sAction = String(FormData["Action"].as<const char*>());
-	sParameters = String(FormData["Parameters"].as<const char*>());
+	serializeJson(FormData["Action"], sAction);
+	serializeJson(FormData["Parameters"], sParameters);
 #ifdef DEBUG
 	DBPrintln("sAction : " + sAction);
 	DBPrintln("sParameters : " + sParameters);
@@ -1596,10 +1601,13 @@ void DomeAlpacaServer::startServer()
 void DomeAlpacaServer::checkForRequest()
 {
 	// process incoming connections one at a time
-	EthernetClient client = mRestServer->available();
+	EthernetClient client = mRestServer->accept();
 	if (client.connected()) {
+		DBPrintln("Serving Alpaca request");
 		m_AlpacaRestServer->process(&client);
+		DBPrintln("Alpaca request done");
 		client.stop();
+		DBPrintln("Alpaca client stopped");
 		nTransactionID++;
   }
 }

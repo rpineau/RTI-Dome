@@ -158,6 +158,8 @@ DomeAlpacaServer *AlpacaServer;
 DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 #endif // USE_ALPACA
 
+void CommsTask();
+void MotorTask();
 
 //
 // Setup and main loops
@@ -228,69 +230,76 @@ void setup()
 	DBPrintln("Online");
 #endif
 
-	core0Ready = true;
-	DBPrintln("========== Core 0 ready ==========");
-}
+	DBPrintln("========== Core 1 ready ==========");
+	disableCore0WDT();
+	disableCore1WDT();
 
-void setup1()
-{
+	xTaskCreatePinnedToCore(CommsTask, "CommsTask", 10000, NULL, 1, NULL,  1); 
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0); 
 }
-
 //
 // This loop takes care of all communications and commands
 //
+
 void loop()
 {
+	vTaskDelay(10);
+}
 
-#ifdef USE_ETHERNET
-	if(ethernetPresent) {
-		checkForNewTCPClient();
-#ifdef USE_ALPACA
-		AlpacaDiscoveryServer->checkForRequest();
-		AlpacaServer->checkForRequest();
-#endif
-	}
-#endif // USE_ETHERNET
+void CommsTask(void *)
+{
+	for(;;) {
+	#ifdef USE_ETHERNET
+		if(ethernetPresent) {
+			checkForNewTCPClient();
+	#ifdef USE_ALPACA
+			AlpacaDiscoveryServer->checkForRequest();
+			AlpacaServer->checkForRequest();
+	#endif
+		}
+	#endif // USE_ETHERNET
 
-#ifdef USE_WIFI
-	if(wifiPresent)
-		checkForNewWifiClient();
-#endif
-	CheckForCommands();
-	CheckForRain();
+	#ifdef USE_WIFI
+		if(wifiPresent)
+			checkForNewWifiClient();
+	#endif
+		CheckForCommands();
+		CheckForRain();
 
-#ifdef USE_WIFI
-	if(wifiPresent) {
-		if(nbWiFiClient && shutterClient.connected())
-			checkShuterLowVoltage();
-		if(ShutterWatchdog.elapsed() > (pingInterval*5)) {
-			if(nbWiFiClient) {
-				if(!shutterClient.connected()) {
-					shutterClient.stop();
-					nbWiFiClient--;
-					bShutterPresent = false;
+	#ifdef USE_WIFI
+		if(wifiPresent) {
+			if(nbWiFiClient && shutterClient.connected())
+				checkShuterLowVoltage();
+			if(ShutterWatchdog.elapsed() > (pingInterval*5)) {
+				if(nbWiFiClient) {
+					if(!shutterClient.connected()) {
+						shutterClient.stop();
+						nbWiFiClient--;
+						bShutterPresent = false;
+					}
 				}
 			}
-		}
-		if(!bSentHello) {
-				SendHello();
-		}
-		else {
-			PingWiFiShutter();
-		}
-		if(bGotHelloFromShutter) {
-			requestWiFiShutterData();
-			bGotHelloFromShutter = false;
-		}
+			if(!bSentHello) {
+					SendHello();
+			}
+			else {
+				PingWiFiShutter();
+			}
+			if(bGotHelloFromShutter) {
+				requestWiFiShutterData();
+				bGotHelloFromShutter = false;
+			}
 
-	}
+		}
 #endif
+	}
 }
+
 
 //
 // This loop does all the motor controls
 //
-void MotorTask()
+void MotorTask(void *)
 {   
 
 	DBPrintln("========== Motor task starting ==========");
@@ -302,7 +311,7 @@ void MotorTask()
 	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
 
 	DBPrintln("========== Motor task ready ==========");
-
+	disableCore0WDT();
 	for(;;) {
 		// all stepper motor code runs on core 1
 		Rotator->Run();
