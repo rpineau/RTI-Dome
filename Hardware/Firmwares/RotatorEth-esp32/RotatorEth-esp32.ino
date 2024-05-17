@@ -34,7 +34,6 @@
 #define USE_WIFI
 
 #define Computer Serial2     // USB FTDI
-#define FTDI_RESET  28
 String IpAddress2String(const IPAddress& ipAddress)
 {
   return String(ipAddress[0]) + String(".") +
@@ -50,9 +49,9 @@ String IpAddress2String(const IPAddress& ipAddress)
 #include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
 #include <Ethernet.h>
 #include "EtherMac.h"
-#define ETHERNET_CS     17
-#define ETHERNET_INT	27
-#define ETHERNET_RESET  20
+#define ETHERNET_CS     5
+#define ETHERNET_INT	0
+#define ETHERNET_RESET  4
 #define CMD_SERVER_PORT 2323
 #define domeEthernet Ethernet
 uint32_t uidBuffer[4];  // Board unique ID
@@ -133,7 +132,6 @@ void homeIntHandler();
 void rainIntHandler();
 void buttonHandler();
 void resetChip(int);
-void resetFTDI(int);
 void StartWirelessConfig();
 void ConfigXBee();
 void setPANID(String);
@@ -179,8 +177,6 @@ void setup()
 	nbWiFiClient = 0;
 #endif
 	nbEthernetClient = 0;
-	digitalWrite(FTDI_RESET, 0);
-	pinMode(FTDI_RESET, OUTPUT);
 
 #ifdef DEBUG
 	DebugPort.begin(115200);
@@ -193,8 +189,6 @@ void setup()
 	digitalWrite(ETHERNET_RESET, 0);
 	pinMode(ETHERNET_RESET, OUTPUT);
 #endif // USE_ETHERNET
-
-	resetFTDI(FTDI_RESET);
 
 #ifdef USE_ETHERNET
 	getMacAddress(MAC_Address, uidBuffer);
@@ -240,18 +234,6 @@ void setup()
 
 void setup1()
 {
-	while(!core0Ready)
-		delay(100);
-
-	DBPrintln("========== Core 1 starting ==========");
-
-	DBPrintln("========== Core 1 Attaching interrupt handler ==========");
-	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
-	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-
-	DBPrintln("========== Core 1 ready ==========");
 }
 
 //
@@ -308,9 +290,23 @@ void loop()
 //
 // This loop does all the motor controls
 //
-void loop1()
-{   // all stepper motor code runs on core 1
-	Rotator->Run();
+void MotorTask()
+{   
+
+	DBPrintln("========== Motor task starting ==========");
+
+	DBPrintln("========== Motor task Attaching interrupt handler ==========");
+	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
+	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+
+	DBPrintln("========== Motor task ready ==========");
+
+	for(;;) {
+		// all stepper motor code runs on core 1
+		Rotator->Run();
+	}
 }
 
 //
@@ -510,16 +506,6 @@ void resetChip(int nPin)
 	digitalWrite(nPin, 1);
 	delay(10);
 }
-
-//reset FTDI FT232 usb to serial chip
-void resetFTDI(int nPin)
-{
-	digitalWrite(nPin,0);
-	delay(1000);
-	digitalWrite(nPin,1);
-}
-
-
 
 #ifdef USE_WIFI
 

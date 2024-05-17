@@ -23,17 +23,17 @@
 
 
 //
-// RP2040 boards
+// ESP32 dev boards
 //
 // input
-#define HOME_PIN            7  // Also used for Shutter open status
-#define BUTTON_CCW          11 // Digital Input
-#define BUTTON_CW           10 // Digital Input
-#define RAIN_SENSOR_PIN     13  // Digital Input from RG11
+#define HOME_PIN            15  // Also used for Shutter open status
+#define BUTTON_CCW          27 // Digital Input
+#define BUTTON_CW           14 // Digital Input
+#define RAIN_SENSOR_PIN     25  // Digital Input from RG11
 // ouput
-#define STEPPER_ENABLE_PIN  2  // Digital Output
-#define DIRECTION_PIN       3  // Digital Output
-#define STEP_PIN            21  // Digital Output
+#define STEPPER_ENABLE_PIN  13  // Digital Output
+#define DIRECTION_PIN        2  // Digital Output
+#define STEP_PIN            32  // Digital Output
 
 // analog
 #define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0

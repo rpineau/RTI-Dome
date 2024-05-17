@@ -21090,7 +21090,8 @@ at 30/07/2012 11:22:31</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -21375,9 +21376,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value="
-WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
-"/>
+<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>
@@ -22654,9 +22653,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$1" gate="G$1" pin="A0"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO34"/>
-<wire x1="88.9" y1="67.31" x2="91.44" y2="67.31" width="0.1524" layer="91"/>
-<label x="88.9" y="67.31" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="88.9" y1="41.91" x2="91.44" y2="41.91" width="0.1524" layer="91"/>
+<label x="88.9" y="41.91" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO13"/>
 </segment>
 </net>
 <net name="M_DIR" class="0">
@@ -22666,9 +22665,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$1" gate="G$1" pin="A1"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO35"/>
-<wire x1="88.9" y1="64.77" x2="91.44" y2="64.77" width="0.1524" layer="91"/>
-<label x="88.9" y="64.77" size="1.016" layer="95" rot="R180" xref="yes"/>
+<wire x1="134.62" y1="41.91" x2="132.08" y2="41.91" width="0.1524" layer="91"/>
+<label x="134.62" y="41.91" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO2"/>
 </segment>
 </net>
 <net name="M_STEP" class="0">
@@ -22981,9 +22980,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y1"/>
 </segment>
 <segment>
-<wire x1="88.9" y1="46.99" x2="91.44" y2="46.99" width="0.1524" layer="91"/>
-<label x="88.9" y="46.99" size="1.016" layer="95" rot="R180" xref="yes"/>
-<pinref part="U2" gate="G$1" pin="IO12"/>
+<pinref part="U2" gate="G$1" pin="IO15"/>
+<wire x1="134.62" y1="39.37" x2="132.08" y2="39.37" width="0.1524" layer="91"/>
+<label x="134.62" y="39.37" size="1.27" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="BUTTON_EAST_OPEN" class="0">
@@ -23318,9 +23317,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y7"/>
 </segment>
 <segment>
-<wire x1="134.62" y1="41.91" x2="132.08" y2="41.91" width="0.1524" layer="91"/>
-<label x="134.62" y="41.91" size="1.016" layer="95" xref="yes"/>
-<pinref part="U2" gate="G$1" pin="IO2"/>
+<pinref part="U2" gate="G$1" pin="IO35"/>
+<wire x1="88.9" y1="64.77" x2="91.44" y2="64.77" width="0.1524" layer="91"/>
+<label x="88.9" y="64.77" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SDA" class="0">
@@ -23429,9 +23428,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y0"/>
 </segment>
 <segment>
-<wire x1="88.9" y1="41.91" x2="91.44" y2="41.91" width="0.1524" layer="91"/>
-<label x="88.9" y="41.91" size="1.016" layer="95" rot="R180" xref="yes"/>
-<pinref part="U2" gate="G$1" pin="IO13"/>
+<pinref part="U2" gate="G$1" pin="IO34"/>
+<wire x1="88.9" y1="67.31" x2="91.44" y2="67.31" width="0.1524" layer="91"/>
+<label x="88.9" y="67.31" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="SPARE2" class="0">
@@ -23650,12 +23649,6 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U2" gate="G$1" pin="IO5"/>
 <wire x1="134.62" y1="54.61" x2="132.08" y2="54.61" width="0.1524" layer="91"/>
 <label x="134.62" y="54.61" size="1.016" layer="95" xref="yes"/>
-</segment>
-</net>
-<net name="N$15" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO15"/>
-<wire x1="134.62" y1="39.37" x2="132.08" y2="39.37" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$20" class="0">
