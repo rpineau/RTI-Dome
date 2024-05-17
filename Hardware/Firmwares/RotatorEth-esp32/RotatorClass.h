@@ -30,10 +30,14 @@
 #define BUTTON_CCW          27 // Digital Input
 #define BUTTON_CW           14 // Digital Input
 #define RAIN_SENSOR_PIN     25  // Digital Input from RG11
+#define SPARE1				34
+#define SPARE2				26
 // ouput
 #define STEPPER_ENABLE_PIN  13  // Digital Output
 #define DIRECTION_PIN        2  // Digital Output
 #define STEP_PIN            32  // Digital Output
+#define SPARE_OUT1			 0
+#define SPARE_OUT2			12
 
 // analog
 #define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
@@ -295,10 +299,15 @@ RotatorClass::RotatorClass()
 	pinMode(RAIN_SENSOR_PIN,        INPUT_PULLUP);
 	pinMode(VOLTAGE_MONITOR_PIN,    INPUT_PULLUP);
 
+	pinMode(SPARE1,    INPUT_PULLUP);
+	pinMode(SPARE2,    INPUT_PULLUP);
+
 	// output
 	pinMode(STEP_PIN,               OUTPUT);
 	pinMode(DIRECTION_PIN,          OUTPUT);
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
+	pinMode(SPARE_OUT1,     		OUTPUT);
+	pinMode(SPARE_OUT2,     		OUTPUT);
 
 	LoadFromEEProm();
 

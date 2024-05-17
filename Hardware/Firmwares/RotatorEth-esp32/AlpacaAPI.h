@@ -1603,11 +1603,8 @@ void DomeAlpacaServer::checkForRequest()
 	// process incoming connections one at a time
 	EthernetClient client = mRestServer->accept();
 	if (client.connected()) {
-		DBPrintln("Serving Alpaca request");
 		m_AlpacaRestServer->process(&client);
-		DBPrintln("Alpaca request done");
 		client.stop();
-		DBPrintln("Alpaca client stopped");
 		nTransactionID++;
   }
 }

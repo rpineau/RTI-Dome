@@ -22201,6 +22201,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="U" package3d_urn="urn:adsk.eagle:package:44294361/2" value="ESP32-DevKitC ESP32-WROOM-32U"/>
 <part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/1"/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="X7" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6"/>
 </parts>
 <sheets>
 <sheet>
@@ -22626,6 +22627,16 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <instance part="GND6" gate="1" x="171.45" y="59.69" smashed="yes">
 <attribute name="VALUE" x="168.91" y="57.15" size="1.778" layer="96"/>
 </instance>
+<instance part="X7" gate="-1" x="303.53" y="127" smashed="yes" rot="R180">
+<attribute name="NAME" x="304.8" y="126.111" size="1.778" layer="95"/>
+</instance>
+<instance part="X7" gate="-2" x="303.53" y="132.08" smashed="yes" rot="R180">
+<attribute name="NAME" x="304.8" y="131.191" size="1.778" layer="95"/>
+</instance>
+<instance part="X7" gate="-3" x="303.53" y="137.16" smashed="yes" rot="R180">
+<attribute name="NAME" x="304.8" y="136.271" size="1.778" layer="95"/>
+<attribute name="VALUE" x="307.34" y="140.843" size="1.778" layer="96" rot="R180"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -22754,23 +22765,18 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <junction x="182.88" y="190.5"/>
 </segment>
 <segment>
-<wire x1="187.96" y1="246.38" x2="190.5" y2="246.38" width="0.1524" layer="91"/>
-<label x="187.96" y="246.38" size="0.8128" layer="95" rot="R180" xref="yes"/>
-<pinref part="U$1" gate="G$1" pin="A4"/>
-</segment>
-<segment>
 <wire x1="187.96" y1="243.84" x2="190.5" y2="243.84" width="0.1524" layer="91"/>
-<label x="187.96" y="243.84" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<label x="187.96" y="243.84" size="1.016" layer="95" rot="R180" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="A5"/>
 </segment>
 <segment>
 <wire x1="187.96" y1="241.3" x2="190.5" y2="241.3" width="0.1524" layer="91"/>
-<label x="187.96" y="241.3" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<label x="187.96" y="241.3" size="1.016" layer="95" rot="R180" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="A6"/>
 </segment>
 <segment>
 <wire x1="187.96" y1="238.76" x2="190.5" y2="238.76" width="0.1524" layer="91"/>
-<label x="187.96" y="238.76" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<label x="187.96" y="238.76" size="1.016" layer="95" rot="R180" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="A7"/>
 </segment>
 <segment>
@@ -22882,11 +22888,6 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <label x="360.68" y="142.24" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<wire x1="187.96" y1="248.92" x2="190.5" y2="248.92" width="0.1524" layer="91"/>
-<label x="187.96" y="248.92" size="1.016" layer="95" rot="R180" xref="yes"/>
-<pinref part="U$1" gate="G$1" pin="A3"/>
-</segment>
-<segment>
 <pinref part="IC1" gate="G$1" pin="GND"/>
 <wire x1="31.75" y1="130.81" x2="31.75" y2="132.08" width="0.1524" layer="91"/>
 <pinref part="GND3" gate="1" pin="GND"/>
@@ -22918,6 +22919,11 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <pinref part="JP1" gate="1" pin="3"/>
 <wire x1="171.45" y1="68.58" x2="171.45" y2="62.23" width="0.1524" layer="91"/>
 <pinref part="GND6" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="X7" gate="-1" pin="KL"/>
+<wire x1="295.91" y1="127" x2="298.45" y2="127" width="0.1524" layer="91"/>
+<label x="295.91" y="127" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="+12V" class="1">
@@ -23579,13 +23585,6 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <label x="360.68" y="147.32" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="INT_N" class="0">
-<segment>
-<pinref part="U2" gate="G$1" pin="IO0"/>
-<wire x1="134.62" y1="44.45" x2="132.08" y2="44.45" width="0.1524" layer="91"/>
-<label x="134.62" y="44.45" size="1.016" layer="95" xref="yes"/>
-</segment>
-</net>
 <net name="DIR-5V_TR" class="0">
 <segment>
 <pinref part="R22" gate="G$1" pin="1"/>
@@ -23675,12 +23674,24 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <wire x1="134.62" y1="52.07" x2="132.08" y2="52.07" width="0.1524" layer="91"/>
 <label x="134.62" y="52.07" size="1.016" layer="95" xref="yes"/>
 </segment>
+<segment>
+<pinref part="JP1" gate="1" pin="1"/>
+<wire x1="163.83" y1="66.04" x2="166.37" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="166.37" y1="66.04" x2="166.37" y2="68.58" width="0.1524" layer="91"/>
+<label x="163.83" y="66.04" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="RX2" class="0">
 <segment>
 <pinref part="U2" gate="G$1" pin="IO16"/>
 <wire x1="134.62" y1="49.53" x2="132.08" y2="49.53" width="0.1524" layer="91"/>
 <label x="134.62" y="49.53" size="1.016" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="JP1" gate="1" pin="2"/>
+<wire x1="163.83" y1="63.5" x2="168.91" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="168.91" y1="63.5" x2="168.91" y2="68.58" width="0.1524" layer="91"/>
+<label x="163.83" y="63.5" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="TXD0" class="0">
@@ -23689,12 +23700,6 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <wire x1="134.62" y1="69.85" x2="132.08" y2="69.85" width="0.1524" layer="91"/>
 <label x="134.62" y="69.85" size="1.016" layer="95" ratio="4" xref="yes"/>
 </segment>
-<segment>
-<pinref part="JP1" gate="1" pin="1"/>
-<wire x1="163.83" y1="66.04" x2="166.37" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="166.37" y1="66.04" x2="166.37" y2="68.58" width="0.1524" layer="91"/>
-<label x="163.83" y="66.04" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
-</segment>
 </net>
 <net name="RXD0" class="0">
 <segment>
@@ -23702,11 +23707,53 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <wire x1="134.62" y1="67.31" x2="132.08" y2="67.31" width="0.1524" layer="91"/>
 <label x="134.62" y="67.31" size="1.016" layer="95" ratio="4" xref="yes"/>
 </segment>
+</net>
+<net name="SPARE_OUT1_5V" class="0">
 <segment>
-<pinref part="JP1" gate="1" pin="2"/>
-<wire x1="163.83" y1="63.5" x2="168.91" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="168.91" y1="63.5" x2="168.91" y2="68.58" width="0.1524" layer="91"/>
-<label x="163.83" y="63.5" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+<pinref part="U$1" gate="G$1" pin="Y3"/>
+<wire x1="218.44" y1="248.92" x2="215.9" y2="248.92" width="0.1524" layer="91"/>
+<label x="218.44" y="248.92" size="1.016" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="X7" gate="-3" pin="KL"/>
+<wire x1="295.91" y1="137.16" x2="298.45" y2="137.16" width="0.1524" layer="91"/>
+<label x="295.91" y="137.16" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="SPARE_OUT1" class="0">
+<segment>
+<wire x1="187.96" y1="248.92" x2="190.5" y2="248.92" width="0.1524" layer="91"/>
+<label x="187.96" y="248.92" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U$1" gate="G$1" pin="A3"/>
+</segment>
+<segment>
+<pinref part="U2" gate="G$1" pin="IO0"/>
+<wire x1="134.62" y1="44.45" x2="132.08" y2="44.45" width="0.1524" layer="91"/>
+<label x="134.62" y="44.45" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="SPARE_OUT2" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="IO12"/>
+<wire x1="88.9" y1="46.99" x2="91.44" y2="46.99" width="0.1524" layer="91"/>
+<label x="88.9" y="46.99" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<wire x1="187.96" y1="246.38" x2="190.5" y2="246.38" width="0.1524" layer="91"/>
+<label x="187.96" y="246.38" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U$1" gate="G$1" pin="A4"/>
+</segment>
+</net>
+<net name="SPARE_OUT2_5V" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="Y4"/>
+<wire x1="218.44" y1="246.38" x2="215.9" y2="246.38" width="0.1524" layer="91"/>
+<label x="218.44" y="246.38" size="1.016" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="X7" gate="-2" pin="KL"/>
+<wire x1="295.91" y1="132.08" x2="298.45" y2="132.08" width="0.1524" layer="91"/>
+<label x="295.91" y="132.08" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>

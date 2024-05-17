@@ -12,7 +12,7 @@
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
-#define DebugPort Serial    // Programming port
+#define DebugPort Serial1    //  Rx2,Tx2 =  Serial1
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
@@ -33,7 +33,7 @@
 // This is useful for people who only want to automate the rotation.
 #define USE_WIFI
 
-#define Computer Serial2     // USB FTDI
+#define Computer Serial     // USB = Serial
 String IpAddress2String(const IPAddress& ipAddress)
 {
   return String(ipAddress[0]) + String(".") +
@@ -158,8 +158,11 @@ DomeAlpacaServer *AlpacaServer;
 DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 #endif // USE_ALPACA
 
-void CommsTask();
-void MotorTask();
+#ifdef USE_ALPACA
+void AlpacaDiscovery(void*);
+void AlpacaAPI(void*);
+#endif
+void MotorTask(void *);
 
 //
 // Setup and main loops
@@ -181,7 +184,7 @@ void setup()
 	nbEthernetClient = 0;
 
 #ifdef DEBUG
-	DebugPort.begin(115200);
+	DebugPort.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
 	delay(1000);
 	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
@@ -226,36 +229,33 @@ void setup()
 	AlpacaServer->startServer();
 #endif // USE_ALPACA
 #endif // USE_ETHERNET
-#ifdef DEBUG
-	DBPrintln("Online");
-#endif
 
-	DBPrintln("========== Core 1 ready ==========");
 	disableCore0WDT();
 	disableCore1WDT();
 
-	xTaskCreatePinnedToCore(CommsTask, "CommsTask", 10000, NULL, 1, NULL,  1); 
+	#ifdef USE_ALPACA
+	xTaskCreatePinnedToCore(AlpacaDiscovery, "AlpacaDiscovery", 10000, NULL, 1, NULL,  1); 
+	xTaskCreatePinnedToCore(AlpacaAPI, "AlpacaAPI", 10000, NULL, 1, NULL,  1); 
+	#endif
+
 	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0); 
+
+#ifdef DEBUG
+	Computer.println("Online");
+#endif
+	DBPrintln("========== Ready ==========");
 }
+
 //
-// This loop takes care of all communications and commands
+// These tasks take care of all communications and commands
 //
+
 
 void loop()
 {
-	vTaskDelay(10);
-}
-
-void CommsTask(void *)
-{
-	for(;;) {
 	#ifdef USE_ETHERNET
 		if(ethernetPresent) {
 			checkForNewTCPClient();
-	#ifdef USE_ALPACA
-			AlpacaDiscoveryServer->checkForRequest();
-			AlpacaServer->checkForRequest();
-	#endif
 		}
 	#endif // USE_ETHERNET
 
@@ -292,12 +292,35 @@ void CommsTask(void *)
 
 		}
 #endif
-	}
 }
 
 
+#ifdef USE_ALPACA
+void AlpacaDiscovery(void*)
+{
+	DBPrintln("========== Alpaca Discovery server task starting ==========");
+
+	for(;;) {
+		if(ethernetPresent) {
+			AlpacaDiscoveryServer->checkForRequest();
+		}
+	}
+}
+
+void AlpacaAPI(void*)
+{
+	DBPrintln("========== Alpaca API server task starting ==========");
+	for(;;) {
+		if(ethernetPresent) {
+			AlpacaServer->checkForRequest();
+		}
+	}
+}
+#endif
+
+
 //
-// This loop does all the motor controls
+// This task does all the motor controls
 //
 void MotorTask(void *)
 {   
@@ -311,9 +334,7 @@ void MotorTask(void *)
 	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
 
 	DBPrintln("========== Motor task ready ==========");
-	disableCore0WDT();
 	for(;;) {
-		// all stepper motor code runs on core 1
 		Rotator->Run();
 	}
 }
