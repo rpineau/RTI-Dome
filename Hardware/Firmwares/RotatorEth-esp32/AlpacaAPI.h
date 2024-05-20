@@ -418,6 +418,7 @@ void setConnected(Request &req, Response &res)
 	String sResp;
 	String sClientId;
 	String sClientTransactionId;
+	String sParameter;
 
 	DBPrintln("[ ********** setConected ********** ]");
 	bParamsOk = getIDs(req, AlpacaResp, FormData);
@@ -442,10 +443,10 @@ void setConnected(Request &req, Response &res)
 		res.flush();
 		return;
 	}
-	if(FormData["Connected"] != String("true") &&
-		FormData["Connected"] != String("True") &&
-		FormData["Connected"] != String("false") &&
-		FormData["Connected"] != String("False")) {
+	serializeJson(FormData["Connected"], sParameter);
+	sParameter.toLowerCase();
+
+	if(!sParameter.equals("true")) {
 		res.sendStatus(400);
 		AlpacaResp["ErrorNumber"] = 400;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
@@ -455,7 +456,7 @@ void setConnected(Request &req, Response &res)
 		return;
 	}
 
-	bAlpacaConnected = (FormData["Connected"] == String("true"));
+	bAlpacaConnected = sParameter.equals("true");
 	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
 
 	AlpacaResp["ErrorNumber"] = 0;
@@ -1084,7 +1085,7 @@ void doAbort(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 
-	Rotator->Stop();
+	Abort(); // this is in the RotatorEth-esp32.ino
 	
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);

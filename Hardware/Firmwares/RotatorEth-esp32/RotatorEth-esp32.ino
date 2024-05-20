@@ -149,6 +149,7 @@ void ProcessWifi();
 void PingWiFiShutter();
 void requestWiFiShutterData();
 #endif
+void Abort();
 
 #ifdef USE_ALPACA
 #include "AlpacaAPI.h"
@@ -782,15 +783,7 @@ void ProcessCommand(int nSource)
 		case ABORT:
 			sTmpString = String(ABORT);
 			serialMessage = sTmpString;
-			Rotator->Stop();
-#ifdef USE_WIFI
-			if(nbWiFiClient && shutterClient.connected()) {
-				shutterMessage = sTmpString + "#";
-				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				shutterClient.flush();
-				ReceiveWiFi(shutterClient);
-			}
-#endif // USE_WIFI
+			Abort();
 			break;
 
 		case ACCELERATION_ROTATOR:
@@ -1326,3 +1319,18 @@ void ProcessWifi()
 
 }
 #endif
+
+void Abort()
+{
+	String shutterMessage;
+	if(Rotator)
+			Rotator->Stop();
+#ifdef USE_WIFI
+	if(nbWiFiClient && shutterClient.connected()) {
+		shutterMessage = String(ABORT) + "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		shutterClient.flush();
+		ReceiveWiFi(shutterClient);
+	}
+#endif
+}

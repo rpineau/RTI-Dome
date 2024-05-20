@@ -21148,128 +21148,128 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 </library>
 <library name="ESP32-DEVKITC-32D" urn="urn:adsk.eagle:library:44270575">
 <packages>
-<package name="MODULE_ESP32-DEVKITC-32D" urn="urn:adsk.eagle:footprint:44270576/2" library_version="3">
-<wire x1="-13.95" y1="27.15" x2="13.95" y2="27.15" width="0.127" layer="51"/>
-<wire x1="13.95" y1="27.15" x2="13.95" y2="-27.25" width="0.127" layer="51"/>
-<wire x1="13.95" y1="-27.25" x2="-13.95" y2="-27.25" width="0.127" layer="51"/>
-<wire x1="-13.95" y1="-27.25" x2="-13.95" y2="27.15" width="0.127" layer="51"/>
-<wire x1="-13.95" y1="-27.25" x2="-13.95" y2="27.15" width="0.127" layer="21"/>
-<wire x1="-13.95" y1="27.15" x2="13.95" y2="27.15" width="0.127" layer="21"/>
-<wire x1="13.95" y1="27.15" x2="13.95" y2="-27.25" width="0.127" layer="21"/>
-<wire x1="13.95" y1="-27.25" x2="-13.95" y2="-27.25" width="0.127" layer="21"/>
-<wire x1="-14.2" y1="27.4" x2="14.2" y2="27.4" width="0.05" layer="39"/>
-<wire x1="14.2" y1="27.4" x2="14.2" y2="-27.5" width="0.05" layer="39"/>
-<wire x1="14.2" y1="-27.5" x2="-14.2" y2="-27.5" width="0.05" layer="39"/>
-<wire x1="-14.2" y1="-27.5" x2="-14.2" y2="27.4" width="0.05" layer="39"/>
-<text x="-14.0054" y="27.8108" size="1.270490625" layer="25">&gt;NAME</text>
-<text x="-14.0146" y="-28.9302" size="1.27133125" layer="27">&gt;VALUE</text>
+<package name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:footprint:44294360/2" library_version="9">
+<wire x1="-13.97" y1="21.59" x2="13.97" y2="21.59" width="0.127" layer="51"/>
+<wire x1="13.97" y1="21.59" x2="13.97" y2="-26.67" width="0.127" layer="51"/>
+<wire x1="13.97" y1="-26.67" x2="-13.97" y2="-26.67" width="0.127" layer="51"/>
+<wire x1="-13.97" y1="-26.67" x2="-13.97" y2="21.59" width="0.127" layer="51"/>
+<wire x1="-13.97" y1="-26.67" x2="-13.97" y2="21.59" width="0.127" layer="21"/>
+<wire x1="-13.97" y1="21.59" x2="13.97" y2="21.59" width="0.127" layer="21"/>
+<wire x1="13.97" y1="21.59" x2="13.97" y2="-26.67" width="0.127" layer="21"/>
+<wire x1="13.97" y1="-26.67" x2="-13.97" y2="-26.67" width="0.127" layer="21"/>
+<wire x1="-14.2" y1="21.812" x2="14.2" y2="21.812" width="0.05" layer="39"/>
+<wire x1="14.2" y1="21.812" x2="14.2" y2="-26.865" width="0.05" layer="39"/>
+<wire x1="14.2" y1="-26.865" x2="-14.2" y2="-26.865" width="0.05" layer="39"/>
+<wire x1="-14.2" y1="-26.865" x2="-14.2" y2="21.812" width="0.05" layer="39"/>
+<text x="-12.065" y="22.86" size="1.270490625" layer="25">&gt;NAME</text>
+<text x="-12.7" y="-29.21" size="1.27133125" layer="27">&gt;VALUE</text>
 <circle x="-14.6" y="19.76" radius="0.1" width="0.2" layer="21"/>
 <circle x="-14.6" y="19.76" radius="0.1" width="0.2" layer="51"/>
-<pad name="1" x="-12.7" y="19.76" drill="1.04" shape="square"/>
-<pad name="2" x="-12.7" y="17.22" drill="1.04"/>
-<pad name="19" x="-12.7" y="-25.96" drill="1.04"/>
-<pad name="3" x="-12.7" y="14.68" drill="1.04"/>
-<pad name="4" x="-12.7" y="12.14" drill="1.04"/>
-<pad name="5" x="-12.7" y="9.6" drill="1.04"/>
-<pad name="6" x="-12.7" y="7.06" drill="1.04"/>
-<pad name="7" x="-12.7" y="4.52" drill="1.04"/>
-<pad name="8" x="-12.7" y="1.98" drill="1.04"/>
-<pad name="9" x="-12.7" y="-0.56" drill="1.04"/>
-<pad name="10" x="-12.7" y="-3.1" drill="1.04"/>
-<pad name="11" x="-12.7" y="-5.64" drill="1.04"/>
-<pad name="12" x="-12.7" y="-8.18" drill="1.04"/>
-<pad name="13" x="-12.7" y="-10.72" drill="1.04"/>
-<pad name="14" x="-12.7" y="-13.26" drill="1.04"/>
-<pad name="15" x="-12.7" y="-15.8" drill="1.04"/>
-<pad name="16" x="-12.7" y="-18.34" drill="1.04"/>
-<pad name="17" x="-12.7" y="-20.88" drill="1.04"/>
-<pad name="18" x="-12.7" y="-23.42" drill="1.04"/>
-<pad name="38" x="12.7" y="19.76" drill="1.04"/>
-<pad name="37" x="12.7" y="17.22" drill="1.04"/>
-<pad name="36" x="12.7" y="14.68" drill="1.04"/>
-<pad name="35" x="12.7" y="12.14" drill="1.04"/>
-<pad name="34" x="12.7" y="9.6" drill="1.04"/>
-<pad name="33" x="12.7" y="7.06" drill="1.04"/>
-<pad name="32" x="12.7" y="4.52" drill="1.04"/>
-<pad name="31" x="12.7" y="1.98" drill="1.04"/>
-<pad name="30" x="12.7" y="-0.56" drill="1.04"/>
-<pad name="29" x="12.7" y="-3.1" drill="1.04"/>
-<pad name="28" x="12.7" y="-5.64" drill="1.04"/>
-<pad name="27" x="12.7" y="-8.18" drill="1.04"/>
-<pad name="26" x="12.7" y="-10.72" drill="1.04"/>
-<pad name="25" x="12.7" y="-13.26" drill="1.04"/>
-<pad name="24" x="12.7" y="-15.8" drill="1.04"/>
-<pad name="23" x="12.7" y="-18.34" drill="1.04"/>
-<pad name="22" x="12.7" y="-20.88" drill="1.04"/>
-<pad name="21" x="12.7" y="-23.42" drill="1.04"/>
-<pad name="20" x="12.7" y="-25.96" drill="1.04"/>
+<pad name="1" x="-12.7" y="20.32" drill="1.04" shape="square"/>
+<pad name="2" x="-12.7" y="17.78" drill="1.04"/>
+<pad name="19" x="-12.7" y="-25.4" drill="1.04"/>
+<pad name="3" x="-12.7" y="15.24" drill="1.04"/>
+<pad name="4" x="-12.7" y="12.7" drill="1.04"/>
+<pad name="5" x="-12.7" y="10.16" drill="1.04"/>
+<pad name="6" x="-12.7" y="7.62" drill="1.04"/>
+<pad name="7" x="-12.7" y="5.08" drill="1.04"/>
+<pad name="8" x="-12.7" y="2.54" drill="1.04"/>
+<pad name="9" x="-12.7" y="0" drill="1.04"/>
+<pad name="10" x="-12.7" y="-2.54" drill="1.04"/>
+<pad name="11" x="-12.7" y="-5.08" drill="1.04"/>
+<pad name="12" x="-12.7" y="-7.62" drill="1.04"/>
+<pad name="13" x="-12.7" y="-10.16" drill="1.04"/>
+<pad name="14" x="-12.7" y="-12.7" drill="1.04"/>
+<pad name="15" x="-12.7" y="-15.24" drill="1.04"/>
+<pad name="16" x="-12.7" y="-17.78" drill="1.04"/>
+<pad name="17" x="-12.7" y="-20.32" drill="1.04"/>
+<pad name="18" x="-12.7" y="-22.86" drill="1.04"/>
+<pad name="38" x="12.7" y="20.32" drill="1.04"/>
+<pad name="37" x="12.7" y="17.78" drill="1.04"/>
+<pad name="36" x="12.7" y="15.24" drill="1.04"/>
+<pad name="35" x="12.7" y="12.7" drill="1.04"/>
+<pad name="34" x="12.7" y="10.16" drill="1.04"/>
+<pad name="33" x="12.7" y="7.62" drill="1.04"/>
+<pad name="32" x="12.7" y="5.08" drill="1.04"/>
+<pad name="31" x="12.7" y="2.54" drill="1.04"/>
+<pad name="30" x="12.7" y="0" drill="1.04"/>
+<pad name="29" x="12.7" y="-2.54" drill="1.04"/>
+<pad name="28" x="12.7" y="-5.08" drill="1.04"/>
+<pad name="27" x="12.7" y="-7.62" drill="1.04"/>
+<pad name="26" x="12.7" y="-10.16" drill="1.04"/>
+<pad name="25" x="12.7" y="-12.7" drill="1.04"/>
+<pad name="24" x="12.7" y="-15.24" drill="1.04"/>
+<pad name="23" x="12.7" y="-17.78" drill="1.04"/>
+<pad name="22" x="12.7" y="-20.32" drill="1.04"/>
+<pad name="21" x="12.7" y="-22.86" drill="1.04"/>
+<pad name="20" x="12.7" y="-25.4" drill="1.04"/>
 </package>
-<package name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:footprint:44294360/1" library_version="5">
-<wire x1="-13.95" y1="21.435" x2="13.95" y2="21.435" width="0.127" layer="51"/>
-<wire x1="13.95" y1="21.435" x2="13.95" y2="-27.25" width="0.127" layer="51"/>
-<wire x1="13.95" y1="-27.25" x2="-13.95" y2="-27.25" width="0.127" layer="51"/>
-<wire x1="-13.95" y1="-27.25" x2="-13.95" y2="21.435" width="0.127" layer="51"/>
-<wire x1="-13.95" y1="-27.25" x2="-13.95" y2="21.435" width="0.127" layer="21"/>
-<wire x1="-13.95" y1="21.435" x2="13.95" y2="21.435" width="0.127" layer="21"/>
-<wire x1="13.95" y1="21.435" x2="13.95" y2="-27.25" width="0.127" layer="21"/>
-<wire x1="13.95" y1="-27.25" x2="-13.95" y2="-27.25" width="0.127" layer="21"/>
-<wire x1="-14.2" y1="21.685" x2="14.2" y2="21.685" width="0.05" layer="39"/>
-<wire x1="14.2" y1="21.685" x2="14.2" y2="-27.5" width="0.05" layer="39"/>
-<wire x1="14.2" y1="-27.5" x2="-14.2" y2="-27.5" width="0.05" layer="39"/>
-<wire x1="-14.2" y1="-27.5" x2="-14.2" y2="21.685" width="0.05" layer="39"/>
-<text x="-14.0054" y="22.0958" size="1.270490625" layer="25">&gt;NAME</text>
-<text x="-14.0146" y="-28.9302" size="1.27133125" layer="27">&gt;VALUE</text>
+<package name="MODULE_ESP32-DEVKITC-32D" urn="urn:adsk.eagle:footprint:44270576/3" library_version="9">
+<wire x1="-13.95" y1="27.912" x2="13.95" y2="27.912" width="0.127" layer="51"/>
+<wire x1="13.95" y1="27.912" x2="13.95" y2="-26.615" width="0.127" layer="51"/>
+<wire x1="13.95" y1="-26.615" x2="-13.95" y2="-26.615" width="0.127" layer="51"/>
+<wire x1="-13.95" y1="-26.615" x2="-13.95" y2="27.912" width="0.127" layer="51"/>
+<wire x1="-13.95" y1="-26.615" x2="-13.95" y2="27.912" width="0.127" layer="21"/>
+<wire x1="-13.95" y1="27.912" x2="13.95" y2="27.912" width="0.127" layer="21"/>
+<wire x1="13.95" y1="27.912" x2="13.95" y2="-26.615" width="0.127" layer="21"/>
+<wire x1="13.95" y1="-26.615" x2="-13.95" y2="-26.615" width="0.127" layer="21"/>
+<wire x1="-14.2" y1="28.162" x2="14.2" y2="28.162" width="0.05" layer="39"/>
+<wire x1="14.2" y1="28.162" x2="14.2" y2="-26.865" width="0.05" layer="39"/>
+<wire x1="14.2" y1="-26.865" x2="-14.2" y2="-26.865" width="0.05" layer="39"/>
+<wire x1="-14.2" y1="-26.865" x2="-14.2" y2="28.162" width="0.05" layer="39"/>
+<text x="-12.7" y="30.48" size="1.270490625" layer="25">&gt;NAME</text>
+<text x="-12.7" y="-30.48" size="1.27133125" layer="27">&gt;VALUE</text>
 <circle x="-14.6" y="19.76" radius="0.1" width="0.2" layer="21"/>
 <circle x="-14.6" y="19.76" radius="0.1" width="0.2" layer="51"/>
-<pad name="1" x="-12.7" y="19.76" drill="1.04" shape="square"/>
-<pad name="2" x="-12.7" y="17.22" drill="1.04"/>
-<pad name="19" x="-12.7" y="-25.96" drill="1.04"/>
-<pad name="3" x="-12.7" y="14.68" drill="1.04"/>
-<pad name="4" x="-12.7" y="12.14" drill="1.04"/>
-<pad name="5" x="-12.7" y="9.6" drill="1.04"/>
-<pad name="6" x="-12.7" y="7.06" drill="1.04"/>
-<pad name="7" x="-12.7" y="4.52" drill="1.04"/>
-<pad name="8" x="-12.7" y="1.98" drill="1.04"/>
-<pad name="9" x="-12.7" y="-0.56" drill="1.04"/>
-<pad name="10" x="-12.7" y="-3.1" drill="1.04"/>
-<pad name="11" x="-12.7" y="-5.64" drill="1.04"/>
-<pad name="12" x="-12.7" y="-8.18" drill="1.04"/>
-<pad name="13" x="-12.7" y="-10.72" drill="1.04"/>
-<pad name="14" x="-12.7" y="-13.26" drill="1.04"/>
-<pad name="15" x="-12.7" y="-15.8" drill="1.04"/>
-<pad name="16" x="-12.7" y="-18.34" drill="1.04"/>
-<pad name="17" x="-12.7" y="-20.88" drill="1.04"/>
-<pad name="18" x="-12.7" y="-23.42" drill="1.04"/>
-<pad name="38" x="12.7" y="19.76" drill="1.04"/>
-<pad name="37" x="12.7" y="17.22" drill="1.04"/>
-<pad name="36" x="12.7" y="14.68" drill="1.04"/>
-<pad name="35" x="12.7" y="12.14" drill="1.04"/>
-<pad name="34" x="12.7" y="9.6" drill="1.04"/>
-<pad name="33" x="12.7" y="7.06" drill="1.04"/>
-<pad name="32" x="12.7" y="4.52" drill="1.04"/>
-<pad name="31" x="12.7" y="1.98" drill="1.04"/>
-<pad name="30" x="12.7" y="-0.56" drill="1.04"/>
-<pad name="29" x="12.7" y="-3.1" drill="1.04"/>
-<pad name="28" x="12.7" y="-5.64" drill="1.04"/>
-<pad name="27" x="12.7" y="-8.18" drill="1.04"/>
-<pad name="26" x="12.7" y="-10.72" drill="1.04"/>
-<pad name="25" x="12.7" y="-13.26" drill="1.04"/>
-<pad name="24" x="12.7" y="-15.8" drill="1.04"/>
-<pad name="23" x="12.7" y="-18.34" drill="1.04"/>
-<pad name="22" x="12.7" y="-20.88" drill="1.04"/>
-<pad name="21" x="12.7" y="-23.42" drill="1.04"/>
-<pad name="20" x="12.7" y="-25.96" drill="1.04"/>
+<pad name="1" x="-12.7" y="20.32" drill="1.04" shape="square"/>
+<pad name="2" x="-12.7" y="17.78" drill="1.04"/>
+<pad name="19" x="-12.7" y="-25.4" drill="1.04"/>
+<pad name="3" x="-12.7" y="15.24" drill="1.04"/>
+<pad name="4" x="-12.7" y="12.7" drill="1.04"/>
+<pad name="5" x="-12.7" y="10.16" drill="1.04"/>
+<pad name="6" x="-12.7" y="7.62" drill="1.04"/>
+<pad name="7" x="-12.7" y="5.08" drill="1.04"/>
+<pad name="8" x="-12.7" y="2.54" drill="1.04"/>
+<pad name="9" x="-12.7" y="0" drill="1.04"/>
+<pad name="10" x="-12.7" y="-2.54" drill="1.04"/>
+<pad name="11" x="-12.7" y="-5.08" drill="1.04"/>
+<pad name="12" x="-12.7" y="-7.62" drill="1.04"/>
+<pad name="13" x="-12.7" y="-10.16" drill="1.04"/>
+<pad name="14" x="-12.7" y="-12.7" drill="1.04"/>
+<pad name="15" x="-12.7" y="-15.24" drill="1.04"/>
+<pad name="16" x="-12.7" y="-17.78" drill="1.04"/>
+<pad name="17" x="-12.7" y="-20.32" drill="1.04"/>
+<pad name="18" x="-12.7" y="-22.86" drill="1.04"/>
+<pad name="38" x="12.7" y="20.32" drill="1.04"/>
+<pad name="37" x="12.7" y="17.78" drill="1.04"/>
+<pad name="36" x="12.7" y="15.24" drill="1.04"/>
+<pad name="35" x="12.7" y="12.7" drill="1.04"/>
+<pad name="34" x="12.7" y="10.16" drill="1.04"/>
+<pad name="33" x="12.7" y="7.62" drill="1.04"/>
+<pad name="32" x="12.7" y="5.08" drill="1.04"/>
+<pad name="31" x="12.7" y="2.54" drill="1.04"/>
+<pad name="30" x="12.7" y="0" drill="1.04"/>
+<pad name="29" x="12.7" y="-2.54" drill="1.04"/>
+<pad name="28" x="12.7" y="-5.08" drill="1.04"/>
+<pad name="27" x="12.7" y="-7.62" drill="1.04"/>
+<pad name="26" x="12.7" y="-10.16" drill="1.04"/>
+<pad name="25" x="12.7" y="-12.7" drill="1.04"/>
+<pad name="24" x="12.7" y="-15.24" drill="1.04"/>
+<pad name="23" x="12.7" y="-17.78" drill="1.04"/>
+<pad name="22" x="12.7" y="-20.32" drill="1.04"/>
+<pad name="21" x="12.7" y="-22.86" drill="1.04"/>
+<pad name="20" x="12.7" y="-25.4" drill="1.04"/>
 </package>
 </packages>
 <packages3d>
-<package3d name="MODULE_ESP32-DEVKITC-32D" urn="urn:adsk.eagle:package:44270578/3" type="model" library_version="3">
-<packageinstances>
-<packageinstance name="MODULE_ESP32-DEVKITC-32D"/>
-</packageinstances>
-</package3d>
-<package3d name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:package:44294361/2" type="model" library_version="5">
+<package3d name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:package:44294361/4" type="model" library_version="9">
 <packageinstances>
 <packageinstance name="MODULE_ESP32-DEVKITC-32U"/>
+</packageinstances>
+</package3d>
+<package3d name="MODULE_ESP32-DEVKITC-32D" urn="urn:adsk.eagle:package:44270578/5" type="model" library_version="9">
+<packageinstances>
+<packageinstance name="MODULE_ESP32-DEVKITC-32D"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -21322,7 +21322,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="ESP32-DEVKITC-32" urn="urn:adsk.eagle:component:44270579/7" prefix="U" library_version="7">
+<deviceset name="ESP32-DEVKITC-32" urn="urn:adsk.eagle:component:44270579/9" prefix="U" library_version="9">
 <description> &lt;a href="https://pricing.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif%20Systems/view-part?ref=eda"&gt;Check availability&lt;/a&gt;</description>
 <gates>
 <gate name="G$1" symbol="ESP32-DEVKITC-32" x="0" y="0"/>
@@ -21370,7 +21370,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <connect gate="G$1" pin="TXD0" pad="35"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:44270578/3"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:44270578/5"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21427,7 +21427,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <connect gate="G$1" pin="TXD0" pad="35"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:44294361/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:44294361/4"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -22198,7 +22198,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 </part>
 <part name="IC1" library="REG1117FA-5.0_500" library_urn="urn:adsk.eagle:library:43937876" deviceset="REG1117FA-5.0_500" device="" package3d_urn="urn:adsk.eagle:package:43937879/3"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="U" package3d_urn="urn:adsk.eagle:package:44294361/2" value="ESP32-DevKitC ESP32-WROOM-32U"/>
+<part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="U" package3d_urn="urn:adsk.eagle:package:44294361/4" value="ESP32-DevKitC ESP32-WROOM-32U"/>
 <part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/1"/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="X7" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="AK500/3" device="" package3d_urn="urn:adsk.eagle:package:37500967/6"/>
