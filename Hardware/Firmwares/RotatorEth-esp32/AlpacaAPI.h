@@ -2,6 +2,7 @@
 
 #pragma message "Alpaca server enabled"
 #include <atomic>
+#include <vector>
 #include <aWOT.h>
 #include <functional>
 #include <EthernetUdp.h>
@@ -59,7 +60,7 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 {
 	if(!discoveryServer)
 		return -1;
-	
+
 	String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
 	String sDiscoveryRequest;
 
@@ -93,7 +94,7 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 
 	memset(name,0,ALPACA_VAR_BUF_LEN);
 	memset(value,0,ALPACA_VAR_BUF_LEN);
-	
+
 	while(req.form(name, ALPACA_VAR_BUF_LEN-1, value, ALPACA_VAR_BUF_LEN-1)){
 		DBPrintln("name : " + String(name));
 		DBPrintln("value : " + String(value));
@@ -113,12 +114,50 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 	}
 }
 
+
+std::vector<std::vector<String>> getQueryGetVariables(String sQueryString)
+{
+	int nErr;
+	int nIndex = 0;
+	int nCurIndex = 0;
+	String sEntry;
+	std::vector<String> svKV;
+	std::vector<String> svFields;
+	std::vector<std::vector<String>> svParameters;
+	
+		DBPrintln("getQueryGetVariables");
+
+	// url parameters are separate by '&'
+	while(true) {
+		nIndex = sQueryString.indexOf('&',nCurIndex);
+		if(nIndex == -1) {
+			svFields.push_back(sQueryString.substring(nCurIndex));
+			break;
+		}
+		svFields.push_back(sQueryString.substring(nCurIndex,nIndex));
+		nCurIndex = nIndex+1;
+	}
+	if(svFields.size()) {
+		// now split each field in key,value pair with '=' as the separator
+		for(String &sTmp : svFields) {
+			sTmp.toLowerCase();
+			nIndex = sTmp.indexOf('=');
+			svKV.push_back(sTmp.substring(0,nIndex));
+			svKV.push_back(sTmp.substring(nIndex+1));
+			svParameters.push_back(svKV);
+			svKV.clear();
+		}
+	}
+	return svParameters;
+}
+
 bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 {
 	char ClientID[64];
 	char ClientTransactionID[64];
 	String sClientId;
 	String sClientTransactionId;
+	std::vector<std::vector<String>> svParameters;
 
 	bool bParamOk = true;
 
@@ -127,13 +166,22 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 	AlpacaResp["ServerTransactionID"] = nTransactionID;
 
 	if(req.method() == Request::GET) {
-		req.query("ClientID", ClientID, 64);
-		req.query("ClientTransactionID", ClientTransactionID, 64);
+		// the req.query being case sensitive will not work here.
+		// req.query("ClientID", ClientID, 64);
+		// req.query("ClientTransactionID", ClientTransactionID, 64);
+		// sClientId=String(ClientID);
+		// sClientId.trim();
+		// sClientTransactionId=String(ClientTransactionID);
+		// sClientTransactionId.trim();
 
-		sClientId=String(ClientID);
-		sClientId.trim();
-		sClientTransactionId=String(ClientTransactionID);
-		sClientTransactionId.trim();
+		svParameters = getQueryGetVariables(String(req.query()));
+		for( std::vector<String> &svParamEntry : svParameters ) {
+
+			if(svParamEntry.at(0).equals("clientid"))
+				sClientId = svParamEntry.at(1);
+			if(svParamEntry.at(0).equals("clienttransactionid"))
+				sClientTransactionId = svParamEntry.at(1);
+		}
 
 		if(sClientId.length())
 			AlpacaResp["ClientID"] = sClientId.toInt()<0?0:sClientId.toInt();
@@ -571,7 +619,7 @@ void getName(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void getSupportedActions(Request &req, Response &res)
@@ -670,7 +718,7 @@ void getAltitude(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 
 }
 
@@ -698,7 +746,7 @@ void geAtHome(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 
 }
 
@@ -724,7 +772,7 @@ void geAtPark(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 
 }
 
@@ -741,15 +789,15 @@ void getAzimuth(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = Rotator->GetAzimuth();
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
-} 
+	res.flush();
+}
 
 void canfindhome(Request &req, Response &res)
 {
@@ -764,14 +812,14 @@ void canfindhome(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void canPark(Request &req, Response &res)
@@ -787,14 +835,14 @@ void canPark(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void canSetAltitude(Request &req, Response &res)
@@ -810,14 +858,14 @@ void canSetAltitude(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = false;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void canSetAzimuth(Request &req, Response &res)
@@ -833,14 +881,14 @@ void canSetAzimuth(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void canSetPark(Request &req, Response &res)
@@ -856,14 +904,14 @@ void canSetPark(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void canSetShutter(Request &req, Response &res)
@@ -879,14 +927,14 @@ void canSetShutter(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void canSlave(Request &req, Response &res)
@@ -902,14 +950,14 @@ void canSlave(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 1024;
 	AlpacaResp["ErrorMessage"] = "Not implemented";
-	
+
 	AlpacaResp["Value"] = false;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void canSyncAzimuth(Request &req, Response &res)
@@ -925,14 +973,14 @@ void canSyncAzimuth(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
-	
+
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void getShutterStatus(Request &req, Response &res)
@@ -993,7 +1041,7 @@ void getShutterStatus(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void Slaved(Request &req, Response &res)
@@ -1027,7 +1075,7 @@ void Slaved(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void getSlewing(Request &req, Response &res)
@@ -1057,7 +1105,7 @@ void getSlewing(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void doAbort(Request &req, Response &res)
@@ -1086,12 +1134,12 @@ void doAbort(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 
 	Abort(); // this is in the RotatorEth-esp32.ino
-	
+
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void doCloseShutter(Request &req, Response &res)
@@ -1136,7 +1184,7 @@ void doCloseShutter(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void doFindHome(Request &req, Response &res)
@@ -1179,7 +1227,7 @@ void doFindHome(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void doOpenShutter(Request &req, Response &res)
@@ -1233,7 +1281,7 @@ void doOpenShutter(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush(); 
+	res.flush();
 }
 
 void doPark(Request &req, Response &res)
@@ -1534,7 +1582,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer = new Application();
 
 	uuid.generate();
-	
+
 	DBPrintln("m_AlpacaRestServer starting");
 	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
 	mRestServer->begin();
@@ -1559,9 +1607,9 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
 
 	m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConnected);
-	
+
 	m_AlpacaRestServer->put("/api/v1/dome/0/connected", &setConnected);
-	
+
 	m_AlpacaRestServer->get("/api/v1/dome/0/description", &getDeviceDescription);
 	m_AlpacaRestServer->get("/api/v1/dome/0/driverinfo", &getDriverInfo);
 	m_AlpacaRestServer->get("/api/v1/dome/0/driverversion", &getDriverVersion);
