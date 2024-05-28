@@ -167,13 +167,6 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 
 	if(req.method() == Request::GET) {
 		// the req.query being case sensitive will not work here.
-		// req.query("ClientID", ClientID, 64);
-		// req.query("ClientTransactionID", ClientTransactionID, 64);
-		// sClientId=String(ClientID);
-		// sClientId.trim();
-		// sClientTransactionId=String(ClientTransactionID);
-		// sClientTransactionId.trim();
-
 		svParameters = getQueryGetVariables(String(req.query()));
 		for( std::vector<String> &svParamEntry : svParameters ) {
 
