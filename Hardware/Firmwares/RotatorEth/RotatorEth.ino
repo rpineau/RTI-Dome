@@ -30,13 +30,9 @@
 
 #define USE_EXT_EEPROM
 #define USE_ETHERNET
-//#define USE_ALPACA
 
 #ifdef USE_ETHERNET
 #pragma message "Ethernet enabled"
-#ifdef USE_ALPACA
-#pragma message "Alpaca server enabled"
-#endif
 // include and some defines for ethernet connection
 #include <SPI.h>
 #include <Ethernet.h>
@@ -61,11 +57,6 @@ byte MAC_Address[6];    // Mac address, uses part of the unique ID
 
 #define SERVER_PORT 2323
 EthernetServer domeServer(SERVER_PORT);
-#ifdef USE_ALPACA
-#include "RTI-DomeAlpacaServer.h"
-#define ALPACA_SERVER_PORT 11111
-RTIDomeAlpacaServer AlpacaServer(ALPACA_SERVER_PORT);
-#endif // USE_ALPACA
 EthernetClient domeClient;
 int nbEthernetClient;
 String networkBuffer;
@@ -328,9 +319,6 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 
 	DBPrintln("Server ready, calling begin()");
 	domeServer.begin();
-#ifdef USE_ALPACA
-	AlpacaServer.startServer();
-#endif // USE_ALPACA
 	return true;
 }
 
@@ -344,7 +332,7 @@ void checkForNewTCPClient()
 	if(newClient) {
 		DBPrintln("new client");
 		if(nbEthernetClient > 0) { // we only accept 1 client
-			newClient.print("Already in use#");
+			newClient.write("Already in use#\n");
 			newClient.flush();
 			newClient.stop();
 			DBPrintln("new client rejected");
@@ -409,7 +397,7 @@ void StartWirelessConfig()
 	delay(1100); // guard time before and after
 	isConfiguringWireless = true;
 	DBPrintln("Sending +++");
-	Wireless.print("+++");
+	Wireless.write("+++");
 	delay(1100);
 	ShutterWatchdog.reset();
 }
@@ -419,15 +407,16 @@ inline void ConfigXBee()
 
 	DBPrintln("Sending ");
 	if ( configStep == PANID_STEP) {
-		String ATCmd = "ATID" + String(Rotator->GetPANID());
-		DBPrintln(ATCmd);
-		Wireless.println(ATCmd);
+		String ATCmd = "ATID" + String(Rotator->GetPANID()+"\n");
+		DBPrint(ATCmd);
+		Wireless.write(ATCmd.c_str());
 		Wireless.flush();
 		configStep++;
 	}
 	else {
-		DBPrintln(ATString[configStep]);
-		Wireless.println(ATString[configStep]);
+		String ATCmd = ATString[configStep]+ "\n";
+		DBPrint(ATCmd);
+		Wireless.write(ATCmd.c_str());
 		Wireless.flush();
 		configStep++;
 	}
@@ -457,37 +446,48 @@ void setPANID(String value)
 
 void SendHello()
 {
+	String sCmd;
 	DBPrintln("Sending hello");
-	Wireless.print(String(HELLO) + "#");
+	sCmd = String(HELLO) + "#";
+	Wireless.write(sCmd.c_str());
 	ReceiveWireless();
 	SentHello = true;
 }
 
 void requestShutterData()
 {
-		Wireless.print(String(STATE_SHUTTER) + "#");
-		ReceiveWireless();
+	String sCmd;
+	sCmd = String(STATE_SHUTTER) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 
-		Wireless.print(String(VERSION_SHUTTER) + "#");
-		ReceiveWireless();
+	sCmd = String(VERSION_SHUTTER) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 
-		Wireless.print(String(REVERSED_SHUTTER) + "#");
-		ReceiveWireless();
+	sCmd = String(REVERSED_SHUTTER) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 
-		Wireless.print(String(STEPSPER_SHUTTER) + "#");
-		ReceiveWireless();
+	sCmd = String(STEPSPER_SHUTTER) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 
-		Wireless.print(String(SPEED_SHUTTER) + "#");
-		ReceiveWireless();
+	sCmd = String(SPEED_SHUTTER) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 
-		Wireless.print(String(ACCELERATION_SHUTTER) + "#");
-		ReceiveWireless();
+	sCmd = String(ACCELERATION_SHUTTER) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 
-		Wireless.print(String(VOLTS_SHUTTER) + "#");
-		ReceiveWireless();
+	sCmd = String(VOLTS_SHUTTER) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 
-		Wireless.print(String(SHUTTER_PANID) + "#");
-		ReceiveWireless();
+	sCmd = String(SHUTTER_PANID) + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 }
 
 #endif // STANDALONE
@@ -510,11 +510,14 @@ void CheckForCommands()
 void CheckForRain()
 {
 	int nPosition, nParkPos;
+	String sCmd;
+
 	DBPrintln("CheckForRain");
 	if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
 		bIsRaining = Rotator->GetRainStatus();
 #ifndef STANDALONE
-		Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+		sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+		Wireless.write(sCmd.c_str());
 		ReceiveWireless();
 #endif // STANDALONE
 	}
@@ -532,7 +535,8 @@ void CheckForRain()
 		}
 	// keep telling the shutter that it's raining
 #ifndef STANDALONE
-		Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+		sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+		Wireless.write(sCmd.c_str());
 #endif // STANDALONE
 	}
 }
@@ -550,8 +554,11 @@ void checkShuterLowVoltage()
 
 void PingShutter()
 {
+	String sCmd;
+
 	if(PingTimer.elapsed() >= pingInterval) {
-		Wireless.print(String(SHUTTER_PING) + "#");
+		sCmd = String(SHUTTER_PING) + "#";
+		Wireless.write(sCmd.c_str());
 		ReceiveWireless();
 		PingTimer.reset();
 		}
@@ -665,8 +672,8 @@ void ProcessCommand(bool bFromNetwork)
 			serialMessage = sTmpString;
 			Rotator->Stop();
 #ifndef STANDALONE
-			wirelessMessage = sTmpString;
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage = sTmpString + "#";
+			Wireless.write(wirelessMessage .c_str());
 			ReceiveWireless();
 #endif // STANDALONE
 			break;
@@ -873,34 +880,34 @@ void ProcessCommand(bool bFromNetwork)
 			XbeeStarted = false;
 			configStep = 0;
 			serialMessage = sTmpString;
-			Wireless.print(sTmpString + "#");
+			sTmpString += "#";
+			Wireless.write(sTmpString.c_str());
 			ReceiveWireless();
 			DBPrintln("trying to reconfigure radio");
 			resetChip(XBEE_RESET);
 			break;
 
 		case PANID:
-			sTmpString = String(PANID);
 			if (hasValue) {
 				RemoteShutter.panid = "0000";
-				wirelessMessage = String(SHUTTER_PANID) + value;
-				Wireless.print(wirelessMessage + "#");
+				wirelessMessage = String(SHUTTER_PANID) + value + "#";
+				Wireless.write(wirelessMessage.c_str());
 				setPANID(value); // shutter XBee should be doing the same thing
 			}
-			serialMessage = sTmpString + String(Rotator->GetPANID());
+			serialMessage = String(PANID) + String(Rotator->GetPANID());
 			break;
 
 		case SHUTTER_PANID:
-			wirelessMessage = String(SHUTTER_PANID);
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage = String(SHUTTER_PANID) + "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = String(SHUTTER_PANID) + RemoteShutter.panid ;
 			break;
 
 
 		case SHUTTER_PING:
-			wirelessMessage = String(SHUTTER_PING);
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage = String(SHUTTER_PING) + "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = String(SHUTTER_PING);
 			break;
@@ -914,48 +921,37 @@ void ProcessCommand(bool bFromNetwork)
 			else {
 				wirelessMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage += "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = sTmpString + RemoteShutter.acceleration;
 			break;
 
 		case CLOSE_SHUTTER:
-			sTmpString = String(CLOSE_SHUTTER);
-			Wireless.print(sTmpString+ "#");
+			serialMessage = String(CLOSE_SHUTTER);
+			sTmpString = serialMessage + "#";
+			Wireless.write(sTmpString.c_str());
 			ReceiveWireless();
-			serialMessage = sTmpString;
 			break;
 
 		case SHUTTER_RESTORE_MOTOR_DEFAULT :
-			sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
-			Wireless.print(sTmpString+ "#");
+			serialMessage =  String(SHUTTER_RESTORE_MOTOR_DEFAULT);
+			sTmpString = serialMessage + "#";
+			Wireless.write(sTmpString.c_str());
 			ReceiveWireless();
-			Wireless.print(String(SPEED_SHUTTER)+ "#");
+			sTmpString = String(SPEED_SHUTTER) + "#";
+			Wireless.write(sTmpString.c_str());
 			ReceiveWireless();
-			Wireless.print(String(ACCELERATION_SHUTTER)+ "#");
+			sTmpString = String(ACCELERATION_SHUTTER) + "#";
+			Wireless.write(sTmpString.c_str());
 			ReceiveWireless();
-			serialMessage = sTmpString;
 			break;
 
-//      case ELEVATION_SHUTTER:
-//          sTmpString = String(ELEVATION_SHUTTER);
-//          if (hasValue) {
-//              RemoteShutter.position = value;
-//              wirelessMessage = sTmpString + RemoteShutter.position;
-//          }
-//          else {
-//              wirelessMessage = sTmpString;
-//          }
-//          Wireless.print(wirelessMessage + "#");
-//          ReceiveWireless();
-//          serialMessage = sTmpString + RemoteShutter.position;
-//          break;
-
 		case OPEN_SHUTTER:
-				sTmpString = String(OPEN_SHUTTER);
-				Wireless.print(sTmpString + "#");
+				sTmpString = String(OPEN_SHUTTER) + "#";
+				Wireless.write(sTmpString.c_str());
 				ReceiveWireless();
-				serialMessage = sTmpString + RemoteShutter.lowVoltStateOrRaining;
+				serialMessage = String(OPEN_SHUTTER) + RemoteShutter.lowVoltStateOrRaining;
 				break;
 
 		case REVERSED_SHUTTER:
@@ -967,7 +963,8 @@ void ProcessCommand(bool bFromNetwork)
 			else {
 				wirelessMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage += "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = sTmpString + RemoteShutter.reversed;
 			break;
@@ -981,16 +978,17 @@ void ProcessCommand(bool bFromNetwork)
 			else {
 				wirelessMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage += "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = sTmpString + RemoteShutter.speed;
 			break;
 
 		case STATE_SHUTTER:
-			sTmpString = String(STATE_SHUTTER);
-			Wireless.print(sTmpString + "#");
+			sTmpString = String(STATE_SHUTTER) + "#";
+			Wireless.write(sTmpString.c_str());
 			ReceiveWireless();
-			serialMessage = sTmpString + RemoteShutter.state;
+			serialMessage = String(STATE_SHUTTER) + RemoteShutter.state;
 			break;
 
 		case STEPSPER_SHUTTER:
@@ -1002,16 +1000,17 @@ void ProcessCommand(bool bFromNetwork)
 			else {
 				wirelessMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage += "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = sTmpString + RemoteShutter.stepsPerStroke;
 			break;
 
 		case VERSION_SHUTTER:
-			sTmpString = String(VERSION_SHUTTER);
-			Wireless.print(sTmpString + "#");
+			sTmpString = String(VERSION_SHUTTER) + "#";
+			Wireless.write(sTmpString.c_str());
 			ReceiveWireless();
-			serialMessage = sTmpString + RemoteShutter.version;
+			serialMessage = String(VERSION_SHUTTER) + RemoteShutter.version;
 			break;
 
 		case VOLTS_SHUTTER:
@@ -1019,8 +1018,8 @@ void ProcessCommand(bool bFromNetwork)
 			wirelessMessage = sTmpString;
 			if (hasValue)
 				wirelessMessage += String(value);
-
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage += "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = sTmpString + RemoteShutter.volts;
 			break;
@@ -1033,7 +1032,8 @@ void ProcessCommand(bool bFromNetwork)
 			else {
 				wirelessMessage = sTmpString;
 			}
-			Wireless.print(wirelessMessage + "#");
+			wirelessMessage += "#";
+			Wireless.write(wirelessMessage.c_str());
 			ReceiveWireless();
 			serialMessage = sTmpString + RemoteShutter.watchdogInterval;
 			break;
@@ -1049,12 +1049,15 @@ void ProcessCommand(bool bFromNetwork)
 	if (serialMessage.length() > 0) {
 		if(!bFromNetwork) {
 			if(Computer)
-				Computer.print(serialMessage + "#");
+				serialMessage += "#";
+				Computer.write(serialMessage.c_str());
+				Computer.flush();
 			}
 #ifdef USE_ETHERNET
 		else if(domeClient.connected()) {
 				DBPrintln("Network serialMessage = " + serialMessage);
-				domeClient.print(serialMessage + "#");
+				serialMessage += "#";
+				domeClient.write(serialMessage.c_str());
 				domeClient.flush();
 		}
 #endif // USE_ETHERNET
@@ -1137,7 +1140,7 @@ void ProcessWireless()
 	char command;
 	bool hasValue = false;
 	String value;
-
+	String sCmd;
 	DBPrintln("<<< Received: '" + wirelessBuffer + "'");
 	command = wirelessBuffer.charAt(0);
 	value = wirelessBuffer.substring(1);
@@ -1166,7 +1169,8 @@ void ProcessWireless()
 			break;
 
 		case RAIN_SHUTTER:
-			Wireless.print(String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#");
+			sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+			Wireless.write(sCmd.c_str());
 			break;
 
 		case REVERSED_SHUTTER:
@@ -1234,7 +1238,3 @@ void ProcessWireless()
 
 }
 #endif // STANDALONE
-
-
-
-

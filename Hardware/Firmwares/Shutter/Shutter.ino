@@ -222,24 +222,26 @@ void StartWirelessConfig()
 	delay(1100); // guard time before and after
 	isConfiguringWireless = true;
 	DBPrintln("Sending +++");
-	Wireless.print("+++");
+	Wireless.write("+++");
 	delay(1100);
 	watchdogTimer.reset();
 }
 
 inline void ConfigXBee(String result)
 {
+
 	DBPrint("Sending : ");
 	if ( configStep == PANID_STEP) {
-		String ATCmd = "ATID" + String(Shutter->GetPANID());
-		DBPrintln(ATCmd);
-		Wireless.println(ATCmd);
+		String ATCmd = "ATID" + String(Shutter->GetPANID()) + "\n";
+		DBPrint(ATCmd);
+		Wireless.write(ATCmd.c_str());
 		Wireless.flush();
 		configStep++;
 	}
 	else {
-		DBPrintln(ATString[configStep]);
-		Wireless.println(ATString[configStep]);
+		String ATCmd = ATString[configStep]+ "\n";
+		DBPrint(ATCmd);
+		Wireless.write(ATCmd.c_str());
 		Wireless.flush();
 		configStep++;
 	}
@@ -280,13 +282,15 @@ void PingRotator()
 	if (Shutter->GetVoltsAreLow()) {
 		wirelessMessage += "L"; // low voltage detected
 	}
-
-	Wireless.print(wirelessMessage + "#");
+	wirelessMessage += "#";
+	Wireless.write(wirelessMessage.c_str());
 	// ask if it's raining
-	Wireless.print( String(RAIN_SHUTTER) + "#");
+	wirelessMessage  =String(RAIN_SHUTTER) + "#";
+	Wireless.write( wirelessMessage.c_str());
 
 	// say hello :)
-	Wireless.print( String(HELLO) + "#");
+	wirelessMessage  =String(HELLO) + "#";
+	Wireless.write( wirelessMessage.c_str());
 	needFirstPing = false;
 }
 
@@ -540,7 +544,8 @@ void ProcessMessages(String buffer)
 
 	if (wirelessMessage.length() > 0) {
 		DBPrintln(">>> Sending " + wirelessMessage);
-		Wireless.print(wirelessMessage +"#");
+		wirelessMessage += "#";
+		Wireless.write(wirelessMessage.c_str());
 	}
 }
 
