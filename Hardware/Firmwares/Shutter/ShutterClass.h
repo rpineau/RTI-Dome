@@ -1,3 +1,4 @@
+#include "wiring_constants.h"
 //
 // RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
 // As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
@@ -295,10 +296,9 @@ ShutterClass::ShutterClass()
 	pinMode(STEPPER_DIRECTION_PIN,  OUTPUT);
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
-	bufferEnable(true);
 	// old board buffer enable
-	// pinMode(A3,       OUTPUT);
-	// digitalWrite(A3, LOW);
+	// pinMode(BUFFERN_EN, OUTPUT);
+	// bufferEnable(true);
 
 	LoadFromEEProm();
 

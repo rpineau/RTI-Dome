@@ -407,17 +407,15 @@ inline void ConfigXBee()
 
 	DBPrintln("Sending ");
 	if ( configStep == PANID_STEP) {
-		String ATCmd = "ATID" + String(Rotator->GetPANID()+"\n");
-		DBPrint(ATCmd);
-		Wireless.write(ATCmd.c_str());
-		Wireless.flush();
+		String ATCmd = "ATID" + String(Rotator->GetPANID());
+		DBPrintln(ATCmd);
+		Wireless.println(ATCmd.c_str());
 		configStep++;
 	}
 	else {
-		String ATCmd = ATString[configStep]+ "\n";
-		DBPrint(ATCmd);
-		Wireless.write(ATCmd.c_str());
-		Wireless.flush();
+		String ATCmd = ATString[configStep];
+		DBPrintln(ATCmd);
+		Wireless.println(ATCmd.c_str());
 		configStep++;
 	}
 	if (configStep > NB_AT_OK) {
@@ -512,7 +510,6 @@ void CheckForRain()
 	int nPosition, nParkPos;
 	String sCmd;
 
-	DBPrintln("CheckForRain");
 	if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
 		bIsRaining = Rotator->GetRainStatus();
 #ifndef STANDALONE

@@ -232,17 +232,15 @@ inline void ConfigXBee(String result)
 
 	DBPrint("Sending : ");
 	if ( configStep == PANID_STEP) {
-		String ATCmd = "ATID" + String(Shutter->GetPANID()) + "\n";
-		DBPrint(ATCmd);
-		Wireless.write(ATCmd.c_str());
-		Wireless.flush();
+		String ATCmd = "ATID" + String(Shutter->GetPANID());
+		DBPrintln(ATCmd);
+		Wireless.println(ATCmd.c_str());
 		configStep++;
 	}
 	else {
-		String ATCmd = ATString[configStep]+ "\n";
-		DBPrint(ATCmd);
-		Wireless.write(ATCmd.c_str());
-		Wireless.flush();
+		String ATCmd = ATString[configStep];
+		DBPrintln(ATCmd);
+		Wireless.println(ATCmd.c_str());
 		configStep++;
 	}
 	if (configStep > NB_AT_OK) {
