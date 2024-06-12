@@ -1,14 +1,13 @@
 //
 // RTI-Zone Dome Rotator firmware.
-// for Raspberry Pi Pico W (RP2040)
+// for ESP32
 //
 
-// Uncomment #define DEBUG to enable printing debug messages in serial
-
+// Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
 #include <atomic>
-#define DEBUG   // enable debug to DebugPort serial port
+#define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -39,7 +38,7 @@ String IpAddress2String(const IPAddress& ipAddress)
   return String(ipAddress[0]) + String(".") +
   		String(ipAddress[1]) + String(".") +
 		String(ipAddress[2]) + String(".") +
-		String(ipAddress[3]); 
+		String(ipAddress[3]);
 }
 #include "RotatorClass.h"
 
@@ -71,7 +70,7 @@ String sLocalIPAdress = "";
 #include <WiFi.h>
 #include <WiFiAP.h>
 #define SHUTTER_PORT 2424
-#define shutterWiFi WiFi 
+#define shutterWiFi WiFi
 std::atomic<bool> wifiPresent;
 WIFIConfig wifiConfig;
 WiFiServer *shutterServer = nullptr;
@@ -126,9 +125,9 @@ void configureWiFi();
 bool initWiFi(IPAddress ip, String sSSID, String sPassword);
 void checkForNewWifiClient();
 #endif
-void homeIntHandler();
-void rainIntHandler();
-void buttonHandler();
+void IRAM_ATTR homeIntHandler();
+void IRAM_ATTR rainIntHandler();
+void IRAM_ATTR buttonHandler();
 void resetChip(int);
 void StartWirelessConfig();
 void ConfigXBee();
@@ -206,13 +205,13 @@ void setup()
 	Rotator->motorStop();
 	Rotator->Stop();
 	Rotator->EnableMotor(false);
-	
+
 
 #ifdef USE_WIFI
 	bSentHello = false;
 	bGotHelloFromShutter = false;
 	configureWiFi();
-#endif 
+#endif
 
 #ifdef USE_ETHERNET
 	configureEthernet();
@@ -220,7 +219,7 @@ void setup()
 
 	disableCore0WDT();
 	disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0); 
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0);
 
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
@@ -283,7 +282,7 @@ void loop()
 // This task does all the motor controls
 //
 void MotorTask(void *)
-{   
+{
 
 	DBPrintln("========== Motor task starting ==========");
 
@@ -470,19 +469,19 @@ void checkForNewWifiClient()
 }
 
 #endif
-void homeIntHandler()
+void IRAM_ATTR homeIntHandler()
 {
    if(Rotator)
 	   Rotator->homeInterrupt();
 }
 
-void rainIntHandler()
+void IRAM_ATTR rainIntHandler()
 {
    if(Rotator)
 	   Rotator->rainInterrupt();
 }
 
-void buttonHandler()
+void IRAM_ATTR buttonHandler()
 {
    if(Rotator)
 	   Rotator->ButtonCheck();
@@ -623,7 +622,7 @@ void checkShuterLowVoltage()
 }
 
 void PingWiFiShutter()
-{	
+{
 	String shutterMessage;
 	int nTime = 0;
 	if(PingTimer.elapsed() >= pingInterval) {
