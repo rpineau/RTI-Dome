@@ -1334,15 +1334,15 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 }
 
 
-bool CRTIDome::checkBoundaries(double dTargetAz, double dDomeAz, double nMargin)
+bool CRTIDome::checkBoundaries(double dTargetAz, double dDomeAz, double dMargin)
 {
 	double highMark;
 	double lowMark;
 	double roundedGotoAz;
 
 	// we need to test "large" depending on the heading error and movement coasting
-	highMark = ceil(dDomeAz)+nMargin;
-	lowMark = ceil(dDomeAz)-nMargin;
+	highMark = ceil(dDomeAz)+dMargin;
+	lowMark = ceil(dDomeAz)-dMargin;
 	roundedGotoAz = ceil(dTargetAz);
 
 	if(lowMark < 0 && highMark > 0) { // we're close to 0 degre but above 0

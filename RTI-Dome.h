@@ -196,7 +196,7 @@ protected:
 	bool            isDomeAtHome();
 	int             parseFields(std::string sResp, std::vector<std::string> &svFields, char cSeparator);
 
-	bool            checkBoundaries(double dTargetAz, double dDomeAz, double nMargin=2.0);
+	bool            checkBoundaries(double dTargetAz, double dDomeAz, double dMargin=2.0);
 
 	SerXInterface   *m_pSerx;
 

@@ -3,7 +3,6 @@
 #pragma message "Alpaca server enabled"
 #include <atomic>
 #include <vector>
-#include <aWOT.h>
 #include <functional>
 #include <EthernetUdp.h>
 #include <ArduinoJson.h>
@@ -239,7 +238,7 @@ void getApiVersion(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getDescription(Request &req, Response &res)
@@ -262,7 +261,7 @@ void getDescription(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getConfiguredDevice(Request &req, Response &res)
@@ -285,7 +284,7 @@ void getConfiguredDevice(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doAction(Request &req, Response &res)
@@ -308,7 +307,7 @@ void doAction(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -326,7 +325,7 @@ void doAction(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doCommandBlind(Request &req, Response &res)
@@ -349,7 +348,7 @@ void doCommandBlind(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -359,7 +358,7 @@ void doCommandBlind(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doCommandBool(Request &req, Response &res)
@@ -382,7 +381,7 @@ void doCommandBool(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -393,7 +392,7 @@ void doCommandBool(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doCommandString(Request &req, Response &res)
@@ -416,7 +415,7 @@ void doCommandString(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -427,7 +426,7 @@ void doCommandString(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getConnected(Request &req, Response &res)
@@ -448,7 +447,7 @@ void getConnected(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void setConnected(Request &req, Response &res)
@@ -471,7 +470,7 @@ void setConnected(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -481,7 +480,7 @@ void setConnected(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters, missing 'Connected'";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 	serializeJson(FormData["Connected"], sParameter);
@@ -493,7 +492,7 @@ void setConnected(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -506,7 +505,7 @@ void setConnected(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getDeviceDescription(Request &req, Response &res)
@@ -527,7 +526,7 @@ void getDeviceDescription(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getDriverInfo(Request &req, Response &res)
@@ -548,7 +547,7 @@ void getDriverInfo(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getDriverVersion(Request &req, Response &res)
@@ -570,7 +569,7 @@ void getDriverVersion(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getInterfaceVersion(Request &req, Response &res)
@@ -591,7 +590,7 @@ void getInterfaceVersion(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getName(Request &req, Response &res)
@@ -612,7 +611,7 @@ void getName(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getSupportedActions(Request &req, Response &res)
@@ -671,7 +670,7 @@ void getSupportedActions(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getAltitude(Request &req, Response &res)
@@ -711,7 +710,7 @@ void getAltitude(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 
 }
 
@@ -739,7 +738,7 @@ void geAtHome(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 
 }
 
@@ -765,7 +764,7 @@ void geAtPark(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 
 }
 
@@ -789,7 +788,7 @@ void getAzimuth(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canfindhome(Request &req, Response &res)
@@ -812,7 +811,7 @@ void canfindhome(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canPark(Request &req, Response &res)
@@ -835,7 +834,7 @@ void canPark(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canSetAltitude(Request &req, Response &res)
@@ -858,7 +857,7 @@ void canSetAltitude(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canSetAzimuth(Request &req, Response &res)
@@ -881,7 +880,7 @@ void canSetAzimuth(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canSetPark(Request &req, Response &res)
@@ -904,7 +903,7 @@ void canSetPark(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canSetShutter(Request &req, Response &res)
@@ -927,7 +926,7 @@ void canSetShutter(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canSlave(Request &req, Response &res)
@@ -950,7 +949,7 @@ void canSlave(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void canSyncAzimuth(Request &req, Response &res)
@@ -973,7 +972,7 @@ void canSyncAzimuth(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getShutterStatus(Request &req, Response &res)
@@ -1034,7 +1033,7 @@ void getShutterStatus(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void Slaved(Request &req, Response &res)
@@ -1055,7 +1054,7 @@ void Slaved(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1068,7 +1067,7 @@ void Slaved(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void getSlewing(Request &req, Response &res)
@@ -1098,7 +1097,7 @@ void getSlewing(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doAbort(Request &req, Response &res)
@@ -1119,7 +1118,7 @@ void doAbort(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1132,7 +1131,7 @@ void doAbort(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doCloseShutter(Request &req, Response &res)
@@ -1155,7 +1154,7 @@ void doCloseShutter(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1177,7 +1176,7 @@ void doCloseShutter(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doFindHome(Request &req, Response &res)
@@ -1198,7 +1197,7 @@ void doFindHome(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1207,7 +1206,7 @@ void doFindHome(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1220,7 +1219,7 @@ void doFindHome(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doOpenShutter(Request &req, Response &res)
@@ -1243,7 +1242,7 @@ void doOpenShutter(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1260,7 +1259,7 @@ void doOpenShutter(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 	}
 	else {
 		AlpacaResp["ErrorNumber"] = 0;
@@ -1274,7 +1273,7 @@ void doOpenShutter(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doPark(Request &req, Response &res)
@@ -1296,7 +1295,7 @@ void doPark(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1310,7 +1309,7 @@ void doPark(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void setPark(Request &req, Response &res)
@@ -1332,7 +1331,7 @@ void setPark(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1345,7 +1344,7 @@ void setPark(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doAltitudeSlew(Request &req, Response &res)
@@ -1367,7 +1366,7 @@ void doAltitudeSlew(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1377,7 +1376,7 @@ void doAltitudeSlew(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid value";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 	// in case we implement this one day.
@@ -1392,7 +1391,7 @@ void doAltitudeSlew(Request &req, Response &res)
 #endif
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 
 }
 
@@ -1415,7 +1414,7 @@ void doGoTo(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1424,7 +1423,7 @@ void doGoTo(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1434,7 +1433,7 @@ void doGoTo(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1444,7 +1443,7 @@ void doGoTo(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1456,7 +1455,7 @@ void doGoTo(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 void doSyncAzimuth(Request &req, Response &res)
@@ -1478,7 +1477,7 @@ void doSyncAzimuth(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1488,7 +1487,7 @@ void doSyncAzimuth(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1498,7 +1497,7 @@ void doSyncAzimuth(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid Azimuth";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-		res.flush();
+		// res.flush();
 		return;
 	}
 
@@ -1510,7 +1509,7 @@ void doSyncAzimuth(Request &req, Response &res)
 	DBPrintln("sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-	res.flush();
+	// res.flush();
 }
 
 
@@ -1543,7 +1542,7 @@ void doSetup(Request &req, Response &res)
 
 	sHTML += "</body>\n</html>\n";
 	res.print(sHTML);
-	res.flush();
+	// res.flush();
 }
 
 
@@ -1573,9 +1572,7 @@ void DomeAlpacaServer::startServer()
 {
 	mRestServer = new EthernetServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
-
-	uuid.generate();
-
+	
 	DBPrintln("m_AlpacaRestServer starting");
 	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
 	mRestServer->begin();
