@@ -20490,7 +20490,7 @@ Source: AVX .. aphvc.pdf</description>
 <circle x="-1.855" y="-1.351" radius="0.125" width="0.25" layer="25"/>
 <circle x="-1.855" y="-1.351" radius="0.125" width="0.25" layer="21"/>
 </package>
-<package name="INDPM110100X400N" urn="urn:adsk.eagle:footprint:42377083/2" library_version="128">
+<package name="INDPM110100X400N" urn="urn:adsk.eagle:footprint:42377083/2" library_version="129">
 <description>&lt;b&gt;SRP1038&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-4.5" y="0" dx="3.55" dy="3.2" layer="1"/>
@@ -20506,7 +20506,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="5.461" y1="-4.953" x2="-5.461" y2="-4.953" width="0.127" layer="21"/>
 <wire x1="-5.461" y1="-4.953" x2="-5.461" y2="4.953" width="0.127" layer="21"/>
 </package>
-<package name="SODFL5226X100N" urn="urn:adsk.eagle:footprint:42378082/2" library_version="128">
+<package name="SODFL5226X100N" urn="urn:adsk.eagle:footprint:42378082/2" library_version="129">
 <description>&lt;b&gt;D0-221AC (SlimSMA)&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-2.175" y="0" dx="1.49" dy="1.45" layer="1" rot="R90"/>
@@ -20526,7 +20526,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="2.159" y1="-1.27" x2="2.159" y2="1.27" width="0.127" layer="21"/>
 <wire x1="-1.397" y1="1.27" x2="-2.159" y2="0.508" width="0.127" layer="21"/>
 </package>
-<package name="EEE0JA331XP" urn="urn:adsk.eagle:footprint:42536780/1" library_version="128">
+<package name="EEE0JA331XP" urn="urn:adsk.eagle:footprint:42536780/1" library_version="129">
 <description>&lt;b&gt;SMD_Lytic_D8&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-2.5" y="0" dx="3.2" dy="1.6" layer="1"/>
@@ -20549,7 +20549,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="-1.5" y1="-3.3" x2="3.3" y2="-3.3" width="0.2" layer="21"/>
 <wire x1="3.3" y1="-3.3" x2="3.3" y2="-1.5" width="0.2" layer="21"/>
 </package>
-<package name="CAPAE660X550N" urn="urn:adsk.eagle:footprint:42537302/2" library_version="128">
+<package name="CAPAE660X550N" urn="urn:adsk.eagle:footprint:42537302/2" library_version="129">
 <description>&lt;b&gt;865080543009-1&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-2.55" y="0" dx="3.15" dy="1.8" layer="1"/>
@@ -20569,7 +20569,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="3.302" y1="-3.302" x2="-1.651" y2="-3.302" width="0.127" layer="21"/>
 <wire x1="-1.651" y1="-3.302" x2="-3.302" y2="-1.651" width="0.127" layer="21"/>
 </package>
-<package name="691313510003" urn="urn:adsk.eagle:footprint:45454764/1" library_version="126">
+<package name="691313510003" urn="urn:adsk.eagle:footprint:45454764/1" library_version="129">
 <description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
 </description>
 <pad name="1" x="-5.08" y="0" drill="1.6" diameter="2.4"/>
@@ -20586,7 +20586,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="8.62" y1="-10" x2="-8.62" y2="-10" width="0.1" layer="21"/>
 <wire x1="-8.62" y1="-10" x2="-8.62" y2="2" width="0.1" layer="21"/>
 </package>
-<package name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:footprint:45454772/4" library_version="128">
+<package name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:footprint:45454772/4" library_version="129">
 <description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
 </description>
 <pad name="1" x="-2.54" y="0" drill="1.6" diameter="2.4" shape="square" rot="R180"/>
@@ -20621,44 +20621,38 @@ Source: AVX .. aphvc.pdf</description>
 <packageinstance name="SON80P500X600X100-15N"/>
 </packageinstances>
 </package3d>
-<package3d name="INDPM110100X400N" urn="urn:adsk.eagle:package:42377094/3" type="model" library_version="128">
-<description>&lt;b&gt;SRP1038&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="INDPM110100X400N" urn="urn:adsk.eagle:package:42377094/3" type="model" library_version="129">
+<description>&lt;b&gt;SRP1038&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="INDPM110100X400N"/>
 </packageinstances>
 </package3d>
-<package3d name="SODFL5226X100N" urn="urn:adsk.eagle:package:42378083/3" type="model" library_version="128">
-<description>&lt;b&gt;D0-221AC (SlimSMA)&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="SODFL5226X100N" urn="urn:adsk.eagle:package:42378083/3" type="model" library_version="129">
+<description>&lt;b&gt;D0-221AC (SlimSMA)&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="SODFL5226X100N"/>
 </packageinstances>
 </package3d>
-<package3d name="EEE0JA331XP" urn="urn:adsk.eagle:package:42536781/2" type="model" library_version="128">
-<description>&lt;b&gt;SMD_Lytic_D8&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="EEE0JA331XP" urn="urn:adsk.eagle:package:42536781/2" type="model" library_version="129">
+<description>&lt;b&gt;SMD_Lytic_D8&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="EEE0JA331XP"/>
 </packageinstances>
 </package3d>
-<package3d name="CAPAE660X550N" urn="urn:adsk.eagle:package:42537303/3" type="model" library_version="128">
-<description>&lt;b&gt;865080543009-1&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="CAPAE660X550N" urn="urn:adsk.eagle:package:42537303/3" type="model" library_version="129">
+<description>&lt;b&gt;865080543009-1&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="CAPAE660X550N"/>
 </packageinstances>
 </package3d>
-<package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="126">
-<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="129">
+<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="691313510003"/>
 </packageinstances>
 </package3d>
-<package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/5" type="model" library_version="128">
-<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="129">
+<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="SHDRRA2W100P0X508_1X2_1216X120"/>
 </packageinstances>
@@ -20913,7 +20907,7 @@ Source: &lt;a href="http://www.ti.com/lit/gpn/lm2679"&gt; Datasheet &lt;/a&gt;</
 </device>
 </devices>
 </deviceset>
-<deviceset name="SRP1038CC-220M" urn="urn:adsk.eagle:component:42377105/3" prefix="L" library_version="128">
+<deviceset name="SRP1038CC-220M" urn="urn:adsk.eagle:component:42377105/3" prefix="L" library_version="129">
 <description>&lt;b&gt;Ind,11x10x3.8mm,22uH+/-20%,5.2A,shd&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.bourns.com/docs/Product-Datasheets/SRP1038CC.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20943,7 +20937,7 @@ Source: &lt;a href="https://www.bourns.com/docs/Product-Datasheets/SRP1038CC.pdf
 </device>
 </devices>
 </deviceset>
-<deviceset name="VSSAF5L45-M3_6A" urn="urn:adsk.eagle:component:42378084/3" prefix="D" library_version="128">
+<deviceset name="VSSAF5L45-M3_6A" urn="urn:adsk.eagle:component:42378084/3" prefix="D" library_version="129">
 <description>&lt;b&gt;Vishay 45V 5A, Diode, 2-Pin DO-221AC VSSAF5L45-M3/6A Surface Mount Trench MOS Barrier Schottky Rectifier&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.mouser.co.uk/datasheet/2/427/vssaf5l45-1768491.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20973,7 +20967,7 @@ Source: &lt;a href="https://www.mouser.co.uk/datasheet/2/427/vssaf5l45-1768491.p
 </device>
 </devices>
 </deviceset>
-<deviceset name="EEE-FNE181XUP" urn="urn:adsk.eagle:component:42536782/2" prefix="C" library_version="128">
+<deviceset name="EEE-FNE181XUP" urn="urn:adsk.eagle:component:42536782/2" prefix="C" library_version="129">
 <description>&lt;b&gt;Aluminum Electrolytic Capacitors - SMD 25VDC 180uF 20% 280mA AEC-Q200&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="http://industrial.panasonic.com/cdbs/www-data/pdf/RDE0000/RDE0000C1259.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21003,7 +20997,7 @@ Source: &lt;a href="http://industrial.panasonic.com/cdbs/www-data/pdf/RDE0000/RD
 </device>
 </devices>
 </deviceset>
-<deviceset name="865080643007" urn="urn:adsk.eagle:component:42537304/3" prefix="C" library_version="128">
+<deviceset name="865080643007" urn="urn:adsk.eagle:component:42537304/3" prefix="C" library_version="129">
 <description>&lt;b&gt;Wurth Elektronik 15uF 50 V dc Aluminium Electrolytic Capacitor, WCAP-ASLI Series 2000h 6.3 (Dia.) x 5.35mm&lt;/b&gt;</description>
 <gates>
 <gate name="G$1" symbol="865080643007" x="0" y="0"/>
@@ -21029,7 +21023,7 @@ Source: &lt;a href="http://industrial.panasonic.com/cdbs/www-data/pdf/RDE0000/RD
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="126">
+<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="129">
 <description>&lt;b&gt;Wurth Elektronik 313 Series 5.08mm Pitch Straight Pluggable Terminal Block, PCB Header, Through Hole, 3 Way&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21060,7 +21054,7 @@ Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/4" prefix="J" library_version="128">
+<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/5" prefix="J" library_version="129">
 <description>&lt;b&gt;2 Position Terminal Block Header, Male Pins, Shrouded (4 Side) 0.200" (5.08mm) 90, Right Angle  Through Hole&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21073,7 +21067,7 @@ Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"
 <connect gate="G$1" pin="2" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:45454773/5"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:45454773/6"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21562,7 +21556,9 @@ at 30/07/2012 11:22:31</description>
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
+<attribute name="DESCRIPTION" value="
+WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
+"/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>
@@ -22303,11 +22299,11 @@ at 30/07/2012 11:22:31</description>
 <part name="J4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
 <part name="J6" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
 <part name="J7" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
-<part name="J8" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/5"/>
-<part name="J9" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/5"/>
-<part name="J10" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/5"/>
-<part name="J11" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/5"/>
-<part name="J12" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/5"/>
+<part name="J8" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J9" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J10" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J11" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J12" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
 </parts>
 <sheets>
 <sheet>
