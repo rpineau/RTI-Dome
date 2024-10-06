@@ -1,4 +1,8 @@
 // Rotator commands
+//
+//  Copyright © 2020 Rodolphe Pineau. All rights reserved.
+//
+
 const char ABORT                        = 'a'; // Tell everything to STOP!
 const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
 const char CALIBRATE_ROTATOR            = 'c'; // Calibrate the dome

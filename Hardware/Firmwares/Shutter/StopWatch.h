@@ -1,6 +1,8 @@
 // Rodolphe Pineau
 // Easy timer to check for time passed between a reset and elapsed call
 //
+//  Copyright © 2018 Rodolphe Pineau. All rights reserved.
+//
 
 #ifndef StopWatch_h
 #define StopWatch_h

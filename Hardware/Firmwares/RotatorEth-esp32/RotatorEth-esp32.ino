@@ -2,6 +2,9 @@
 // RTI-Zone Dome Rotator firmware.
 // for ESP32
 //
+//  Copyright © 2024 Rodolphe Pineau. All rights reserved.
+//
+
 
 // Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
 

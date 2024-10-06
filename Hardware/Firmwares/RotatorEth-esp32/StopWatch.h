@@ -1,5 +1,7 @@
 //
-// Rodolphe Pineau
+//
+//  Copyright © 2020 Rodolphe Pineau. All rights reserved.
+//
 // Easy timer to check for time passed between a reset and elapsed call
 //
 

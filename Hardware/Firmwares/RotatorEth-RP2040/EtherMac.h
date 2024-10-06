@@ -1,6 +1,8 @@
 //
 // Create MAC address from DUE unique ID
 //
+//  Copyright © 2020 Rodolphe Pineau. All rights reserved.
+//
 
 #ifndef __ETHER_MAC__
 #define __ETHER_MAC__

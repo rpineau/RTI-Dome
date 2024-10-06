@@ -1,4 +1,8 @@
-// Alpaca API prototype functions
+// Alpaca API functions
+//
+//  Created by Rodolphe Pineau on 2024/04/16
+//  Copyright © 2024 Rodolphe Pineau. All rights reserved.
+//
 
 #pragma message "Alpaca server enabled"
 #include <atomic>

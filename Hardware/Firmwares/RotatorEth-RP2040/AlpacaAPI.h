@@ -1,6 +1,9 @@
 #include <atomic>
 // Alpaca API
-// for Raspberry Pi Pico W (RP2040)
+//
+//  Copyright © 2024 Rodolphe Pineau. All rights reserved.
+//
+
 
 #include <aWOT.h>
 
