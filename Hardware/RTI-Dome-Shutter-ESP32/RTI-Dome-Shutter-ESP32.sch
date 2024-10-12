@@ -12321,13 +12321,15 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </packageinstances>
 </package3d>
 <package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="129">
-<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="691313510003"/>
 </packageinstances>
 </package3d>
 <package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="129">
-<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="SHDRRA2W100P0X508_1X2_1216X120"/>
 </packageinstances>
@@ -14887,7 +14889,8 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -15172,9 +15175,7 @@ Source: &lt;a href="https://www.ti.com/lit/ds/symlink/reg1117a.pdf?ts=1712806080
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value="
-WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
-"/>
+<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>
@@ -15679,7 +15680,7 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <part name="IC1" library="REG1117FA-5.0_500" library_urn="urn:adsk.eagle:library:43937876" deviceset="REG1117FA-5.0_500" device="" package3d_urn="urn:adsk.eagle:package:43937879/3"/>
 <part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/1"/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U1" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="D" package3d_urn="urn:adsk.eagle:package:44270578/5" value="ESP32-DevKitC ESP32-WROOM-32U"/>
+<part name="U1" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="D" package3d_urn="urn:adsk.eagle:package:44270578/5" value="ESP32-DEVKITC-32E"/>
 <part name="J1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
 <part name="J3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
 <part name="J4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>

@@ -3030,13 +3030,15 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </packageinstances>
 </package3d>
 <package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="129">
-<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="691313510003"/>
 </packageinstances>
 </package3d>
 <package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="129">
-<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="SHDRRA2W100P0X508_1X2_1216X120"/>
 </packageinstances>
@@ -3129,7 +3131,8 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </packages>
 <packages3d>
 <package3d name="REG1117FA50500" urn="urn:adsk.eagle:package:43937879/3" type="model" library_version="3">
-<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;REG1117FA-5.0/500-3&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="REG1117FA50500"/>
 </packageinstances>
@@ -3697,12 +3700,10 @@ design rules under a new name.</description>
 <attribute name="NAME" x="22.86" y="53.975" size="1.27" layer="25" ratio="10"/>
 <attribute name="VALUE" x="26.289" y="50.927" size="1.27" layer="27" ratio="10"/>
 </element>
-<element name="U1" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" package="MODULE_ESP32-DEVKITC-32D" package3d_urn="urn:adsk.eagle:package:44270578/5" value="ESP32-DevKitC ESP32-WROOM-32U" x="22.225" y="37.465" smashed="yes" rot="R90">
+<element name="U1" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" package="MODULE_ESP32-DEVKITC-32D" package3d_urn="urn:adsk.eagle:package:44270578/5" value="ESP32-DEVKITC-32E" x="22.225" y="37.465" smashed="yes" rot="R90">
 <attribute name="AVAILABILITY" value="In Stock" x="22.225" y="37.465" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda" x="22.225" y="37.465" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="DESCRIPTION" value="
-WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
-" x="22.225" y="37.465" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board " x="22.225" y="37.465" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="MF" value="Espressif Systems" x="22.225" y="37.465" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D" x="22.225" y="37.465" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="NAME" x="-0.635" y="25.4" size="1.270490625" layer="25" rot="R90"/>
