@@ -82,9 +82,9 @@ CRTIDome::CRTIDome()
 #endif
 
 #if defined PLUGIN_DEBUG
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Version " << std::fixed << std::setprecision(2) << PLUGIN_VERSION << " build " << __DATE__ << " " << __TIME__ << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Constructor Called." << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [CRTIDome] Rains status file : " << m_sRainStatusfilePath<<std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Version " << std::fixed << std::setprecision(2) << PLUGIN_VERSION << " build " << __DATE__ << " " << __TIME__ << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Constructor Called." << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Rains status file : " << m_sRainStatusfilePath<<std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -105,7 +105,7 @@ int CRTIDome::Connect(const std::string sPortName)
 	bool bDummy;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Called." << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Called." << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -113,7 +113,7 @@ int CRTIDome::Connect(const std::string sPortName)
 	nErr = m_pSerx->open(sPortName.c_str(), 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Connection failed, nErr = " << nErr <<  std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Connection failed, nErr = " << nErr <<  std::endl;
 		m_sLogFile.flush();
 #endif
 		m_bIsConnected = false;
@@ -133,8 +133,8 @@ int CRTIDome::Connect(const std::string sPortName)
 		m_bNetworkConnected = false;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] connected to " << sPortName << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] connected via network : " << (m_bNetworkConnected?"Yes":"No") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] connected to " << sPortName << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] connected via network : " << (m_bNetworkConnected?"Yes":"No") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -152,12 +152,12 @@ int CRTIDome::Connect(const std::string sPortName)
 		m_bUseDHCP = false;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	if(nErr) {
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Board without network feature." << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Board without network feature." << std::endl;
 		m_sLogFile.flush();
 	}
 #endif
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Getting Firmware." << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Getting Firmware." << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -165,7 +165,7 @@ int CRTIDome::Connect(const std::string sPortName)
 	nErr = getFirmwareVersion(m_sFirmwareVersion, m_fVersion);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] Error Getting Firmware : " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error Getting Firmware : " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 		m_bIsConnected = false;
@@ -174,7 +174,7 @@ int CRTIDome::Connect(const std::string sPortName)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect]Got Firmware "<<  m_sFirmwareVersion << "( " << std::fixed << std::setprecision(2) << m_fVersion << ")."<< nErr << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "]Got Firmware "<<  m_sFirmwareVersion << "( " << std::fixed << std::setprecision(2) << m_fVersion << ")."<< nErr << std::endl;
 	m_sLogFile.flush();
 #endif
 	if(m_fVersion < 2.0f && m_fVersion != 0.523f && m_fVersion != 0.522f)  {
@@ -184,7 +184,7 @@ int CRTIDome::Connect(const std::string sPortName)
 	nErr = getDomeParkAz(m_dCurrentAzPosition);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] getDomeParkAz nErr : " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] getDomeParkAz nErr : " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -192,7 +192,7 @@ int CRTIDome::Connect(const std::string sPortName)
 	nErr = getDomeHomeAz(m_dHomeAz);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Connect] getDomeHomeAz nErr : " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] getDomeHomeAz nErr : " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -219,7 +219,7 @@ void CRTIDome::Disconnect()
 	m_bUnParking = false;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [Disconnect] m_bIsConnected : " << (m_bIsConnected?"true":"false") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bIsConnected : " << (m_bIsConnected?"true":"false") << std::endl;
 	m_sLogFile.flush();
 #endif
 }
@@ -235,7 +235,7 @@ int CRTIDome::deviceCommand(const std::string sCmd, std::string &sResp, char res
 
 	m_pSerx->purgeTxRx();
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [deviceCommand] Sending : '" << sCmd <<  "'" << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Sending : '" << sCmd <<  "'" << std::endl;
 	m_sLogFile.flush();
 #endif
 	nErr = m_pSerx->writeFile((void *)(sCmd.c_str()), sCmd.size(), ulBytesWrite);
@@ -243,7 +243,7 @@ int CRTIDome::deviceCommand(const std::string sCmd, std::string &sResp, char res
 
 	if(nErr){
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [deviceCommand] writeFile error : " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] writeFile error : " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -266,7 +266,7 @@ int CRTIDome::deviceCommand(const std::string sCmd, std::string &sResp, char res
 	sResp = localResp.substr(1, localResp.size());
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [deviceCommand] response : " << sResp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response : " << sResp << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -290,15 +290,15 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse
 	do {
 		nErr = m_pSerx->bytesWaitingRx(nBytesWaiting);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 3
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] nBytesWaiting = " << nBytesWaiting << std::endl;
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] nBytesWaiting nErr = " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nBytesWaiting = " << nBytesWaiting << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nBytesWaiting nErr = " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 		if(!nBytesWaiting) {
 			nbTimeouts += MAX_READ_WAIT_TIMEOUT;
 			if(nbTimeouts >= nTimeout) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 3
-				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] bytesWaitingRx timeout, no data for" << nbTimeouts <<" ms" << std::endl;
+				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bytesWaitingRx timeout, no data for" << nbTimeouts <<" ms" << std::endl;
 				m_sLogFile.flush();
 #endif
 				nErr = COMMAND_TIMEOUT;
@@ -316,7 +316,7 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse
 		}
 		if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] readFile error." << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] readFile error." << std::endl;
 			m_sLogFile.flush();
 #endif
 			return nErr;
@@ -324,9 +324,9 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse
 
 		if (ulBytesRead != nBytesWaiting) { // timeout
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] readFile Timeout Error." << std::endl;
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] readFile nBytesWaiting = " << nBytesWaiting << std::endl;
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] readFile ulBytesRead =" << ulBytesRead << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] readFile Timeout Error." << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] readFile nBytesWaiting = " << nBytesWaiting << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] readFile ulBytesRead =" << ulBytesRead << std::endl;
 			m_sLogFile.flush();
 #endif
 		}
@@ -337,7 +337,7 @@ int CRTIDome::readResponse(std::string &sResp, int nTimeout, char cEndOfResponse
 
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [readResponse] pszBuf = '" << pszBuf << "'" << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] pszBuf = '" << pszBuf << "'" << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -368,7 +368,7 @@ int CRTIDome::getDomeAz(double &dDomeAz)
 	nErr = deviceCommand(ssCmd.str(), sResp, GOTO_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeAz] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -379,7 +379,7 @@ int CRTIDome::getDomeAz(double &dDomeAz)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeAz] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		dDomeAz = 0;
@@ -433,7 +433,7 @@ int CRTIDome::getDomeHomeAz(double &dAz)
 	nErr = deviceCommand(ssCmd.str(), sResp, HOMEAZ_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeHomeAz] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -445,7 +445,7 @@ int CRTIDome::getDomeHomeAz(double &dAz)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeHomeAz] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		dAz = 0;
@@ -471,7 +471,7 @@ int CRTIDome::getDomeParkAz(double &dAz)
 	nErr = deviceCommand(ssCmd.str(), sResp, PARKAZ_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeParkAz] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -483,7 +483,7 @@ int CRTIDome::getDomeParkAz(double &dAz)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeParkAz] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		dAz = 0;
@@ -491,7 +491,7 @@ int CRTIDome::getDomeParkAz(double &dAz)
 
 	m_dParkAz = dAz;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeParkAz] m_dParkAz = " << std::fixed << std::setprecision(2) << m_dParkAz << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_dParkAz = " << std::fixed << std::setprecision(2) << m_dParkAz << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -521,7 +521,7 @@ int CRTIDome::getShutterState(int &nState)
 	nErr = deviceCommand(ssCmd.str(), sResp, STATE_SHUTTER);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterState] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		nState = SHUTTER_ERROR;
@@ -529,7 +529,7 @@ int CRTIDome::getShutterState(int &nState)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterState] response =  " << sResp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response =  " << sResp << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -538,14 +538,14 @@ int CRTIDome::getShutterState(int &nState)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterState] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nState = 0;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterState] nState =  " << nState << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nState =  " << nState << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -566,7 +566,7 @@ int CRTIDome::getDomeStepPerRev(int &nStepPerRev)
 	nErr = deviceCommand(ssCmd.str(), sResp, STEPSPER_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeStepPerRev] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -577,7 +577,7 @@ int CRTIDome::getDomeStepPerRev(int &nStepPerRev)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDomeStepPerRev] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nStepPerRev = 0;
@@ -620,7 +620,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 	nErr = deviceCommand(ssCmd.str(), sResp, VOLTS_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -632,7 +632,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 	}
 	if(!voltsFields.size()) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] voltsFields is empty" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] voltsFields is empty" << std::endl;
 		m_sLogFile.flush();
 #endif
 		return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
@@ -645,7 +645,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 		}
 		catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] conversion exception = " << e.what() << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 			m_sLogFile.flush();
 #endif
 			domeVolts = 0;
@@ -662,8 +662,8 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 	dDomeCutOff = dDomeCutOff / 100.0;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] domeVolts = " << std::fixed << std::setprecision(2) << domeVolts << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] dDomeCutOff = " << std::fixed << std::setprecision(2) << dDomeCutOff << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] domeVolts = " << std::fixed << std::setprecision(2) << domeVolts << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] dDomeCutOff = " << std::fixed << std::setprecision(2) << dDomeCutOff << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -675,7 +675,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 		nErr = deviceCommand(ssCmd.str(), sResp, VOLTS_SHUTTER);
 		if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] ERROR = " << sResp << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 			m_sLogFile.flush();
 #endif
 			dShutterVolts = -1;
@@ -696,7 +696,7 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 		}
 		catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] conversion exception = " << e.what() << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 			m_sLogFile.flush();
 #endif
 			dShutterVolts = 0;
@@ -706,8 +706,8 @@ int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &d
 		dShutterVolts = dShutterVolts / 100.0;
 		dShutterCutOff = dShutterCutOff / 100.0;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] shutterVolts = " << std::fixed << std::setprecision(2) << dShutterVolts << std::endl;
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getBatteryLevels] dShutterCutOff = " << std::fixed << std::setprecision(2) << dShutterCutOff << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] shutterVolts = " << std::fixed << std::setprecision(2) << dShutterVolts << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] dShutterCutOff = " << std::fixed << std::setprecision(2) << dShutterCutOff << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -733,14 +733,14 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 
 	// Dome
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] nRotCutOff = " << std::dec << nRotCutOff << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nRotCutOff = " << std::dec << nRotCutOff << std::endl;
 	m_sLogFile.flush();
 #endif
 	ssCmd << VOLTS_ROTATOR << nRotCutOff  << "#";
 	nErr = deviceCommand(ssCmd.str(), sResp, VOLTS_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] dDomeCutOff ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] dDomeCutOff ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -749,7 +749,7 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 	if(m_bShutterPresent) {
 		// Shutter
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] nShutCutOff = " << std::dec << nShutCutOff << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nShutCutOff = " << std::dec << nShutCutOff << std::endl;
 		m_sLogFile.flush();
 #endif
 		std::stringstream().swap(ssCmd);
@@ -757,7 +757,7 @@ int CRTIDome::setBatteryCutOff(double dDomeCutOff, double dShutterCutOff)
 		nErr = deviceCommand(ssCmd.str(), sResp, VOLTS_SHUTTER);
 		if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setBatteryCutOff] dShutterCutOff ERROR = " << sResp << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] dShutterCutOff ERROR = " << sResp << std::endl;
 			m_sLogFile.flush();
 #endif
 			return nErr;
@@ -781,7 +781,7 @@ bool CRTIDome::isDomeMoving()
 	nErr = deviceCommand(ssCmd.str(), sResp, SLEW_ROTATOR);
 	if(nErr & !m_bCalibrating) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return false;
@@ -796,20 +796,20 @@ bool CRTIDome::isDomeMoving()
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nTmp = MOVE_NONE;
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] nTmp : " << nTmp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nTmp : " << nTmp << std::endl;
 	m_sLogFile.flush();
 #endif
 	if(nTmp != MOVE_NONE)
 		bIsMoving = true;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeMoving] bIsMoving : " << (bIsMoving?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bIsMoving : " << (bIsMoving?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -830,7 +830,7 @@ bool CRTIDome::isDomeAtHome()
 	ssCmd << HOMESTATUS_ROTATOR  << "#";
 	nErr = deviceCommand(ssCmd.str(), sResp, HOMESTATUS_ROTATOR);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeAtHome] response = " << sResp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response = " << sResp << std::endl;
 	m_sLogFile.flush();
 #endif
 	if(nErr) {
@@ -843,19 +843,19 @@ bool CRTIDome::isDomeAtHome()
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeAtHome] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nTmp = ATHOME;
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeAtHome] nTmp : " << nTmp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nTmp : " << nTmp << std::endl;
 	m_sLogFile.flush();
 #endif
 	if(nTmp == ATHOME)
 		bAthome = true;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isDomeAtHome] bAthome : " << (bAthome?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bAthome : " << (bAthome?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -877,7 +877,7 @@ int CRTIDome::syncDome(double dAz, double dEl)
 	nErr = deviceCommand(ssCmd.str(), sResp, SYNC_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [syncDome] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -912,7 +912,7 @@ int CRTIDome::unparkDome()
 	}
 	else {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [unparkDome] m_dParkAz = " << std::fixed << std::setprecision(2) << m_dParkAz << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_dParkAz = " << std::fixed << std::setprecision(2) << m_dParkAz << std::endl;
 		m_sLogFile.flush();
 #endif
 		syncDome(m_dParkAz, m_dCurrentElPosition);
@@ -950,7 +950,7 @@ int CRTIDome::gotoAzimuth(double dNewAz)
 	nErr = deviceCommand(ssCmd.str(), sResp, GOTO_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [gotoAzimuth] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -979,7 +979,7 @@ int CRTIDome::openShutter()
 
 	getShutterPresent(bDummy);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [openShutter] m_bShutterPresent : " << (m_bShutterPresent?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bShutterPresent : " << (m_bShutterPresent?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 	if(!m_bShutterPresent) {
@@ -988,7 +988,7 @@ int CRTIDome::openShutter()
 
 	getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [openShutter] Opening shutter" << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Opening shutter" << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -996,26 +996,26 @@ int CRTIDome::openShutter()
 	nErr = deviceCommand(ssCmd.str(), sResp, OPEN_SHUTTER);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [openShutter] ERROR = " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [openShutter] response = " << sResp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response = " << sResp << std::endl;
 	m_sLogFile.flush();
 #endif
 
 	if(sResp.size() && sResp.at(0) == 'L') { // battery LOW.. can't open
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [openShutter] Voltage too low to open" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Voltage too low to open" << std::endl;
 		m_sLogFile.flush();
 #endif
 		nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_BATTERY_LOW);
 	}
 	if(sResp.size() && sResp.at(0) == 'R') { // Raining. can't open
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [openShutter] Voltage too low to open" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Voltage too low to open" << std::endl;
 		m_sLogFile.flush();
 #endif
 		nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_RAINING);
@@ -1043,7 +1043,7 @@ int CRTIDome::closeShutter()
 
 	getShutterPresent(bDummy);
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [closeShutter] m_bShutterPresent = " << (m_bShutterPresent?"Yes":"No") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bShutterPresent = " << (m_bShutterPresent?"Yes":"No") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1054,7 +1054,7 @@ int CRTIDome::closeShutter()
 	getBatteryLevels(domeVolts, dDomeCutOff, dShutterVolts, dShutterCutOff);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [closeShutter] Closing shutter" << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Closing shutter" << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1062,7 +1062,7 @@ int CRTIDome::closeShutter()
 	nErr = deviceCommand(ssCmd.str(), sResp, CLOSE_SHUTTER);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [closeShutter] ERROR Closing shutter : " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR Closing shutter : " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -1094,15 +1094,15 @@ int CRTIDome::getFirmwareVersion(std::string &sVersion, float &fVersion)
 	nErr = deviceCommand(ssCmd.str(), sResp, VERSION_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] response = " << sResp << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] response len = " << sResp.size() << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response = " << sResp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response len = " << sResp.size() << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1114,8 +1114,8 @@ int CRTIDome::getFirmwareVersion(std::string &sVersion, float &fVersion)
 	}
 	if(!firmwareFields.size()) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] firmwareFields is empty" << std::endl;
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] response len = " << sResp.size() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] firmwareFields is empty" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] response len = " << sResp.size() << std::endl;
 		m_sLogFile.flush();
 #endif
 		return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
@@ -1134,7 +1134,7 @@ int CRTIDome::getFirmwareVersion(std::string &sVersion, float &fVersion)
 			}
 			catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getFirmwareVersion] conversion exception = " << e.what() << std::endl;
+				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 				m_sLogFile.flush();
 #endif
 				fVersion = 0;
@@ -1182,7 +1182,7 @@ int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
 	nErr = deviceCommand(ssCmd.str(), sResp, VERSION_SHUTTER);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterFirmwareVersion] ERROR = " << sResp << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -1202,7 +1202,7 @@ int CRTIDome::getShutterFirmwareVersion(std::string &sVersion, float &fVersion)
 		}
 		catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterFirmwareVersion] conversion exception = " << e.what() << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 			m_sLogFile.flush();
 #endif
 			fVersion = 0;
@@ -1231,7 +1231,7 @@ int CRTIDome::goHome()
 		return PLUGIN_OK;
 	}
 #ifdef PLUGIN_DEBUG
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [goHome]" << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "]" << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1240,7 +1240,7 @@ int CRTIDome::goHome()
 	nErr = deviceCommand(ssCmd.str(), sResp, HOME_ROTATOR);
 	if(nErr) {
 #ifdef PLUGIN_DEBUG
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [goHome] ERROR = " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -1262,7 +1262,7 @@ int CRTIDome::calibrate()
 	nErr = deviceCommand(ssCmd.str(), sResp, CALIBRATE_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [calibrate] ERROR = " << nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -1283,8 +1283,8 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 	bComplete = false;
 	if(isDomeMoving()) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] Dome is still moving" << std::endl;
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Dome is still moving" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -1293,8 +1293,8 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 	getDomeAz(dDomeAz);
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] DomeAz = " << std::fixed << std::setprecision(2) << dDomeAz << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] DomeAz = " << std::fixed << std::setprecision(2) << dDomeAz << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1305,8 +1305,8 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 	else {
 		// we're not moving and we're not at the final destination !!!
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] ***** ERROR **** domeAz = " << std::fixed << std::setprecision(2) << dDomeAz << ", m_dGotoAz =" << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ***** ERROR **** domeAz = " << std::fixed << std::setprecision(2) << dDomeAz << ", m_dGotoAz =" << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
 		m_sLogFile.flush();
 #endif
 		if(m_nGotoTries == 0) {
@@ -1316,8 +1316,8 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 		}
 		else {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] After retry ***** ERROR **** domeAz = " << std::fixed << std::setprecision(2) << dDomeAz << ", m_dGotoAz =" << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] After retry m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] After retry ***** ERROR **** domeAz = " << std::fixed << std::setprecision(2) << dDomeAz << ", m_dGotoAz =" << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] After retry m_dGotoAz = " << std::fixed << std::setprecision(2) << m_dGotoAz << std::endl;
 			m_sLogFile.flush();
 #endif
 			m_nGotoTries = 0;
@@ -1326,7 +1326,7 @@ int CRTIDome::isGoToComplete(bool &bComplete)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isGoToComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1393,7 +1393,7 @@ int CRTIDome::isOpenComplete(bool &bComplete)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isOpenComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1429,7 +1429,7 @@ int CRTIDome::isCloseComplete(bool &bComplete)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isCloseComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1446,8 +1446,8 @@ int CRTIDome::isParkComplete(bool &bComplete)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isParkComplete] m_bParking = " << (m_bParking?"True":"False") << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isParkComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bParking = " << (m_bParking?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1462,7 +1462,7 @@ int CRTIDome::isParkComplete(bool &bComplete)
 		nErr = isFindHomeComplete(bFoundHome);
 		if(bFoundHome) { // we're home, now park
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isParkComplete] found home, now parking" << std::endl;
+			m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] found home, now parking" << std::endl;
 			m_sLogFile.flush();
 #endif
 			m_bParking = false;
@@ -1485,7 +1485,7 @@ int CRTIDome::isParkComplete(bool &bComplete)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isParkComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1504,13 +1504,13 @@ int CRTIDome::isUnparkComplete(bool &bComplete)
 	if(!m_bParked) {
 		bComplete = true;
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isUnparkComplete] UNPARKED" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] UNPARKED" << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
 	else if (m_bUnParking) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isUnparkComplete] unparking.. checking if we're home" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] unparking.. checking if we're home" << std::endl;
 		m_sLogFile.flush();
 #endif
 		nErr = isFindHomeComplete(bComplete);
@@ -1525,8 +1525,8 @@ int CRTIDome::isUnparkComplete(bool &bComplete)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isUnparkComplete] m_bParked = " << (m_bParked?"True":"False") << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isUnparkComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bParked = " << (m_bParked?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1541,14 +1541,14 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
 		return NOT_CONNECTED;
 
 #ifdef PLUGIN_DEBUG
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isFindHomeComplete]" << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "]" << std::endl;
 	m_sLogFile.flush();
 #endif
 
 	if(isDomeMoving()) {
 		bComplete = false;
 #ifdef PLUGIN_DEBUG
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isFindHomeComplete] still moving" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] still moving" << std::endl;
 		m_sLogFile.flush();
 #endif
 		return nErr;
@@ -1561,14 +1561,14 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
 		syncDome(m_dHomeAz, m_dCurrentElPosition);
 		m_nHomingTries = 0;
 #ifdef PLUGIN_DEBUG
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isFindHomeComplete] At Home" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] At Home" << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
 	else {
 		// we're not moving and we're not at the home position !!!
 #ifdef PLUGIN_DEBUG
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isFindHomeComplete] Not moving and not at home !!!" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Not moving and not at home !!!" << std::endl;
 		m_sLogFile.flush();
 #endif
 		bComplete = false;
@@ -1616,9 +1616,9 @@ int CRTIDome::isCalibratingComplete(bool &bComplete)
 	bComplete = true;
 	m_bCalibrating = false;
 #ifdef PLUGIN_DEBUG
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isCalibratingComplete] m_nNbStepPerRev = " << m_nNbStepPerRev << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isCalibratingComplete] m_bCalibrating = " << (m_bCalibrating?"True":"False") << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [isCalibratingComplete] bComplete = " << (bComplete?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nNbStepPerRev = " << m_nNbStepPerRev << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bCalibrating = " << (m_bCalibrating?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 	return nErr;
@@ -1678,8 +1678,8 @@ int CRTIDome::getShutterPresent(bool &bShutterPresent)
 	if(sResp.size())
 		m_bShutterPresent = (sResp.at(0)=='1') ? true : false;
 #ifdef PLUGIN_DEBUG
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterPresent] sResp = " << sResp << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterPresent] m_bShutterPresent = " << (m_bShutterPresent?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] sResp = " << sResp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bShutterPresent = " << (m_bShutterPresent?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1698,7 +1698,7 @@ int CRTIDome::getNbTicksPerRev()
 		getDomeStepPerRev(m_nNbStepPerRev);
 
 #ifdef PLUGIN_DEBUG
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getNbTicksPerRev] m_nNbStepPerRev = " << m_nNbStepPerRev << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nNbStepPerRev = " << m_nNbStepPerRev << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1799,14 +1799,14 @@ int CRTIDome::getDefaultDir(bool &bNormal)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDefaultDir] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		bNormal = true;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getDefaultDir] bNormal = " << (bNormal?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bNormal = " << (bNormal?"True":"False") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1826,8 +1826,8 @@ int CRTIDome::setDefaultDir(bool bNormal)
 	ssCmd << REVERSED_ROTATOR << (bNormal?"0":"1") << "#";
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] bNormal = " << (bNormal?"True":"False") << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [setDefaultDir] ssTmp = " << ssCmd.str() << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bNormal = " << (bNormal?"True":"False") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ssTmp = " << ssCmd.str() << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1855,14 +1855,14 @@ int CRTIDome::getRainSensorStatus(int &nStatus)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainSensorStatus] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nStatus = false;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainSensorStatus] nStatus = " << (nStatus?"NOT RAINING":"RAINING") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nStatus = " << (nStatus?"NOT RAINING":"RAINING") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1890,14 +1890,14 @@ int CRTIDome::getRotationSpeed(int &nSpeed)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationSpeed] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nSpeed = 0;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationSpeed] nSpeed = " << nSpeed << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nSpeed = " << nSpeed << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1939,13 +1939,13 @@ int CRTIDome::getRotationAcceleration(int &nAcceleration)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationAcceleration] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nAcceleration = 0;
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRotationAcceleration] nAcceleration = " << nAcceleration << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nAcceleration = " << nAcceleration << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -1992,13 +1992,13 @@ int CRTIDome::getShutterSpeed(int &nSpeed)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterSpeed] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nSpeed = 0;
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterSpeed] nSpeed = " << nSpeed << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nSpeed = " << nSpeed << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -2049,13 +2049,13 @@ int CRTIDome::getShutterAcceleration(int &nAcceleration)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterAcceleration] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nAcceleration = 0;
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterAcceleration] nAcceleration = " << nAcceleration << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nAcceleration = " << nAcceleration << std::endl;
 	m_sLogFile.flush();
 #endif
 	return nErr;
@@ -2114,14 +2114,14 @@ int	CRTIDome::getSutterWatchdogTimerValue(int &nValue)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getSutterWatchdogTimerValue] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nValue = 0;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getSutterWatchdogTimerValue] nValue = " << nValue << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nValue = " << nValue << std::endl;
 	m_sLogFile.flush();
 #endif
 	return nErr;
@@ -2165,14 +2165,14 @@ int CRTIDome::getRainAction(int &nAction)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainAction] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nAction = 0;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getRainTimerValue] nAction = " << nAction << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nAction = " << nAction << std::endl;
 	m_sLogFile.flush();
 #endif
 	return nErr;
@@ -2216,14 +2216,14 @@ int CRTIDome::getPanId(int &nPanId)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getPanId] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nPanId = 0;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getPanId] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -2268,13 +2268,13 @@ int CRTIDome::getShutterPanId(int &nPanId)
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterPanId] conversion exception = " << e.what() << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
 		nPanId = 0;
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getShutterPanId] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -2310,7 +2310,7 @@ int CRTIDome::restoreDomeMotorSettings()
 	nErr = deviceCommand(ssCmd.str(), sResp, RESTORE_MOTOR_DEFAULT);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [restoreDomeMotorSettings] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2332,7 +2332,7 @@ int CRTIDome::restoreShutterMotorSettings()
 	nErr = deviceCommand(ssCmd.str(), sResp, SHUTTER_RESTORE_MOTOR_DEFAULT);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [restoreShutterMotorSettings] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2356,8 +2356,8 @@ void CRTIDome::writeRainStatus()
 	int nStatus;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [writeRainStatus] m_nIsRaining = " <<(m_nIsRaining==RAINING?"Raining":"Not Raining") << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [writeRainStatus] m_bSaveRainStatus = " <<(m_bSaveRainStatus?"YES":"NO") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nIsRaining = " <<(m_nIsRaining==RAINING?"Raining":"Not Raining") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bSaveRainStatus = " <<(m_bSaveRainStatus?"YES":"NO") << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -2376,7 +2376,7 @@ void CRTIDome::writeRainStatus()
 			}
 			catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [writeRainStatus] Error writing file = " << e.what() << std::endl;
+				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error writing file = " << e.what() << std::endl;
 				m_sLogFile.flush();
 #endif
 				if(m_RainStatusfile.is_open())
@@ -2400,7 +2400,7 @@ int CRTIDome::getMACAddress(std::string &MACAddress)
 	nErr = deviceCommand(ssCmd.str(), sResp, ETH_MAC_ADDRESS);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getMACAddress] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2422,7 +2422,7 @@ int CRTIDome::reconfigureNetwork()
 
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [reconfigureNetwork] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2442,7 +2442,7 @@ int CRTIDome::getUseDHCP(bool &bUseDHCP)
 	nErr = deviceCommand(ssCmd.str(), sResp, IP_DHCP);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getUseDHCP] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2479,7 +2479,7 @@ int CRTIDome::getIpAddress(std::string &IpAddress)
 	nErr = deviceCommand(ssCmd.str(), sResp, IP_ADDRESS);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getIpAddress] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2514,7 +2514,7 @@ int CRTIDome::getSubnetMask(std::string &subnetMask)
 	nErr = deviceCommand(ssCmd.str(), sResp, IP_SUBNET);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getSubnetMask] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2550,7 +2550,7 @@ int CRTIDome::getIPGateway(std::string &IpAddress)
 	nErr = deviceCommand(ssCmd.str(), sResp, IP_GATEWAY);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [getIPGateway] ERROR = " <<nErr << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
@@ -2579,7 +2579,7 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
 	std::string sSegment;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [parseFields] sResp = " << sResp << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] sResp = " << sResp << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -2594,7 +2594,7 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
 	while(std::getline(ssTmp, sSegment, cSeparator))
 	{
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 3
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [parseFields] sSegment = " << sSegment << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] sSegment = " << sSegment << std::endl;
 		m_sLogFile.flush();
 #endif
 		svFields.push_back(sSegment);
@@ -2604,7 +2604,7 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
 		nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_CMDFAILED);
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [parseFields] Done all good." << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Done all good." << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -2614,7 +2614,7 @@ int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svF
 #ifdef PLUGIN_DEBUG
 void CRTIDome::log(std::string sLogString)
 {
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [log] " << sLogString << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] " << sLogString << std::endl;
 	m_sLogFile.flush();
 
 }
