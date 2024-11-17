@@ -9244,7 +9244,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <packageinstance name="LOGO"/>
 </packageinstances>
 </package3d>
-<package3d name="TSSOP20" urn="urn:adsk.eagle:package:37318379/3" type="model" library_version="39">
+<package3d name="TSSOP20" urn="urn:adsk.eagle:package:37318379/4" type="model" library_version="41">
 <packageinstances>
 <packageinstance name="TSSOP20"/>
 </packageinstances>
@@ -9274,7 +9274,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <packageinstance name="JP2"/>
 </packageinstances>
 </package3d>
-<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:37894665/5" type="model" library_version="40">
+<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:37894665/6" type="model" library_version="41">
 <packageinstances>
 <packageinstance name="SOIC127P600X175-8N"/>
 </packageinstances>
@@ -12185,7 +12185,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="74*541" urn="urn:adsk.eagle:component:37318443/3" library_version="39">
+<deviceset name="74*541" urn="urn:adsk.eagle:component:37318443/4" library_version="41">
 <description>Octal non inverting buffer</description>
 <gates>
 <gate name="G$1" symbol="74*541" x="0" y="0"/>
@@ -12216,7 +12216,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="G$2" pin="VCC" pad="P$20"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37318379/3"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37318379/4"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -12275,7 +12275,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="24LC64T-I/SN" urn="urn:adsk.eagle:component:41513623/2" library_version="40">
+<deviceset name="24LC64T-I/SN" urn="urn:adsk.eagle:component:41513623/3" library_version="41">
 <description>64K I2C Serial EEPROM</description>
 <gates>
 <gate name="A" symbol="24LC64T-I/SN" x="0" y="0"/>
@@ -12293,7 +12293,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="A" pin="WP" pad="7"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37894665/5"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37894665/6"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -12480,7 +12480,7 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 </package>
 </packages>
 <packages3d>
-<package3d name="LQFP48" urn="urn:adsk.eagle:package:37501008/3" type="model" library_version="4">
+<package3d name="LQFP48" urn="urn:adsk.eagle:package:37501008/4" type="model" library_version="5">
 <description>&lt;b&gt;48-pin plastic LQFP (FPT-48P-M26)&lt;/b&gt;&lt;p&gt;
 www.fma.fujitsu.com/pdf/e713717.pdf</description>
 <packageinstances>
@@ -12547,7 +12547,7 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="W5500" urn="urn:adsk.eagle:component:37501009/3" prefix="U" library_version="4">
+<deviceset name="W5500" urn="urn:adsk.eagle:component:37501009/4" prefix="U" library_version="5">
 <gates>
 <gate name="G$1" symbol="W5500" x="-22.86" y="12.7"/>
 </gates>
@@ -12604,7 +12604,7 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 <connect gate="G$1" pin="XO" pad="31"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37501008/3"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37501008/4"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -20566,7 +20566,7 @@ Source: AVX .. aphvc.pdf</description>
 <rectangle x1="0.7747" y1="0.6477" x2="1.2319" y2="1.2319" layer="21" rot="R90"/>
 <rectangle x1="0.7747" y1="-1.2319" x2="1.2319" y2="-0.6477" layer="21" rot="R90"/>
 </package>
-<package name="691313510003" urn="urn:adsk.eagle:footprint:45454764/1" library_version="140">
+<package name="691313510003" urn="urn:adsk.eagle:footprint:45454764/1" library_version="152">
 <description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
 </description>
 <pad name="1" x="-5.08" y="0" drill="1.6" diameter="2.4"/>
@@ -20583,7 +20583,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="8.62" y1="-10" x2="-8.62" y2="-10" width="0.1" layer="21"/>
 <wire x1="-8.62" y1="-10" x2="-8.62" y2="2" width="0.1" layer="21"/>
 </package>
-<package name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:footprint:45454772/4" library_version="140">
+<package name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:footprint:45454772/4" library_version="152">
 <description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
 </description>
 <pad name="1" x="-2.54" y="0" drill="1.6" diameter="2.4" shape="square" rot="R180"/>
@@ -20617,7 +20617,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="2.45" y1="-1.95" x2="-2.45" y2="-1.95" width="0.1" layer="21"/>
 <wire x1="-1.18" y1="-1.95" x2="-2.45" y2="-0.68" width="0.1" layer="21"/>
 </package>
-<package name="PMEG4015EPK315" urn="urn:adsk.eagle:footprint:45493981/3" library_version="140">
+<package name="PMEG4015EPK315" urn="urn:adsk.eagle:footprint:45493981/3" library_version="152">
 <description>&lt;b&gt;PMEG4015EPK,315-2&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-0.425" y="0" dx="1.05" dy="0.8" layer="1"/>
@@ -20669,7 +20669,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <vertex x="4.606628125" y="1.768646875"/>
 </polygon>
 </package>
-<package name="EEEHP1H4R7P" urn="urn:adsk.eagle:footprint:45493986/4" library_version="143">
+<package name="EEEHP1H4R7P" urn="urn:adsk.eagle:footprint:45493986/4" library_version="152">
 <description>&lt;b&gt;D&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-2.5" y="0" dx="3.2" dy="1.6" layer="1"/>
@@ -20695,7 +20695,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="-4.065" y1="0" x2="-4.165" y2="0" width="0.2" layer="21" curve="180"/>
 <wire x1="-4.165" y1="0" x2="-4.065" y2="0" width="0.2" layer="21" curve="180"/>
 </package>
-<package name="784777470" urn="urn:adsk.eagle:footprint:45494004/3" library_version="145">
+<package name="784777470" urn="urn:adsk.eagle:footprint:45494004/3" library_version="152">
 <description>&lt;b&gt;784777470-5&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-3" y="0" dx="2" dy="1.7" layer="1" rot="R180"/>
@@ -20723,51 +20723,56 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <packageinstance name="XT60PWM"/>
 </packageinstances>
 </package3d>
-<package3d name="SOT23" urn="urn:adsk.eagle:package:45494141/2" type="model" library_version="141">
+<package3d name="SOT23" urn="urn:adsk.eagle:package:45494141/3" type="model" library_version="146">
 <description>&lt;b&gt;SOT-23&lt;/b&gt;</description>
 <packageinstances>
 <packageinstance name="SOT23"/>
 </packageinstances>
 </package3d>
-<package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="140">
-<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;</description>
+<package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="152">
+<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="691313510003"/>
 </packageinstances>
 </package3d>
-<package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="140">
-<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;</description>
+<package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="152">
+<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="SHDRRA2W100P0X508_1X2_1216X120"/>
 </packageinstances>
 </package3d>
-<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:45493951/4" type="model" library_version="142">
+<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:45493951/5" type="model" library_version="146">
 <description>&lt;b&gt;(SOIC)&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="SOIC127P600X175-8N"/>
 </packageinstances>
 </package3d>
-<package3d name="PMEG4015EPK315" urn="urn:adsk.eagle:package:45493982/4" type="model" library_version="140">
-<description>&lt;b&gt;PMEG4015EPK,315-2&lt;/b&gt;&lt;br&gt;</description>
+<package3d name="PMEG4015EPK315" urn="urn:adsk.eagle:package:45493982/4" type="model" library_version="152">
+<description>&lt;b&gt;PMEG4015EPK,315-2&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="PMEG4015EPK315"/>
 </packageinstances>
 </package3d>
-<package3d name="UD-10X10_NICHICON" urn="urn:adsk.eagle:package:38013982/8" type="model" library_version="142">
+<package3d name="UD-10X10_NICHICON" urn="urn:adsk.eagle:package:38013982/9" type="model" library_version="146">
 <description>&lt;b&gt;ALUMINUM ELECTROLYTIC CAPACITORS&lt;/b&gt; UD Series 10 x 10 mm&lt;p&gt;
 Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <packageinstances>
 <packageinstance name="UD-10X10_NICHICON"/>
 </packageinstances>
 </package3d>
-<package3d name="EEEHP1H4R7P" urn="urn:adsk.eagle:package:45493987/5" type="model" library_version="143">
-<description>&lt;b&gt;D&lt;/b&gt;&lt;br&gt;</description>
+<package3d name="EEEHP1H4R7P" urn="urn:adsk.eagle:package:45493987/6" type="model" library_version="152">
+<description>&lt;b&gt;D&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="EEEHP1H4R7P"/>
 </packageinstances>
 </package3d>
-<package3d name="784777470" urn="urn:adsk.eagle:package:45494005/4" type="model" library_version="145">
-<description>&lt;b&gt;784777470-5&lt;/b&gt;&lt;br&gt;</description>
+<package3d name="784777470" urn="urn:adsk.eagle:package:45494005/5" type="model" library_version="152">
+<description>&lt;b&gt;784777470-5&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="784777470"/>
 </packageinstances>
@@ -20948,7 +20953,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 </device>
 </devices>
 </deviceset>
-<deviceset name="MMBT3904LT1" urn="urn:adsk.eagle:component:43140559/3" prefix="T" library_version="141">
+<deviceset name="MMBT3904LT1" urn="urn:adsk.eagle:component:43140559/4" prefix="T" library_version="146">
 <description>&lt;b&gt;NPN TRANSISTOR&lt;/b&gt;</description>
 <gates>
 <gate name="G$1" symbol="NPN" x="0" y="0"/>
@@ -20961,7 +20966,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 <connect gate="G$1" pin="E" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:45494141/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:45494141/3"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -20971,7 +20976,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="140">
+<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="152">
 <description>&lt;b&gt;Wurth Elektronik 313 Series 5.08mm Pitch Straight Pluggable Terminal Block, PCB Header, Through Hole, 3 Way&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21002,7 +21007,7 @@ Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/5" prefix="J" library_version="140">
+<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/5" prefix="J" library_version="152">
 <description>&lt;b&gt;2 Position Terminal Block Header, Male Pins, Shrouded (4 Side) 0.200" (5.08mm) 90, Right Angle  Through Hole&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21032,7 +21037,7 @@ Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"
 </device>
 </devices>
 </deviceset>
-<deviceset name="LM2675MX-5.0_NOPB" urn="urn:adsk.eagle:component:45493952/4" prefix="IC" library_version="142">
+<deviceset name="LM2675MX-5.0_NOPB" urn="urn:adsk.eagle:component:45493952/5" prefix="IC" library_version="152">
 <description>&lt;b&gt;TEXAS INSTRUMENTS - LM2675MX-5.0/NOPB - STEP-DOWN REGULATOR, 8-SOIC FULL REEL&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="http://www.ti.com/lit/ds/symlink/lm2675.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21051,7 +21056,7 @@ Source: &lt;a href="http://www.ti.com/lit/ds/symlink/lm2675.pdf"&gt; Datasheet &
 <connect gate="G$1" pin="VSW" pad="8"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:45493951/4"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:45493951/5"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21068,7 +21073,7 @@ Source: &lt;a href="http://www.ti.com/lit/ds/symlink/lm2675.pdf"&gt; Datasheet &
 </device>
 </devices>
 </deviceset>
-<deviceset name="PMEG4015EPK,315" urn="urn:adsk.eagle:component:45493983/4" prefix="D" library_version="140">
+<deviceset name="PMEG4015EPK,315" urn="urn:adsk.eagle:component:45493983/4" prefix="D" library_version="152">
 <description>&lt;b&gt;Schottky Diodes &amp; Rectifiers 40V 1.5A Low VF MEGA Barrier Rectifier&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://assets.nexperia.com/documents/data-sheet/PMEG4015EPK.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21098,7 +21103,7 @@ Source: &lt;a href="https://assets.nexperia.com/documents/data-sheet/PMEG4015EPK
 </device>
 </devices>
 </deviceset>
-<deviceset name="MAL215099804E3" urn="urn:adsk.eagle:component:38013984/10" prefix="C" library_version="145">
+<deviceset name="MAL215099804E3" urn="urn:adsk.eagle:component:38013984/11" prefix="C" library_version="146">
 <description>&lt;b&gt;Aluminum Electrolytic Capacitors - SMD 100uF 63V 20%&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.vishay.com/docs/28395/150crz.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21111,7 +21116,7 @@ Source: &lt;a href="https://www.vishay.com/docs/28395/150crz.pdf"&gt; Datasheet 
 <connect gate="G$1" pin="-" pad="-"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:38013982/8"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:38013982/9"/>
 </package3dinstances>
 <technologies>
 <technology name=""/>
@@ -21119,7 +21124,7 @@ Source: &lt;a href="https://www.vishay.com/docs/28395/150crz.pdf"&gt; Datasheet 
 </device>
 </devices>
 </deviceset>
-<deviceset name="EEE-FP1C680AL" urn="urn:adsk.eagle:component:45493988/5" prefix="C" library_version="143">
+<deviceset name="EEE-FP1C680AL" urn="urn:adsk.eagle:component:45493988/6" prefix="C" library_version="152">
 <description>&lt;b&gt;Aluminium Electroyltic Capacitor, Radial&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="http://industrial.panasonic.com/cdbs/www-data/pdf/RDE0000/RDE0000C1272.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21132,7 +21137,7 @@ Source: &lt;a href="http://industrial.panasonic.com/cdbs/www-data/pdf/RDE0000/RD
 <connect gate="G$1" pin="-" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:45493987/5"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:45493987/6"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21149,7 +21154,7 @@ Source: &lt;a href="http://industrial.panasonic.com/cdbs/www-data/pdf/RDE0000/RD
 </device>
 </devices>
 </deviceset>
-<deviceset name="784777470" urn="urn:adsk.eagle:component:45494006/4" prefix="L" library_version="145">
+<deviceset name="784777470" urn="urn:adsk.eagle:component:45494006/5" prefix="L" library_version="152">
 <description>&lt;b&gt;WURTH ELEKTRONIK - 784777470 - Power Inductor (SMD), AEC-Q200, 47 H, 1.15 A, Shielded, 1.25 A, WE-PDA&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.we-online.com/components/products/datasheet/784777470.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -21162,7 +21167,7 @@ Source: &lt;a href="https://www.we-online.com/components/products/datasheet/7847
 <connect gate="G$1" pin="2" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:45494005/4"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:45494005/5"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21231,7 +21236,7 @@ Source: &lt;a href="https://www.we-online.com/components/products/datasheet/7847
 </package>
 </packages>
 <packages3d>
-<package3d name="SOT223" urn="urn:adsk.eagle:package:37504714/2" type="model" library_version="3">
+<package3d name="SOT223" urn="urn:adsk.eagle:package:37504714/3" type="model" library_version="4">
 <description>&lt;b&gt;Smal Outline Transistor&lt;/b&gt;</description>
 <packageinstances>
 <packageinstance name="SOT223"/>
@@ -21258,7 +21263,7 @@ Source: &lt;a href="https://www.we-online.com/components/products/datasheet/7847
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="REG1117" urn="urn:adsk.eagle:component:37504893/2" prefix="IC" library_version="3">
+<deviceset name="REG1117" urn="urn:adsk.eagle:component:37504893/3" prefix="IC" library_version="4">
 <description>&lt;b&gt;800mA and 1A Low Dropout (LDO) Positive Regulator&lt;/b&gt;&lt;p&gt;
 1.8V, 2.5V, 2.85V, 3.3V, 5V, and Adj</description>
 <gates>
@@ -21272,7 +21277,7 @@ Source: &lt;a href="https://www.we-online.com/components/products/datasheet/7847
 <connect gate="G$1" pin="VOUT" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37504714/2"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37504714/3"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21537,9 +21542,7 @@ Source: &lt;a href="https://www.we-online.com/components/products/datasheet/7847
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value="
-WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
-"/>
+<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>
@@ -21757,7 +21760,7 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </part>
 <part name="FRAME1" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA3_L" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U1" library="W5500" library_urn="urn:adsk.eagle:library:37501005" deviceset="W5500" device="" package3d_urn="urn:adsk.eagle:package:37501008/3" value="W5500">
+<part name="U1" library="W5500" library_urn="urn:adsk.eagle:library:37501005" deviceset="W5500" device="" package3d_urn="urn:adsk.eagle:package:37501008/4" value="W5500">
 <attribute name="MPN" value="W5500"/>
 </part>
 <part name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="22nF">
@@ -22054,9 +22057,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <part name="FRAME2" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA3_L" device=""/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="J2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/7"/>
-<part name="IC2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="24LC64T-I/SN" device="" package3d_urn="urn:adsk.eagle:package:37894665/5"/>
+<part name="IC2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="24LC64T-I/SN" device="" package3d_urn="urn:adsk.eagle:package:37894665/6"/>
 <part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC8" library="burr-brown" library_urn="urn:adsk.eagle:library:37504555" deviceset="REG1117" device="" package3d_urn="urn:adsk.eagle:package:37504714/2" value="REG1117-3.3V">
+<part name="IC8" library="burr-brown" library_urn="urn:adsk.eagle:library:37504555" deviceset="REG1117" device="" package3d_urn="urn:adsk.eagle:package:37504714/3" value="REG1117-3.3V">
 <attribute name="MPN" value="REG1117-3.3/2K5"/>
 </part>
 <part name="C23" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="10uF">
@@ -22220,11 +22223,11 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <attribute name="MPN" value="CC0805KKX5R8BB106"/>
 </part>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U$1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/3" value="74HCT541PWR"/>
-<part name="U$3" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/3" value="74LVC541APWR"/>
-<part name="T1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/2"/>
-<part name="T2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/2"/>
-<part name="T3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/2"/>
+<part name="U$1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/4" value="74HCT541PWR"/>
+<part name="U$3" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/4" value="74LVC541APWR"/>
+<part name="T1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
+<part name="T2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
+<part name="T3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
 <part name="R12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1K">
 <spice>
 <pinmapping spiceprefix="R">
@@ -22265,14 +22268,14 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <part name="J10" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
 <part name="J11" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
 <part name="J12" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
-<part name="IC1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="LM2675MX-5.0_NOPB" device="" package3d_urn="urn:adsk.eagle:package:45493951/4"/>
+<part name="IC1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="LM2675MX-5.0_NOPB" device="" package3d_urn="urn:adsk.eagle:package:45493951/5"/>
 <part name="D1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="PMEG4015EPK,315" device="" package3d_urn="urn:adsk.eagle:package:45493982/4"/>
-<part name="C2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MAL215099804E3" device="&quot;&quot;" package3d_urn="urn:adsk.eagle:package:38013982/8" value="100uF">
+<part name="C2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MAL215099804E3" device="&quot;&quot;" package3d_urn="urn:adsk.eagle:package:38013982/9" value="100uF">
 <attribute name="MPN" value="C249838"/>
 </part>
-<part name="C3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="EEE-FP1C680AL" device="" package3d_urn="urn:adsk.eagle:package:45493987/5" value="68uF"/>
+<part name="C3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="EEE-FP1C680AL" device="" package3d_urn="urn:adsk.eagle:package:45493987/6" value="68uF"/>
 <part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10nF"/>
-<part name="L2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="784777470" device="" package3d_urn="urn:adsk.eagle:package:45494005/4" value="47uH">
+<part name="L2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="784777470" device="" package3d_urn="urn:adsk.eagle:package:45494005/5" value="47uH">
 <attribute name="MPN" value="784777470"/>
 </part>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -24103,11 +24106,10 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <label x="45.72" y="185.42" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="N$7" class="3">
+<net name="CR" class="3">
 <segment>
 <pinref part="X9" gate="G$1" pin="CR"/>
-<wire x1="309.88" y1="193.04" x2="287.02" y2="193.04" width="0.1524" layer="91"/>
-<wire x1="287.02" y1="193.04" x2="269.24" y2="193.04" width="0.1524" layer="91"/>
+<wire x1="309.88" y1="193.04" x2="269.24" y2="193.04" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="193.04" x2="269.24" y2="165.1" width="0.1524" layer="91"/>
 <pinref part="R27" gate="G$1" pin="2"/>
 <wire x1="269.24" y1="165.1" x2="264.16" y2="165.1" width="0.1524" layer="91"/>
@@ -24120,7 +24122,7 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <wire x1="264.16" y1="165.1" x2="264.16" y2="160.02" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$8" class="0">
+<net name="R_LED+" class="0">
 <segment>
 <pinref part="X9" gate="G$1" pin="A-R"/>
 <wire x1="304.8" y1="165.1" x2="309.88" y2="165.1" width="0.1524" layer="91"/>
@@ -24131,7 +24133,7 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="R29" gate="G$1" pin="1"/>
 </segment>
 </net>
-<net name="N$10" class="0">
+<net name="L_LED+" class="0">
 <segment>
 <pinref part="X9" gate="G$1" pin="AL"/>
 <wire x1="304.8" y1="154.94" x2="309.88" y2="154.94" width="0.1524" layer="91"/>
@@ -24423,21 +24425,21 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <label x="127" y="134.62" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="N$11" class="0">
+<net name="RD+" class="0">
 <segment>
 <pinref part="X9" gate="G$1" pin="RD+"/>
 <pinref part="C15" gate="G$1" pin="2"/>
 <wire x1="309.88" y1="200.66" x2="299.72" y2="200.66" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$12" class="0">
+<net name="RD-" class="0">
 <segment>
 <pinref part="X9" gate="G$1" pin="RD-"/>
 <pinref part="C21" gate="G$1" pin="2"/>
 <wire x1="309.88" y1="185.42" x2="299.72" y2="185.42" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$13" class="3">
+<net name="CT" class="3">
 <segment>
 <pinref part="R23" gate="G$1" pin="1"/>
 <pinref part="X9" gate="G$1" pin="CT"/>
