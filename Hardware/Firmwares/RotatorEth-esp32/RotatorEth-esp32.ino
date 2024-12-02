@@ -128,9 +128,9 @@ void configureWiFi();
 bool initWiFi(IPAddress ip, String sSSID, String sPassword);
 void checkForNewWifiClient();
 #endif
-void IRAM_ATTR homeIntHandler();
-void IRAM_ATTR rainIntHandler();
-void IRAM_ATTR buttonHandler();
+void homeIntHandler();
+void rainIntHandler();
+void buttonHandler();
 void resetChip(int);
 void StartWirelessConfig();
 void ConfigXBee();
@@ -373,7 +373,7 @@ void checkForNewTCPClient()
 		DBPrintln("new client");
 		if(nbEthernetClient > 0) { // we only accept 1 client
 			newClient.write("Already in use#");
-			newClient.clear();
+			newClient.flush();
 			newClient.stop();
 			DBPrintln("new client rejected");
 		}
