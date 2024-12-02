@@ -373,7 +373,7 @@ void checkForNewTCPClient()
 		DBPrintln("new client");
 		if(nbEthernetClient > 0) { // we only accept 1 client
 			newClient.write("Already in use#");
-			newClient.flush();
+			newClient.clear();
 			newClient.stop();
 			DBPrintln("new client rejected");
 		}
@@ -449,7 +449,7 @@ void checkForNewWifiClient()
 		if(nbWiFiClient > 0) { // we only accept 1 client
 			DBPrintln("========== Only 1 client allowed ==========");
 			newClient.write("Already in use#");
-			newClient.flush();
+			newClient.clear();
 			newClient.stop();
 			DBPrintln("new client rejected");
 		}

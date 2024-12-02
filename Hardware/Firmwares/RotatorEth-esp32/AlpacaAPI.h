@@ -38,7 +38,7 @@ public:
 	int checkForRequest();
 private:
 	EthernetUDP *discoveryServer;
-	int m_UDPPort;1111
+	int m_UDPPort;
 };
 
 // ALPACA discovery server
