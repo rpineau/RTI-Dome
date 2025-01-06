@@ -157,6 +157,7 @@ int X2Dome::execModalSettingsDialog()
 		return ERR_POINTER;
 	
 	X2MutexLocker ml(GetMutex());
+
 	m_RTIDome.getShutterPresent(m_bHasShutterControl);
 	
 	// set controls state depending on the connection state

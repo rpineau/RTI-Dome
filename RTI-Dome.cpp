@@ -229,11 +229,20 @@ int CRTIDome::deviceCommand(const std::string sCmd, std::string &sResp, char res
 	int nErr = PLUGIN_OK;
 	unsigned long  ulBytesWrite;
 	std::string localResp;
+	int nBytesWaiting;
 
 	if(!m_bIsConnected)
 		return ERR_COMMNOLINK;
 
-	m_pSerx->purgeTxRx();
+	nErr = m_pSerx->bytesWaitingRx(nBytesWaiting);
+	if(nBytesWaiting) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [nBytesWaiting] calling purgeTxR"<< std::endl;
+		m_sLogFile.flush();
+#endif
+		m_pSerx->purgeTxRx();
+	}
+
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Sending : '" << sCmd <<  "'" << std::endl;
 	m_sLogFile.flush();
