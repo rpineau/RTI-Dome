@@ -9,6 +9,8 @@
 // Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
+#include "rtc_wdt.h"
+#include <esp_task_wdt.h>
 #include <atomic>
 #define DEBUG   // enable debug to serial port defined as DebugPort
 
@@ -110,9 +112,6 @@ std::atomic<bool> bIsRaining;
 // global variable for shutter voltage state
 std::atomic<bool> bLowShutterVoltage;
 
-#ifdef USE_ETHERNET
-#endif // USE_ETHERNET
-
 const char ERR_NO_DATA = -1;
 
 #include "dome_commands.h"
@@ -166,6 +165,7 @@ void MotorTask(void *);
 //
 void setup()
 {
+
 	wifiPresent = false;
 	ethernetPresent = false;
 	bGotHelloFromShutter = false;
@@ -219,11 +219,11 @@ void setup()
 #ifdef USE_ETHERNET
 	configureEthernet();
 #endif // USE_ETHERNET
-
-	disableCore0WDT();
-	disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0);
-
+	// rtc_wdt_protect_off();
+	// rtc_wdt_disable();
+	// disableCore0WDT();
+	// disableCore1WDT();
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 0, NULL,  0);
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
 #ifdef USE_ALPACA
@@ -251,34 +251,35 @@ void loop()
 #endif //USE_ETHERNET
 
 #ifdef USE_WIFI
-		if(wifiPresent) {
-			checkForNewWifiClient();
-			if(nbWiFiClient && shutterClient.connected())
-				checkShuterLowVoltage();
-			if(ShutterWatchdog.elapsed() > (pingInterval*5)) {
-				if(nbWiFiClient) {
-					if(!shutterClient.connected()) {
-						shutterClient.stop();
-						nbWiFiClient--;
-						bShutterPresent = false;
-					}
+	if(wifiPresent) {
+		checkForNewWifiClient();
+		if(nbWiFiClient && shutterClient.connected())
+			checkShuterLowVoltage();
+		if(ShutterWatchdog.elapsed() > (pingInterval*5)) {
+			if(nbWiFiClient) {
+				if(!shutterClient.connected()) {
+					shutterClient.stop();
+					nbWiFiClient--;
+					bShutterPresent = false;
 				}
 			}
-			if(!bSentHello) {
-					SendHello();
-			}
-			else {
-				PingWiFiShutter();
-			}
-			if(bGotHelloFromShutter) {
-				requestWiFiShutterData();
-				bGotHelloFromShutter = false;
-			}
 		}
+		if(!bSentHello) {
+				SendHello();
+		}
+		else {
+			PingWiFiShutter();
+		}
+		if(bGotHelloFromShutter) {
+			requestWiFiShutterData();
+			bGotHelloFromShutter = false;
+		}
+	}
 #endif // USE_WIFI
 
 		CheckForCommands();
 		CheckForRain();
+		taskYIELD();
 }
 
 //
@@ -288,7 +289,6 @@ void MotorTask(void *)
 {
 
 	DBPrintln("========== Motor task starting ==========");
-
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
 	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
@@ -1336,3 +1336,4 @@ void Abort()
 	}
 #endif
 }
+

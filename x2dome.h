@@ -136,7 +136,7 @@ private:
 	SleeperInterface								*	m_pSleeper;
 	BasicIniUtilInterface							*	m_pIniUtil;
 	LoggerInterface									*	m_pLogger;
-	MutexInterface									*	m_pIOMutex;
+	mutable MutexInterface							*	m_pIOMutex;
 	TickCountInterface								*	m_pTickCount;
 
     void getPortName(std::string &sPortName) const;
