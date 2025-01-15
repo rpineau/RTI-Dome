@@ -120,6 +120,9 @@ int CRTIDome::Connect(const std::string sPortName)
 		return nErr;
 	}
 
+	// clear out potential boot messages
+	m_pSerx->purgeTxRx();
+
 	m_Port.assign(sPortName);
 
 	m_bIsConnected = true;
