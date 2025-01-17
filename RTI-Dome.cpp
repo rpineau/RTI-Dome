@@ -110,7 +110,8 @@ int CRTIDome::Connect(const std::string sPortName)
 #endif
 
 	// 115200 8N1 DTR
-	nErr = m_pSerx->open(sPortName.c_str(), 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
+	// nErr = m_pSerx->open(sPortName.c_str(), 115200, SerXInterface::B_NOPARITY, "-DTR_CONTROL 1");
+	nErr = m_pSerx->open(sPortName.c_str(), 115200, SerXInterface::B_NOPARITY);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Connection failed, nErr = " << nErr <<  std::endl;
@@ -120,8 +121,6 @@ int CRTIDome::Connect(const std::string sPortName)
 		return nErr;
 	}
 
-	// clear out potential boot messages
-	m_pSerx->purgeTxRx();
 
 	m_Port.assign(sPortName);
 
@@ -132,8 +131,12 @@ int CRTIDome::Connect(const std::string sPortName)
 	if(m_Port.size()>=3 && m_Port.find("TCP") != std::string::npos)  {
 		m_bNetworkConnected = true;
 	}
-	else
+	else {
 		m_bNetworkConnected = false;
+		std::this_thread::sleep_for(std::chrono::milliseconds(2500));
+		// clear out potential boot messages
+		m_pSerx->purgeTxRx();
+	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] connected to " << sPortName << std::endl;

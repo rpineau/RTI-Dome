@@ -11,6 +11,7 @@
 #include "Arduino.h"
 #include "rtc_wdt.h"
 #include <esp_task_wdt.h>
+#include <hal/wdt_hal.h>
 #include <atomic>
 #define DEBUG   // enable debug to serial port defined as DebugPort
 
@@ -219,11 +220,15 @@ void setup()
 #ifdef USE_ETHERNET
 	configureEthernet();
 #endif // USE_ETHERNET
-	// rtc_wdt_protect_off();
-	// rtc_wdt_disable();
-	// disableCore0WDT();
-	// disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 0, NULL,  0);
+
+	wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
+	wdt_hal_write_protect_disable(&rtc_wdt_ctx);
+	wdt_hal_disable(&rtc_wdt_ctx);
+	wdt_hal_write_protect_enable(&rtc_wdt_ctx);
+	esp_task_wdt_deinit();
+	disableCore0WDT();
+	disableCore1WDT();
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0);
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
 #ifdef USE_ALPACA
