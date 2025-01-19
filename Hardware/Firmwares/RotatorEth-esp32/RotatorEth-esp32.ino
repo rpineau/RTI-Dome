@@ -160,13 +160,18 @@ DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 #endif
 
 void MotorTask(void *);
+esp_task_wdt_config_t twdt_config = 
+    {
+        .timeout_ms = 1000000,
+        .idle_core_mask = 0,    // Bitmask of cores
+        .trigger_panic = false,
+    };
 
 //
 // Setup and main loops
 //
 void setup()
 {
-
 	wifiPresent = false;
 	ethernetPresent = false;
 	bGotHelloFromShutter = false;
@@ -186,7 +191,6 @@ void setup()
 	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
 
-
 #ifdef USE_ETHERNET
 	digitalWrite(ETHERNET_RESET, 0);
 	pinMode(ETHERNET_RESET, OUTPUT);
@@ -204,7 +208,6 @@ void setup()
 
 	Computer.begin(115200);
 
-
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
 	Rotator->Stop();
@@ -220,15 +223,14 @@ void setup()
 #ifdef USE_ETHERNET
 	configureEthernet();
 #endif // USE_ETHERNET
-
-	wdt_hal_context_t rtc_wdt_ctx = RWDT_HAL_CONTEXT_DEFAULT();
-	wdt_hal_write_protect_disable(&rtc_wdt_ctx);
-	wdt_hal_disable(&rtc_wdt_ctx);
-	wdt_hal_write_protect_enable(&rtc_wdt_ctx);
+	rtc_wdt_protect_off();
 	esp_task_wdt_deinit();
-	disableCore0WDT();
-	disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0);
+	esp_task_wdt_init(&twdt_config);
+	esp_task_wdt_add(NULL);
+	//disableCore0WDT();
+	//disableCore1WDT();
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 16, NULL,  0);
+
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
 #ifdef USE_ALPACA
@@ -284,7 +286,9 @@ void loop()
 
 		CheckForCommands();
 		CheckForRain();
-		taskYIELD();
+		esp_task_wdt_reset();
+		//taskYIELD();
+		//delay(1);
 }
 
 //
@@ -292,18 +296,19 @@ void loop()
 //
 void MotorTask(void *)
 {
-
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
 	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
-
+	esp_task_wdt_add(NULL);
 	DBPrintln("========== Motor task ready ==========");
+
 	for(;;) {
 		Rotator->Run();
 		taskYIELD();
+		esp_task_wdt_reset();
 	}
 }
 
@@ -332,6 +337,15 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 	// network configuration
 	Ethernet.init(ETHERNET_CS);
 	nbEthernetClient = 0;
+	// set an ip so we can get the link status
+	domeEthernet.begin(MAC_Address, "192.168.0.1", "1.1.1.1", "192.168.0.254", "255.255.255.0");
+	while(domeEthernet.linkStatus() == LinkOFF ) {
+		delay(250);
+		nTimeout++;
+		if(nTimeout == 10) {
+			return false;
+		}
+	}
 	DBPrintln("========== Setting IP config ==========");
 	// try DHCP if set
 	if(bUseDHCP) {

@@ -101,8 +101,9 @@ CRTIDome::~CRTIDome()
 
 int CRTIDome::Connect(const std::string sPortName)
 {
-	int nErr;
-	bool bDummy;
+	int nErr = PLUGIN_OK;
+	bool bDummy = false;
+	int nConnectionTimeout = 0;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Called." << std::endl;
@@ -144,6 +145,39 @@ int CRTIDome::Connect(const std::string sPortName)
 	m_sLogFile.flush();
 #endif
 
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Getting Firmware." << std::endl;
+	m_sLogFile.flush();
+#endif
+
+	// if this fails the controller is non responsive
+	do {
+		nErr = getFirmwareVersion(m_sFirmwareVersion, m_fVersion);
+		nConnectionTimeout++;
+		if(nConnectionTimeout == 8) {
+			if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error Getting Firmware : " << nErr << std::endl;
+				m_sLogFile.flush();
+#endif
+				m_bIsConnected = false;
+				m_pSerx->close();
+				return FIRMWARE_NOT_SUPPORTED;
+			}
+			else
+				break;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+	} while (nErr);
+
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Got Firmware "<<  m_sFirmwareVersion << "( " << std::fixed << std::setprecision(2) << m_fVersion << ")."<< nErr << std::endl;
+	m_sLogFile.flush();
+#endif
+	if(m_fVersion < 2.0f && m_fVersion != 0.523f && m_fVersion != 0.522f)  {
+		return FIRMWARE_NOT_SUPPORTED;
+	}
+
 	nErr = getIpAddress(m_IpAddress);
 	if(nErr)
 		m_IpAddress = "";
@@ -162,30 +196,7 @@ int CRTIDome::Connect(const std::string sPortName)
 		m_sLogFile.flush();
 	}
 #endif
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Getting Firmware." << std::endl;
-	m_sLogFile.flush();
-#endif
 
-	// if this fails we're not properly connected.
-	nErr = getFirmwareVersion(m_sFirmwareVersion, m_fVersion);
-	if(nErr) {
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error Getting Firmware : " << nErr << std::endl;
-		m_sLogFile.flush();
-#endif
-		m_bIsConnected = false;
-		m_pSerx->close();
-		return FIRMWARE_NOT_SUPPORTED;
-	}
-
-#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "]Got Firmware "<<  m_sFirmwareVersion << "( " << std::fixed << std::setprecision(2) << m_fVersion << ")."<< nErr << std::endl;
-	m_sLogFile.flush();
-#endif
-	if(m_fVersion < 2.0f && m_fVersion != 0.523f && m_fVersion != 0.522f)  {
-		return FIRMWARE_NOT_SUPPORTED;
-	}
 
 	nErr = getDomeParkAz(m_dCurrentAzPosition);
 	if(nErr) {
@@ -1106,7 +1117,7 @@ int CRTIDome::getFirmwareVersion(std::string &sVersion, float &fVersion)
 		return PLUGIN_OK;
 
 	ssCmd << VERSION_ROTATOR  << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, VERSION_ROTATOR);
+	nErr = deviceCommand(ssCmd.str(), sResp, VERSION_ROTATOR, 10000);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
