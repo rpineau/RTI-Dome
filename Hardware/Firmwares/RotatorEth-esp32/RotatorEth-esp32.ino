@@ -11,7 +11,6 @@
 #include "Arduino.h"
 #include "rtc_wdt.h"
 #include <esp_task_wdt.h>
-#include <hal/wdt_hal.h>
 #include <atomic>
 #define DEBUG   // enable debug to serial port defined as DebugPort
 
@@ -39,13 +38,7 @@
 #define USE_WIFI
 
 #define Computer Serial     // USB = Serial
-String IpAddress2String(const IPAddress& ipAddress)
-{
-  return String(ipAddress[0]) + String(".") +
-  		String(ipAddress[1]) + String(".") +
-		String(ipAddress[2]) + String(".") +
-		String(ipAddress[3]);
-}
+
 #include "RotatorClass.h"
 
 #ifdef USE_ETHERNET
@@ -371,7 +364,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 		return false;
 	}
 	DBPrintln("W5500 Ok.");
-	DBPrintln("W5500 IP = " + IpAddress2String(Ethernet.localIP()));
+	DBPrintln("W5500 IP = " + RotatorClass::IpAddress2String(Ethernet.localIP()));
 	Ethernet.setRetransmissionCount(3);
 
 	DBPrintln("Server ready");
@@ -436,7 +429,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 
 	shutterWiFi.softAPConfig(ip, ip, IPAddress(255,255,255,0));
 	shutterWiFi.setHostname("RTI-Dome");
-	DBPrintln("WiFi IP = " + IpAddress2String(WiFi.softAPIP()));
+	DBPrintln("WiFi IP = " + RotatorClass::IpAddress2String(WiFi.softAPIP()));
 
 	if(shutterServer) {
 		shutterServer->stop();
@@ -979,7 +972,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_ADDRESS) + String(Rotator->getIPAddress());
 			else {
-				serialMessage = String(IP_ADDRESS) + String(IpAddress2String(domeEthernet.localIP()));
+				serialMessage = String(IP_ADDRESS) + String(RotatorClass::IpAddress2String(domeEthernet.localIP()));
 			}
 			break;
 
@@ -991,7 +984,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
 			else {
-				serialMessage = String(IP_SUBNET) + String(IpAddress2String(domeEthernet.subnetMask()));
+				serialMessage = String(IP_SUBNET) + String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
 			}
 			break;
 
@@ -1003,7 +996,7 @@ void ProcessCommand(int nSource)
 			if(!ServerConfig.bUseDHCP)
 				serialMessage = String(IP_GATEWAY) + String(Rotator->getIPGateway());
 			else {
-				serialMessage = String(IP_GATEWAY) + String(IpAddress2String(domeEthernet.gatewayIP()));
+				serialMessage = String(IP_GATEWAY) + String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
 			}
 			break;
 #endif // USE_ETHERNET

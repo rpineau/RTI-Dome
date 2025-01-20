@@ -30944,8 +30944,7 @@ Source: &lt;a href="https://www.we-online.com/components/products/datasheet/7847
 </pinmapping>
 </spice>
 <attribute name="JLCPCB" value="VZH101M1VTR-0607"/>
-<attribute name="MPN" value="VZH101M1VTR-0607
-"/>
+<attribute name="MPN" value="VZH101M1VTR-0607 "/>
 </part>
 <part name="C3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="EEE-FP1C680AL" device="" package3d_urn="urn:adsk.eagle:package:45493987/6" value="68uF"/>
 <part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10nF"/>

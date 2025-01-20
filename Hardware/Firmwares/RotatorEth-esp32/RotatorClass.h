@@ -141,6 +141,7 @@ enum RainActions {DO_NOTHING=0, HOME, PARK};
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
+
 class RotatorClass
 {
 
@@ -229,6 +230,8 @@ public:
 	void		getWiFiConfig(WIFIConfig &config);
 #endif // USE_WIFI
 	std::atomic<int>    nStepperInterruptFreq;
+
+	static String IpAddress2String(const IPAddress& ipAddress);
 private:
 	Configuration   m_Config;
 
@@ -550,6 +553,15 @@ void RotatorClass::getWiFiConfig(WIFIConfig &config)
 	strncpy(config.sPassword, m_Config.wifiIpConfig.sPassword, WIFI_VAR_LEN);
 }
 #endif
+
+String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
+{
+  return String(ipAddress[0]) + String(".") +
+  		String(ipAddress[1]) + String(".") +
+		String(ipAddress[2]) + String(".") +
+		String(ipAddress[3]);
+}
+
 //
 // rain sensor methods
 //
