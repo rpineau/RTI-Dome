@@ -293,7 +293,6 @@ UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Atari_MB.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Atmel_ATF15xx.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/B340AE-13.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/BA50DD0WHFP-TR.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/CONUFL001-SMD-T.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Dallas.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/E14_Arduino_revC.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Ethernet.lbr"
@@ -307,17 +306,13 @@ UsedLibrary="/Users/roro/Documents/EAGLE/libraries/J1B1211CCD.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/JM20330.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Jetson_GPIO.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/L70B-M39.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/L80-M39.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/LM2576.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/LM2596S-ADJ_NOPB.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/LTC3119HFE#PBF.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/LTC3119IUFD#PBF.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/MC68K.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/MC74VHC1G05DTT1G.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/MC88915.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/MCP120T.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/MGV06051R5M-10.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/MSS1583-104KEB.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Microchip_By_element14_Batch_1.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Molex-0215.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Molex-0315.lbr"
@@ -340,8 +335,6 @@ UsedLibrary="/Users/roro/Documents/EAGLE/libraries/SK42L.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/SN74LVC1G18DBVR.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/SO-DIMM-260.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/SRAM.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/SSF-LED.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/SSM-104-L-SV-BE.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/SamacSys_Parts.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/TDD01H0SB1R.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/TPS5430MDDAREP.lbr"
@@ -351,7 +344,6 @@ UsedLibrary="/Users/roro/Documents/EAGLE/libraries/V9958.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/WR_MPC3.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/Xilinx.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/db19.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/diy-modules.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/dram.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/dsw.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/esp8266modules.lbr"
@@ -359,10 +351,8 @@ UsedLibrary="/Users/roro/Documents/EAGLE/libraries/genesis.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/hirose_fx2_con.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/idt.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/js102011cqn.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/litefuse.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/logo_exxos.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/nexdome.lbr"
-UsedLibrary="/Users/roro/Documents/EAGLE/libraries/raspberrypi_bastelstube_v13.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/res_array.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/riser-exxos_2017-STE_CPU.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/rj11.lbr"
@@ -374,6 +364,10 @@ UsedLibrary="/Users/roro/Documents/EAGLE/libraries/video_ctlr.lbr"
 UsedLibrary="/Users/roro/Documents/EAGLE/libraries/xilinx_devices_V6.lbr"
 
 [Win_1]
+Type="Control Panel"
+Number=0
+
+[Win_2]
 Type="Board Editor"
 Number=2
 File="/Users/roro/src/Astro/SoftwareBisque/InstrumentPanelXT60/InstrumentPanelXT60.brd"
@@ -417,15 +411,11 @@ AddLevel=2
 PadsSameType=0
 Layer=1
 
-[Win_2]
-Type="Control Panel"
-Number=0
-
 [Win_3]
 Type="Schematic Editor"
 Number=1
 File="/Users/roro/src/Astro/SoftwareBisque/InstrumentPanelXT60/InstrumentPanelXT60.sch"
-View="-5.80736 -4.13096 269.759 184.263"
+View="79.5867 -9.81682 159.173 43.0265"
 WireWidths=" 0.0762 0.1016 0.127 0.15 0.2 0.2032 0.254 0.3048 0.4064 0.508 0.6096 0.8128 1.016 1.27 2.54 0.1524"
 PadDiameters=" 0.254 0.3048 0.4064 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0"
 PadDrills=" 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.65 0.7 0.75 0.8 0.85 0.9 1 0.6"
@@ -464,6 +454,7 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
+Views=" 1: 79.5867 -9.81682 159.173 43.0265"
 Sheet="1"
 
 [Desktop]
