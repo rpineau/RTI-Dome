@@ -1583,14 +1583,14 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "]" << std::endl;
 	m_sLogFile.flush();
 #endif
 
 	if(isDomeMoving()) {
 		bComplete = false;
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] still moving" << std::endl;
 		m_sLogFile.flush();
 #endif
@@ -1603,14 +1603,14 @@ int CRTIDome::isFindHomeComplete(bool &bComplete)
 			m_bParked = false;
 		syncDome(m_dHomeAz, m_dCurrentElPosition);
 		m_nHomingTries = 0;
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] At Home" << std::endl;
 		m_sLogFile.flush();
 #endif
 	}
 	else {
 		// we're not moving and we're not at the home position !!!
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Not moving and not at home !!!" << std::endl;
 		m_sLogFile.flush();
 #endif
@@ -1658,7 +1658,7 @@ int CRTIDome::isCalibratingComplete(bool &bComplete)
 	nErr = getDomeStepPerRev(m_nNbStepPerRev);
 	bComplete = true;
 	m_bCalibrating = false;
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nNbStepPerRev = " << m_nNbStepPerRev << std::endl;
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bCalibrating = " << (m_bCalibrating?"True":"False") << std::endl;
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] bComplete = " << (bComplete?"True":"False") << std::endl;
@@ -1720,7 +1720,7 @@ int CRTIDome::getShutterPresent(bool &bShutterPresent)
 	m_bShutterPresent = false;
 	if(sResp.size())
 		m_bShutterPresent = (sResp.at(0)=='1') ? true : false;
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] sResp = " << sResp << std::endl;
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bShutterPresent = " << (m_bShutterPresent?"True":"False") << std::endl;
 	m_sLogFile.flush();
@@ -1740,7 +1740,7 @@ int CRTIDome::getNbTicksPerRev()
 	if(m_bIsConnected)
 		getDomeStepPerRev(m_nNbStepPerRev);
 
-#ifdef PLUGIN_DEBUG
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nNbStepPerRev = " << m_nNbStepPerRev << std::endl;
 	m_sLogFile.flush();
 #endif
