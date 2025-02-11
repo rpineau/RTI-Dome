@@ -920,6 +920,11 @@ int CRTIDome::parkDome()
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
+#ifdef PLUGING_DEBUG
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Parking Dome" << std::endl;
+	m_sLogFile.flush();
+#endif
+
 	if(m_bHomeOnPark) {
 		m_bParking = true;
 		nErr = goHome();
@@ -973,6 +978,11 @@ int CRTIDome::gotoAzimuth(double dNewAz)
 		dNewAz = dNewAz - 360;
 
 	ssCmd << GOTO_ROTATOR << std::fixed << std::setprecision(2) << dNewAz << "#";
+#ifdef PLUGING_DEBUG
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Goto " << dNewAz <<" command '" << ssCmd.str() << "'" << std::endl;
+	m_sLogFile.flush();
+
+#endif
 	nErr = deviceCommand(ssCmd.str(), sResp, GOTO_ROTATOR);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -1263,6 +1273,13 @@ int CRTIDome::goHome()
 
 	m_nHomingTries = 0;
 	ssCmd << HOME_ROTATOR  << "#";
+
+#ifdef PLUGING_DEBUG
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Homing command '" << ssCmd.str() << "'" << std::endl;
+	m_sLogFile.flush();
+
+#endif
+
 	nErr = deviceCommand(ssCmd.str(), sResp, HOME_ROTATOR);
 	if(nErr) {
 #ifdef PLUGIN_DEBUG
