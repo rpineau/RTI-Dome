@@ -5443,6 +5443,24 @@ design rules under a new name.</description>
 <attribute name="SPICEPREFIX" value="C" x="113" y="8" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="VALUE" x="84.04" y="15.73" size="1.27" layer="27" rot="R90"/>
 </element>
+<element name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V" x="91.55" y="25.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="90.28" y="24.23" size="1.27" layer="25" rot="R90"/>
+<attribute name="POPULARITY" value="54" x="91.55" y="25.5" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="SPICEPREFIX" value="C" x="91.55" y="25.5" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="VALUE" x="94.09" y="24.23" size="1.27" layer="27" rot="R90"/>
+</element>
+<element name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V" x="93.65" y="25.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="92.38" y="24.23" size="1.27" layer="25" rot="R90"/>
+<attribute name="POPULARITY" value="54" x="93.65" y="25.5" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="SPICEPREFIX" value="C" x="93.65" y="25.5" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="VALUE" x="96.19" y="24.23" size="1.27" layer="27" rot="R90"/>
+</element>
+<element name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" package="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V" x="95.75" y="25.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="94.48" y="24.23" size="1.27" layer="25" rot="R90"/>
+<attribute name="POPULARITY" value="54" x="95.75" y="25.5" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="SPICEPREFIX" value="C" x="95.75" y="25.5" size="1.778" layer="27" rot="R90" display="off"/>
+<attribute name="VALUE" x="98.29" y="24.23" size="1.27" layer="27" rot="R90"/>
+</element>
 </elements>
 <signals>
 <signal name="VPIN">
@@ -5888,6 +5906,9 @@ design rules under a new name.</description>
 <via x="88.5" y="15.5" extent="1-16" drill="0.35"/>
 <via x="86" y="17" extent="1-16" drill="0.35"/>
 <via x="90.5" y="15.5" extent="1-16" drill="0.35"/>
+<contactref element="C2" pad="2"/>
+<contactref element="C27" pad="2"/>
+<contactref element="C3" pad="2"/>
 </signal>
 <signal name="+12V" class="1">
 <contactref element="J2" pad="2"/>
@@ -5908,12 +5929,15 @@ design rules under a new name.</description>
 <contactref element="C8" pad="1"/>
 <polygon width="0.1016" layer="1" thermals="no">
 <vertex x="91.15" y="17.6"/>
-<vertex x="102.5" y="17.6"/>
-<vertex x="102.5" y="24"/>
-<vertex x="90.65" y="24"/>
+<vertex x="103" y="17.6"/>
+<vertex x="103" y="25.5"/>
+<vertex x="90.65" y="25.5"/>
 <vertex x="90.65" y="19.05"/>
 <vertex x="91.15" y="19.05"/>
 </polygon>
+<contactref element="C2" pad="1"/>
+<contactref element="C27" pad="1"/>
+<contactref element="C3" pad="1"/>
 </signal>
 <signal name="SHUTTER_OPENED">
 <contactref element="U$3" pad="P$12"/>

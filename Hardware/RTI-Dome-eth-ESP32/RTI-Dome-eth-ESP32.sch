@@ -22082,6 +22082,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <part name="C25" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10uF"/>
 <part name="C29" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1uF"/>
 <part name="C26" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="22uF"/>
+<part name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V"/>
+<part name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V"/>
+<part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V"/>
 </parts>
 <sheets>
 <sheet>
@@ -22445,6 +22448,18 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <attribute name="NAME" x="136.906" y="51.689" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="136.906" y="56.769" size="1.778" layer="96" rot="R180"/>
 </instance>
+<instance part="C2" gate="G$1" x="168.91" y="22.86" smashed="yes">
+<attribute name="NAME" x="170.434" y="23.241" size="1.778" layer="95"/>
+<attribute name="VALUE" x="170.434" y="18.161" size="1.778" layer="96"/>
+</instance>
+<instance part="C3" gate="G$1" x="176.53" y="22.86" smashed="yes">
+<attribute name="NAME" x="178.054" y="23.241" size="1.778" layer="95"/>
+<attribute name="VALUE" x="178.054" y="18.161" size="1.778" layer="96"/>
+</instance>
+<instance part="C27" gate="G$1" x="184.15" y="22.86" smashed="yes">
+<attribute name="NAME" x="185.674" y="23.241" size="1.778" layer="95"/>
+<attribute name="VALUE" x="185.674" y="18.161" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -22747,6 +22762,20 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <junction x="146.05" y="27.94"/>
 <pinref part="C26" gate="G$1" pin="1"/>
 </segment>
+<segment>
+<pinref part="C2" gate="G$1" pin="2"/>
+<wire x1="168.91" y1="17.78" x2="168.91" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="168.91" y1="15.24" x2="176.53" y2="15.24" width="0.1524" layer="91"/>
+<pinref part="C27" gate="G$1" pin="2"/>
+<wire x1="176.53" y1="15.24" x2="184.15" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="184.15" y1="15.24" x2="184.15" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="C3" gate="G$1" pin="2"/>
+<wire x1="176.53" y1="15.24" x2="176.53" y2="17.78" width="0.1524" layer="91"/>
+<junction x="176.53" y="15.24"/>
+<wire x1="187.96" y1="15.24" x2="184.15" y2="15.24" width="0.1524" layer="91"/>
+<junction x="184.15" y="15.24"/>
+<label x="187.96" y="15.24" size="1.016" layer="95" xref="yes"/>
+</segment>
 </net>
 <net name="+12V" class="1">
 <segment>
@@ -22788,6 +22817,20 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <wire x1="39.37" y1="62.23" x2="39.37" y2="58.42" width="0.1524" layer="91"/>
 <junction x="39.37" y="62.23"/>
 <pinref part="C8" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<pinref part="C2" gate="G$1" pin="1"/>
+<wire x1="168.91" y1="25.4" x2="168.91" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="C27" gate="G$1" pin="1"/>
+<wire x1="168.91" y1="27.94" x2="176.53" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="176.53" y1="27.94" x2="184.15" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="184.15" y1="27.94" x2="184.15" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="C3" gate="G$1" pin="1"/>
+<wire x1="176.53" y1="25.4" x2="176.53" y2="27.94" width="0.1524" layer="91"/>
+<junction x="176.53" y="27.94"/>
+<wire x1="187.96" y1="27.94" x2="184.15" y2="27.94" width="0.1524" layer="91"/>
+<junction x="184.15" y="27.94"/>
+<label x="187.96" y="27.94" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="SHUTTER_OPENED" class="0">
