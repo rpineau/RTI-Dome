@@ -36,16 +36,16 @@ CRTIDome::CRTIDome()
 	m_nHomingTries = 0;
 	m_nGotoTries = 0;
 
-	m_nIsRaining = NOT_RAINING;
-	m_bSaveRainStatus = false;
-	m_cRainCheckTimer.Reset();
+	m_nCondition = COND_SAFE;
+	m_bSaveConditionStatus = false;
+	m_cConditionCheckTimer.Reset();
 
 	m_bHomeOnPark = false;
 	m_bHomeOnUnpark = false;
 
 	m_bShutterPresent = false;
 
-	m_nRainStatus = RAIN_UNKNOWN;
+	m_nConditionStatus = COND_UNKNOWN;
 
 	m_Port.clear();
 	m_bNetworkConnected = false;
@@ -73,18 +73,18 @@ CRTIDome::CRTIDome()
 #endif
 
 #if defined(WIN32)
-	m_sRainStatusfilePath = getenv("HOMEDRIVE");
-	m_sRainStatusfilePath += getenv("HOMEPATH");
-	m_sRainStatusfilePath += "\\RTI_Rain.txt";
+	m_sConditionStatusfilePath = getenv("HOMEDRIVE");
+	m_sConditionStatusfilePath += getenv("HOMEPATH");
+	m_sConditionStatusfilePath += "\\RTI_Cond.txt";
 #else
-	m_sRainStatusfilePath = getenv("HOME");
-	m_sRainStatusfilePath += "/RTI_Rain.txt";
+	m_sConditionStatusfilePath = getenv("HOME");
+	m_sConditionStatusfilePath += "/RTI_Cond.txt";
 #endif
 
 #if defined PLUGIN_DEBUG
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Version " << std::fixed << std::setprecision(2) << PLUGIN_VERSION << " build " << __DATE__ << " " << __TIME__ << std::endl;
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Constructor Called." << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Rains status file : " << m_sRainStatusfilePath<<std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Conditions status file : " << m_sConditionStatusfilePath<<std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -413,9 +413,9 @@ int CRTIDome::getDomeAz(double &dDomeAz)
 
 	m_dCurrentAzPosition = dDomeAz;
 
-	if(m_cRainCheckTimer.GetElapsedSeconds() > RAIN_CHECK_INTERVAL) {
-		writeRainStatus();
-		m_cRainCheckTimer.Reset();
+	if(m_cConditionCheckTimer.GetElapsedSeconds() > SAFE_CHECK_INTERVAL) {
+		writeConditionStatus();
+		m_cConditionCheckTimer.Reset();
 	}
 	return nErr;
 }
@@ -1049,12 +1049,12 @@ int CRTIDome::openShutter()
 #endif
 		nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_BATTERY_LOW);
 	}
-	if(sResp.size() && sResp.at(0) == 'R') { // Raining. can't open
+	if(sResp.size() && sResp.at(0) == 'R') { // Condition unsafe. can't open
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Voltage too low to open" << std::endl;
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Unsafe to open" << std::endl;
 		m_sLogFile.flush();
 #endif
-		nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_RAINING);
+		nErr = MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, ERR_UNSAFE);
 	}
 
 	return nErr;
@@ -1879,13 +1879,13 @@ int CRTIDome::setDefaultDir(bool bNormal)
 
 }
 
-int CRTIDome::getRainSensorStatus(int &nStatus)
+int CRTIDome::getConditionSensorStatus(int &nStatus)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
 	std::string sResp;
 
-	nStatus = NOT_RAINING;
+	nStatus = COND_SAFE;
 
 	ssCmd << RAIN_SHUTTER  << "#";
 	nErr = deviceCommand(ssCmd.str(), sResp, RAIN_SHUTTER);
@@ -1905,11 +1905,11 @@ int CRTIDome::getRainSensorStatus(int &nStatus)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nStatus = " << (nStatus?"NOT RAINING":"RAINING") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nStatus = " << (nStatus?"Safe":"Unsafe") << std::endl;
 	m_sLogFile.flush();
 #endif
 
-	m_nIsRaining = nStatus;
+	m_nCondition = nStatus;
 	return nErr;
 }
 
@@ -2188,7 +2188,7 @@ int	CRTIDome::setSutterWatchdogTimerValue(const int &nValue)
 	return nErr;
 }
 
-int CRTIDome::getRainAction(int &nAction)
+int CRTIDome::getConditionAction(int &nAction)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
@@ -2222,7 +2222,7 @@ int CRTIDome::getRainAction(int &nAction)
 
 }
 
-int CRTIDome::setRainAction(const int &nAction)
+int CRTIDome::setConditionAction(const int &nAction)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
@@ -2384,37 +2384,37 @@ int CRTIDome::restoreShutterMotorSettings()
 	return nErr;
 }
 
-void CRTIDome::enableRainStatusFile(bool bEnable)
+void CRTIDome::enableConditionStatusFile(bool bEnable)
 {
-	m_bSaveRainStatus = bEnable;
+	m_bSaveConditionStatus = bEnable;
 }
 
-void CRTIDome::getRainStatusFileName(std::string &fName)
+void CRTIDome::getConditionStatusFileName(std::string &fName)
 {
-	fName.assign(m_sRainStatusfilePath);
+	fName.assign(m_sConditionStatusfilePath);
 }
 
-void CRTIDome::writeRainStatus()
+void CRTIDome::writeConditionStatus()
 {
 	int nStatus;
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nIsRaining = " <<(m_nIsRaining==RAINING?"Raining":"Not Raining") << std::endl;
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bSaveRainStatus = " <<(m_bSaveRainStatus?"YES":"NO") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_nCondition = " <<(m_nCondition==UNSAFE?"UNSAFE":"SAFE") << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] m_bSaveConditionStatus = " <<(m_bSaveConditionStatus?"YES":"NO") << std::endl;
 	m_sLogFile.flush();
 #endif
 
-	if(m_bSaveRainStatus) {
-		getRainSensorStatus(nStatus);
-		if(m_nRainStatus != nStatus) {
-			m_nRainStatus = nStatus;
-			if(m_RainStatusfile.is_open())
-				m_RainStatusfile.close();
+	if(m_bSaveConditionStatus) {
+		getConditionSensorStatus(nStatus);
+		if(m_nConditionStatus != nStatus) {
+			m_nConditionStatus = nStatus;
+			if(m_ConditionStatusfile.is_open())
+				m_ConditionStatusfile.close();
 			try {
-				m_RainStatusfile.open(m_sRainStatusfilePath, std::ios::out |std::ios::trunc);
-				if(m_RainStatusfile.is_open()) {
-					m_RainStatusfile << "Raining:" << (nStatus == RAINING?"YES":"NO") << std::endl;
-					m_RainStatusfile.close();
+				m_ConditionStatusfile.open(m_sConditionStatusfilePath, std::ios::out |std::ios::trunc);
+				if(m_ConditionStatusfile.is_open()) {
+					m_ConditionStatusfile << "Safe:" << (nStatus != UNSAFE?"YES":"NO") << std::endl;
+					m_ConditionStatusfile.close();
 				}
 			}
 			catch(const std::exception& e) {
@@ -2422,8 +2422,8 @@ void CRTIDome::writeRainStatus()
 				m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Error writing file = " << e.what() << std::endl;
 				m_sLogFile.flush();
 #endif
-				if(m_RainStatusfile.is_open())
-					m_RainStatusfile.close();
+				if(m_ConditionStatusfile.is_open())
+					m_ConditionStatusfile.close();
 			}
 		}
 	}

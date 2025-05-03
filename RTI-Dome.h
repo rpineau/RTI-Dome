@@ -46,7 +46,7 @@
 #define NB_RX_WAIT 10
 #define ND_LOG_BUFFER_SIZE 256
 #define PANID_TIMEOUT 15    // in seconds
-#define RAIN_CHECK_INTERVAL 10
+#define SAFE_CHECK_INTERVAL 10
 
 #define PLUGIN_VERSION      1.34
 #define PLUGIN_ID   1
@@ -57,14 +57,14 @@
 #include "dome_commands.h"
 
 // Error code
-enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED, COMMAND_TIMEOUT, ERR_RAINING, ERR_BATTERY_LOW};
+enum RTIDomeErrors {PLUGIN_OK=0, NOT_CONNECTED, CANT_CONNECT, BAD_CMD_RESPONSE, COMMAND_FAILED, COMMAND_TIMEOUT, ERR_UNSAFE, ERR_BATTERY_LOW};
 enum RTIDomeShutterState { OPEN=0 , CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, SHUTTER_ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 
 enum HomeStatuses {NOT_AT_HOME = 0, HOMED, ATHOME};
-enum RainActions {DO_NOTHING=0, HOME, PARK};
+enum UnsafeActions {DO_NOTHING=0, HOME, PARK};
 enum MoveDirection {MOVE_NEGATIVE = -1, MOVE_NONE, MOVE_POSITIVE};
 // RG-11
-enum RainSensorStates {RAINING= 0, NOT_RAINING, RAIN_UNKNOWN};
+enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
 
 class CRTIDome
 {
@@ -124,7 +124,7 @@ public:
 	int getDefaultDir(bool &bNormal);
 	int setDefaultDir(bool bNormal);
 
-	int getRainSensorStatus(int &nStatus);
+	int getConditionSensorStatus(int &nStatus);
 
 	int getRotationSpeed(int &nSpeed);
 	int setRotationSpeed(int nSpeed);
@@ -144,8 +144,8 @@ public:
 	int	getSutterWatchdogTimerValue(int &nValue);
 	int	setSutterWatchdogTimerValue(const int &nValue);
 
-	int getRainAction(int &nAction);
-	int setRainAction(const int &nAction);
+	int getConditionAction(int &nAction);
+	int setConditionAction(const int &nAction);
 
 	int getPanId(int &nPanId);
 	int setPanId(const int nPanId);
@@ -155,9 +155,9 @@ public:
 	int restoreDomeMotorSettings();
 	int restoreShutterMotorSettings();
 
-	void enableRainStatusFile(bool bEnable);
-	void getRainStatusFileName(std::string &fName);
-	void writeRainStatus();
+	void enableConditionStatusFile(bool bEnable);
+	void getConditionStatusFileName(std::string &fName);
+	void writeConditionStatus();
 
 	// network config
 	int getMACAddress(std::string &MACAddress);
@@ -231,16 +231,16 @@ protected:
 	int             m_nGotoTries;
 	bool            m_bParking;
 	bool            m_bUnParking;
-	int             m_nIsRaining;
+	int             m_nCondition;
 	bool            m_bHomeOnPark;
 	bool            m_bHomeOnUnpark;
 	bool            m_bShutterPresent;
 
-	std::string     m_sRainStatusfilePath;
-	std::ofstream   m_RainStatusfile;
-	bool            m_bSaveRainStatus;
-	int             m_nRainStatus;
-	CStopWatch      m_cRainCheckTimer;
+	std::string     m_sConditionStatusfilePath;
+	std::ofstream   m_ConditionStatusfile;
+	bool            m_bSaveConditionStatus;
+	int             m_nConditionStatus;
+	CStopWatch      m_cConditionCheckTimer;
 
 	std::string     m_IpAddress;
 	std::string     m_SubnetMask;

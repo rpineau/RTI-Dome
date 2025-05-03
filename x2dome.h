@@ -26,7 +26,7 @@
 #define CHILD_KEY_PORTNAME	        "PortName"
 #define CHILD_KEY_HOME_ON_PARK      "HomeOnPark"
 #define CHILD_KEY_HOME_ON_UNPARK    "HomeOnUnpark"
-#define CHILD_KEY_LOG_RAIN_STATUS   "LogRainStatus"
+#define CHILD_KEY_LOG_SAFE_STATUS   "LogRainStatus"
 
 #define DEF_PORT_NAME				"No port found"
 
@@ -153,7 +153,7 @@ private:
 	int			m_nSavedTicksPerRev;
 	int         m_nPanId;
 	bool        m_bSettingPanID;
-	bool        m_bLogRainStatus;
+	bool        m_bLogConditionStatus;
 
 	CStopWatch  m_SetPanIdTimer;
 

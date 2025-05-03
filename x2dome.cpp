@@ -31,12 +31,12 @@ X2Dome::X2Dome(const char* pszSelection, const int& nISIndex,
 	
 	if (m_pIniUtil)
 	{
-		m_bLogRainStatus = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_LOG_RAIN_STATUS, false);
+		m_bLogConditionStatus = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_LOG_SAFE_STATUS, false);
 		m_bHomeOnPark = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_HOME_ON_PARK, false);
 		m_bHomeOnUnpark = m_pIniUtil->readInt(PARENT_KEY, CHILD_KEY_HOME_ON_UNPARK, false);
 		m_RTIDome.setHomeOnPark(m_bHomeOnPark);
 		m_RTIDome.setHomeOnUnpark(m_bHomeOnUnpark);
-		m_RTIDome.enableRainStatusFile(m_bLogRainStatus);
+		m_RTIDome.enableConditionStatusFile(m_bLogConditionStatus);
 	}
 }
 
@@ -132,13 +132,13 @@ int X2Dome::execModalSettingsDialog()
 	double dShutterBattery =0 , dShutterCutOff = 0;
 	bool nReverseDir = false;
 	int n_nbStepPerRev = 0;
-	int nRainSensorStatus = NOT_RAINING;
+	int nConditionSensorStatus = COND_SAFE;
 	int nRSpeed = 0;
 	int nRAcc = 0;
 	int nSSpeed = 0;
 	int nSAcc = 0;
 	int nWatchdog = 0;
-	int nRainAction = 0;
+	int nConditionAction = 0;
 	double  batRotCutOff = 0;
 	double  batShutCutOff = 0;
 	std::string sDummy;
@@ -179,9 +179,9 @@ int X2Dome::execModalSettingsDialog()
 	dx->setEnabled("comboBox_2",false);
 	
 	
-	if(m_bLogRainStatus) {
+	if(m_bLogConditionStatus) {
 		dx->setChecked("checkBox",true);
-		m_RTIDome.getRainStatusFileName(fName);
+		m_RTIDome.getConditionStatusFileName(fName);
 		dx->setPropertyString("filePath","text", fName.c_str());
 	}
 	else {
@@ -273,15 +273,15 @@ int X2Dome::execModalSettingsDialog()
 			dx->setPropertyString("shutterBatteryLevel","text", "--");
 		}
 		
-		m_RTIDome.getRainAction(nRainAction);
-		dx->setCurrentIndex("comboBox", nRainAction);
+		m_RTIDome.getConditionAction(nConditionAction);
+		dx->setCurrentIndex("comboBox", nConditionAction);
 		
-		nErr = m_RTIDome.getRainSensorStatus(nRainSensorStatus);
+		nErr = m_RTIDome.getConditionSensorStatus(nConditionSensorStatus);
 		if(nErr)
 			dx->setPropertyString("rainStatus","text", "--");
 		else {
 			std::stringstream().swap(sTmpBuf);
-			sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "<html><head/><body><p><span style=\" color:#00FF00;\">Not raining</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Raining</span></p></body></html>");
+			sTmpBuf << (nConditionSensorStatus==COND_SAFE ? "<html><head/><body><p><span style=\" color:#00FF00;\">Safe</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Unsafe</span></p></body></html>");
 			dx->setPropertyString("rainStatus","text", sTmpBuf.str().c_str());
 		}
 		
@@ -374,14 +374,14 @@ int X2Dome::execModalSettingsDialog()
 		dx->propertyInt("shutterWatchdog", "value", nWatchdog);
 		dx->propertyDouble("lowRotBatCutOff", "value", batRotCutOff);
 		dx->propertyDouble("lowShutBatCutOff", "value", batShutCutOff);
-		nRainAction = dx->currentIndex("comboBox");
+		nConditionAction = dx->currentIndex("comboBox");
 		m_bHomeOnPark = dx->isChecked("homeOnPark");
 		m_RTIDome.setHomeOnPark(m_bHomeOnPark);
 		m_bHomeOnUnpark = dx->isChecked("homeOnUnpark");
 		m_RTIDome.setHomeOnUnpark(m_bHomeOnUnpark);
 		nReverseDir = dx->isChecked("needReverse");
-		m_bLogRainStatus = dx->isChecked("checkBox");
-		m_RTIDome.enableRainStatusFile(m_bLogRainStatus);
+		m_bLogConditionStatus = dx->isChecked("checkBox");
+		m_RTIDome.enableConditionStatusFile(m_bLogConditionStatus);
 #ifdef PLUGIN_DEBUG
 		std::stringstream().swap(sTmpBuf);
 		sTmpBuf << "lowRotBatCutOff = " << std::fixed << std::setprecision(2) << batRotCutOff;
@@ -399,7 +399,7 @@ int X2Dome::execModalSettingsDialog()
 			m_RTIDome.setRotationSpeed(nRSpeed);
 			m_RTIDome.setRotationAcceleration(nRAcc);
 			m_RTIDome.setBatteryCutOff(batRotCutOff, batShutCutOff);
-			m_RTIDome.setRainAction(nRainAction);
+			m_RTIDome.setConditionAction(nConditionAction);
 			if(m_bHasShutterControl) {
 				m_RTIDome.setShutterSpeed(nSSpeed);
 				m_RTIDome.setShutterAcceleration(nSAcc);
@@ -411,7 +411,7 @@ int X2Dome::execModalSettingsDialog()
 		// save the values to persistent storage
 		nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_HOME_ON_PARK, m_bHomeOnPark);
 		nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_HOME_ON_UNPARK, m_bHomeOnUnpark);
-		nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_LOG_RAIN_STATUS, m_bLogRainStatus);
+		nErr |= m_pIniUtil->writeInt(PARENT_KEY, CHILD_KEY_LOG_SAFE_STATUS, m_bLogConditionStatus);
 	}
 	return nErr;
 	
@@ -428,7 +428,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 	std::stringstream sErrorMessage;
 	std::string fName;
 	std::string sDummy;
-	int nRainSensorStatus = NOT_RAINING;
+	int nConditionSensorStatus = COND_SAFE;
 	bool bShutterPresent;
 	int nPanId;
 	int nSpeed;
@@ -576,12 +576,12 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 				}
 			}
 			else {
-				nErr = m_RTIDome.getRainSensorStatus(nRainSensorStatus);
+				nErr = m_RTIDome.getConditionSensorStatus(nConditionSensorStatus);
 				if(nErr)
 					uiex->setPropertyString("rainStatus","text", "--");
 				else {
 					std::stringstream().swap(sTmpBuf);
-					sTmpBuf << (nRainSensorStatus==NOT_RAINING ? "<html><head/><body><p><span style=\" color:#00FF00;\">Not raining</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Raining</span></p></body></html>");
+					sTmpBuf << (nConditionSensorStatus==COND_SAFE ? "<html><head/><body><p><span style=\" color:#00FF00;\">Safe</span></p></body></html>" : "<html><head/><body><p><span style=\" color:#FF0000;\">Unsafe</span></p></body></html>");
 					uiex->setPropertyString("rainStatus","text", sTmpBuf.str().c_str());
 				}
 			}
@@ -658,9 +658,9 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 	
 	else if (!strcmp(pszEvent, "on_checkBox_stateChanged"))
 	{
-		m_bLogRainStatus = uiex->isChecked("checkBox");
-		if(m_bLogRainStatus) {
-			m_RTIDome.getRainStatusFileName(fName);
+		m_bLogConditionStatus = uiex->isChecked("checkBox");
+		if(m_bLogConditionStatus) {
+			m_RTIDome.getConditionStatusFileName(fName);
 			uiex->setPropertyString("filePath","text", fName.c_str());
 		}
 		else {

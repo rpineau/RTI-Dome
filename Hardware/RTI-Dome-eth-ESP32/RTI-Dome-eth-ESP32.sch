@@ -20566,7 +20566,7 @@ Source: AVX .. aphvc.pdf</description>
 <rectangle x1="0.7747" y1="0.6477" x2="1.2319" y2="1.2319" layer="21" rot="R90"/>
 <rectangle x1="0.7747" y1="-1.2319" x2="1.2319" y2="-0.6477" layer="21" rot="R90"/>
 </package>
-<package name="691313510003" urn="urn:adsk.eagle:footprint:45454764/1" library_version="202">
+<package name="691313510003" urn="urn:adsk.eagle:footprint:45454764/1" library_version="241">
 <description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
 </description>
 <pad name="1" x="-5.08" y="0" drill="1.6" diameter="2.4"/>
@@ -20583,7 +20583,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="8.62" y1="-10" x2="-8.62" y2="-10" width="0.1" layer="21"/>
 <wire x1="-8.62" y1="-10" x2="-8.62" y2="2" width="0.1" layer="21"/>
 </package>
-<package name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:footprint:45454772/4" library_version="202">
+<package name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:footprint:45454772/4" library_version="241">
 <description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
 </description>
 <pad name="1" x="-2.54" y="0" drill="1.6" diameter="2.4" shape="square" rot="R180"/>
@@ -20598,7 +20598,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="6.08" y1="-10" x2="-6.08" y2="-10" width="0.2" layer="21"/>
 <wire x1="-6.08" y1="-10" x2="-6.08" y2="2" width="0.2" layer="21"/>
 </package>
-<package name="QFN50P300X300X100-17N" urn="urn:adsk.eagle:footprint:45879352/1" library_version="210">
+<package name="QFN50P300X300X100-17N" urn="urn:adsk.eagle:footprint:45879352/1" library_version="241">
 <description>&lt;b&gt;RGT&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-1.5" y="0.75" dx="0.8" dy="0.3" layer="1"/>
@@ -20627,7 +20627,7 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="-1.5" y1="1" x2="-1" y2="1.5" width="0.1" layer="51"/>
 <circle x="-1.9" y="1.5" radius="0.125" width="0.25" layer="25"/>
 </package>
-<package name="INDPM3630X200N" urn="urn:adsk.eagle:footprint:45879407/1" library_version="210">
+<package name="INDPM3630X200N" urn="urn:adsk.eagle:footprint:45879407/1" library_version="241">
 <description>&lt;b&gt;IHLP1212&lt;/b&gt;&lt;br&gt;
 </description>
 <smd name="1" x="-1.55" y="0" dx="1.75" dy="0.6" layer="1"/>
@@ -20655,30 +20655,26 @@ Source: AVX .. aphvc.pdf</description>
 <packageinstance name="SOT23"/>
 </packageinstances>
 </package3d>
-<package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="202">
-<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="241">
+<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="691313510003"/>
 </packageinstances>
 </package3d>
-<package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="202">
-<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="241">
+<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="SHDRRA2W100P0X508_1X2_1216X120"/>
 </packageinstances>
 </package3d>
-<package3d name="QFN50P300X300X100-17N" urn="urn:adsk.eagle:package:45879354/2" type="model" library_version="210">
-<description>&lt;b&gt;RGT&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="QFN50P300X300X100-17N" urn="urn:adsk.eagle:package:45879354/2" type="model" library_version="241">
+<description>&lt;b&gt;RGT&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="QFN50P300X300X100-17N"/>
 </packageinstances>
 </package3d>
-<package3d name="INDPM3630X200N" urn="urn:adsk.eagle:package:45879408/2" type="model" library_version="210">
-<description>&lt;b&gt;IHLP1212&lt;/b&gt;&lt;br&gt;
-</description>
+<package3d name="INDPM3630X200N" urn="urn:adsk.eagle:package:45879408/2" type="model" library_version="241">
+<description>&lt;b&gt;IHLP1212&lt;/b&gt;&lt;br&gt;</description>
 <packageinstances>
 <packageinstance name="INDPM3630X200N"/>
 </packageinstances>
@@ -20775,7 +20771,7 @@ Source: AVX .. aphvc.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/8" prefix="J" library_version="119">
+<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/9" prefix="J" library_version="241">
 <description>&lt;b&gt;Socket; DC supply; XT60; male; PIN: 2; on PCBs; THT; Colour: yellow&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade/XT60PW SPEC.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20798,6 +20794,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 <attribute name="ARROW_PRICE-STOCK" value="" constant="no"/>
 <attribute name="DESCRIPTION" value="Socket; DC supply; XT60; male; PIN: 2; on PCBs; THT; Colour: yellow" constant="no"/>
 <attribute name="HEIGHT" value="8.4mm" constant="no"/>
+<attribute name="LCSC_PART" value="C98732" constant="no"/>
 <attribute name="MANUFACTURER_NAME" value="Changzou Amass Elec" constant="no"/>
 <attribute name="MANUFACTURER_PART_NUMBER" value="XT60PW-M" constant="no"/>
 <attribute name="MOUSER_PART_NUMBER" value="" constant="no"/>
@@ -20833,7 +20830,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="202">
+<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="241">
 <description>&lt;b&gt;Wurth Elektronik 313 Series 5.08mm Pitch Straight Pluggable Terminal Block, PCB Header, Through Hole, 3 Way&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20864,7 +20861,7 @@ Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/5" prefix="J" library_version="202">
+<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/5" prefix="J" library_version="241">
 <description>&lt;b&gt;2 Position Terminal Block Header, Male Pins, Shrouded (4 Side) 0.200" (5.08mm) 90, Right Angle  Through Hole&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20894,7 +20891,7 @@ Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"
 </device>
 </devices>
 </deviceset>
-<deviceset name="TPS62133RGTR" urn="urn:adsk.eagle:component:45879355/3" prefix="PS" library_version="210">
+<deviceset name="TPS62133RGTR" urn="urn:adsk.eagle:component:45879355/4" prefix="PS" library_version="241">
 <description>&lt;b&gt;3-17V 3A Step-Down Converter in 3x3 QFN Package&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="http://www.ti.com/lit/gpn/tps62133"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20930,6 +20927,7 @@ Source: &lt;a href="http://www.ti.com/lit/gpn/tps62133"&gt; Datasheet &lt;/a&gt;
 <attribute name="ARROW_PRICE-STOCK" value="https://www.arrow.com/en/products/tps62133rgtr/texas-instruments?region=nac" constant="no"/>
 <attribute name="DESCRIPTION" value="3-17V 3A Step-Down Converter in 3x3 QFN Package" constant="no"/>
 <attribute name="HEIGHT" value="1mm" constant="no"/>
+<attribute name="LCSC_PART" value="C73973" constant="no"/>
 <attribute name="MANUFACTURER_NAME" value="Texas Instruments" constant="no"/>
 <attribute name="MANUFACTURER_PART_NUMBER" value="TPS62133RGTR" constant="no"/>
 <attribute name="MOUSER_PART_NUMBER" value="595-TPS62133RGTR" constant="no"/>
@@ -20939,7 +20937,7 @@ Source: &lt;a href="http://www.ti.com/lit/gpn/tps62133"&gt; Datasheet &lt;/a&gt;
 </device>
 </devices>
 </deviceset>
-<deviceset name="IHLP1212BZER2R2M11" urn="urn:adsk.eagle:component:45879409/2" prefix="L" library_version="210">
+<deviceset name="IHLP1212BZER2R2M11" urn="urn:adsk.eagle:component:45879409/3" prefix="L" library_version="241">
 <description>&lt;b&gt;Vishay IHLP1212BZ-11 Series Shielded Wire-wound SMD Inductor with a Metal Composite Core, 2.2 uH +/-20% Wire-Wound 3A Idc&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20960,6 +20958,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <attribute name="ARROW_PRICE-STOCK" value="https://www.arrow.com/en/products/ihlp1212bzer2r2m11/vishay?region=nac" constant="no"/>
 <attribute name="DESCRIPTION" value="Vishay IHLP1212BZ-11 Series Shielded Wire-wound SMD Inductor with a Metal Composite Core, 2.2 uH +/-20% Wire-Wound 3A Idc" constant="no"/>
 <attribute name="HEIGHT" value="2mm" constant="no"/>
+<attribute name="LCSC_PART" value="C553996" constant="no"/>
 <attribute name="MANUFACTURER_NAME" value="Vishay" constant="no"/>
 <attribute name="MANUFACTURER_PART_NUMBER" value="IHLP1212BZER2R2M11" constant="no"/>
 <attribute name="MOUSER_PART_NUMBER" value="70-IHLP1212BZER2R2M1" constant="no"/>
@@ -21345,7 +21344,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
+<attribute name="DESCRIPTION" value="
+WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
+"/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>

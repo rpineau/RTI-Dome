@@ -205,12 +205,12 @@
         <rect>
          <x>8</x>
          <y>197</y>
-         <width>128</width>
+         <width>136</width>
          <height>24</height>
         </rect>
        </property>
        <property name="text">
-        <string>Shutter open order :</string>
+        <string>Shutters open order :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -233,7 +233,7 @@
        <property name="geometry">
         <rect>
          <x>56</x>
-         <y>334</y>
+         <y>344</y>
          <width>152</width>
          <height>24</height>
         </rect>
@@ -249,7 +249,7 @@
        <property name="geometry">
         <rect>
          <x>216</x>
-         <y>342</y>
+         <y>344</y>
          <width>62</width>
          <height>22</height>
         </rect>
@@ -265,7 +265,7 @@
        <property name="geometry">
         <rect>
          <x>56</x>
-         <y>374</y>
+         <y>376</y>
          <width>152</width>
          <height>24</height>
         </rect>
@@ -281,7 +281,7 @@
        <property name="geometry">
         <rect>
          <x>216</x>
-         <y>374</y>
+         <y>376</y>
          <width>62</width>
          <height>22</height>
         </rect>
@@ -552,7 +552,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Dome action when rainning :</string>
+        <string>Dome action when unsafe :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -680,14 +680,14 @@
       <widget class="QLabel" name="label_8">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>40</x>
          <y>72</y>
-         <width>88</width>
+         <width>128</width>
          <height>24</height>
         </rect>
        </property>
        <property name="text">
-        <string>Rain sensor :</string>
+        <string>Condition :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -728,27 +728,27 @@
       <widget class="QCheckBox" name="checkBox">
        <property name="geometry">
         <rect>
-         <x>16</x>
+         <x>40</x>
          <y>96</y>
-         <width>192</width>
+         <width>152</width>
          <height>24</height>
         </rect>
        </property>
        <property name="text">
-        <string>Log rain sensor state</string>
+        <string>Log condition state</string>
        </property>
       </widget>
       <widget class="QLabel" name="filePath">
        <property name="geometry">
         <rect>
-         <x>16</x>
+         <x>40</x>
          <y>120</y>
-         <width>264</width>
+         <width>224</width>
          <height>24</height>
         </rect>
        </property>
        <property name="text">
-        <string>/Users/foo/RTI_Rain.txt</string>
+        <string>/Users/foo/RTI_Cond.txt</string>
        </property>
        <property name="textInteractionFlags">
         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
