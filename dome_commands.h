@@ -12,7 +12,7 @@ const char IP_ADDRESS                   = 'j'; // get/set the IP address
 const char VOLTS_ROTATOR                = 'k'; // Get volts and get/set cutoff
 const char PARKAZ_ROTATOR               = 'l'; // Get/Set park azimuth
 const char SLEW_ROTATOR                 = 'm'; // Get Slewing status/direction
-const char RAIN_ROTATOR_ACTION          = 'n'; // Get/Set action when rain sensor triggered (do nothing, home, park)
+const char CONDITION_ROTATOR_ACTION		= 'n'; // Get/Set action when rain sensor triggered (do nothing, home, park)
 const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
 const char IP_SUBNET                    = 'p'; // get/set the ip subnet
 const char PANID                        = 'q'; // get and set the XBEE PAN ID
@@ -26,7 +26,7 @@ const char IP_DHCP                      = 'w'; // get/set DHCP mode
 const char REVERSED_ROTATOR             = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR           = 'z'; // Get homed status
 const char INIT_XBEE                    = 'x'; // force a XBee reconfig
-const char RAIN_SHUTTER                 = 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
+const char CONDITION_SHUTTER			= 'F'; // Get rain status (from client) or tell shutter it's raining (from Rotator)
 
 // available A B J N S U W X Z
 // Shutter commands

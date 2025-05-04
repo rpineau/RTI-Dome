@@ -1887,8 +1887,8 @@ int CRTIDome::getConditionSensorStatus(int &nStatus)
 
 	nStatus = COND_SAFE;
 
-	ssCmd << RAIN_SHUTTER  << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, RAIN_SHUTTER);
+	ssCmd << CONDITION_SHUTTER  << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, CONDITION_SHUTTER);
 	if(nErr) {
 		return nErr;
 	}
@@ -2197,8 +2197,8 @@ int CRTIDome::getConditionAction(int &nAction)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-	ssCmd << RAIN_ROTATOR_ACTION  << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, RAIN_ROTATOR_ACTION);
+	ssCmd << CONDITION_ROTATOR_ACTION  << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, CONDITION_ROTATOR_ACTION);
 	if(nErr) {
 		return nErr;
 	}
@@ -2231,8 +2231,8 @@ int CRTIDome::setConditionAction(const int &nAction)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-	ssCmd << RAIN_ROTATOR_ACTION << nAction << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, RAIN_ROTATOR_ACTION);
+	ssCmd << CONDITION_ROTATOR_ACTION << nAction << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, CONDITION_ROTATOR_ACTION);
 	return nErr;
 
 }
