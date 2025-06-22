@@ -13,7 +13,7 @@
 #define I2C_WIRE    Wire
 
 #define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  4
+#define I2C_CHUNK_SIZE  16
 
 
 #include <AccelStepper.h>

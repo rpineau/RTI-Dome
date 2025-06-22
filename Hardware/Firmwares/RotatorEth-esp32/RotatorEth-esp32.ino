@@ -9,7 +9,7 @@
 // Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
-#include "rtc_wdt.h"
+// #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
 #define DEBUG   // enable debug to serial port defined as DebugPort
@@ -180,6 +180,7 @@ void setup()
 
 #ifdef DEBUG
 	DebugPort.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
+	//DebugPort.begin(115200);
 	delay(1000);
 	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
@@ -200,6 +201,8 @@ void setup()
 #endif // USE_ETHERNET
 
 	Computer.begin(115200);
+	//Computer.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
+
 
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
@@ -216,12 +219,12 @@ void setup()
 #ifdef USE_ETHERNET
 	configureEthernet();
 #endif // USE_ETHERNET
-	rtc_wdt_protect_off();
+	// rtc_wdt_protect_off();
 	esp_task_wdt_deinit();
 	esp_task_wdt_init(&twdt_config);
 	esp_task_wdt_add(NULL);
-	//disableCore0WDT();
-	//disableCore1WDT();
+	disableCore0WDT();
+	disableCore1WDT();
 	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 16, NULL,  0);
 
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
