@@ -2243,8 +2243,6 @@ int CRTIDome::getPanId(int &nPanId)
 	std::stringstream ssCmd;
 	std::string sResp;
 
-	return nErr;
-
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
