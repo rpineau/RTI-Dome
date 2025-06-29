@@ -31,28 +31,6 @@ static const unsigned long resetInterruptInterval = 43200000; // 12 hours
 const String version = "2.645";
 
 #include "dome_commands.h"
-/*
-// available A B J N S U W X Z
-const char ABORT				= 'a';
-const char CLOSE_SHUTTER		= 'C'; // Close shutter
-const char RESTORE_MOTOR_DEFAULT    = 'D'; // restore default values for motor controll.
-const char ACCELERATION_SHUTTER = 'E'; // Get/Set stepper acceleration
-const char RAIN_ROTATOR			= 'F'; // Rotator telling us if it's raining or not
-// const char ELEVATION_SHUTTER	= 'G'; // Get/Set altitude
-const char HELLO				= 'H'; // Let rotator know we're here
-const char WATCHDOG_INTERVAL_SET	= 'I'; // Tell us how long between checks in seconds
-const char VOLTS_SHUTTER		= 'K'; // Get volts and get/set cutoff
-const char SHUTTER_PING				= 'L'; // use to reset watchdong timer.
-const char STATE_SHUTTER		= 'M'; // Get shutter state
-const char OPEN_SHUTTER			= 'O'; // Open the shutter
-const char POSITION_SHUTTER		= 'P'; // Get step position
-const char PANID                = 'Q'; // get and set the XBEE PAN ID
-const char SPEED_SHUTTER		= 'R'; // Get/Set step rate (speed)
-const char STEPSPER_SHUTTER		= 'T'; // Get/Set steps per stroke
-const char VERSION_SHUTTER		= 'V'; // Get version string
-const char INIT_XBEE				= 'x'; // force a ConfigXBee
-const char REVERSED_SHUTTER		= 'Y'; // Get/Set stepper reversed status
-*/
 
 #if defined(XBEE_S1)
 #define NB_AT_OK  17
@@ -135,7 +113,7 @@ void loop()
 		}
 	}
 
-	// if we lost 3 pings and had no coms for that long.. reset XBee close if we've already reset the XBee
+	// if we lost 3 pings and had no coms for that long.. reset XBee, close if we've already reset the XBee
 	if((watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) && (Shutter->GetState() != CLOSED) && (Shutter->GetState() != CLOSING)) {
 			DBPrintln("watchdogTimer triggered");
 			// lets try to recover
@@ -157,13 +135,11 @@ void loop()
 					Shutter->Close();
 					}
 			}
-		delay(1000);
 	}
 	else if(watchdogTimer.elapsed() >= (Shutter->getWatchdogInterval()*3)) {
 		// could be the case is the rotator was off for a whille
 		watchdogTimer.reset();
 		PingRotator();
-		delay(1000);
 	}
 
 	if(needFirstPing && XbeeStarted) {
@@ -174,10 +150,9 @@ void loop()
 
 	Shutter->Run();
 	checkInterruptTimer();
-
 }
 
-// reset intterupt as they seem to stop working after a while
+// reset interput as they seem to stop working after a while
 void checkInterruptTimer()
 {
 	if(ResetInterruptWatchdog.elapsed() > resetInterruptInterval ) {
