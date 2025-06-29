@@ -509,14 +509,13 @@ void CheckForRain()
 	int nPosition, nParkPos;
 	String sCmd;
 
-	if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
-		bIsRaining = Rotator->GetRainStatus();
+	bIsRaining = Rotator->GetRainStatus();
 #ifndef STANDALONE
-		sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
-		Wireless.write(sCmd.c_str());
-		ReceiveWireless();
+	// Send the rains state to the sutter
+	sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+	Wireless.write(sCmd.c_str());
+	ReceiveWireless();
 #endif // STANDALONE
-	}
 	if (bIsRaining) {
 		if (Rotator->GetRainAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
 			DBPrintln("Raining- > Homing");
@@ -529,11 +528,6 @@ void CheckForRain()
 			Rotator->GoToAzimuth(nParkPos);
 			bParked = true;
 		}
-	// keep telling the shutter that it's raining
-#ifndef STANDALONE
-		sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
-		Wireless.write(sCmd.c_str());
-#endif // STANDALONE
 	}
 }
 

@@ -282,11 +282,11 @@ void PingRotator()
 	wirelessMessage += "#";
 	Wireless.write(wirelessMessage.c_str());
 	// ask if it's raining
-	wirelessMessage  =String(RAIN_SHUTTER) + "#";
+	wirelessMessage  = String(RAIN_SHUTTER) + "#";
 	Wireless.write( wirelessMessage.c_str());
 
 	// say hello :)
-	wirelessMessage  =String(HELLO) + "#";
+	wirelessMessage  = String(HELLO) + "#";
 	Wireless.write( wirelessMessage.c_str());
 	needFirstPing = false;
 }
