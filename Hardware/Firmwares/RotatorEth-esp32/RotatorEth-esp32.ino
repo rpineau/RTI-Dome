@@ -282,8 +282,8 @@ void loop()
 
 		CheckForCommands();
 		CheckForRain();
-		esp_task_wdt_reset();
 		//taskYIELD();
+		esp_task_wdt_reset();
 		//delay(1);
 }
 

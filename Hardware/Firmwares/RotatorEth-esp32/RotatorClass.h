@@ -7,7 +7,7 @@
 
 #include <atomic>
 
-#include <extEEPROM.h>
+// #include <extEEPROM.h>
 #include <Wire.h>
 
 #define I2C_WIRE    Wire
