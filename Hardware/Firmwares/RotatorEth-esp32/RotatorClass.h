@@ -296,16 +296,15 @@ RotatorClass::RotatorClass()
 	m_bSetToHomeAzimuth = false;
 	m_bDoStepsPerRotation = false;
 	m_nMoveDirection = MOVE_NONE;
-	// input
 
+	// input
 	pinMode(HOME_PIN,               INPUT_PULLUP);
 	pinMode(BUTTON_CCW,             INPUT_PULLUP);
 	pinMode(BUTTON_CW,              INPUT_PULLUP);
 	pinMode(RAIN_SENSOR_PIN,        INPUT_PULLUP);
-	pinMode(VOLTAGE_MONITOR_PIN,    INPUT_PULLUP);
-
-	pinMode(SPARE1,    INPUT_PULLUP);
-	pinMode(SPARE2,    INPUT_PULLUP);
+	pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
+	pinMode(SPARE1,    				INPUT);
+	pinMode(SPARE2,    				INPUT_PULLUP);
 
 	// output
 	pinMode(STEP_PIN,               OUTPUT);
