@@ -9,7 +9,7 @@
 // Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
-// #include <rtc_wdt.h>
+#include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
 #define DEBUG   // enable debug to serial port defined as DebugPort
@@ -282,9 +282,8 @@ void loop()
 
 		CheckForCommands();
 		CheckForRain();
-		//taskYIELD();
+		taskYIELD();
 		esp_task_wdt_reset();
-		//delay(1);
 }
 
 //
