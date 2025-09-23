@@ -101,8 +101,8 @@ StopWatch ShutterWatchdog;
 #endif
 
 std::atomic<bool> bShutterPresent;
-// global variable for rain status
-std::atomic<bool> bIsRaining;
+// global variable for condition status
+std::atomic<bool> bIsBadConditions;
 // global variable for shutter voltage state
 std::atomic<bool> bLowShutterVoltage;
 
@@ -122,16 +122,15 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword);
 void checkForNewWifiClient();
 #endif
 void homeIntHandler();
-void rainIntHandler();
+void conditionsIntHandler();
 void buttonHandler();
 void resetChip(int);
 void StartWirelessConfig();
 void ConfigXBee();
-void setPANID(String);
 void SendHello();
 void requestShutterData();
 void CheckForCommands();
-void CheckForRain();
+void CheckForConditions();
 #ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client);
 #endif // USE_ETHERNET
@@ -153,7 +152,7 @@ DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 #endif
 
 void MotorTask(void *);
-esp_task_wdt_config_t twdt_config = 
+esp_task_wdt_config_t twdt_config =
     {
         .timeout_ms = 1000000,
         .idle_core_mask = 0,    // Bitmask of cores
@@ -170,7 +169,7 @@ void setup()
 	bGotHelloFromShutter = false;
 	bSentHello = false;
 	bShutterPresent = false;
-	bIsRaining = false;
+	bIsBadConditions = false;
 	bLowShutterVoltage = false;
 
 #ifdef USE_WIFI
@@ -281,7 +280,7 @@ void loop()
 #endif // USE_WIFI
 
 		CheckForCommands();
-		CheckForRain();
+		CheckForConditions();
 		taskYIELD();
 		esp_task_wdt_reset();
 }
@@ -294,7 +293,7 @@ void MotorTask(void *)
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
-	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(CONDITION_SENSOR_PIN), conditionsIntHandler, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
 	esp_task_wdt_add(NULL);
@@ -492,10 +491,10 @@ void IRAM_ATTR homeIntHandler()
 	   Rotator->homeInterrupt();
 }
 
-void IRAM_ATTR rainIntHandler()
+void IRAM_ATTR conditionsIntHandler()
 {
    if(Rotator)
-	   Rotator->rainInterrupt();
+	   Rotator->conditionsInterrupt();
 }
 
 void IRAM_ATTR buttonHandler()
@@ -588,38 +587,38 @@ void CheckForCommands()
 #endif // USE_WIFI
 }
 
-void CheckForRain()
+void CheckForConditions()
 {
 	String shutterMessage;
 
 	int nPosition, nParkPos;
-	if(bIsRaining != Rotator->GetRainStatus()) { // was there a state change ?
-		bIsRaining = Rotator->GetRainStatus();
+	if(bIsBadConditions != Rotator->GetConditionsStatus()) { // was there a state change ?
+		bIsBadConditions = Rotator->GetConditionsStatus();
 #ifdef USE_WIFI
 		if(nbWiFiClient && shutterClient.connected()) {
-			shutterMessage = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+			shutterMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0") + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 			// shutterClient.flush();
 			ReceiveWiFi(shutterClient);
 		}
 #endif // USE_WIFI
 	}
-	if (bIsRaining) {
-		if (Rotator->GetRainAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
-			DBPrintln("Raining- > Homing");
+	if (bIsBadConditions) {
+		if (Rotator->GetConditionsAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
+			DBPrintln("Bad Conditions- > Homing");
 			Rotator->StartHoming();
 		}
 
-		if (Rotator->GetRainAction() == PARK && !bParked) {
+		if (Rotator->GetConditionsAction() == PARK && !bParked) {
 			nParkPos = Rotator->GetParkAzimuth();
-			DBPrintln("Raining -> Parking");
+			DBPrintln("Bad Conditions -> Parking");
 			Rotator->GoToAzimuth(nParkPos);
 			bParked = true;
 		}
-	// keep telling the shutter about the rain status
+	// keep telling the shutter about the Conditions status
 #ifdef USE_WIFI
 		if(nbWiFiClient && shutterClient.connected()) {
-			shutterMessage = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+			shutterMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0") + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 			// shutterClient.flush();
 		}
@@ -631,7 +630,7 @@ void CheckForRain()
 
 void checkShuterLowVoltage()
 {
-	bLowShutterVoltage = (RemoteShutter.lowVoltStateOrRaining.equals("L"));
+	bLowShutterVoltage = (RemoteShutter.lowVoltStateOrBadConditions.equals("L"));
 	if(bLowShutterVoltage) {
 		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge the shutter battery
 		 bParked = true;
@@ -870,11 +869,11 @@ void ProcessCommand(int nSource)
 			}
 			break;
 
-		case RAIN_ROTATOR_ACTION:
+		case CONDITION_ROTATOR_ACTION:
 			if (hasValue) {
-				Rotator->SetRainAction(value.toInt());
+				Rotator->SetConditionsAction(value.toInt());
 			}
-			serialMessage = String(RAIN_ROTATOR_ACTION) + String(Rotator->GetRainAction());
+			serialMessage = String(CONDITION_ROTATOR_ACTION) + String(Rotator->GetConditionsAction());
 			break;
 
 		case SPEED_ROTATOR:
@@ -928,8 +927,8 @@ void ProcessCommand(int nSource)
 			serialMessage = String(VOLTS_ROTATOR) + String(Rotator->GetVoltString());
 			break;
 
-		case RAIN_SHUTTER:
-			serialMessage = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0");
+		case CONDITION_SHUTTER:
+			serialMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0");
 			break;
 
 		case IS_SHUTTER_PRESENT:
@@ -1087,7 +1086,7 @@ void ProcessCommand(int nSource)
 				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 				}
-			serialMessage = sTmpString + RemoteShutter.lowVoltStateOrRaining;
+			serialMessage = sTmpString + RemoteShutter.lowVoltStateOrBadConditions;
 			break;
 
 		case REVERSED_SHUTTER:
@@ -1262,9 +1261,9 @@ void ProcessWifi()
 				RemoteShutter.speed = value.toInt();
 			break;
 
-		case RAIN_SHUTTER:
+		case CONDITION_SHUTTER:
 			if(nbWiFiClient && shutterClient.connected()) {
-				shutterMessage = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+				shutterMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0") + "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 				// shutterClient.flush();
 			}
@@ -1282,9 +1281,9 @@ void ProcessWifi()
 
 		case OPEN_SHUTTER:
 			if (hasValue)
-				RemoteShutter.lowVoltStateOrRaining = value;
+				RemoteShutter.lowVoltStateOrBadConditions = value;
 			else
-				RemoteShutter.lowVoltStateOrRaining = "";
+				RemoteShutter.lowVoltStateOrBadConditions = "";
 			break;
 
 		case STEPSPER_SHUTTER:
@@ -1315,18 +1314,18 @@ void ProcessWifi()
 		case SHUTTER_PING:
 			bShutterPresent = true;
 			if (hasValue)
-				RemoteShutter.lowVoltStateOrRaining = value;
+				RemoteShutter.lowVoltStateOrBadConditions = value;
 			else
-				RemoteShutter.lowVoltStateOrRaining = "";
+				RemoteShutter.lowVoltStateOrBadConditions = "";
 
 			break;
 
 		 case SHUTTER_RESTORE_MOTOR_DEFAULT:
 			break;
 
-		case SHUTTER_PANID:
+		case SHUTTER_SSID:
 			if (hasValue)
-				 RemoteShutter.panid = value;
+				 RemoteShutter.ssid = value;
 			break;
 
 		default:
@@ -1350,4 +1349,3 @@ void Abort()
 	}
 #endif
 }
-

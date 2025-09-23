@@ -22,7 +22,7 @@ X2Dome::X2Dome(const char* pszSelection, const int& nISIndex,
 	
 	m_bLinked = false;
 	m_bCalibratingDome = false;
-	m_bSettingPanID = false;
+	m_bSettingSSID = false;
 	m_bSettingNetwork = false;
 	
 	m_bHasShutterControl = false;
@@ -246,13 +246,13 @@ int X2Dome::execModalSettingsDialog()
 			dx->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#FF0000;\">No Shutter detected</span></p></body></html>");
 		}
 		
-		// panID
-		//dx->setEnabled("panID", true);
-		//dx->setEnabled("pushButton_2", true);
-		//nErr = m_RTIDome.getPanId(m_nPanId);
-		//if(nErr)
-		//	m_nPanId = 0;
-		//dx->setPropertyInt("panID", "value", m_nPanId);
+		// SSID
+		dx->setEnabled("SSID", true);
+		dx->setEnabled("pushButton_2", true);
+		nErr = m_RTIDome.getSSID(m_sSSID);
+		if(nErr)
+			m_sSSID = "";
+		dx->setPropertyString("SSID", "text", m_sSSID.c_str());
 
 		m_RTIDome.getBatteryLevels(dDomeBattery, dDomeCutOff, dShutterBattery, dShutterCutOff);
 		dx->setPropertyDouble("lowRotBatCutOff","value", dDomeCutOff);
@@ -336,8 +336,8 @@ int X2Dome::execModalSettingsDialog()
 		dx->setEnabled("comboBox", false);
 		dx->setPropertyString("domeBatteryLevel", "text", "--");
 		dx->setPropertyString("shutterBatteryLevel", "text", "--");
-		dx->setEnabled("panID", false);
-		dx->setPropertyInt("panID", "value", 0);
+		dx->setEnabled("SSID", false);
+		dx->setPropertyString("SSID", "text", "--");
 		dx->setEnabled("pushButton_2", false);
 		dx->setEnabled("pushButton", false);
 		dx->setEnabled("pushButton_3", false);
@@ -430,7 +430,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 	std::string sDummy;
 	int nConditionSensorStatus = COND_SAFE;
 	bool bShutterPresent;
-	int nPanId;
+	char sSSID[SERIAL_BUFFER_SIZE];
 	int nSpeed;
 	int nAcc;
 	int n_nbStepPerRev;
@@ -506,11 +506,11 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 				uiex->setPropertyInt("ticksPerRev","value", m_RTIDome.getNbTicksPerRev());
 			}
 			
-			if(m_bSettingPanID) {
-				nErr = m_RTIDome.isPanIdSet(m_nPanId, bComplete);
+			if(m_bSettingSSID) {
+				nErr = m_RTIDome.isSSIDSet(m_sSSID, bComplete);
 				if(bComplete) {
 					uiex->setEnabled("pushButton_2", true);
-					m_bSettingPanID = false;
+					m_bSettingSSID = false;
 					m_RTIDome.getShutterSpeed(nSpeed);
 					uiex->setPropertyInt("shutterSpeed","value", nSpeed);
 					m_RTIDome.getShutterAcceleration(nAcc);
@@ -523,13 +523,13 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 					uiex->setEnabled("lowShutBatCutOff",true);
 					uiex->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
 				} else {
-					if(m_SetPanIdTimer.GetElapsedSeconds()>PANID_TIMEOUT ) {// 15 seconds is way more than needed.. something when wrong
+					if(m_SetSSIDTimer.GetElapsedSeconds()>SSID_TIMEOUT ) {// 15 seconds is way more than needed.. something when wrong
 						sErrorMessage << "Timeout setting Xbee PAN ID";
-						uiex->messageBox("RTI-Dome Set PanID", sErrorMessage.str().c_str());
+						uiex->messageBox("RTI-Dome Set SSID", sErrorMessage.str().c_str());
 						uiex->setEnabled("pushButton_2", true);
-						m_bSettingPanID = false;
-						m_RTIDome.getPanId(m_nPanId);
-						uiex->setPropertyInt("panID", "value", m_nPanId);
+						m_bSettingSSID = false;
+						m_RTIDome.getSSID(m_sSSID);
+						uiex->setPropertyString("SSID", "text", m_sSSID.c_str());
 						return;
 					}
 				}
@@ -620,17 +620,17 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 	
 	else if (!strcmp(pszEvent, "on_pushButton_2_clicked")) {
 		// set Pan ID
-		uiex->propertyInt("panID", "value", nPanId);
-		nErr = m_RTIDome.setPanId(nPanId);
+		uiex->propertyString("SSID", "text", sSSID, SERIAL_BUFFER_SIZE);
+		nErr = m_RTIDome.setSSID(sSSID);
 		if(nErr) {
 			sErrorMessage << "Error setting Xbee PAN ID : Error " << nErr;
-			uiex->messageBox("RTI-Dome Set PanID", sErrorMessage.str().c_str());
+			uiex->messageBox("RTI-Dome Set SSID", sErrorMessage.str().c_str());
 			return;
 		}
-		m_nPanId = nPanId;
+		m_sSSID = sSSID;
 		uiex->setEnabled("pushButton_2", false);
-		m_bSettingPanID = true;
-		m_SetPanIdTimer.Reset();
+		m_bSettingSSID = true;
+		m_SetSSIDTimer.Reset();
 	}
 	
 	else if (!strcmp(pszEvent, "on_pushButton_3_clicked")) {

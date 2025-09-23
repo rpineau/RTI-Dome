@@ -151,11 +151,11 @@ private:
 	bool        m_bOpenUpperShutterOnly;
 	bool        m_bCalibratingDome;
 	int			m_nSavedTicksPerRev;
-	int         m_nPanId;
-	bool        m_bSettingPanID;
+	std::string m_sSSID;
+	bool        m_bSettingSSID;
 	bool        m_bLogConditionStatus;
 
-	CStopWatch  m_SetPanIdTimer;
+	CStopWatch  m_SetSSIDTimer;
 
 	bool        m_bSettingNetwork;
 	CStopWatch  m_SetNetworkTimer;

@@ -15,14 +15,14 @@ const char SLEW_ROTATOR                 = 'm'; // Get Slewing status/direction
 const char CONDITION_ROTATOR_ACTION		= 'n'; // Get/Set action when safe/unsafe sensor triggered (do nothing, home, park)
 const char IS_SHUTTER_PRESENT           = 'o'; // check if the shutter has responded to pings
 const char IP_SUBNET                    = 'p'; // get/set the ip subnet
-const char PANID                        = 'q'; // get and set the XBEE PAN ID
+const char SSID                         = 'q'; // get and set the Shutter SSID
 const char SPEED_ROTATOR                = 'r'; // Get/Set step rate (speed)
 const char SYNC_ROTATOR                 = 's'; // Sync to new Azimuth
 const char STEPSPER_ROTATOR             = 't'; // Get/set Steps per rotation
 const char IP_GATEWAY                   = 'u'; // get/set default gateway IP
 const char VERSION_ROTATOR              = 'v'; // Get Firmware Version
 const char IP_DHCP                      = 'w'; // get/set DHCP mode
-//'x' see bellow
+											   //'x';
 const char REVERSED_ROTATOR             = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR           = 'z'; // Get homed status
 const char INIT_XBEE                    = 'x'; // force a XBee reconfig
@@ -42,7 +42,7 @@ const char SHUTTER_PING                     = 'L'; // Shutter ping, uses to rese
 const char STATE_SHUTTER                    = 'M'; // Get shutter state
 const char OPEN_SHUTTER                     = 'O'; // Open the shutter
 const char POSITION_SHUTTER                 = 'P'; // Get step position
-const char SHUTTER_PANID                    = 'Q'; // get and set the XBEE PAN ID
+const char SHUTTER_SSID                     = 'Q'; // get and set the Shutter SSID
 const char SPEED_SHUTTER                    = 'R'; // Get/Set step rate (speed)
 const char STEPSPER_SHUTTER                 = 'T'; // Get/Set steps per stroke
 const char VERSION_SHUTTER                  = 'V'; // Get version string

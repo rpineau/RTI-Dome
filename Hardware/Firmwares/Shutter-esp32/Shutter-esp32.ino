@@ -55,20 +55,21 @@ bool rotatorReconnect(IPAddress ip);
 String wifiBuffer = "";
 std::atomic<bool> bWiFiOk;
 std::atomic<bool> bNeedReconnect;
-std::atomic<bool> isRaining;
+std::atomic<bool> isBadCondition;
 std::atomic<bool> needFirstPing;
 StopWatch watchdogTimer;
 StopWatch reconnectTimer;
 ShutterClass *Shutter = nullptr;
 
 void MotorTask(void *);
-void IRAM_ATTR handleClosedInterrupt();
-void IRAM_ATTR handleOpenInterrupt();
-void IRAM_ATTR handleButtons();
+void handleClosedInterrupt();
+void handleOpenInterrupt();
+void handleButtons();
+
 void setup()
 {
 	bNeedReconnect = false;
-	isRaining = false;
+	isBadCondition = false;
 	needFirstPing = true;
 	bWiFiOk = false;
 #ifdef DEBUG
@@ -240,18 +241,18 @@ void PingRotator()
 	}
 
 	shutterClient.write(wirelessMessage.c_str());
-	shutterClient.flush();
+	// shutterClient.flush();
 
-	// ask if it's raining
-	wirelessMessage = String(RAIN_SHUTTER) + "#";
+	// ask if condition are bad
+	wirelessMessage = String(CONDITION_SHUTTER) + "#";
 	shutterClient.write(wirelessMessage.c_str());
-	shutterClient.flush();
+	// shutterClient.flush();
 
 	// say hello :)
 	wirelessMessage = String(HELLO) + "#";
 	shutterClient.write(wirelessMessage.c_str());
 
-	shutterClient.flush();
+	// shutterClient.flush();
 	needFirstPing = false;
 }
 
@@ -336,9 +337,9 @@ void ProcessWifi()
 
 		case OPEN_SHUTTER:
 			DBPrintln("Received Open Shutter Command");
-			if (isRaining) {
+			if (isBadCondition) {
 				sRotatorMessage = "OR"; // (O)pen command (R)ain cancel
-				DBPrintln("Raining");
+				DBPrintln("Bad conditions");
 			}
 			else if (Shutter->GetVoltsAreLow()) {
 				sRotatorMessage = "OL"; // (O)pen command (L)ow voltage cancel
@@ -368,19 +369,19 @@ void ProcessWifi()
 			sRotatorMessage = String(WATCHDOG_INTERVAL) + String(Shutter->getWatchdogInterval());
 			break;
 
-		case RAIN_SHUTTER:
+		case CONDITION_SHUTTER:
 			if(hasValue) {
 				if (value.equals("1")) {
-					if (!isRaining) {
+					if (!isBadCondition) {
 						if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING)
 							Shutter->Close();
-						isRaining = true;
-						DBPrintln("It's raining! (" + value + ")");
+						isBadCondition = true;
+						DBPrintln("Bad conditions! (" + value + ")");
 					}
 				}
 				else {
-					isRaining = false;
-					DBPrintln("It's not raining");
+					isBadCondition = false;
+					DBPrintln("Bad conditions");
 				}
 			}
 			break;
@@ -440,8 +441,8 @@ void ProcessWifi()
 			if (Shutter->GetVoltsAreLow()) {
 				sRotatorMessage += "L"; // low voltage detected
 			}
-			else if(isRaining) {
-				sRotatorMessage += "R"; // Raining
+			else if(isBadCondition) {
+				sRotatorMessage += "R"; // bad condition
 			}
 
 			DBPrintln("Got Ping");
@@ -463,6 +464,6 @@ void ProcessWifi()
 		sRotatorMessage+="#";
 		DBPrintln(">>> Sending " + sRotatorMessage);
 		shutterClient.write(sRotatorMessage.c_str());
-		shutterClient.flush();
+		// shutterClient.flush();
 	}
 }

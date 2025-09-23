@@ -31,7 +31,7 @@
 #define HOME_PIN            15  // Also used for Shutter open status
 #define BUTTON_CCW          27 // Digital Input
 #define BUTTON_CW           14 // Digital Input
-#define RAIN_SENSOR_PIN     25  // Digital Input from RG11
+#define CONDITION_SENSOR_PIN     25  // Digital Input from RG11
 #define SPARE1				34
 #define SPARE2				26
 // ouput
@@ -82,8 +82,6 @@ Micro-steps per rotation with original motor and 15.3:1 gearbox
 #define EEPROM_LOCATION     0  // not used with Arduino Due flash
 #define EEPROM_SIGNATURE    0001
 
-#define DEFAULT_PANID   0x4242
-
 #define WIFI_VAR_LEN 64
 
 #ifdef USE_ETHERNET
@@ -113,7 +111,7 @@ typedef struct RotatorConfiguration {
 	double           homeAzimuth;
 	double           parkAzimuth;
 	int             cutOffVolts;
-	int             rainAction;
+	int             conditionsAction;
 #ifdef USE_ETHERNET
 	IPConfig        ipConfig;
 #endif // USE_ETHERNET
@@ -136,7 +134,7 @@ enum Seeks { NOT_MOVING,           // Not homing or calibrating
 			CALIBRATION_MEASURE     // Measuring dome until home hit again.
 };
 
-enum RainActions {DO_NOTHING=0, HOME, PARK};
+enum ConditionsActions {DO_NOTHING=0, HOME, PARK};
 
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
@@ -151,11 +149,11 @@ public:
 
 	void		SaveToEEProm();
 
-	// rain sensor methods
-	bool		GetRainStatus();
-	int			GetRainAction();
-	void		SetRainAction(const int);
-	void		rainInterrupt();
+	// condition sensor methods
+	bool		GetConditionsStatus();
+	int			GetConditionsAction();
+	void		SetConditionsAction(const int);
+	void		conditionsInterrupt();
 
 	// motor methods
 	long        GetAcceleration();
@@ -266,7 +264,7 @@ private:
 	bool        LoadFromEEProm();
 	void        SetDefaultConfig();
 
-	std::atomic<bool>	m_bIsRaining;
+	std::atomic<bool>	m_bIsBadConditions;
 
 	bool        m_bDoEEPromSave;
 	// eeprom
@@ -301,7 +299,7 @@ RotatorClass::RotatorClass()
 	pinMode(HOME_PIN,               INPUT_PULLUP);
 	pinMode(BUTTON_CCW,             INPUT_PULLUP);
 	pinMode(BUTTON_CW,              INPUT_PULLUP);
-	pinMode(RAIN_SENSOR_PIN,        INPUT_PULLUP);
+	pinMode(CONDITION_SENSOR_PIN,        INPUT_PULLUP);
 	pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
 	pinMode(SPARE1,    				INPUT);
 	pinMode(SPARE2,    				INPUT_PULLUP);
@@ -325,11 +323,11 @@ RotatorClass::RotatorClass()
 
 	m_bDoEEPromSave = true;
 
-	if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
-		m_bIsRaining = true;
+	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
+		m_bIsBadConditions = true;
 	}
 	else {
-		m_bIsRaining = false;
+		m_bIsBadConditions = false;
 	}
 
 	if(digitalRead(HOME_PIN) == LOW) {
@@ -391,13 +389,13 @@ inline void RotatorClass::homeInterrupt()
 }
 
 
-inline void RotatorClass::rainInterrupt()
+inline void RotatorClass::conditionsInterrupt()
 {
-	if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
-		m_bIsRaining = true;
+	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
+		m_bIsBadConditions = true;
 	}
 	else
-		m_bIsRaining = false;
+		m_bIsBadConditions = false;
 }
 
 void RotatorClass::SaveToEEProm()
@@ -437,7 +435,7 @@ bool RotatorClass::LoadFromEEProm()
 	DBPrintln("homeAzimuth       : " + String(m_Config.homeAzimuth));
 	DBPrintln("parkAzimuth       : " + String(m_Config.parkAzimuth));
 	DBPrintln("cutOffVolts       : " + String(m_Config.cutOffVolts));
-	DBPrintln("rainAction        : " + String(m_Config.rainAction));
+	DBPrintln("conditionsAction        : " + String(m_Config.conditionsAction));
 #ifdef USE_ETHERNET
 	DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP?"Yes":"No"));
 	DBPrintln("ipConfig.ip       : " + IpAddress2String(m_Config.ipConfig.ip));
@@ -465,7 +463,7 @@ void RotatorClass::SetDefaultConfig()
 	m_Config.homeAzimuth = 0;
 	m_Config.parkAzimuth = 0;
 	m_Config.cutOffVolts = 1150;
-	m_Config.rainAction = DO_NOTHING;
+	m_Config.conditionsAction = DO_NOTHING;
 #ifdef USE_ETHERNET
 	m_Config.ipConfig.bUseDHCP = true;
 	m_Config.ipConfig.ip.fromString("192.168.0.99");
@@ -562,27 +560,27 @@ String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 }
 
 //
-// rain sensor methods
+// conditions sensor methods
 //
-bool RotatorClass::GetRainStatus()
+bool RotatorClass::GetConditionsStatus()
 {
-	if (digitalRead(RAIN_SENSOR_PIN) == LOW) {
-		m_bIsRaining = true;
+	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
+		m_bIsBadConditions = true;
 	}
 	else
-		m_bIsRaining = false;
+		m_bIsBadConditions = false;
 
-	return m_bIsRaining;
+	return m_bIsBadConditions;
 }
 
-inline int RotatorClass::GetRainAction()
+inline int RotatorClass::GetConditionsAction()
 {
-	return m_Config.rainAction;
+	return m_Config.conditionsAction;
 }
 
-inline void RotatorClass::SetRainAction(const int value)
+inline void RotatorClass::SetConditionsAction(const int value)
 {
-	m_Config.rainAction = value;
+	m_Config.conditionsAction = value;
 	SaveToEEProm();
 }
 
@@ -1020,7 +1018,7 @@ void RotatorClass::Run()
 
 			if(position == (m_Config.stepsPerRotation -1))
 				position = 0;
-			stepper.setCurrentPosition(position);			
+			stepper.setCurrentPosition(position);
 		}
 
 		if(m_seekMode == MOVING_GOTO) {
@@ -1036,7 +1034,7 @@ void RotatorClass::Run()
 
 			if(position == (m_Config.stepsPerRotation -1))
 				position = 0;
-			stepper.setCurrentPosition(position);			
+			stepper.setCurrentPosition(position);
 		}
 	} // end if (m_bWasRunning)
 }
@@ -1169,7 +1167,3 @@ void RotatorClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, b
 		DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
 	}
 }
-
-
-
-

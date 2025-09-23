@@ -27,8 +27,8 @@ public:
 	double	volts = 0.0;
 	double	voltsCutOff = 0.0;
 	unsigned int	watchdogInterval = 90; // set proper default.. just in case.
-	String  panid = "0000";
-	String  lowVoltStateOrRaining = "";
+	String  ssid = "RTIShutter";
+	String  lowVoltStateOrBadConditions = "";
 	RemoteShutterClass();
 };
 

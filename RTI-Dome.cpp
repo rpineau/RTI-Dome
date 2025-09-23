@@ -2237,7 +2237,7 @@ int CRTIDome::setConditionAction(const int &nAction)
 
 }
 
-int CRTIDome::getPanId(int &nPanId)
+int CRTIDome::getSSID(std::string &sSSID)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
@@ -2246,21 +2246,21 @@ int CRTIDome::getPanId(int &nPanId)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-	ssCmd << PANID << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, PANID);
+	ssCmd << SSID << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, SSID);
 	if(nErr) {
 		return nErr;
 	}
 
 	try {
-		nPanId = int(std::stol(sResp, NULL, 16));
+		sSSID.assign(sResp);
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
-		nPanId = 0;
+		sSSID.clear();
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -2272,7 +2272,7 @@ int CRTIDome::getPanId(int &nPanId)
 
 }
 
-int CRTIDome::setPanId(const int nPanId)
+int CRTIDome::setSSID(const std::string sSSID)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
@@ -2281,38 +2281,36 @@ int CRTIDome::setPanId(const int nPanId)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-	ssCmd << PANID << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, PANID);
+	ssCmd << SSID << sSSID << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, SSID);
 	return nErr;
 
 }
 
-int CRTIDome::getShutterPanId(int &nPanId)
+int CRTIDome::getShutterSSID(std::string &sSSID)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
 	std::string sResp;
 
-	return nErr;
-	
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-	ssCmd << SHUTTER_PANID << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, SHUTTER_PANID);
+	ssCmd << SHUTTER_SSID << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, SHUTTER_SSID);
 	if(nErr) {
 		return nErr;
 	}
 
 	try {
-		nPanId = int(std::stol(sResp, NULL, 16));
+		sSSID.assign(sResp);
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
-		nPanId = 0;
+		sSSID.clear();
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
@@ -2322,16 +2320,16 @@ int CRTIDome::getShutterPanId(int &nPanId)
 	return nErr;
 
 }
-int CRTIDome::isPanIdSet(const int nPanId, bool &bSet)
+int CRTIDome::isSSIDSet(const std::string sSSID, bool &bSet)
 {
 	int nErr = PLUGIN_OK;
-	int nCtrlPanId;
+	std::string ctrlSSID;
 
 	bSet = false;
-	nErr = getShutterPanId(nCtrlPanId);
+	nErr = getShutterSSID(ctrlSSID);
 	if(nErr)
 		return nErr;
-	if(nCtrlPanId == nPanId)
+	if(ctrlSSID == sSSID)
 		bSet = true;
 
 	return nErr;

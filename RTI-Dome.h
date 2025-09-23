@@ -45,10 +45,10 @@
 #define MAX_READ_WAIT_TIMEOUT 25
 #define NB_RX_WAIT 10
 #define ND_LOG_BUFFER_SIZE 256
-#define PANID_TIMEOUT 15    // in seconds
+#define SSID_TIMEOUT 15    // in seconds
 #define SAFE_CHECK_INTERVAL 10
 
-#define PLUGIN_VERSION      1.35
+#define PLUGIN_VERSION      2.00
 #define PLUGIN_ID   1
 
 #define PLUGIN_DEBUG 1
@@ -147,10 +147,10 @@ public:
 	int getConditionAction(int &nAction);
 	int setConditionAction(const int &nAction);
 
-	int getPanId(int &nPanId);
-	int setPanId(const int nPanId);
-	int getShutterPanId(int &nPanId);
-	int isPanIdSet(const int nPanId, bool &bSet);
+	int getSSID(std::string &sSSID);
+	int setSSID(const std::string sSSID);
+	int getShutterSSID(std::string &sSSID);
+	int isSSIDSet(const std::string sSSID, bool &bSet);
 
 	int restoreDomeMotorSettings();
 	int restoreShutterMotorSettings();
