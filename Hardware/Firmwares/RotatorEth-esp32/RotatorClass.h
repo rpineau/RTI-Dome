@@ -227,7 +227,6 @@ public:
 #ifdef USE_WIFI
 	void		getWiFiConfig(WIFIConfig &config);
 #endif // USE_WIFI
-	std::atomic<int>    nStepperInterruptFreq;
 
 	static String IpAddress2String(const IPAddress& ipAddress);
 private:
@@ -236,7 +235,7 @@ private:
 	// Rotator
 	bool            m_bWasRunning;
 	bool            m_bisAtHome;
-	std::atomic<enum Seeks>	m_seekMode;
+	std::atomic<enum Seeks>	m_seekMode{NOT_MOVING};
 	bool            m_bSetToHomeAzimuth;
 	bool            m_bDoStepsPerRotation;
 
@@ -245,10 +244,10 @@ private:
 	unsigned long   m_nMOVE_OFFUntilLapse = 2000;
 	int             m_nMoveDirection;
 
-	std::atomic<long>	m_nStepsAtHome;
-	std::atomic<long>	m_nHomePosEdgePass1;
+	std::atomic<long>	m_nStepsAtHome{0};
+	std::atomic<long>	m_nHomePosEdgePass1{0};
 	volatile 	long	m_nHomePosEdgePass2;
-	std::atomic<bool>	m_HomeFound;
+	std::atomic<bool>	m_HomeFound{false};
 
 	// Power values
 	double           m_fAdcConvert;
@@ -264,7 +263,7 @@ private:
 	bool        LoadFromEEProm();
 	void        SetDefaultConfig();
 
-	std::atomic<bool>	m_bIsBadConditions;
+	std::atomic<bool>	m_bIsBadConditions{false};
 
 	bool        m_bDoEEPromSave;
 	// eeprom
@@ -343,9 +342,6 @@ RotatorClass::RotatorClass()
 	}
 
 	m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
-
-
-	nStepperInterruptFreq = 0; // used to pass interrupt frequency to core1 from call to methods from core0
 
 	// reset all timers
 	m_MoveOffUntilTimer.reset();

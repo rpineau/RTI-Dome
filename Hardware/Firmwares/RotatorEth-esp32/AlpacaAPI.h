@@ -14,6 +14,9 @@
 #include <UUID.h>
 #include <aWOT.h>
 
+// test
+#include <LittleFS.h>
+
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
 #define ALPACA_VAR_BUF_LEN 256
@@ -627,44 +630,7 @@ void getSupportedActions(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 
-	AlpacaResp["Value"].add("EthernetReconfigure");
-	AlpacaResp["Value"].add("Calibrate");
-	AlpacaResp["Value"].add("RestoreMotorDefault");
-	AlpacaResp["Value"].add("GetRotatorAcceleration");
-	AlpacaResp["Value"].add("SetRotatorAcceleration");
-	AlpacaResp["Value"].add("GetMacAddress");
-	AlpacaResp["Value"].add("GetIpAddress");
-	AlpacaResp["Value"].add("SetIpAddress");
-	AlpacaResp["Value"].add("RotatorVolts");
-	AlpacaResp["Value"].add("GetConditionAction");
-	AlpacaResp["Value"].add("SetConditionAction");
-	AlpacaResp["Value"].add("isShutterPresent");
-	AlpacaResp["Value"].add("GetSubnet");
-	AlpacaResp["Value"].add("SetSubnet");
-	AlpacaResp["Value"].add("GetSSID");
-	AlpacaResp["Value"].add("SetSSID");
-	AlpacaResp["Value"].add("GetRotatorSpeed");
-	AlpacaResp["Value"].add("SetRotatorSpeed");
-	AlpacaResp["Value"].add("GetStepPerRev");
-	AlpacaResp["Value"].add("SetStepPerRev");
-	AlpacaResp["Value"].add("GetIpGateway");
-	AlpacaResp["Value"].add("SetIpGateway");
-	AlpacaResp["Value"].add("GetDhcp");
-	AlpacaResp["Value"].add("SetDhcp");
-	AlpacaResp["Value"].add("GetRotatorReverse");
-	AlpacaResp["Value"].add("SetRotatorReverse");
-	AlpacaResp["Value"].add("GetConditionStatus");
-	AlpacaResp["Value"].add("RestoreMotorDefaultShutter");
-	AlpacaResp["Value"].add("GetShutterAcceleration");
-	AlpacaResp["Value"].add("SetShutterAcceleration");
-	AlpacaResp["Value"].add("ShutterHello");
-	AlpacaResp["Value"].add("GetShutterSSID");
-	AlpacaResp["Value"].add("SetShutterSSID");
-	AlpacaResp["Value"].add("GetShutterSpeed");
-	AlpacaResp["Value"].add("SetShutterSpeed");
-	AlpacaResp["Value"].add("GetShutterReverse");
-	AlpacaResp["Value"].add("SetShutterReverse");
-
+	AlpacaResp["Value"] = "[]";
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
@@ -1549,7 +1515,632 @@ void doSetup(Request &req, Response &res)
 	// res.flush();
 }
 
+//
+// controller settings API
+//
+void homePosition(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	double dPosition = 0;
 
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<double>()) {
+				dPosition = FormData["value"];
+				Rotator->SetHomeAzimuth(dPosition);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetHomeAzimuth();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void parkPosition(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	double dPosition = 0;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<double>()) {
+				dPosition = FormData["value"];
+				Rotator->SetParkAzimuth(dPosition);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetParkAzimuth();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void reverseDirectionState(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	bool bReversed = false;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<bool>()) {
+				bReversed = FormData["value"];
+				Rotator->SetReversed(bReversed);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetReversed();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void shutterOpenOrderValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	bool bReversed = false;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<int>()) {
+				bReversed = FormData["value"];
+				// need implementation
+				// Rotator->;
+			}
+		}
+	}
+	// need implementation
+	// controllerResp["value"] = Rotator->GetReversed();
+	controllerResp["value"] = 1; // for now
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void wifiSSIDValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	WIFIConfig l_WifiConfig;
+	bool bReversed = false;
+	String SSID;
+
+	Rotator->getWiFiConfig(l_WifiConfig);
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<String>()) {
+				strncpy(l_WifiConfig.sSSID, FormData["value"], WIFI_VAR_LEN);
+				// need implementation
+				//Rotator->setWiFiConfig(l_WifiConfig);
+				configureWiFi();
+
+			}
+		}
+	}
+
+	controllerResp["SSID"] = l_WifiConfig.sSSID;
+	controllerResp["Ip"] = RotatorClass::IpAddress2String(l_WifiConfig.ip);
+	controllerResp["Password"] = l_WifiConfig.sPassword;
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void isShutterPresentState(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	bool bReversed = false;
+
+
+	controllerResp["value"] = bool(bShutterPresent);
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void useDHCPState(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	bool bUseDhcp = false;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<bool>()) {
+				bUseDhcp = FormData["value"];
+				Rotator->setDHCPFlag(bUseDhcp);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->getDHCPFlag();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void macAddressValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	controllerResp["value"] = String(MAC_Address[0], HEX) + String(":") +
+					String(MAC_Address[1], HEX) + String(":") +
+					String(MAC_Address[2], HEX) + String(":") +
+					String(MAC_Address[3], HEX) + String(":") +
+					String(MAC_Address[4], HEX) + String(":") +
+					String(MAC_Address[5], HEX);
+
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+
+}
+
+void ipAddressValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<String>()) {
+				Rotator->setIPAddress(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.localIP()));
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void subnetMaskValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<String>()) {
+				Rotator->setIPSubnet(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void ipGetewayValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<String>()) {
+				Rotator->setIPGateway(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void domeCalibrateAction(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<String>()) {
+				if(FormData["value"] == "start") {
+					Rotator->StartCalibrating();
+				}
+				if(FormData["value"] == "abort") {
+					Rotator->Stop();
+				}
+			}
+		}
+	}
+
+	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void stepPerRevolutionValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				Rotator->SetStepsPerRotation(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetStepsPerRotation();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void rotationSpeedValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				Rotator->SetMaxSpeed(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetMaxSpeed();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void rotationAccelerationValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				Rotator->SetAcceleration(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetAcceleration();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void restoreRotationMotorValues(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	Rotator->restoreDefaultMotorSettings();
+	controllerResp["value"] = "Restored";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void shutterSpeedValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				String shutterMessage;
+				String sTmpString = String(SPEED_SHUTTER);
+				RemoteShutter.speed = FormData["value"];
+				shutterMessage = sTmpString + String(RemoteShutter.speed);
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				ReceiveWiFi(shutterClient);
+			}
+		}
+	}
+
+	controllerResp["value"] = RemoteShutter.speed;
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void shutterAccelerationValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				String shutterMessage;
+				String sTmpString = String(ACCELERATION_SHUTTER);
+				RemoteShutter.acceleration = FormData["value"];
+				shutterMessage = sTmpString + String(RemoteShutter.acceleration);
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				ReceiveWiFi(shutterClient);
+			}
+		}
+	}
+
+	controllerResp["value"] = RemoteShutter.acceleration;
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void restoreShutterMotorValues(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+
+		String shutterMessage;
+		String sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
+		shutterMessage = sTmpString+ "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		ReceiveWiFi(shutterClient);
+		shutterMessage = String(SPEED_SHUTTER)+ "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		ReceiveWiFi(shutterClient);
+		shutterMessage = String(ACCELERATION_SHUTTER)+ "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		ReceiveWiFi(shutterClient);
+	}
+
+	controllerResp["value"] = "Restored";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void shutterWatchdogTimerValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				String shutterMessage;
+				String sTmpString = String(WATCHDOG_INTERVAL);
+				RemoteShutter.watchdogInterval = FormData["value"];
+				shutterMessage = sTmpString + String(RemoteShutter.watchdogInterval);
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				ReceiveWiFi(shutterClient);
+			}
+		}
+	}
+
+	controllerResp["value"] = RemoteShutter.watchdogInterval;
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void domeVoltageCutoffValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				Rotator->SetLowVoltageCutoff(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetVoltString();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void shutterVoltageCutoffValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				String shutterMessage;
+				String sTmpString = String(VOLTS_SHUTTER);
+				RemoteShutter.voltsCutOff = FormData["value"];
+				shutterMessage = sTmpString + String(RemoteShutter.voltsCutOff);
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				ReceiveWiFi(shutterClient);
+			}
+		}
+	}
+
+	controllerResp["value"] = RemoteShutter.voltsCutOff;
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void unsafeDomeAction(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				Rotator->SetConditionsAction(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetConditionsAction();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void envConditionState(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	controllerResp["value"] = bool(bIsBadConditions);
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+//
+// Alpaca server class
+//
 class DomeAlpacaServer
 {
 public :
@@ -1639,8 +2230,46 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoazimuth", &doGoTo);
 	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
-	DBPrintln("m_AlpacaRestServer started");
+	// adding our own endpoints for the settings
+	m_AlpacaRestServer->use("/setup/v1/omePosition", &homePosition);
+	m_AlpacaRestServer->use("/setup/v1/parkPosition", &parkPosition);
 
+	m_AlpacaRestServer->use("/setup/v1/reverseDirection", &reverseDirectionState);
+	m_AlpacaRestServer->use("/setup/v1/shutterOpenOrder", &shutterOpenOrderValue);
+
+	m_AlpacaRestServer->use("/setup/v1/wifiSSID", &wifiSSIDValue);
+	m_AlpacaRestServer->get("/setup/v1/shutterPresentState", &isShutterPresentState);
+
+
+	m_AlpacaRestServer->use("/setup/v1/useDHCP", &useDHCPState);
+
+	m_AlpacaRestServer->get("/setup/v1/macAddress", &macAddressValue);
+	m_AlpacaRestServer->use("/setup/v1/ipAddress", &ipAddressValue);
+	m_AlpacaRestServer->use("/setup/v1/subnetMask", &subnetMaskValue);
+	m_AlpacaRestServer->use("/setup/v1/ipGeteway", &ipGetewayValue);
+
+
+	m_AlpacaRestServer->use("/setup/v1/domeCalibrate", &domeCalibrateAction);
+
+	m_AlpacaRestServer->use("/setup/v1/stepPerRevolution", &stepPerRevolutionValue);
+	m_AlpacaRestServer->use("/setup/v1/rotationSpeed", &rotationSpeedValue);
+	m_AlpacaRestServer->use("/setup/v1/rotationAcceleration", &rotationAccelerationValue);
+	m_AlpacaRestServer->put("/setup/v1/restoreRotationMotorSettings", &restoreRotationMotorValues);
+
+	m_AlpacaRestServer->use("/setup/v1/shutterSpeed", &shutterSpeedValue);
+	m_AlpacaRestServer->use("/setup/v1/shutterAcceleration", &shutterAccelerationValue);
+	m_AlpacaRestServer->put("/setup/v1/restoreShutterMotorSettings", &restoreShutterMotorValues);
+
+	m_AlpacaRestServer->use("/setup/v1/shutterWatchdogTimerValue", &shutterWatchdogTimerValue);
+	m_AlpacaRestServer->use("/setup/v1/domeVoltageCutoff", &domeVoltageCutoffValue);
+	m_AlpacaRestServer->use("/setup/v1/shutterVoltageCutoff", &shutterVoltageCutoffValue);
+	m_AlpacaRestServer->use("/setup/v1/unsafeDomeAction", &unsafeDomeAction);
+
+	m_AlpacaRestServer->get("/setup/v1/domeVoltage", &domeVoltageCutoffValue);
+	m_AlpacaRestServer->get("/setup/v1/shutterVoltage", &shutterVoltageCutoffValue);
+	m_AlpacaRestServer->get("/setup/v1/envCondition", &envConditionState);
+
+	DBPrintln("m_AlpacaRestServer started");
 }
 
 

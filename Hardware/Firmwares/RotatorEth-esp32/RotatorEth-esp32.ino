@@ -55,7 +55,7 @@
 uint32_t uidBuffer[4];  // Board unique ID
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 IPConfig ServerConfig;
-std::atomic<bool> ethernetPresent;
+std::atomic<bool> ethernetPresent{false};
 EthernetServer *domeServer = nullptr;
 EthernetClient domeClient;
 int nbEthernetClient = 0;
@@ -70,14 +70,14 @@ String sLocalIPAdress = "";
 #include <WiFiAP.h>
 #define SHUTTER_PORT 2424
 #define shutterWiFi WiFi
-std::atomic<bool> wifiPresent;
+std::atomic<bool> wifiPresent{false};
 WIFIConfig wifiConfig;
 WiFiServer *shutterServer = nullptr;
 WiFiClient shutterClient;
 String wifiBuffer = "";
 int nbWiFiClient = 0;
 String sLocalWifiIPAddress;
-std::atomic<bool> bGotHelloFromShutter;
+std::atomic<bool> bGotHelloFromShutter{false};
 RemoteShutterClass RemoteShutter;
 #endif
 
@@ -92,7 +92,7 @@ static const unsigned long pingInterval = 5000; // 5 seconds, can't be changed w
 // Once booting is done and XBee is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
-std::atomic<bool> bSentHello;
+std::atomic<bool> bSentHello{false};
 
 #ifdef USE_WIFI
 // Timer to periodically ping the shutter
@@ -100,11 +100,11 @@ StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 #endif
 
-std::atomic<bool> bShutterPresent;
+std::atomic<bool> bShutterPresent{false};
 // global variable for condition status
-std::atomic<bool> bIsBadConditions;
+std::atomic<bool> bIsBadConditions{false};
 // global variable for shutter voltage state
-std::atomic<bool> bLowShutterVoltage;
+std::atomic<bool> bLowShutterVoltage{false};
 
 const char ERR_NO_DATA = -1;
 
@@ -164,14 +164,6 @@ esp_task_wdt_config_t twdt_config =
 //
 void setup()
 {
-	wifiPresent = false;
-	ethernetPresent = false;
-	bGotHelloFromShutter = false;
-	bSentHello = false;
-	bShutterPresent = false;
-	bIsBadConditions = false;
-	bLowShutterVoltage = false;
-
 #ifdef USE_WIFI
 	nbWiFiClient = 0;
 #endif
