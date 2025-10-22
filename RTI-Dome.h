@@ -64,7 +64,7 @@ enum HomeStatuses {NOT_AT_HOME = 0, HOMED, ATHOME};
 enum UnsafeActions {DO_NOTHING=0, HOME, PARK};
 enum MoveDirection {MOVE_NEGATIVE = -1, MOVE_NONE, MOVE_POSITIVE};
 // RG-11
-enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
+enum ConditionSensorStates {UNSAFE = 0, COND_SAFE, COND_UNKNOWN};
 
 class CRTIDome
 {

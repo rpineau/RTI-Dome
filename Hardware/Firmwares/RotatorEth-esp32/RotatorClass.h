@@ -135,7 +135,7 @@ enum Seeks { NOT_MOVING,           // Not homing or calibrating
 };
 
 enum ConditionsActions {DO_NOTHING=0, HOME, PARK};
-
+enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
 
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
 
@@ -263,7 +263,7 @@ private:
 	bool        LoadFromEEProm();
 	void        SetDefaultConfig();
 
-	std::atomic<bool>	m_bIsBadConditions{false};
+	std::atomic<bool>	m_bIsSafe{true};
 
 	bool        m_bDoEEPromSave;
 	// eeprom
@@ -323,10 +323,10 @@ RotatorClass::RotatorClass()
 	m_bDoEEPromSave = true;
 
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
-		m_bIsBadConditions = true;
+		m_bIsSafe = false;
 	}
 	else {
-		m_bIsBadConditions = false;
+		m_bIsSafe = true;
 	}
 
 	if(digitalRead(HOME_PIN) == LOW) {
@@ -388,10 +388,10 @@ inline void RotatorClass::homeInterrupt()
 inline void RotatorClass::conditionsInterrupt()
 {
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
-		m_bIsBadConditions = true;
+		m_bIsSafe = false;
 	}
 	else
-		m_bIsBadConditions = false;
+		m_bIsSafe = true;
 }
 
 void RotatorClass::SaveToEEProm()
@@ -561,12 +561,12 @@ String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 bool RotatorClass::GetConditionsStatus()
 {
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
-		m_bIsBadConditions = true;
+		m_bIsSafe = false;
 	}
 	else
-		m_bIsBadConditions = false;
+		m_bIsSafe = true;
 
-	return m_bIsBadConditions;
+	return m_bIsSafe;
 }
 
 inline int RotatorClass::GetConditionsAction()

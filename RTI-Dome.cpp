@@ -1894,14 +1894,14 @@ int CRTIDome::getConditionSensorStatus(int &nStatus)
 	}
 
 	try {
-		nStatus = std::stoi(sResp) ? false:true;
+		nStatus = std::stoi(sResp);
 	}
 	catch(const std::exception& e) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
 		m_sLogFile.flush();
 #endif
-		nStatus = false;
+		nStatus = COND_UNKNOWN;
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
@@ -2409,7 +2409,7 @@ void CRTIDome::writeConditionStatus()
 			try {
 				m_ConditionStatusfile.open(m_sConditionStatusfilePath, std::ios::out |std::ios::trunc);
 				if(m_ConditionStatusfile.is_open()) {
-					m_ConditionStatusfile << "Safe:" << (nStatus != UNSAFE?"YES":"NO") << std::endl;
+					m_ConditionStatusfile << "Safe:" << (nStatus==COND_SAFE?"YES":"NO") << std::endl;
 					m_ConditionStatusfile.close();
 				}
 			}

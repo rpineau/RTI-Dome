@@ -102,7 +102,7 @@ StopWatch ShutterWatchdog;
 
 std::atomic<bool> bShutterPresent{false};
 // global variable for condition status
-std::atomic<bool> bIsBadConditions{false};
+std::atomic<bool> bIsSafe{true};
 // global variable for shutter voltage state
 std::atomic<bool> bLowShutterVoltage{false};
 
@@ -584,18 +584,18 @@ void CheckForConditions()
 	String shutterMessage;
 
 	int nPosition, nParkPos;
-	if(bIsBadConditions != Rotator->GetConditionsStatus()) { // was there a state change ?
-		bIsBadConditions = Rotator->GetConditionsStatus();
+	if(bIsSafe != Rotator->GetConditionsStatus()) { // was there a state change ?
+		bIsSafe = Rotator->GetConditionsStatus();
 #ifdef USE_WIFI
 		if(nbWiFiClient && shutterClient.connected()) {
-			shutterMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0") + "#";
+			shutterMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE) : String(UNSAFE)) + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 			// shutterClient.flush();
 			ReceiveWiFi(shutterClient);
 		}
 #endif // USE_WIFI
 	}
-	if (bIsBadConditions) {
+	if (!bIsSafe) {
 		if (Rotator->GetConditionsAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
 			DBPrintln("Bad Conditions- > Homing");
 			Rotator->StartHoming();
@@ -610,7 +610,7 @@ void CheckForConditions()
 	// keep telling the shutter about the Conditions status
 #ifdef USE_WIFI
 		if(nbWiFiClient && shutterClient.connected()) {
-			shutterMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0") + "#";
+			shutterMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE) : String(UNSAFE)) + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 			// shutterClient.flush();
 		}
@@ -920,7 +920,7 @@ void ProcessCommand(int nSource)
 			break;
 
 		case CONDITION_SHUTTER:
-			serialMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0");
+			serialMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE) : String(UNSAFE));
 			break;
 
 		case IS_SHUTTER_PRESENT:
@@ -1255,7 +1255,7 @@ void ProcessWifi()
 
 		case CONDITION_SHUTTER:
 			if(nbWiFiClient && shutterClient.connected()) {
-				shutterMessage = String(CONDITION_SHUTTER) + String(bIsBadConditions ? "1" : "0") + "#";
+				shutterMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE): String(UNSAFE)) + "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 				// shutterClient.flush();
 			}

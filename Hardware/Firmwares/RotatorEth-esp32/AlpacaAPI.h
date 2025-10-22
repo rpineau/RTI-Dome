@@ -2130,7 +2130,7 @@ void envConditionState(Request &req, Response &res)
 	JsonDocument controllerResp;
 	String sResp;
 
-	controllerResp["value"] = bool(bIsBadConditions);
+	controllerResp["value"] = bool(bIsSafe);
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
