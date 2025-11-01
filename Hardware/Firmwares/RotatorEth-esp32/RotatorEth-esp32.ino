@@ -12,7 +12,7 @@
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
-#define DEBUG   // enable debug to serial port defined as DebugPort
+// #define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -1003,6 +1003,10 @@ void ProcessCommand(int nSource)
 				configureWiFi();
 			}
 			serialMessage = String(SSID) + Rotator->getSSID();
+			break;
+
+		case SHUTTER_SSID:
+			serialMessage = String(SHUTTER_SSID) + RemoteShutter.ssid;
 			break;
 
 		case SHUTTER_PING:
