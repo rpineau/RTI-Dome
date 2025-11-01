@@ -414,7 +414,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 {
 	bool bWiFiOk = true;
 
-
+	shutterWiFi.disconnect();
 	shutterWiFi.mode(WIFI_AP);
 	bWiFiOk = shutterWiFi.softAP(sSSID.c_str(), sPassword.c_str());
 	if(!bWiFiOk)
@@ -996,8 +996,12 @@ void ProcessCommand(int nSource)
 
 #ifdef USE_WIFI
 		case SSID:
-			if (hasValue)
+			if (hasValue) {
 				Rotator->setSSID(value);
+				// send now SSID to shutter
+				// reconfigure wifi
+				configureWiFi();
+			}
 			serialMessage = String(SSID) + Rotator->getSSID();
 			break;
 
