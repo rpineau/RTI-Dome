@@ -962,7 +962,6 @@ void RotatorClass::Run()
 	if (m_bDoStepsPerRotation) {
 		m_bDoStepsPerRotation = false;
 		SetStepsPerRotation(m_nHomePosEdgePass2 - m_nHomePosEdgePass1);
-		SaveToEEProm();
 		position = stepper.currentPosition();
 		azimuthDelta = (double)(position - m_nHomePosEdgePass2) / m_fStepsPerDegree;
 		SyncPosition(azimuthDelta + m_Config.homeAzimuth);
