@@ -225,6 +225,8 @@ public:
 #endif // USE_ETHERNET
 
 #ifdef USE_WIFI
+	String      getSSID();
+	void        setSSID(String sSSID);
 	void		getWiFiConfig(WIFIConfig &config);
 #endif // USE_WIFI
 
@@ -539,6 +541,18 @@ void RotatorClass::setIPGateway(String ipGateway)
 #endif // USE_ETHERNET
 
 #ifdef USE_WIFI
+String RotatorClass::getSSID()
+{
+	return String(m_Config.wifiIpConfig.sSSID);
+}
+
+void RotatorClass::setSSID(String sSSID)
+{
+	strncpy(m_Config.wifiIpConfig.sSSID,sSSID.c_str(), WIFI_VAR_LEN);
+	SaveToEEProm();	
+}
+
+
 void RotatorClass::getWiFiConfig(WIFIConfig &config)
 {
 	config.ip = m_Config.wifiIpConfig.ip;

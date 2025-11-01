@@ -995,6 +995,12 @@ void ProcessCommand(int nSource)
 #endif // USE_ETHERNET
 
 #ifdef USE_WIFI
+		case SSID:
+			if (hasValue)
+				Rotator->setSSID(value);
+			serialMessage = String(SSID) + Rotator->getSSID();
+			break;
+
 		case SHUTTER_PING:
 			shutterMessage = String(SHUTTER_PING);
 			if(nbWiFiClient && shutterClient.connected()) {
