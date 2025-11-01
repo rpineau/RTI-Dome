@@ -2231,7 +2231,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
 	// adding our own endpoints for the settings
-	m_AlpacaRestServer->use("/setup/v1/omePosition", &homePosition);
+	m_AlpacaRestServer->use("/setup/v1/homePosition", &homePosition);
 	m_AlpacaRestServer->use("/setup/v1/parkPosition", &parkPosition);
 
 	m_AlpacaRestServer->use("/setup/v1/reverseDirection", &reverseDirectionState);
