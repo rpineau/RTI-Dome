@@ -24,15 +24,19 @@
 // RP2040 boards
 //
 // input
-#define		CLOSED_PIN			 7	// Digital Input
-#define 	OPENED_PIN 			14	// Digital Input
-
-#define		BUTTON_CLOSE		10	// Digital Input
-#define 	BUTTON_OPEN			11	// Digital Input
+#define		CLOSED_PIN			15 	// Digital Input
+#define 	OPENED_PIN 			33	// Digital Input
+#define		BUTTON_CLOSE		14	// Digital Input
+#define 	BUTTON_OPEN			27	// Digital Input
+#define CONDITION_SENSOR_PIN	25  // Digital Input from RG11 ands other similar device. Might be ise as a spare input on shutter board.
+#define SPARE1					34
+#define SPARE2					26
 // ouput
-#define STEPPER_ENABLE_PIN		 2  // Digital Output
-#define STEPPER_DIRECTION_PIN	 3  // Digital Output
-#define STEPPER_STEP_PIN		21  // Digital Output
+#define STEPPER_ENABLE_PIN		13  // Digital Output
+#define STEPPER_DIRECTION_PIN	 2  // Digital Output
+#define STEPPER_STEP_PIN		32  // Digital Output
+#define SPARE_OUT1			 	 0
+#define SPARE_OUT2				12
 
 // analog
 #define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
@@ -149,6 +153,8 @@ public:
 
 	void    	Abort();
 
+	String      getSSID();
+	void        setSSID(String sSSID);
 	void		getWiFiConfig(WIFIConfig &config);
 private:
 
@@ -187,6 +193,8 @@ ShutterClass::ShutterClass()
 	
 	m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
 
+	DBPrintln("configuring pins");
+
 	// Input pins
 	pinMode(CLOSED_PIN,             INPUT);
 	pinMode(OPENED_PIN,             INPUT);
@@ -199,11 +207,11 @@ ShutterClass::ShutterClass()
 	pinMode(STEPPER_DIRECTION_PIN,  OUTPUT);
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
-	// old board buffer enable
-	// pinMode(A3,       OUTPUT);
-	// digitalWrite(A3, LOW);
+	DBPrintln("Loading config from EEProm");
 
 	LoadFromEEProm();
+
+	DBPrintln("Configuring stepper");
 
 	m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
 	stepper.setEnablePin(STEPPER_ENABLE_PIN);
@@ -336,6 +344,18 @@ void ShutterClass::SaveToEEProm()
 	DBPrintln("Saving config to external AT24AA128 eeprom");
 	writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
 }
+
+String ShutterClass::getSSID()
+{
+	return String(m_Config.wifiIpConfig.sSSID);
+}
+
+void ShutterClass::setSSID(String sSSID)
+{
+	strncpy(m_Config.wifiIpConfig.sSSID,sSSID.c_str(), WIFI_VAR_LEN);
+	SaveToEEProm();	
+}
+
 
 void ShutterClass::getWiFiConfig(WIFIConfig &config)
 {

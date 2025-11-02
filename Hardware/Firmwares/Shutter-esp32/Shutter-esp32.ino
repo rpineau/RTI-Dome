@@ -6,12 +6,14 @@
 // Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
+#include <rtc_wdt.h>
+#include <esp_task_wdt.h>
 #include <atomic>
 #define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
-#define DebugPort Serial1    //  Rx2,Tx2 =  Serial1
+#define DebugPort Serial    //  Rx2,Tx2 =  Serial1
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
@@ -25,6 +27,9 @@
 #define VERSION "2.645"
 
 #define ERR_NO_DATA	-1
+
+enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
+
 
 String IpAddress2String(const IPAddress& ipAddress)
 {
@@ -51,15 +56,20 @@ bool configureWiFi();
 bool initWiFi(IPAddress ip, String sSSID, String sPassword);
 void ReceiveWiFi(WiFiClient client);
 void ProcessWifi();
-bool rotatorReconnect(IPAddress ip);
+bool rotatorConnect(IPAddress ip);
 String wifiBuffer = "";
 std::atomic<bool> bWiFiOk;
-std::atomic<bool> bNeedReconnect;
 std::atomic<bool> isBadCondition;
 std::atomic<bool> needFirstPing;
 StopWatch watchdogTimer;
-StopWatch reconnectTimer;
 ShutterClass *Shutter = nullptr;
+
+esp_task_wdt_config_t twdt_config =
+    {
+        .timeout_ms = 1000000,
+        .idle_core_mask = 0,    // Bitmask of cores
+        .trigger_panic = false,
+    };
 
 void MotorTask(void *);
 void handleClosedInterrupt();
@@ -68,7 +78,6 @@ void handleButtons();
 
 void setup()
 {
-	bNeedReconnect = false;
 	isBadCondition = false;
 	needFirstPing = true;
 	bWiFiOk = false;
@@ -77,20 +86,26 @@ void setup()
 	delay(1000);
 	DBPrintln("========== RTI-Zone Shutter controller booting ==========");
 #endif
+	DBPrintln("========== Creating ShutterClass ==========");
 	Shutter = new ShutterClass();
-	watchdogTimer.reset();
-	reconnectTimer.reset();
-	Shutter->motorStop();
-	Shutter->EnableMotor(false);
+
+	DBPrintln("========== Disabling watchdog ==========");
+	esp_task_wdt_deinit();
+	esp_task_wdt_init(&twdt_config);
+	esp_task_wdt_add(NULL);
 	disableCore0WDT();
 	disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0);
+	DBPrintln("========== Watchdog disabled ==========");
 
-	WiFi.mode(WIFI_STA);
-	WiFi.setHostname("RTI-Shutter");
+	watchdogTimer.reset();
 	if(configureWiFi())
 		needFirstPing = true;
+
+	DBPrintln("========== Creating motor task ==========");
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 16, NULL,  0);
+
 	DBPrintln("========== Ready ==========");
+
 }
 
 
@@ -98,56 +113,61 @@ void loop()
 {
 	// first check if we're connected to the WiFi AP of the rotator
 	if(!bWiFiOk) {
-		if(configureWiFi())
+		DBPrintln("No Wifi, trying to reconfigure");
+		shutterWiFi.disconnect();
+		if(shutterWiFi.reconnect()) {
+			rotatorConnect(wifiConfig.ip);
 			needFirstPing = true;
+		}
 		else {
+			DBPrintln("No Wifi, looping");
 			taskYIELD();
-			delay(250);
-			return;
+			esp_task_wdt_reset();
 		}
 	}
 
-	// Check if we lost connection or didn't connect and need to reconnect (client TCP connection, not WiFi)
-	if((watchdogTimer.elapsed() >= Shutter->getWatchdogInterval()) || (bNeedReconnect && reconnectTimer.elapsed() > 15000)) {
-		DBPrintln("Shutter->getWatchdogInterval() : " + String(Shutter->getWatchdogInterval()));
-		DBPrintln("watchdogTimer.elapsed() : " + String(watchdogTimer.elapsed()));
-		DBPrintln("bNeedReconnect : " + String(bNeedReconnect?"Yes":"No"));
-		DBPrintln("reconnectTimer.elapsed() : " + String(reconnectTimer.elapsed()));
+	if(bWiFiOk) {
+		// Check if we lost connection or didn't connect and need to reconnect
+		if(watchdogTimer.elapsed() >= Shutter->getWatchdogInterval()){
+			DBPrintln("Shutter->getWatchdogInterval() : " + String(Shutter->getWatchdogInterval()));
+			DBPrintln("watchdogTimer.elapsed() : " + String(watchdogTimer.elapsed()));
 
-		watchdogTimer.reset();
-		if(shutterClient.connected()) {
+			watchdogTimer.reset();
 			shutterClient.stop();
+			rotatorConnect(wifiConfig.ip);
+			// bWiFiOk = false;
 		}
-		if(bNeedReconnect) {
-			if(rotatorReconnect(gwIp)) {}
-				PingRotator();
-		}
-	}
 
-	if(needFirstPing) {
-		PingRotator();
+		if(needFirstPing) {
+			PingRotator();
+		}
 	}
 
 	if(Shutter->m_bButtonUsed)
 		watchdogTimer.reset();
 
 	CheckForCommands();
+
+	taskYIELD();
+	esp_task_wdt_reset();
 }
 
 void MotorTask(void *)
 {
+	DBPrintln("========== Motor task starting ==========");
+	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 
-	noInterrupts();
 	attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
 	attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
 	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
-	interrupts();
+	esp_task_wdt_add(NULL);
 
 	DBPrintln("========== Motor task ready ==========");
 	for(;;) {
 		Shutter->Run();
 		taskYIELD();
+		esp_task_wdt_reset();
 	}
 }
 
@@ -157,6 +177,8 @@ bool configureWiFi()
 	DBPrintln("========== Configuring WiFi ==========");
 	Shutter->getWiFiConfig(wifiConfig);
 
+	DBPrintln("========== WiFi configuration loaded ==========");
+
 	return initWiFi(wifiConfig.ip,
 			String(wifiConfig.sSSID),
 			String(wifiConfig.sPassword));
@@ -165,52 +187,51 @@ bool configureWiFi()
 bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 {
 	int nTimeout = 0;
-
+	DBPrintln("========== initWiFi ==========");
 	bWiFiOk = false;
-	gwIp = ip;
-	gwIp[3] = 1;
 	shutterClient.stop();
+	DBPrintln("========== disconnect ==========");
+	shutterWiFi.disconnect(true);
+	DBPrintln("========== mode ==========");
+	shutterWiFi.mode(WIFI_STA);
+	DBPrintln("========== setHostname ==========");
+	shutterWiFi.setHostname("RTI-Shutter");
+	DBPrintln("========== config ==========");
 	shutterWiFi.config(ip,  gwIp, IPAddress(255,255,255,0));
+	DBPrintln("========== begin ==========");
 	shutterWiFi.begin(sSSID.c_str(), sPassword.c_str());
-	while (WiFi.status() != WL_CONNECTED) {
+	while (shutterWiFi.status() != WL_CONNECTED) {
 		DBPrintln("Waiting for WiFi");
 		delay(1000);
 		nTimeout++;
-		if(nTimeout>15) { // 15 seconds should be plenty
-			DBPrintln("========== Failed to start WiFi AP ==========");
+		if(nTimeout>10) { // 10 seconds should be plenty
+			DBPrintln("========== Failed to connect to Rotator ==========");
 			return false;
 		}
     }
 
+	rotatorConnect(ip);
+	return true;
+}
+
+bool rotatorConnect(IPAddress ip)
+{
+	gwIp = ip;
+	gwIp[3] = 1;
+	DBPrintln("========== clientConnect ==========");
+
 	bWiFiOk = true;
-	DBPrintln("IP = " + IpAddress2String(WiFi.localIP()));
+	DBPrintln("IP = " + IpAddress2String(shutterWiFi.localIP()));
 
 	if (!shutterClient.connect(gwIp, SHUTTER_PORT)) {
 		DBPrintln("connection failed");
-		bNeedReconnect=true;
 		shutterClient.stop();
-		reconnectTimer.reset();
 		return false;
 	}
 	shutterClient.setNoDelay(true);
-	bNeedReconnect=false;
 	return true;
 }
 
-bool rotatorReconnect(IPAddress ip)
-{
-	if (!shutterClient.connect(ip, SHUTTER_PORT)) {
-		DBPrintln("connection failed");
-		bNeedReconnect=true;
-		shutterClient.stop();
-		reconnectTimer.reset();
-		return false;
-	}
-	shutterClient.setNoDelay(true);
-	bNeedReconnect=false;
-	return true;
-
-}
 
 // interrupt
 void IRAM_ATTR handleClosedInterrupt()
@@ -371,7 +392,7 @@ void ProcessWifi()
 
 		case CONDITION_SHUTTER:
 			if(hasValue) {
-				if (value.equals("1")) {
+				if (value.equals(String(UNSAFE))) {
 					if (!isBadCondition) {
 						if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING)
 							Shutter->Close();
@@ -381,7 +402,7 @@ void ProcessWifi()
 				}
 				else {
 					isBadCondition = false;
-					DBPrintln("Bad conditions");
+					DBPrintln("Good conditions");
 				}
 			}
 			break;
@@ -453,6 +474,16 @@ void ProcessWifi()
 			DBPrintln("Restore default motor settings");
 			Shutter->restoreDefaultMotorSettings();
 			sRotatorMessage = String(RESTORE_MOTOR_DEFAULT);
+			break;
+		
+		case SHUTTER_SSID:
+			if (hasValue) {
+				sRotatorMessage = String(SHUTTER_SSID);
+				Shutter->setSSID(value);
+				configureWiFi();
+			}
+			sRotatorMessage = String(SHUTTER_SSID) + Shutter->getSSID();
+			DBPrintln("SSID '" + String(Shutter->getSSID()) + "'");
 			break;
 
 		default:

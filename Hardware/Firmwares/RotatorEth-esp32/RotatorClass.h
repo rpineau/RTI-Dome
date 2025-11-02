@@ -29,9 +29,10 @@
 //
 // input
 #define HOME_PIN            15  // Also used for Shutter open status
+#define SPARE_OPENED_PIN 	33	// Digital Input, shutter open limit swith, not used on rotator board, spare input.
 #define BUTTON_CCW          27 // Digital Input
 #define BUTTON_CW           14 // Digital Input
-#define CONDITION_SENSOR_PIN     25  // Digital Input from RG11
+#define CONDITION_SENSOR_PIN     25  // Digital Input from RG11 and other similar devices
 #define SPARE1				34
 #define SPARE2				26
 // ouput

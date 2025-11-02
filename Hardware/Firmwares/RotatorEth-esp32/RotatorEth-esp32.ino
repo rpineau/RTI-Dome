@@ -12,7 +12,7 @@
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
-// #define DEBUG   // enable debug to serial port defined as DebugPort
+#define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -448,31 +448,25 @@ void checkForNewWifiClient()
 	if(!shutterServer)
 		return;
 
-	WiFiClient newClient = shutterServer->accept();
-	if(newClient) {
-		DBPrintln("new WiFi client");
-		if(nbWiFiClient > 0) { // we only accept 1 client
-			DBPrintln("========== Only 1 client allowed ==========");
-			newClient.write("Already in use#");
-			newClient.clear();
-			newClient.stop();
-			DBPrintln("new client rejected");
-		}
-		else {
-			nbWiFiClient++;
-			shutterClient = newClient;
-			shutterClient.setNoDelay(true);
-			shutterClient.setTimeout(250);
-			DBPrintln("new wiFi client accepted");
-			DBPrintln("nb WiFi client = " + String(nbWiFiClient));
-			SendHello();
-		}
-	}
-
 	if(nbWiFiClient>0 && !shutterClient.connected()) {
 		DBPrintln("WiFi client disconnected");
 		shutterClient.stop();
 		nbWiFiClient--;
+	}
+
+	WiFiClient newClient = shutterServer->accept();
+	if(newClient) {
+		DBPrintln("new WiFi client");
+		if(nbWiFiClient > 0) { // we only accept 1 client, disconnect previous one
+			shutterClient.clear();
+			shutterClient.stop();
+		}
+		nbWiFiClient++;
+		shutterClient = newClient;
+		shutterClient.setNoDelay(true);
+		shutterClient.setTimeout(250);
+		DBPrintln("new wiFi client accepted");
+		SendHello();
 	}
 }
 
