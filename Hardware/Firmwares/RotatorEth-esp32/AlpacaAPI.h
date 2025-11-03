@@ -22,7 +22,7 @@
 #define ALPACA_VAR_BUF_LEN 256
 #define ALPACA_OK 0
 #define DISCOVERY_ERROR -1
-#define DOME_INTERFACE_VERSION 3
+#define DOME_INTERFACE_VERSION 1
 
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 enum AlpacaShutterStates { A_OPEN=0, A_CLOSED, A_OPENING, A_CLOSING,  A_ERROR};
@@ -488,6 +488,129 @@ void setConnected(Request &req, Response &res)
 	}
 
 	bAlpacaConnected = FormData["connected"];
+	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
+
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void domeConnect(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	bool bParamsOk = false;
+	String sResp;
+	String sClientId;
+	String sClientTransactionId;
+	String sParameter;
+	String sTmp;
+
+	DBPrintln("[ ********** setConected ********** ]");
+	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	res.set("Content-Type", "application/json");
+
+	if(!bParamsOk){
+		AlpacaResp["ErrorNumber"] = 0x401;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
+	}
+
+	bAlpacaConnected = true;
+	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
+
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void domeConnecting(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	bool bParamsOk = false;
+	String sResp;
+	String sClientId;
+	String sClientTransactionId;
+	String sParameter;
+	String sTmp;
+
+	DBPrintln("[ ********** setConected ********** ]");
+	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	res.set("Content-Type", "application/json");
+
+	if(!bParamsOk){
+		AlpacaResp["ErrorNumber"] = 0x401;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
+	}
+
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+	AlpacaResp["Value"] = false; // it's already connected
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+
+void getDomeState(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	bool bParamsOk = false;
+	String sResp;
+
+	DBPrintln("[ ********** getDomeState ********** ]");
+	bParamsOk = getIDs(req, AlpacaResp, FormData);
+
+	res.set("Content-Type", "application/json");
+	AlpacaResp["ErrorNumber"] = 0;
+	AlpacaResp["ErrorMessage"] = "";
+	// add states to response
+
+	serializeJson(AlpacaResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void domeDisconnect(Request &req, Response &res)
+{
+	JsonDocument AlpacaResp;
+	JsonDocument FormData;
+	bool bParamsOk = false;
+	String sResp;
+	String sClientId;
+	String sClientTransactionId;
+	String sParameter;
+	String sTmp;
+
+	DBPrintln("[ ********** setConected ********** ]");
+	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	res.set("Content-Type", "application/json");
+
+	if(!bParamsOk){
+		AlpacaResp["ErrorNumber"] = 0x401;
+		AlpacaResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(AlpacaResp, sResp);
+		res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
+	}
+
+	bAlpacaConnected = false;
 	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
 
 	AlpacaResp["ErrorNumber"] = 0;
@@ -2130,8 +2253,13 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/commandstring", &doCommandString);
 
 	m_AlpacaRestServer->get("/api/v1/dome/0/connected", &getConnected);
-
 	m_AlpacaRestServer->put("/api/v1/dome/0/connected", &setConnected);
+
+	// platform 7
+	m_AlpacaRestServer->put("/api/v1/dome/0/connect", &domeConnect);
+	m_AlpacaRestServer->get("/api/v1/dome/0/connecting", &domeConnecting);
+	m_AlpacaRestServer->put("/api/v1/dome/0/disconnect", &domeDisconnect);
+	m_AlpacaRestServer->get("/api/v1/dome/0/devicestate", &getDomeState);
 
 	m_AlpacaRestServer->get("/api/v1/dome/0/description", &getDeviceDescription);
 	m_AlpacaRestServer->get("/api/v1/dome/0/driverinfo", &getDriverInfo);
