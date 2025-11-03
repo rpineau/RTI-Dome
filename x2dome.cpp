@@ -430,7 +430,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 	std::string sDummy;
 	int nConditionSensorStatus = COND_SAFE;
 	bool bShutterPresent;
-	char sSSID[SERIAL_BUFFER_SIZE];
+	char sSSID[SSID_MAX_LENGTH+1];
 	int nSpeed;
 	int nAcc;
 	int n_nbStepPerRev;
@@ -620,7 +620,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 	
 	else if (!strcmp(pszEvent, "on_pushButton_2_clicked")) {
 		// set Pan ID
-		uiex->propertyString("SSID", "text", sSSID, SERIAL_BUFFER_SIZE);
+		uiex->propertyString("SSID", "text", sSSID, SSID_MAX_LENGTH+1);
 		nErr = m_RTIDome.setSSID(sSSID);
 		if(nErr) {
 			sErrorMessage << "Error setting Xbee PAN ID : Error " << nErr;

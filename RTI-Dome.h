@@ -47,7 +47,7 @@
 #define ND_LOG_BUFFER_SIZE 256
 #define SSID_TIMEOUT 15    // in seconds
 #define SAFE_CHECK_INTERVAL 10
-
+#define SSID_MAX_LENGTH		32
 #define PLUGIN_VERSION      2.00
 #define PLUGIN_ID   1
 
