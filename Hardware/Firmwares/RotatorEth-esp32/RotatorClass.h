@@ -212,6 +212,7 @@ public:
 	void        homeInterrupt();
 
 	void		ButtonCheck();
+	bool 		checkBoundaries(double dTargetAz, double dDomeAz, double dMargin);
 
 #ifdef USE_ETHERNET
 	void        getIpConfig(IPConfig &config);
@@ -271,6 +272,7 @@ private:
 	bool        m_bDoEEPromSave;
 	// eeprom
 	byte        m_EEPROMpageSize;
+
 
 	byte        readEEPROMByte(int deviceaddress, unsigned int eeaddress);
 	void        readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
@@ -550,7 +552,7 @@ String RotatorClass::getSSID()
 void RotatorClass::setSSID(String sSSID)
 {
 	strncpy(m_Config.wifiIpConfig.sSSID,sSSID.c_str(), WIFI_VAR_LEN);
-	SaveToEEProm();	
+	SaveToEEProm();
 }
 
 
@@ -1073,6 +1075,36 @@ void RotatorClass::motorMoveRelative(const long howFar)
 	stepper.move(howFar);
 }
 
+
+bool RotatorClass::checkBoundaries(double dTargetAz, double dDomeAz, double dMargin)
+{
+	double highMark;
+	double lowMark;
+	double roundedTargetAz;
+
+	// we need to test "large" depending on the heading error and movement coasting
+	highMark = ceil(dDomeAz)+dMargin;
+	lowMark = ceil(dDomeAz)-dMargin;
+	roundedTargetAz = ceil(dTargetAz);
+
+	if(lowMark < 0 && highMark > 0) { // we're close to 0 degre but above 0
+		if((roundedTargetAz+2) >= 360)
+			roundedTargetAz = (roundedTargetAz+2)-360;
+		if ( (roundedTargetAz > lowMark) && (roundedTargetAz <= highMark)) {
+			return true;
+		}
+	}
+	if ( lowMark > 0 && highMark>360 ) { // we're close to 0 but from the other side
+		if( (roundedTargetAz+360) > lowMark && (roundedTargetAz+360) <= highMark) {
+			return true;
+		}
+	}
+	if (roundedTargetAz > lowMark && roundedTargetAz <= highMark) {
+		return true;
+	}
+
+	return false;
+}
 //
 // EEProm code to access the AT24AA128 I2C eeprom
 //

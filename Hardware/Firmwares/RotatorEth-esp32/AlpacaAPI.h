@@ -94,6 +94,47 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 }
 
 
+int getAlpacaShutterState()
+{
+	int nAlpacaShutterState = A_ERROR;
+	String sTmpString;
+	if(!nbWiFiClient) {
+				nAlpacaShutterState = A_ERROR;
+	} else
+	{
+		shutterClient.print(sTmpString + "#");
+		ReceiveWiFi(shutterClient);
+		switch (RemoteShutter.state) {
+			case OPEN:
+				nAlpacaShutterState = A_OPEN;
+				break;
+			case CLOSED:
+				nAlpacaShutterState = A_CLOSED;
+				break;
+			case ERROR:
+				nAlpacaShutterState = A_ERROR;
+				break;
+			case OPENING:
+			case BOTTOM_OPEN:
+			case BOTTOM_OPENING:
+			case FINISHING_OPEN:
+				nAlpacaShutterState = A_OPENING;
+				break;
+			case CLOSING:
+			case BOTTOM_CLOSED:
+			case BOTTOM_CLOSING:
+			case FINISHING_CLOSE:
+				nAlpacaShutterState = A_CLOSING;
+				break;
+			default:
+				nAlpacaShutterState = A_ERROR;
+				break;
+		}
+
+	}
+	return nAlpacaShutterState;
+
+}
 void formDataToJson(Request &req, JsonDocument &FormData)
 {
 	char name[ALPACA_VAR_BUF_LEN];
@@ -569,9 +610,13 @@ void domeConnecting(Request &req, Response &res)
 void getDomeState(Request &req, Response &res)
 {
 	JsonDocument AlpacaResp;
+	JsonDocument jsTmp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
+	double Alt, Az;
+	double dParkPos, dCurrentAz;
+	bool bParked = false;
 
 	DBPrintln("[ ********** getDomeState ********** ]");
 	bParamsOk = getIDs(req, AlpacaResp, FormData);
@@ -580,6 +625,53 @@ void getDomeState(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	// add states to response
+	switch (RemoteShutter.state ) {
+		case OPEN:
+			Alt = 90.0;
+			break;
+		case CLOSED:
+			Alt = 0.0;
+			break;
+		default:
+			Alt = 0.0;
+			break;
+	}
+	jsTmp["Altitude"] = Alt;
+	AlpacaResp["Value"].add(jsTmp);
+
+	jsTmp.clear();
+	jsTmp["AtHome"] = (Rotator->GetHomeStatus() == ATHOME);
+	AlpacaResp["Value"].add(jsTmp);
+
+	jsTmp.clear();
+	dParkPos = Rotator->GetParkAzimuth();
+	dCurrentAz = Rotator->GetAzimuth();
+	if(Rotator->checkBoundaries(dParkPos, dCurrentAz, 1.0)) {
+		bParked = true;
+	}
+	jsTmp["AtPark"] = bParked;
+	AlpacaResp["Value"].add(jsTmp);
+
+	jsTmp.clear();
+	jsTmp["Azimuth"] = Rotator->GetAzimuth();
+	AlpacaResp["Value"].add(jsTmp);
+
+	jsTmp.clear();
+	jsTmp["ShutterStatus"] = getAlpacaShutterState();
+	AlpacaResp["Value"].add(jsTmp);
+
+	jsTmp.clear();
+	if(Rotator->GetSeekMode() != NOT_MOVING) {
+		AlpacaResp["Slewing"] = true;
+	}
+	else {
+		AlpacaResp["Slewing"] = false;
+	}
+	AlpacaResp["Value"].add(jsTmp);
+#pragma message "FIX ME"
+	jsTmp.clear();
+	jsTmp["TimeStamp"] = 0;
+	AlpacaResp["Value"].add(jsTmp);
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -1067,32 +1159,7 @@ void getShutterStatus(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "";
 		shutterClient.print(sTmpString + "#");
 		ReceiveWiFi(shutterClient);
-		switch (RemoteShutter.state) {
-			case OPEN:
-				AlpacaResp["Value"] = A_OPEN;
-				break;
-			case CLOSED:
-				AlpacaResp["Value"] = A_CLOSED;
-				break;
-			case ERROR:
-				AlpacaResp["Value"] = A_ERROR;
-				break;
-			case OPENING:
-			case BOTTOM_OPEN:
-			case BOTTOM_OPENING:
-			case FINISHING_OPEN:
-				AlpacaResp["Value"] = A_OPENING;
-				break;
-			case CLOSING:
-			case BOTTOM_CLOSED:
-			case BOTTOM_CLOSING:
-			case FINISHING_CLOSE:
-				AlpacaResp["Value"] = A_CLOSING;
-				break;
-			default:
-				AlpacaResp["Value"] = A_ERROR;
-				break;
-		}
+		AlpacaResp["Value"] = getAlpacaShutterState();
 	}
 #endif
 	serializeJson(AlpacaResp, sResp);
