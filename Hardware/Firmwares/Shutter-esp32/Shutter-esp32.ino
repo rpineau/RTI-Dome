@@ -9,7 +9,7 @@
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
-#define DEBUG   // enable debug to serial port defined as DebugPort
+// #define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -86,6 +86,10 @@ void setup()
 	delay(1000);
 	DBPrintln("========== RTI-Zone Shutter controller booting ==========");
 #endif
+
+	DBPrintln("========== Set WiFi mode ==========");
+	shutterWiFi.mode(WIFI_STA);
+
 	DBPrintln("========== Creating ShutterClass ==========");
 	Shutter = new ShutterClass();
 
@@ -135,7 +139,6 @@ void loop()
 			watchdogTimer.reset();
 			shutterClient.stop();
 			rotatorConnect(wifiConfig.ip);
-			// bWiFiOk = false;
 		}
 
 		if(needFirstPing) {
@@ -189,15 +192,12 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	int nTimeout = 0;
 	DBPrintln("========== initWiFi ==========");
 	bWiFiOk = false;
-	shutterClient.stop();
 	DBPrintln("========== disconnect ==========");
-	shutterWiFi.disconnect(true);
-	DBPrintln("========== mode ==========");
-	shutterWiFi.mode(WIFI_STA);
-	DBPrintln("========== setHostname ==========");
-	shutterWiFi.setHostname("RTI-Shutter");
+	shutterWiFi.disconnect();
 	DBPrintln("========== config ==========");
 	shutterWiFi.config(ip,  gwIp, IPAddress(255,255,255,0));
+	DBPrintln("========== setHostname ==========");
+	shutterWiFi.setHostname("RTI-Shutter");
 	DBPrintln("========== begin ==========");
 	shutterWiFi.begin(sSSID.c_str(), sPassword.c_str());
 	while (shutterWiFi.status() != WL_CONNECTED) {
@@ -220,6 +220,7 @@ bool rotatorConnect(IPAddress ip)
 	gwIp[3] = 1;
 	DBPrintln("========== clientConnect ==========");
 
+	shutterClient.stop();
 	bWiFiOk = true;
 	DBPrintln("IP = " + IpAddress2String(shutterWiFi.localIP()));
 

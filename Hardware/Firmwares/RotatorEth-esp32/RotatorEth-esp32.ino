@@ -12,7 +12,7 @@
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
-#define DEBUG   // enable debug to serial port defined as DebugPort
+// #define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -402,6 +402,12 @@ void checkForNewTCPClient()
 #ifdef USE_WIFI
 void configureWiFi()
 {
+	if(nbWiFiClient>0) {
+		DBPrintln("Disconnect clients");
+		shutterClient.stop();
+		nbWiFiClient--;
+	}
+
 	DBPrintln("========== Configuring WiFi ==========");
 	Rotator->getWiFiConfig(wifiConfig);
 
@@ -992,7 +998,9 @@ void ProcessCommand(int nSource)
 		case SSID:
 			if (hasValue) {
 				Rotator->setSSID(value);
-				// send now SSID to shutter
+				// send new SSID to shutter
+				shutterMessage = String(SHUTTER_SSID) + value + "#";
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 				// reconfigure wifi
 				configureWiFi();
 			}
@@ -1008,7 +1016,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = String(SHUTTER_PING);
@@ -1026,7 +1033,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + String(RemoteShutter.acceleration);
@@ -1037,7 +1043,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString;
@@ -1048,15 +1053,12 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 				shutterMessage = String(SPEED_SHUTTER)+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 				shutterMessage = String(ACCELERATION_SHUTTER)+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString;
@@ -1083,7 +1085,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 				}
 			serialMessage = sTmpString + RemoteShutter.lowVoltStateOrBadConditions;
@@ -1101,7 +1102,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.reversed;
@@ -1119,7 +1119,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.speed;
@@ -1130,7 +1129,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.state;
@@ -1148,7 +1146,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + String(RemoteShutter.stepsPerStroke);
@@ -1159,7 +1156,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.version;
@@ -1175,7 +1171,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString +  String(RemoteShutter.volts) + "," + String(RemoteShutter.voltsCutOff);
@@ -1192,7 +1187,6 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.watchdogInterval;
@@ -1265,7 +1259,6 @@ void ProcessWifi()
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE): String(UNSAFE)) + "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				// shutterClient.flush();
 			}
 			break;
 
