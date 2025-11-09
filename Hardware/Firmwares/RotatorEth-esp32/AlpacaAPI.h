@@ -668,10 +668,6 @@ void getDomeState(Request &req, Response &res)
 		AlpacaResp["Slewing"] = false;
 	}
 	AlpacaResp["Value"].add(jsTmp);
-#pragma message "FIX ME"
-	jsTmp.clear();
-	jsTmp["TimeStamp"] = 0;
-	AlpacaResp["Value"].add(jsTmp);
 
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
