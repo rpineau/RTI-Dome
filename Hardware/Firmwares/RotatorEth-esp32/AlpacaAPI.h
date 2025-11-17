@@ -2360,43 +2360,43 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
 	// adding our own endpoints for the settings
-	m_AlpacaRestServer->use("/setup/v1/homePosition", &homePosition);
-	m_AlpacaRestServer->use("/setup/v1/parkPosition", &parkPosition);
+	m_AlpacaRestServer->use("/setup/homePosition", &homePosition);
+	m_AlpacaRestServer->use("/setup/parkPosition", &parkPosition);
 
-	m_AlpacaRestServer->use("/setup/v1/reverseDirection", &reverseDirectionState);
-	m_AlpacaRestServer->use("/setup/v1/shutterOpenOrder", &shutterOpenOrderValue);
+	m_AlpacaRestServer->use("/setup/reverseDirection", &reverseDirectionState);
+	m_AlpacaRestServer->use("/setup/shutterOpenOrder", &shutterOpenOrderValue);
 
-	m_AlpacaRestServer->use("/setup/v1/wifiSSID", &wifiSSIDValue);
-	m_AlpacaRestServer->get("/setup/v1/shutterPresentState", &isShutterPresentState);
-
-
-	m_AlpacaRestServer->use("/setup/v1/useDHCP", &useDHCPState);
-
-	m_AlpacaRestServer->get("/setup/v1/macAddress", &macAddressValue);
-	m_AlpacaRestServer->use("/setup/v1/ipAddress", &ipAddressValue);
-	m_AlpacaRestServer->use("/setup/v1/subnetMask", &subnetMaskValue);
-	m_AlpacaRestServer->use("/setup/v1/ipGeteway", &ipGetewayValue);
+	m_AlpacaRestServer->use("/setup/wifiSSID", &wifiSSIDValue);
+	m_AlpacaRestServer->get("/setup/shutterPresentState", &isShutterPresentState);
 
 
-	m_AlpacaRestServer->use("/setup/v1/domeCalibrate", &domeCalibrateAction);
+	m_AlpacaRestServer->use("/setup/useDHCP", &useDHCPState);
 
-	m_AlpacaRestServer->use("/setup/v1/stepPerRevolution", &stepPerRevolutionValue);
-	m_AlpacaRestServer->use("/setup/v1/rotationSpeed", &rotationSpeedValue);
-	m_AlpacaRestServer->use("/setup/v1/rotationAcceleration", &rotationAccelerationValue);
-	m_AlpacaRestServer->put("/setup/v1/restoreRotationMotorSettings", &restoreRotationMotorValues);
+	m_AlpacaRestServer->get("/setup/macAddress", &macAddressValue);
+	m_AlpacaRestServer->use("/setup/ipAddress", &ipAddressValue);
+	m_AlpacaRestServer->use("/setup/subnetMask", &subnetMaskValue);
+	m_AlpacaRestServer->use("/setup/ipGeteway", &ipGetewayValue);
 
-	m_AlpacaRestServer->use("/setup/v1/shutterSpeed", &shutterSpeedValue);
-	m_AlpacaRestServer->use("/setup/v1/shutterAcceleration", &shutterAccelerationValue);
-	m_AlpacaRestServer->put("/setup/v1/restoreShutterMotorSettings", &restoreShutterMotorValues);
 
-	m_AlpacaRestServer->use("/setup/v1/shutterWatchdogTimerValue", &shutterWatchdogTimerValue);
-	m_AlpacaRestServer->use("/setup/v1/domeVoltageCutoff", &domeVoltageCutoffValue);
-	m_AlpacaRestServer->use("/setup/v1/shutterVoltageCutoff", &shutterVoltageCutoffValue);
-	m_AlpacaRestServer->use("/setup/v1/unsafeDomeAction", &unsafeDomeAction);
+	m_AlpacaRestServer->use("/setup/domeCalibrate", &domeCalibrateAction);
 
-	m_AlpacaRestServer->get("/setup/v1/domeVoltage", &domeVoltageCutoffValue);
-	m_AlpacaRestServer->get("/setup/v1/shutterVoltage", &shutterVoltageCutoffValue);
-	m_AlpacaRestServer->get("/setup/v1/envCondition", &envConditionState);
+	m_AlpacaRestServer->use("/setup/stepPerRevolution", &stepPerRevolutionValue);
+	m_AlpacaRestServer->use("/setup/rotationSpeed", &rotationSpeedValue);
+	m_AlpacaRestServer->use("/setup/rotationAcceleration", &rotationAccelerationValue);
+	m_AlpacaRestServer->put("/setup/restoreRotationMotorSettings", &restoreRotationMotorValues);
+
+	m_AlpacaRestServer->use("/setup/shutterSpeed", &shutterSpeedValue);
+	m_AlpacaRestServer->use("/setup/shutterAcceleration", &shutterAccelerationValue);
+	m_AlpacaRestServer->put("/setup/restoreShutterMotorSettings", &restoreShutterMotorValues);
+
+	m_AlpacaRestServer->use("/setup/shutterWatchdogTimerValue", &shutterWatchdogTimerValue);
+	m_AlpacaRestServer->use("/setup/domeVoltageCutoff", &domeVoltageCutoffValue);
+	m_AlpacaRestServer->use("/setup/shutterVoltageCutoff", &shutterVoltageCutoffValue);
+	m_AlpacaRestServer->use("/setup/unsafeDomeAction", &unsafeDomeAction);
+
+	m_AlpacaRestServer->get("/setup/domeVoltage", &domeVoltageCutoffValue);
+	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageCutoffValue);
+	m_AlpacaRestServer->get("/setup/envCondition", &envConditionState);
 
 	DBPrintln("m_AlpacaRestServer started");
 }
