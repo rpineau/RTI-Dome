@@ -135,6 +135,7 @@ int getAlpacaShutterState()
 	return nAlpacaShutterState;
 
 }
+
 void formDataToJson(Request &req, JsonDocument &FormData)
 {
 	char name[ALPACA_VAR_BUF_LEN];
@@ -157,8 +158,8 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 				// int
 				FormData[sName]=sValue.toInt();
 			} else {
-				// double
-				FormData[sName]=sValue.toDouble();
+				// float
+				FormData[sName]=sValue.toFloat();
 			}
 		}
 		else {
@@ -614,8 +615,8 @@ void getDomeState(Request &req, Response &res)
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
-	double Alt, Az;
-	double dParkPos, dCurrentAz;
+	float Alt, Az;
+	float dParkPos, dCurrentAz;
 	bool bParked = false;
 
 	DBPrintln("[ ********** getDomeState ********** ]");
@@ -627,13 +628,13 @@ void getDomeState(Request &req, Response &res)
 	// add states to response
 	switch (RemoteShutter.state ) {
 		case OPEN:
-			Alt = 90.0;
+			Alt = 90.0f;
 			break;
 		case CLOSED:
-			Alt = 0.0;
+			Alt = 0.0f;
 			break;
 		default:
-			Alt = 0.0;
+			Alt = 0.0f;
 			break;
 	}
 	jsTmp["Altitude"] = Alt;
@@ -852,17 +853,17 @@ void getAltitude(Request &req, Response &res)
 	ReceiveWiFi(shutterClient);
 	switch (RemoteShutter.state ) {
 		case OPEN:
-			AlpacaResp["Value"] = 90.0;
+			AlpacaResp["Value"] = 90.0f;
 			break;
 		case CLOSED:
-			AlpacaResp["Value"] = 0.0;
+			AlpacaResp["Value"] = 0.0f;
 			break;
 		default:
-			AlpacaResp["Value"] = 0.0;
+			AlpacaResp["Value"] = 0.0f;
 			break;
 	}
 #else
-	AlpacaResp["Value"] = 0.0;
+	AlpacaResp["Value"] = 0.0f;
 #endif
 	serializeJson(AlpacaResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -1401,7 +1402,7 @@ void doPark(Request &req, Response &res)
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
-	double fParkPos;
+	float fParkPos;
 
 	DBPrintln("[ ********** doPark ********** ]");
 	bParamsOk = getIDs(req, AlpacaResp, FormData);
@@ -1434,7 +1435,7 @@ void setPark(Request &req, Response &res)
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
-	double fParkPos;
+	float fParkPos;
 
 	DBPrintln("[ ********** setPark ********** ]");
 	bParamsOk = getIDs(req, AlpacaResp, FormData);
@@ -1481,7 +1482,7 @@ void doAltitudeSlew(Request &req, Response &res)
 			return;
 	}
 
-	if(!FormData["altitude"].is<double>()) {
+	if(!FormData["altitude"].is<float>()) {
 		AlpacaResp["ErrorNumber"] = 0x401;
 		AlpacaResp["ErrorMessage"] = "Invalid value";
 		serializeJson(AlpacaResp, sResp);
@@ -1509,7 +1510,7 @@ void doGoTo(Request &req, Response &res)
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
-	double dNewPos;
+	float dNewPos;
 
 	DBPrintln("[ ********** doGoTo ********** ]");
 	bParamsOk = getIDs(req, AlpacaResp, FormData);
@@ -1532,7 +1533,7 @@ void doGoTo(Request &req, Response &res)
 			return;
 	}
 
-	if(!FormData["azimuth"].is<double>()) {
+	if(!FormData["azimuth"].is<float>()) {
 		AlpacaResp["ErrorNumber"] = 0x401;
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
@@ -1541,7 +1542,7 @@ void doGoTo(Request &req, Response &res)
 	}
 
 	dNewPos = FormData["azimuth"];
-	if(dNewPos < 0 || dNewPos>360) {
+	if(dNewPos < 0.0f || dNewPos > 360.0f) {
 		AlpacaResp["ErrorNumber"] = 1025;
 		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
 		serializeJson(AlpacaResp, sResp);
@@ -1565,7 +1566,7 @@ void doSyncAzimuth(Request &req, Response &res)
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
-	double dNewPos;
+	float dNewPos;
 
 	DBPrintln("[ ********** doSyncAzimuth ********** ]");
 	bParamsOk = getIDs(req, AlpacaResp, FormData);
@@ -1580,7 +1581,7 @@ void doSyncAzimuth(Request &req, Response &res)
 			return;
 	}
 
-	if(!FormData["azimuth"].is<double>()) {
+	if(!FormData["azimuth"].is<float>()) {
 		AlpacaResp["ErrorNumber"] = 1025;
 		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
 		serializeJson(AlpacaResp, sResp);
@@ -1589,7 +1590,7 @@ void doSyncAzimuth(Request &req, Response &res)
 	}
 
 	dNewPos = FormData["azimuth"];
-	if(dNewPos<0 || dNewPos > 360) {
+	if(dNewPos < 0.0f || dNewPos > 360.0f) {
 		AlpacaResp["ErrorNumber"] = 0x401;
 		AlpacaResp["ErrorMessage"] = "Invalid Azimuth";
 		serializeJson(AlpacaResp, sResp);
@@ -1646,7 +1647,7 @@ void homePosition(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
 	String sResp;
-	double dPosition = 0;
+	float dPosition = 0.0f;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
@@ -1654,7 +1655,7 @@ void homePosition(Request &req, Response &res)
 		if(FormData.size()==0){
 		}
 		else {
-			if(FormData["value"].is<double>()) {
+			if(FormData["value"].is<float>()) {
 				dPosition = FormData["value"];
 				Rotator->SetHomeAzimuth(dPosition);
 			}
@@ -1673,7 +1674,7 @@ void parkPosition(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
 	String sResp;
-	double dPosition = 0;
+	float dPosition = 0.0f;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
@@ -1681,7 +1682,7 @@ void parkPosition(Request &req, Response &res)
 		if(FormData.size()==0){
 		}
 		else {
-			if(FormData["value"].is<double>()) {
+			if(FormData["value"].is<float>()) {
 				dPosition = FormData["value"];
 				Rotator->SetParkAzimuth(dPosition);
 			}

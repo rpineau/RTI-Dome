@@ -744,7 +744,7 @@ void ReceiveComputer()
 
 void ProcessCommand(int nSource)
 {
-	double fTmp;
+	float fTmp;
 	char command;
 	String value;
 
@@ -807,12 +807,12 @@ void ProcessCommand(int nSource)
 
 		case GOTO_ROTATOR:
 			if (hasValue && !bLowShutterVoltage) { // stay at park if shutter voltage is low.
-				fTmp = value.toDouble();
-				while(fTmp < 0) {
-					fTmp+=360.0;
+				fTmp = value.toFloat();
+				while(fTmp < 0.0f) {
+					fTmp += 360.0f;
 				}
-				while(fTmp > 360) {
-					fTmp-=360.0;
+				while(fTmp > 360.0f) {
+					fTmp -= 360.0f;
 				}
 				Rotator->GoToAzimuth(fTmp);
 				bParked = false;
@@ -834,7 +834,7 @@ void ProcessCommand(int nSource)
 		case HOMEAZ_ROTATOR:
 			if (hasValue) {
 				fTmp = value.toDouble();
-				if ((fTmp >= 0) && (fTmp < 360))
+				if ((fTmp >= 0.0f) && (fTmp < 360.0f))
 					Rotator->SetHomeAzimuth(fTmp);
 			}
 			serialMessage = String(HOMEAZ_ROTATOR) + String(Rotator->GetHomeAzimuth());
@@ -848,7 +848,7 @@ void ProcessCommand(int nSource)
 			sTmpString = String(PARKAZ_ROTATOR);
 			if (hasValue) {
 				fTmp = value.toDouble();
-				if ((fTmp >= 0) && (fTmp < 360)) {
+				if ((fTmp >= 0.0f) && (fTmp < 360.0f)) {
 					Rotator->SetParkAzimuth(fTmp);
 					serialMessage = sTmpString + String(Rotator->GetParkAzimuth());
 				}
@@ -898,7 +898,7 @@ void ProcessCommand(int nSource)
 		case SYNC_ROTATOR:
 			if (hasValue) {
 				fTmp = value.toDouble();
-				if (fTmp >= 0 && fTmp < 360) {
+				if (fTmp >= 0.0f && fTmp < 360.0f) {
 					Rotator->SyncPosition(fTmp);
 					serialMessage = String(SYNC_ROTATOR) + String(Rotator->GetAzimuth());
 				}
