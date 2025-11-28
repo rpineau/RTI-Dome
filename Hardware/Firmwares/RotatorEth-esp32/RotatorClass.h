@@ -230,6 +230,7 @@ public:
 	String      getSSID();
 	void        setSSID(String sSSID);
 	void		getWiFiConfig(WIFIConfig &config);
+	void		setWifiDefault();
 #endif // USE_WIFI
 
 	static String IpAddress2String(const IPAddress& ipAddress);
@@ -563,6 +564,16 @@ void RotatorClass::getWiFiConfig(WIFIConfig &config)
 	strncpy(config.sPassword, m_Config.wifiIpConfig.sPassword, WIFI_VAR_LEN);
 }
 #endif
+
+void RotatorClass::setWifiDefault()
+{
+	DBPrintln("Resseting WiFi to default SSID and IP");
+
+	m_Config.wifiIpConfig.ip.fromString("172.31.255.1");
+	strncpy(m_Config.wifiIpConfig.sSSID,"RTIShutter", WIFI_VAR_LEN);
+	strncpy(m_Config.wifiIpConfig.sPassword,"RTIShutter", WIFI_VAR_LEN);
+ 	SaveToEEProm();
+}
 
 String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 {

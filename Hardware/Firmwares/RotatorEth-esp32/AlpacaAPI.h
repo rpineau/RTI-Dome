@@ -2300,6 +2300,7 @@ DomeAlpacaServer::DomeAlpacaServer(int port)
 	m_AlpacaRestServer = nullptr;
 	nTransactionID = 0;
 	uuid.seed(uidBuf[4],uidBuf[5]);
+	uuid.generate();
 }
 
 void DomeAlpacaServer::startServer()

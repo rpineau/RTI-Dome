@@ -26,7 +26,7 @@ const char STEPSPER_ROTATOR             = 't'; // Get/set Steps per rotation
 const char IP_GATEWAY                   = 'u'; // get/set default gateway IP
 const char VERSION_ROTATOR              = 'v'; // Get Firmware Version
 const char IP_DHCP                      = 'w'; // get/set DHCP mode
-										//'x';
+const char RESTORE_WIFI_DEFAULT			= 'x'; //
 const char REVERSED_ROTATOR             = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR           = 'z'; // Get homed status
 const char CONDITION_SHUTTER            = 'F'; // Get conditions status (from client) or tell shutter if conditions are bad (from Rotator)

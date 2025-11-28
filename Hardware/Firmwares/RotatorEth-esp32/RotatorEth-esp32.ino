@@ -432,7 +432,9 @@ void configureWiFi()
 
 	DBPrintln("========== Configuring WiFi ==========");
 	Rotator->getWiFiConfig(wifiConfig);
-
+	if(Rotator->getSSID().length() < 8) {
+		Rotator->setWifiDefault();
+	}
 	wifiPresent = initWiFi(wifiConfig.ip,
 								String(wifiConfig.sSSID),
 								String(wifiConfig.sPassword));
@@ -604,15 +606,15 @@ void CheckForCommands()
 void CheckForConditions()
 {
 	String shutterMessage;
+	bool bCurrentCondition = Rotator->GetConditionsStatus();
 
 	int nPosition, nParkPos;
-	if(bIsSafe != Rotator->GetConditionsStatus()) { // was there a state change ?
-		bIsSafe = Rotator->GetConditionsStatus();
+	if(bIsSafe != bCurrentCondition) { // was there a state change ?
+		bIsSafe = bCurrentCondition;
 #ifdef USE_WIFI
 		if(nbWiFiClient && shutterClient.connected()) {
 			shutterMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE) : String(UNSAFE)) + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-			// shutterClient.flush();
 			ReceiveWiFi(shutterClient);
 		}
 #endif // USE_WIFI
