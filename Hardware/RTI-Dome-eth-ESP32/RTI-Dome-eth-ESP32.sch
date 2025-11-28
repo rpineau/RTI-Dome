@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.6.2">
+<eagle version="9.7.0">
 <drawing>
 <settings>
-<setting alwaysvectorfont="no"/>
+<setting alwaysvectorfont="yes"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="1.27" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.127" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
-<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
-<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
-<layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
-<layer number="5" name="Route5" color="4" fill="4" visible="no" active="no"/>
-<layer number="6" name="Route6" color="1" fill="8" visible="no" active="no"/>
-<layer number="7" name="Route7" color="4" fill="8" visible="no" active="no"/>
-<layer number="8" name="Route8" color="1" fill="2" visible="no" active="no"/>
-<layer number="9" name="Route9" color="4" fill="2" visible="no" active="no"/>
-<layer number="10" name="Route10" color="1" fill="7" visible="no" active="no"/>
-<layer number="11" name="Route11" color="4" fill="7" visible="no" active="no"/>
-<layer number="12" name="Route12" color="1" fill="5" visible="no" active="no"/>
-<layer number="13" name="Route13" color="4" fill="5" visible="no" active="no"/>
-<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
-<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
+<layer number="2" name="Route2" color="16" fill="1" visible="no" active="no"/>
+<layer number="3" name="Route3" color="17" fill="1" visible="no" active="no"/>
+<layer number="4" name="Route4" color="18" fill="1" visible="no" active="no"/>
+<layer number="5" name="Route5" color="19" fill="1" visible="no" active="no"/>
+<layer number="6" name="Route6" color="25" fill="1" visible="no" active="no"/>
+<layer number="7" name="Route7" color="26" fill="1" visible="no" active="no"/>
+<layer number="8" name="Route8" color="27" fill="1" visible="no" active="no"/>
+<layer number="9" name="Route9" color="28" fill="1" visible="no" active="no"/>
+<layer number="10" name="Route10" color="29" fill="1" visible="no" active="no"/>
+<layer number="11" name="Route11" color="30" fill="1" visible="no" active="no"/>
+<layer number="12" name="Route12" color="20" fill="1" visible="no" active="no"/>
+<layer number="13" name="Route13" color="21" fill="1" visible="no" active="no"/>
+<layer number="14" name="Route14" color="22" fill="1" visible="no" active="no"/>
+<layer number="15" name="Route15" color="23" fill="1" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
 <layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
+<layer number="20" name="Dimension" color="24" fill="1" visible="no" active="no"/>
 <layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
 <layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
@@ -62,7 +62,7 @@
 <layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
 <layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
 <layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
+<layer number="54" name="bGND_GNDA" color="7" fill="9" visible="no" active="no"/>
 <layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
 <layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
 <layer number="59" name="tCarbon" color="7" fill="1" visible="no" active="no"/>
@@ -78,24 +78,24 @@
 <layer number="96" name="Values" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="97" name="Info" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="98" name="Guide" color="6" fill="1" visible="no" active="yes"/>
-<layer number="99" name="SpiceOrder" color="5" fill="1" visible="no" active="yes"/>
+<layer number="99" name="SpiceOrder" color="7" fill="1" visible="no" active="yes"/>
 <layer number="100" name="Muster" color="7" fill="1" visible="no" active="no"/>
-<layer number="101" name="Patch_Top" color="12" fill="4" visible="no" active="yes"/>
+<layer number="101" name="Patch_Top" color="7" fill="4" visible="no" active="yes"/>
 <layer number="102" name="Vscore" color="7" fill="1" visible="no" active="yes"/>
 <layer number="103" name="tMap" color="7" fill="1" visible="no" active="yes"/>
-<layer number="104" name="Name" color="16" fill="1" visible="no" active="yes"/>
+<layer number="104" name="Name" color="7" fill="1" visible="no" active="yes"/>
 <layer number="105" name="tPlate" color="7" fill="1" visible="no" active="yes"/>
 <layer number="106" name="bPlate" color="7" fill="1" visible="no" active="yes"/>
 <layer number="107" name="Crop" color="7" fill="1" visible="no" active="yes"/>
-<layer number="108" name="tplace-old" color="10" fill="1" visible="no" active="yes"/>
-<layer number="109" name="ref-old" color="11" fill="1" visible="no" active="yes"/>
+<layer number="108" name="tplace-old" color="7" fill="1" visible="no" active="yes"/>
+<layer number="109" name="ref-old" color="7" fill="1" visible="no" active="yes"/>
 <layer number="110" name="fp0" color="7" fill="1" visible="no" active="yes"/>
 <layer number="111" name="LPC17xx" color="7" fill="1" visible="no" active="yes"/>
 <layer number="112" name="tSilk" color="7" fill="1" visible="no" active="yes"/>
 <layer number="113" name="IDFDebug" color="7" fill="1" visible="no" active="yes"/>
 <layer number="114" name="Badge_Outline" color="7" fill="1" visible="no" active="yes"/>
 <layer number="115" name="ReferenceISLANDS" color="7" fill="1" visible="no" active="yes"/>
-<layer number="116" name="Patch_BOT" color="9" fill="4" visible="no" active="yes"/>
+<layer number="116" name="Patch_BOT" color="7" fill="4" visible="no" active="yes"/>
 <layer number="117" name="PM_Ref" color="7" fill="1" visible="no" active="yes"/>
 <layer number="118" name="Rect_Pads" color="7" fill="1" visible="no" active="yes"/>
 <layer number="119" name="PF_Ref" color="7" fill="1" visible="no" active="yes"/>
@@ -127,15 +127,15 @@
 <layer number="154" name="FabDoc2" color="7" fill="1" visible="no" active="yes"/>
 <layer number="155" name="FabDoc3" color="7" fill="1" visible="no" active="yes"/>
 <layer number="199" name="Contour" color="7" fill="1" visible="no" active="yes"/>
-<layer number="200" name="200bmp" color="1" fill="10" visible="no" active="yes"/>
-<layer number="201" name="201bmp" color="2" fill="10" visible="no" active="yes"/>
-<layer number="202" name="202bmp" color="3" fill="10" visible="no" active="yes"/>
-<layer number="203" name="203bmp" color="4" fill="10" visible="no" active="yes"/>
-<layer number="204" name="204bmp" color="5" fill="10" visible="no" active="yes"/>
-<layer number="205" name="205bmp" color="6" fill="10" visible="no" active="yes"/>
+<layer number="200" name="200bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="201" name="201bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="202" name="202bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="203" name="203bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="204" name="204bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="205" name="205bmp" color="7" fill="10" visible="no" active="yes"/>
 <layer number="206" name="206bmp" color="7" fill="10" visible="no" active="yes"/>
-<layer number="207" name="207bmp" color="8" fill="10" visible="no" active="yes"/>
-<layer number="208" name="208bmp" color="9" fill="10" visible="no" active="yes"/>
+<layer number="207" name="207bmp" color="7" fill="10" visible="no" active="yes"/>
+<layer number="208" name="208bmp" color="7" fill="10" visible="no" active="yes"/>
 <layer number="209" name="209bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="210" name="210bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="211" name="211bmp" color="7" fill="1" visible="no" active="yes"/>
@@ -144,14 +144,14 @@
 <layer number="214" name="214bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="215" name="215bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="216" name="216bmp" color="7" fill="1" visible="no" active="yes"/>
-<layer number="217" name="217bmp" color="18" fill="1" visible="no" active="no"/>
-<layer number="218" name="218bmp" color="19" fill="1" visible="no" active="no"/>
-<layer number="219" name="219bmp" color="20" fill="1" visible="no" active="no"/>
-<layer number="220" name="220bmp" color="21" fill="1" visible="no" active="no"/>
-<layer number="221" name="221bmp" color="22" fill="1" visible="no" active="no"/>
-<layer number="222" name="222bmp" color="23" fill="1" visible="no" active="no"/>
-<layer number="223" name="223bmp" color="24" fill="1" visible="no" active="no"/>
-<layer number="224" name="224bmp" color="25" fill="1" visible="no" active="no"/>
+<layer number="217" name="217bmp" color="7" fill="1" visible="no" active="no"/>
+<layer number="218" name="218bmp" color="7" fill="1" visible="no" active="no"/>
+<layer number="219" name="219bmp" color="7" fill="1" visible="no" active="no"/>
+<layer number="220" name="220bmp" color="7" fill="1" visible="no" active="no"/>
+<layer number="221" name="221bmp" color="7" fill="1" visible="no" active="no"/>
+<layer number="222" name="222bmp" color="7" fill="1" visible="no" active="no"/>
+<layer number="223" name="223bmp" color="7" fill="1" visible="no" active="no"/>
+<layer number="224" name="224bmp" color="7" fill="1" visible="no" active="no"/>
 <layer number="225" name="225bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="226" name="226bmp" color="7" fill="1" visible="no" active="yes"/>
 <layer number="227" name="227bmp" color="7" fill="1" visible="no" active="yes"/>
@@ -163,8 +163,8 @@
 <layer number="233" name="Eagle3D_PG3" color="7" fill="1" visible="no" active="yes"/>
 <layer number="248" name="Housing" color="7" fill="1" visible="no" active="yes"/>
 <layer number="249" name="Edge" color="7" fill="1" visible="no" active="yes"/>
-<layer number="250" name="Descript" color="3" fill="1" visible="no" active="no"/>
-<layer number="251" name="SMDround" color="12" fill="11" visible="no" active="no"/>
+<layer number="250" name="Descript" color="7" fill="1" visible="no" active="no"/>
+<layer number="251" name="SMDround" color="7" fill="1" visible="no" active="no"/>
 <layer number="254" name="cooling" color="7" fill="1" visible="no" active="yes"/>
 <layer number="255" name="routoute" color="7" fill="1" visible="no" active="yes"/>
 </layers>
@@ -2737,7 +2737,7 @@
 <text x="2.655" y="-0.385" size="0.8128" layer="25" font="vector" rot="R180">&gt;NAME</text>
 <text x="2.655" y="1.52" size="0.8128" layer="27" font="vector" rot="R180">&gt;VALUE</text>
 </package>
-<package name="J1011F01PNL" urn="urn:adsk.eagle:footprint:43182962/3" library_version="37">
+<package name="J1011F01PNL" urn="urn:adsk.eagle:footprint:43182962/3" library_version="58">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -9249,7 +9249,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <packageinstance name="TSSOP20"/>
 </packageinstances>
 </package3d>
-<package3d name="J1026F01PNL" urn="urn:adsk.eagle:package:43182963/4" type="model" library_version="37">
+<package3d name="J1026F01PNL" urn="urn:adsk.eagle:package:43182963/4" type="model" library_version="58">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -11763,7 +11763,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <rectangle x1="1.1025" y1="6.0375" x2="1.5525" y2="6.0525" layer="94"/>
 <rectangle x1="1.1925" y1="6.0525" x2="1.4625" y2="6.0675" layer="94"/>
 </symbol>
-<symbol name="J1011F" urn="urn:adsk.eagle:symbol:37318285/1" library_version="2" library_locally_modified="yes">
+<symbol name="J1011F" urn="urn:adsk.eagle:symbol:37318285/1" locally_modified="yes" library_version="58">
 <wire x1="21.59" y1="-39.37" x2="20.32" y2="-41.91" width="0.254" layer="94"/>
 <wire x1="20.32" y1="-41.91" x2="19.05" y2="-39.37" width="0.254" layer="94"/>
 <wire x1="21.59" y1="-41.91" x2="20.32" y2="-41.91" width="0.254" layer="94"/>
@@ -11978,24 +11978,24 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <pin name="5/NC" x="-15.24" y="-30.48" length="short" direction="in"/>
 <pin name="CGND" x="2.54" y="-60.96" length="middle" rot="R90"/>
 <pin name="CGND2" x="7.62" y="-60.96" length="middle" rot="R90"/>
-<polygon width="0.1524" layer="94">
-<vertex x="16.891" y="-41.529"/>
+<polygon width="0.1524" layer="94" pour="solid">
 <vertex x="17.272" y="-40.64"/>
+<vertex x="16.891" y="-41.529"/>
 <vertex x="17.78" y="-41.148"/>
 </polygon>
-<polygon width="0.1524" layer="94">
-<vertex x="17.018" y="-42.672"/>
+<polygon width="0.1524" layer="94" pour="solid">
 <vertex x="17.399" y="-41.783"/>
+<vertex x="17.018" y="-42.672"/>
 <vertex x="17.907" y="-42.291"/>
 </polygon>
-<polygon width="0.1524" layer="94">
-<vertex x="16.891" y="-51.689"/>
+<polygon width="0.1524" layer="94" pour="solid">
 <vertex x="17.272" y="-50.8"/>
+<vertex x="16.891" y="-51.689"/>
 <vertex x="17.78" y="-51.308"/>
 </polygon>
-<polygon width="0.1524" layer="94">
-<vertex x="17.018" y="-52.832"/>
+<polygon width="0.1524" layer="94" pour="solid">
 <vertex x="17.399" y="-51.943"/>
+<vertex x="17.018" y="-52.832"/>
 <vertex x="17.907" y="-52.451"/>
 </polygon>
 </symbol>
@@ -12106,7 +12106,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="RTI-LOGO" urn="urn:adsk.eagle:component:37318498/1" library_version="2" library_locally_modified="yes">
+<deviceset name="RTI-LOGO" urn="urn:adsk.eagle:component:37318498/1" library_version="58" library_locally_modified="yes">
 <gates>
 <gate name="G$1" symbol="LOGO" x="0" y="0"/>
 </gates>
@@ -12129,7 +12129,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="J1011F01PNL" urn="urn:adsk.eagle:component:43182970/2" prefix="X" library_version="37">
+<deviceset name="J1011F01PNL" urn="urn:adsk.eagle:component:43182970/2" prefix="X" library_version="58">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -12164,7 +12164,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="CB3LV-OSCILATOR" urn="urn:adsk.eagle:component:37318468/3" library_version="38">
+<deviceset name="CB3LV-OSCILATOR" urn="urn:adsk.eagle:component:37318468/3" library_version="58">
 <gates>
 <gate name="G$1" symbol="QG1LV" x="0" y="0"/>
 </gates>
@@ -12185,7 +12185,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="74*541" urn="urn:adsk.eagle:component:37318443/4" library_version="41">
+<deviceset name="74*541" urn="urn:adsk.eagle:component:37318443/4" library_version="58">
 <description>Octal non inverting buffer</description>
 <gates>
 <gate name="G$1" symbol="74*541" x="0" y="0"/>
@@ -12254,7 +12254,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="JP2E" urn="urn:adsk.eagle:component:37318441/2" prefix="JP" uservalue="yes" library_version="55">
+<deviceset name="JP2E" urn="urn:adsk.eagle:component:37318441/2" prefix="JP" uservalue="yes" library_version="58">
 <description>&lt;b&gt;JUMPER&lt;/b&gt;</description>
 <gates>
 <gate name="1" symbol="JP3E" x="0" y="0"/>
@@ -12275,7 +12275,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="24LC64T-I/SN" urn="urn:adsk.eagle:component:41513623/3" library_version="41">
+<deviceset name="24LC64T-I/SN" urn="urn:adsk.eagle:component:41513623/3" library_version="58">
 <description>64K I2C Serial EEPROM</description>
 <gates>
 <gate name="A" symbol="24LC64T-I/SN" x="0" y="0"/>
@@ -20656,25 +20656,29 @@ Source: AVX .. aphvc.pdf</description>
 </packageinstances>
 </package3d>
 <package3d name="691313510003" urn="urn:adsk.eagle:package:45454765/2" type="model" library_version="241">
-<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;691313510003-2&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="691313510003"/>
 </packageinstances>
 </package3d>
 <package3d name="SHDRRA2W100P0X508_1X2_1216X120" urn="urn:adsk.eagle:package:45454773/6" type="model" library_version="241">
-<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;691313510002&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="SHDRRA2W100P0X508_1X2_1216X120"/>
 </packageinstances>
 </package3d>
 <package3d name="QFN50P300X300X100-17N" urn="urn:adsk.eagle:package:45879354/2" type="model" library_version="241">
-<description>&lt;b&gt;RGT&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;RGT&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="QFN50P300X300X100-17N"/>
 </packageinstances>
 </package3d>
 <package3d name="INDPM3630X200N" urn="urn:adsk.eagle:package:45879408/2" type="model" library_version="241">
-<description>&lt;b&gt;IHLP1212&lt;/b&gt;&lt;br&gt;</description>
+<description>&lt;b&gt;IHLP1212&lt;/b&gt;&lt;br&gt;
+</description>
 <packageinstances>
 <packageinstance name="INDPM3630X200N"/>
 </packageinstances>
@@ -20807,7 +20811,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 </device>
 </devices>
 </deviceset>
-<deviceset name="MMBT3904LT1" urn="urn:adsk.eagle:component:43140559/4" prefix="T" library_version="146">
+<deviceset name="MMBT3904LT1" urn="urn:adsk.eagle:component:43140559/4" prefix="T" library_version="241">
 <description>&lt;b&gt;NPN TRANSISTOR&lt;/b&gt;</description>
 <gates>
 <gate name="G$1" symbol="NPN" x="0" y="0"/>
@@ -21344,9 +21348,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <technology name="">
 <attribute name="AVAILABILITY" value="In Stock"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value="
-WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board
-"/>
+<attribute name="DESCRIPTION" value=" WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D on the board "/>
 <attribute name="MF" value="Espressif Systems"/>
 <attribute name="MP" value="ESP32-DEVKITC-32D"/>
 <attribute name="PACKAGE" value="None"/>
@@ -21413,20 +21415,15 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <variantdefs>
 </variantdefs>
 <classes>
-<class number="0" name="default" width="0.254" drill="0.3">
-<clearance class="0" value="0.1524"/>
+<class number="0" name="default" width="0" drill="0">
 </class>
-<class number="1" name="+12V" width="0.4064" drill="0.3">
-<clearance class="1" value="0.1524"/>
+<class number="1" name="+12V" width="0" drill="0">
 </class>
-<class number="2" name="GND" width="0.254" drill="0.3">
-<clearance class="2" value="0.1524"/>
+<class number="2" name="GND" width="0" drill="0">
 </class>
-<class number="3" name="+3V3" width="0.254" drill="0.254">
-<clearance class="3" value="0.1524"/>
+<class number="3" name="+3V3" width="0" drill="0">
 </class>
-<class number="4" name="diff" width="0.254" drill="0.254">
-<clearance class="4" value="0.1524"/>
+<class number="4" name="diff" width="0" drill="0">
 </class>
 </classes>
 <parts>
@@ -22060,7 +22057,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <attribute name="MPN" value="RT0805FRE074K7L"/>
 </part>
 <part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="U" package3d_urn="urn:adsk.eagle:package:44294361/7" value="ESP32-DevKitC-32UE"/>
-<part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/2"/>
+<part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/2" value="3PIN_Header">
+<attribute name="LCSC_PART" value="C19190477"/>
+</part>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="J1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
 <part name="J3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
@@ -22363,6 +22362,7 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <instance part="JP1" gate="1" x="163.83" y="176.53" smashed="yes">
 <attribute name="NAME" x="160.02" y="176.53" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="169.545" y="176.53" size="1.778" layer="96" rot="R90"/>
+<attribute name="LCSC_PART" x="163.83" y="176.53" size="1.016" layer="96" display="off"/>
 </instance>
 <instance part="GND6" gate="1" x="166.37" y="165.1" smashed="yes">
 <attribute name="VALUE" x="163.83" y="162.56" size="1.778" layer="96"/>
@@ -22467,9 +22467,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <nets>
 <net name="VPIN" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="SENSOR_VP"/>
 <wire x1="140.97" y1="142.24" x2="143.51" y2="142.24" width="0.1524" layer="91"/>
 <label x="140.97" y="142.24" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="SENSOR_VP"/>
 </segment>
 </net>
 <net name="M_EN" class="0">
@@ -22503,9 +22503,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$1" gate="G$1" pin="A2"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO32"/>
 <wire x1="140.97" y1="132.08" x2="143.51" y2="132.08" width="0.1524" layer="91"/>
 <label x="140.97" y="132.08" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO32"/>
 </segment>
 </net>
 <net name="GND" class="2">
@@ -22643,19 +22643,19 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="C46" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="GND1"/>
 <wire x1="140.97" y1="114.3" x2="143.51" y2="114.3" width="0.1524" layer="91"/>
 <label x="140.97" y="114.3" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="GND1"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="GND2"/>
 <wire x1="186.69" y1="132.08" x2="184.15" y2="132.08" width="0.1524" layer="91"/>
 <label x="186.69" y="132.08" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="GND2"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="GND3"/>
 <wire x1="186.69" y1="147.32" x2="184.15" y2="147.32" width="0.1524" layer="91"/>
 <label x="186.69" y="147.32" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="GND3"/>
 </segment>
 <segment>
 <pinref part="JP1" gate="1" pin="3"/>
@@ -22853,9 +22853,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y1"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO15"/>
 <wire x1="186.69" y1="109.22" x2="184.15" y2="109.22" width="0.1524" layer="91"/>
 <label x="186.69" y="109.22" size="1.27" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO15"/>
 </segment>
 </net>
 <net name="BUTTON_EAST_OPEN" class="0">
@@ -22889,9 +22889,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y5"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO25"/>
 <wire x1="140.97" y1="127" x2="143.51" y2="127" width="0.1524" layer="91"/>
 <label x="140.97" y="127" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO25"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -23129,9 +23129,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <label x="106.68" y="124.46" size="1.016" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="EXT_5V"/>
 <wire x1="140.97" y1="101.6" x2="143.51" y2="101.6" width="0.1524" layer="91"/>
 <label x="140.97" y="101.6" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="EXT_5V"/>
 </segment>
 <segment>
 <pinref part="J1" gate="G$1" pin="3"/>
@@ -23183,9 +23183,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y7"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO35"/>
 <wire x1="140.97" y1="134.62" x2="143.51" y2="134.62" width="0.1524" layer="91"/>
 <label x="140.97" y="134.62" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO35"/>
 </segment>
 </net>
 <net name="SDA" class="0">
@@ -23198,9 +23198,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <junction x="81.28" y="213.36"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO21"/>
 <wire x1="186.69" y1="134.62" x2="184.15" y2="134.62" width="0.1524" layer="91"/>
 <label x="186.69" y="134.62" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO21"/>
 </segment>
 </net>
 <net name="SCL" class="0">
@@ -23214,9 +23214,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <junction x="33.02" y="198.12"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO22"/>
 <wire x1="186.69" y1="142.24" x2="184.15" y2="142.24" width="0.1524" layer="91"/>
 <label x="186.69" y="142.24" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO22"/>
 </segment>
 </net>
 <net name="AT_PARK_PIN_IN_5V" class="0">
@@ -23242,9 +23242,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="ETH_RESET" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO4"/>
 <wire x1="186.69" y1="116.84" x2="184.15" y2="116.84" width="0.1524" layer="91"/>
 <label x="186.69" y="116.84" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO4"/>
 </segment>
 </net>
 <net name="SPARE1_IN_5V" class="0">
@@ -23294,9 +23294,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$3" gate="G$1" pin="Y0"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO34"/>
 <wire x1="140.97" y1="137.16" x2="143.51" y2="137.16" width="0.1524" layer="91"/>
 <label x="140.97" y="137.16" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO34"/>
 </segment>
 </net>
 <net name="SPARE2" class="0">
@@ -23313,23 +23313,23 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="SDI" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO19"/>
 <wire x1="186.69" y1="129.54" x2="184.15" y2="129.54" width="0.1524" layer="91"/>
 <label x="186.69" y="129.54" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO19"/>
 </segment>
 </net>
 <net name="SCLK" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO18"/>
 <wire x1="186.69" y1="127" x2="184.15" y2="127" width="0.1524" layer="91"/>
 <label x="186.69" y="127" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO18"/>
 </segment>
 </net>
 <net name="SDO" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO23"/>
 <wire x1="186.69" y1="144.78" x2="184.15" y2="144.78" width="0.1524" layer="91"/>
 <label x="186.69" y="144.78" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO23"/>
 </segment>
 </net>
 <net name="HOME_SHUTTER_CLOSED_IN_5V" class="0">
@@ -23505,34 +23505,34 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="ETH_CS" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO5"/>
 <wire x1="186.69" y1="124.46" x2="184.15" y2="124.46" width="0.1524" layer="91"/>
 <label x="186.69" y="124.46" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO5"/>
 </segment>
 </net>
 <net name="N$20" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="3V3"/>
 <wire x1="140.97" y1="147.32" x2="143.51" y2="147.32" width="0.1524" layer="91"/>
+<pinref part="U2" gate="G$1" pin="3V3"/>
 </segment>
 </net>
 <net name="N$21" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="EN"/>
 <wire x1="140.97" y1="144.78" x2="143.51" y2="144.78" width="0.1524" layer="91"/>
+<pinref part="U2" gate="G$1" pin="EN"/>
 </segment>
 </net>
 <net name="N$36" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="SENSOR_VN"/>
 <wire x1="140.97" y1="139.7" x2="143.51" y2="139.7" width="0.1524" layer="91"/>
+<pinref part="U2" gate="G$1" pin="SENSOR_VN"/>
 </segment>
 </net>
 <net name="TX2" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO17"/>
 <wire x1="186.69" y1="121.92" x2="184.15" y2="121.92" width="0.1524" layer="91"/>
 <label x="186.69" y="121.92" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO17"/>
 </segment>
 <segment>
 <pinref part="JP1" gate="1" pin="1"/>
@@ -23543,9 +23543,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="RX2" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO16"/>
 <wire x1="186.69" y1="119.38" x2="184.15" y2="119.38" width="0.1524" layer="91"/>
 <label x="186.69" y="119.38" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO16"/>
 </segment>
 <segment>
 <pinref part="JP1" gate="1" pin="2"/>
@@ -23556,16 +23556,16 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="TXD0" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="TXD0"/>
 <wire x1="186.69" y1="139.7" x2="184.15" y2="139.7" width="0.1524" layer="91"/>
 <label x="186.69" y="139.7" size="1.016" layer="95" ratio="4" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="TXD0"/>
 </segment>
 </net>
 <net name="RXD0" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="RXD0"/>
 <wire x1="186.69" y1="137.16" x2="184.15" y2="137.16" width="0.1524" layer="91"/>
 <label x="186.69" y="137.16" size="1.016" layer="95" ratio="4" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="RXD0"/>
 </segment>
 </net>
 <net name="SPARE_OUT1_5V" class="0">
@@ -23587,16 +23587,16 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="U$1" gate="G$1" pin="A3"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="IO0"/>
 <wire x1="186.69" y1="114.3" x2="184.15" y2="114.3" width="0.1524" layer="91"/>
 <label x="186.69" y="114.3" size="1.016" layer="95" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO0"/>
 </segment>
 </net>
 <net name="SPARE_OUT2" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="IO12"/>
 <wire x1="140.97" y1="116.84" x2="143.51" y2="116.84" width="0.1524" layer="91"/>
 <label x="140.97" y="116.84" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U2" gate="G$1" pin="IO12"/>
 </segment>
 <segment>
 <wire x1="187.96" y1="246.38" x2="190.5" y2="246.38" width="0.1524" layer="91"/>
@@ -23979,25 +23979,25 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="GND19" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="X9" gate="G$1" pin="4/NC"/>
 <wire x1="309.88" y1="177.8" x2="304.8" y2="177.8" width="0.1524" layer="91"/>
 <wire x1="304.8" y1="177.8" x2="304.8" y2="172.72" width="0.1524" layer="91"/>
-<pinref part="X9" gate="G$1" pin="5/NC"/>
 <wire x1="304.8" y1="172.72" x2="302.26" y2="172.72" width="0.1524" layer="91"/>
 <wire x1="309.88" y1="172.72" x2="304.8" y2="172.72" width="0.1524" layer="91"/>
 <junction x="304.8" y="172.72"/>
 <label x="302.26" y="172.72" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="X9" gate="G$1" pin="4/NC"/>
+<pinref part="X9" gate="G$1" pin="5/NC"/>
 </segment>
 <segment>
-<pinref part="X9" gate="G$1" pin="CGND"/>
 <wire x1="327.66" y1="142.24" x2="327.66" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="327.66" y1="137.16" x2="330.2" y2="137.16" width="0.1524" layer="91"/>
-<pinref part="X9" gate="G$1" pin="CGND2"/>
 <wire x1="330.2" y1="137.16" x2="332.74" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="332.74" y1="137.16" x2="332.74" y2="142.24" width="0.1524" layer="91"/>
 <wire x1="330.2" y1="137.16" x2="330.2" y2="134.62" width="0.1524" layer="91"/>
 <junction x="330.2" y="137.16"/>
 <label x="330.2" y="134.62" size="1.016" layer="95" rot="R270" xref="yes"/>
+<pinref part="X9" gate="G$1" pin="CGND"/>
+<pinref part="X9" gate="G$1" pin="CGND2"/>
 </segment>
 </net>
 <net name="SDI" class="0">
@@ -24030,9 +24030,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="LINK_ACK" class="0">
 <segment>
-<pinref part="X9" gate="G$1" pin="C-R"/>
 <wire x1="307.34" y1="160.02" x2="309.88" y2="160.02" width="0.1524" layer="91"/>
 <label x="307.34" y="160.02" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="X9" gate="G$1" pin="C-R"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="LINKLED"/>
@@ -24042,7 +24042,6 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="CR" class="3">
 <segment>
-<pinref part="X9" gate="G$1" pin="CR"/>
 <wire x1="309.88" y1="193.04" x2="269.24" y2="193.04" width="0.1524" layer="91"/>
 <wire x1="269.24" y1="193.04" x2="269.24" y2="165.1" width="0.1524" layer="91"/>
 <pinref part="R27" gate="G$1" pin="2"/>
@@ -24054,37 +24053,38 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <junction x="264.16" y="165.1"/>
 <pinref part="C22" gate="G$1" pin="1"/>
 <wire x1="264.16" y1="165.1" x2="264.16" y2="160.02" width="0.1524" layer="91"/>
+<pinref part="X9" gate="G$1" pin="CR"/>
 </segment>
 </net>
 <net name="R_LED+" class="0">
 <segment>
-<pinref part="X9" gate="G$1" pin="A-R"/>
 <wire x1="304.8" y1="165.1" x2="309.88" y2="165.1" width="0.1524" layer="91"/>
 <wire x1="304.8" y1="165.1" x2="297.18" y2="165.1" width="0.1524" layer="91"/>
 <wire x1="297.18" y1="165.1" x2="297.18" y2="160.02" width="0.1524" layer="91"/>
 <wire x1="297.18" y1="160.02" x2="289.56" y2="160.02" width="0.1524" layer="91"/>
 <wire x1="289.56" y1="160.02" x2="289.56" y2="162.56" width="0.1524" layer="91"/>
 <pinref part="R29" gate="G$1" pin="1"/>
+<pinref part="X9" gate="G$1" pin="A-R"/>
 </segment>
 </net>
 <net name="L_LED+" class="0">
 <segment>
-<pinref part="X9" gate="G$1" pin="AL"/>
 <wire x1="304.8" y1="154.94" x2="309.88" y2="154.94" width="0.1524" layer="91"/>
 <wire x1="304.8" y1="154.94" x2="281.94" y2="154.94" width="0.1524" layer="91"/>
 <wire x1="281.94" y1="154.94" x2="281.94" y2="162.56" width="0.1524" layer="91"/>
 <pinref part="R28" gate="G$1" pin="1"/>
+<pinref part="X9" gate="G$1" pin="AL"/>
 </segment>
 </net>
 <net name="TXN" class="4">
 <segment>
-<pinref part="X9" gate="G$1" pin="TD-"/>
 <wire x1="309.88" y1="205.74" x2="271.78" y2="205.74" width="0.1524" layer="91"/>
 <label x="246.38" y="205.74" size="1.016" layer="95" rot="R180" xref="yes"/>
 <pinref part="R25" gate="G$1" pin="1"/>
 <wire x1="271.78" y1="205.74" x2="246.38" y2="205.74" width="0.1524" layer="91"/>
 <wire x1="271.78" y1="228.6" x2="271.78" y2="205.74" width="0.1524" layer="91"/>
 <junction x="271.78" y="205.74"/>
+<pinref part="X9" gate="G$1" pin="TD-"/>
 </segment>
 <segment>
 <pinref part="U1" gate="G$1" pin="TXN"/>
@@ -24132,13 +24132,13 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <label x="109.22" y="160.02" size="1.016" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="X9" gate="G$1" pin="TD+"/>
 <wire x1="309.88" y1="220.98" x2="279.4" y2="220.98" width="0.1524" layer="91"/>
 <label x="246.38" y="220.98" size="1.016" layer="95" rot="R180" xref="yes"/>
 <pinref part="R24" gate="G$1" pin="1"/>
 <wire x1="279.4" y1="220.98" x2="246.38" y2="220.98" width="0.1524" layer="91"/>
 <wire x1="279.4" y1="228.6" x2="279.4" y2="220.98" width="0.1524" layer="91"/>
 <junction x="279.4" y="220.98"/>
+<pinref part="X9" gate="G$1" pin="TD+"/>
 </segment>
 </net>
 <net name="INT_N" class="0">
@@ -24161,9 +24161,9 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <label x="45.72" y="180.34" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="X9" gate="G$1" pin="C-L"/>
 <wire x1="307.34" y1="149.86" x2="309.88" y2="149.86" width="0.1524" layer="91"/>
 <label x="307.34" y="149.86" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="X9" gate="G$1" pin="C-L"/>
 </segment>
 </net>
 <net name="XI" class="0">
@@ -24361,22 +24361,21 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </net>
 <net name="RD+" class="0">
 <segment>
-<pinref part="X9" gate="G$1" pin="RD+"/>
 <pinref part="C15" gate="G$1" pin="2"/>
 <wire x1="309.88" y1="200.66" x2="299.72" y2="200.66" width="0.1524" layer="91"/>
+<pinref part="X9" gate="G$1" pin="RD+"/>
 </segment>
 </net>
 <net name="RD-" class="0">
 <segment>
-<pinref part="X9" gate="G$1" pin="RD-"/>
 <pinref part="C21" gate="G$1" pin="2"/>
 <wire x1="309.88" y1="185.42" x2="299.72" y2="185.42" width="0.1524" layer="91"/>
+<pinref part="X9" gate="G$1" pin="RD-"/>
 </segment>
 </net>
 <net name="CT" class="3">
 <segment>
 <pinref part="R23" gate="G$1" pin="1"/>
-<pinref part="X9" gate="G$1" pin="CT"/>
 <wire x1="309.88" y1="213.36" x2="294.64" y2="213.36" width="0.1524" layer="91"/>
 <wire x1="294.64" y1="213.36" x2="287.02" y2="213.36" width="0.1524" layer="91"/>
 <wire x1="287.02" y1="213.36" x2="287.02" y2="228.6" width="0.1524" layer="91"/>
@@ -24385,6 +24384,7 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 <pinref part="C10" gate="G$1" pin="1"/>
 <wire x1="294.64" y1="248.92" x2="304.8" y2="248.92" width="0.1524" layer="91"/>
 <wire x1="304.8" y1="248.92" x2="304.8" y2="243.84" width="0.1524" layer="91"/>
+<pinref part="X9" gate="G$1" pin="CT"/>
 </segment>
 </net>
 <net name="3.3V" class="0">
@@ -24456,43 +24456,112 @@ WiFi Development Tools (802.11) ESP32 General Development Kit, ESP32-WROOM-32D o
 </nets>
 </sheet>
 </sheets>
-<errors>
-<approved hash="104,2,215.9,157.48,25MHZ,VDD,3.3V,,,"/>
-<approved hash="104,1,43.18,213.36,IC2,VCC,3.3V,,,"/>
-<approved hash="202,1,43.18,195.58,IC2,WP,,,,"/>
-<approved hash="104,1,129.54,208.28,U$3G$2,VCC,3.3V,,,"/>
-<approved hash="104,1,143.51,147.32,U2,3V3,N$20,,,"/>
-<approved hash="104,1,143.51,114.3,U2,GND1,GND,,,"/>
-<approved hash="104,1,143.51,101.6,U2,EXT_5V,VCC,,,"/>
-<approved hash="202,1,184.15,101.6,U2,CLK,,,,"/>
-<approved hash="104,1,184.15,132.08,U2,GND2,GND,,,"/>
-<approved hash="104,1,184.15,147.32,U2,GND3,GND,,,"/>
-<approved hash="106,2,48.26,157.48,INT_N,,,,,"/>
-<approved hash="106,2,48.26,182.88,N$17,,,,,"/>
-<approved hash="106,1,143.51,147.32,N$20,,,,,"/>
-<approved hash="209,1,143.51,144.78,N$21,,,,,"/>
-<approved hash="106,1,143.51,144.78,N$21,,,,,"/>
-<approved hash="106,2,78.74,200.66,N$32,,,,,"/>
-<approved hash="209,1,143.51,139.7,N$36,,,,,"/>
-<approved hash="106,1,143.51,139.7,N$36,,,,,"/>
-<approved hash="209,1,184.15,137.16,RXD0,,,,,"/>
-<approved hash="106,1,184.15,137.16,RXD0,,,,,"/>
-<approved hash="106,1,184.15,139.7,TXD0,,,,,"/>
-<approved hash="106,2,48.26,170.18,XO,,,,,"/>
-<approved hash="113,1,377.379,218.44,X4,,,,,"/>
-<approved hash="113,1,377.379,251.46,X1,,,,,"/>
-<approved hash="113,1,377.379,238.76,X3,,,,,"/>
-<approved hash="113,1,377.379,198.12,X5,,,,,"/>
-<approved hash="113,1,377.379,157.48,X8,,,,,"/>
-<approved hash="113,1,194.206,131.976,FRAME1,,,,,"/>
-<approved hash="113,2,194.206,131.976,FRAME2,,,,,"/>
-<approved hash="113,1,302.449,146.05,X2,,,,,"/>
-<approved hash="113,1,303.154,161.29,X10,,,,,"/>
-<approved hash="113,1,302.449,176.53,X6,,,,,"/>
-<approved hash="113,1,367.924,142.24,X12,,,,,"/>
-<approved hash="113,1,162.855,175.589,JP1,,,,,"/>
-<approved hash="113,1,302.449,127,X7,,,,,"/>
-</errors>
+<sch_hier_ref_des_map>
+<part_path_ref_des_mapping board_ref_des="25MHZ" logical_identifier="25MHZ"/>
+<part_path_ref_des_mapping board_ref_des="C1" logical_identifier="C1"/>
+<part_path_ref_des_mapping board_ref_des="C10" logical_identifier="C10"/>
+<part_path_ref_des_mapping board_ref_des="C11" logical_identifier="C11"/>
+<part_path_ref_des_mapping board_ref_des="C12" logical_identifier="C12"/>
+<part_path_ref_des_mapping board_ref_des="C13" logical_identifier="C13"/>
+<part_path_ref_des_mapping board_ref_des="C14" logical_identifier="C14"/>
+<part_path_ref_des_mapping board_ref_des="C15" logical_identifier="C15"/>
+<part_path_ref_des_mapping board_ref_des="C16" logical_identifier="C16"/>
+<part_path_ref_des_mapping board_ref_des="C17" logical_identifier="C17"/>
+<part_path_ref_des_mapping board_ref_des="C18" logical_identifier="C18"/>
+<part_path_ref_des_mapping board_ref_des="C19" logical_identifier="C19"/>
+<part_path_ref_des_mapping board_ref_des="C2" logical_identifier="C2"/>
+<part_path_ref_des_mapping board_ref_des="C20" logical_identifier="C20"/>
+<part_path_ref_des_mapping board_ref_des="C21" logical_identifier="C21"/>
+<part_path_ref_des_mapping board_ref_des="C22" logical_identifier="C22"/>
+<part_path_ref_des_mapping board_ref_des="C23" logical_identifier="C23"/>
+<part_path_ref_des_mapping board_ref_des="C24" logical_identifier="C24"/>
+<part_path_ref_des_mapping board_ref_des="C25" logical_identifier="C25"/>
+<part_path_ref_des_mapping board_ref_des="C26" logical_identifier="C26"/>
+<part_path_ref_des_mapping board_ref_des="C27" logical_identifier="C27"/>
+<part_path_ref_des_mapping board_ref_des="C29" logical_identifier="C29"/>
+<part_path_ref_des_mapping board_ref_des="C3" logical_identifier="C3"/>
+<part_path_ref_des_mapping board_ref_des="C4" logical_identifier="C4"/>
+<part_path_ref_des_mapping board_ref_des="C40" logical_identifier="C40"/>
+<part_path_ref_des_mapping board_ref_des="C41" logical_identifier="C41"/>
+<part_path_ref_des_mapping board_ref_des="C42" logical_identifier="C42"/>
+<part_path_ref_des_mapping board_ref_des="C43" logical_identifier="C43"/>
+<part_path_ref_des_mapping board_ref_des="C44" logical_identifier="C44"/>
+<part_path_ref_des_mapping board_ref_des="C45" logical_identifier="C45"/>
+<part_path_ref_des_mapping board_ref_des="C46" logical_identifier="C46"/>
+<part_path_ref_des_mapping board_ref_des="C5" logical_identifier="C5"/>
+<part_path_ref_des_mapping board_ref_des="C6" logical_identifier="C6"/>
+<part_path_ref_des_mapping board_ref_des="C7" logical_identifier="C7"/>
+<part_path_ref_des_mapping board_ref_des="C8" logical_identifier="C8"/>
+<part_path_ref_des_mapping board_ref_des="C9" logical_identifier="C9"/>
+<part_path_ref_des_mapping board_ref_des="FL1" logical_identifier="FL1"/>
+<part_path_ref_des_mapping board_ref_des="FRAME1" logical_identifier="FRAME1"/>
+<part_path_ref_des_mapping board_ref_des="FRAME2" logical_identifier="FRAME2"/>
+<part_path_ref_des_mapping board_ref_des="IC2" logical_identifier="IC2"/>
+<part_path_ref_des_mapping board_ref_des="IC8" logical_identifier="IC8"/>
+<part_path_ref_des_mapping board_ref_des="J1" logical_identifier="J1"/>
+<part_path_ref_des_mapping board_ref_des="J10" logical_identifier="J10"/>
+<part_path_ref_des_mapping board_ref_des="J11" logical_identifier="J11"/>
+<part_path_ref_des_mapping board_ref_des="J12" logical_identifier="J12"/>
+<part_path_ref_des_mapping board_ref_des="J2" logical_identifier="J2"/>
+<part_path_ref_des_mapping board_ref_des="J3" logical_identifier="J3"/>
+<part_path_ref_des_mapping board_ref_des="J4" logical_identifier="J4"/>
+<part_path_ref_des_mapping board_ref_des="J6" logical_identifier="J6"/>
+<part_path_ref_des_mapping board_ref_des="J7" logical_identifier="J7"/>
+<part_path_ref_des_mapping board_ref_des="J8" logical_identifier="J8"/>
+<part_path_ref_des_mapping board_ref_des="J9" logical_identifier="J9"/>
+<part_path_ref_des_mapping board_ref_des="JP1" logical_identifier="JP1"/>
+<part_path_ref_des_mapping board_ref_des="L1" logical_identifier="L1"/>
+<part_path_ref_des_mapping board_ref_des="PS1" logical_identifier="PS1"/>
+<part_path_ref_des_mapping board_ref_des="R1" logical_identifier="R1"/>
+<part_path_ref_des_mapping board_ref_des="R12" logical_identifier="R12"/>
+<part_path_ref_des_mapping board_ref_des="R15" logical_identifier="R15"/>
+<part_path_ref_des_mapping board_ref_des="R16" logical_identifier="R16"/>
+<part_path_ref_des_mapping board_ref_des="R17" logical_identifier="R17"/>
+<part_path_ref_des_mapping board_ref_des="R18" logical_identifier="R18"/>
+<part_path_ref_des_mapping board_ref_des="R20" logical_identifier="R20"/>
+<part_path_ref_des_mapping board_ref_des="R21" logical_identifier="R21"/>
+<part_path_ref_des_mapping board_ref_des="R22" logical_identifier="R22"/>
+<part_path_ref_des_mapping board_ref_des="R23" logical_identifier="R23"/>
+<part_path_ref_des_mapping board_ref_des="R24" logical_identifier="R24"/>
+<part_path_ref_des_mapping board_ref_des="R25" logical_identifier="R25"/>
+<part_path_ref_des_mapping board_ref_des="R26" logical_identifier="R26"/>
+<part_path_ref_des_mapping board_ref_des="R27" logical_identifier="R27"/>
+<part_path_ref_des_mapping board_ref_des="R28" logical_identifier="R28"/>
+<part_path_ref_des_mapping board_ref_des="R29" logical_identifier="R29"/>
+<part_path_ref_des_mapping board_ref_des="R3" logical_identifier="R3"/>
+<part_path_ref_des_mapping board_ref_des="R30" logical_identifier="R30"/>
+<part_path_ref_des_mapping board_ref_des="R31" logical_identifier="R31"/>
+<part_path_ref_des_mapping board_ref_des="R32" logical_identifier="R32"/>
+<part_path_ref_des_mapping board_ref_des="R33" logical_identifier="R33"/>
+<part_path_ref_des_mapping board_ref_des="R34" logical_identifier="R34"/>
+<part_path_ref_des_mapping board_ref_des="R35" logical_identifier="R35"/>
+<part_path_ref_des_mapping board_ref_des="R36" logical_identifier="R36"/>
+<part_path_ref_des_mapping board_ref_des="R37" logical_identifier="R37"/>
+<part_path_ref_des_mapping board_ref_des="R38" logical_identifier="R38"/>
+<part_path_ref_des_mapping board_ref_des="R39" logical_identifier="R39"/>
+<part_path_ref_des_mapping board_ref_des="R4" logical_identifier="R4"/>
+<part_path_ref_des_mapping board_ref_des="R40" logical_identifier="R40"/>
+<part_path_ref_des_mapping board_ref_des="R41" logical_identifier="R41"/>
+<part_path_ref_des_mapping board_ref_des="R44" logical_identifier="R44"/>
+<part_path_ref_des_mapping board_ref_des="R45" logical_identifier="R45"/>
+<part_path_ref_des_mapping board_ref_des="R46" logical_identifier="R46"/>
+<part_path_ref_des_mapping board_ref_des="R47" logical_identifier="R47"/>
+<part_path_ref_des_mapping board_ref_des="R48" logical_identifier="R48"/>
+<part_path_ref_des_mapping board_ref_des="R49" logical_identifier="R49"/>
+<part_path_ref_des_mapping board_ref_des="R5" logical_identifier="R5"/>
+<part_path_ref_des_mapping board_ref_des="R50" logical_identifier="R50"/>
+<part_path_ref_des_mapping board_ref_des="R7" logical_identifier="R7"/>
+<part_path_ref_des_mapping board_ref_des="R9" logical_identifier="R9"/>
+<part_path_ref_des_mapping board_ref_des="T1" logical_identifier="T1"/>
+<part_path_ref_des_mapping board_ref_des="T2" logical_identifier="T2"/>
+<part_path_ref_des_mapping board_ref_des="T3" logical_identifier="T3"/>
+<part_path_ref_des_mapping board_ref_des="U$1" logical_identifier="U$1"/>
+<part_path_ref_des_mapping board_ref_des="U$3" logical_identifier="U$3"/>
+<part_path_ref_des_mapping board_ref_des="U$4" logical_identifier="U$4"/>
+<part_path_ref_des_mapping board_ref_des="U1" logical_identifier="U1"/>
+<part_path_ref_des_mapping board_ref_des="U2" logical_identifier="U2"/>
+<part_path_ref_des_mapping board_ref_des="X9" logical_identifier="X9"/>
+</sch_hier_ref_des_map>
 </schematic>
 </drawing>
 <compatibility>
