@@ -98,6 +98,7 @@ int getAlpacaShutterState()
 {
 	int nAlpacaShutterState = A_ERROR;
 	String sTmpString;
+#ifdef USE_WIFI
 	if(!nbWiFiClient) {
 				nAlpacaShutterState = A_ERROR;
 	} else
@@ -132,6 +133,7 @@ int getAlpacaShutterState()
 		}
 
 	}
+#endif
 	return nAlpacaShutterState;
 
 }
@@ -625,6 +627,8 @@ void getDomeState(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
+
+#ifdef USE_WIFI
 	// add states to response
 	switch (RemoteShutter.state ) {
 		case OPEN:
@@ -639,6 +643,7 @@ void getDomeState(Request &req, Response &res)
 	}
 	jsTmp["Altitude"] = Alt;
 	AlpacaResp["Value"].add(jsTmp);
+#endif
 
 	jsTmp.clear();
 	jsTmp["AtHome"] = (Rotator->GetHomeStatus() == ATHOME);
@@ -1754,6 +1759,7 @@ void shutterOpenOrderValue(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+#ifdef USE_WIFI
 
 void wifiSSIDValue(Request &req, Response &res)
 {
@@ -1790,7 +1796,7 @@ void wifiSSIDValue(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
-
+#endif
 
 void isShutterPresentState(Request &req, Response &res)
 {
@@ -2050,6 +2056,7 @@ void restoreRotationMotorValues(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+#ifdef USE_WIFI
 void shutterSpeedValue(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
@@ -2169,31 +2176,6 @@ void shutterWatchdogTimerValue(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void domeVoltageCutoffValue(Request &req, Response &res)
-{
-	JsonDocument controllerResp;
-	String sResp;
-
-	if(req.method() == Request::PUT) {
-		JsonDocument FormData;
-		formDataToJson(req, FormData);
-		if(FormData.size()==0){
-		}
-		else {
-			if(FormData["value"].is<long>()) {
-				Rotator->SetLowVoltageCutoff(FormData["value"]);
-			}
-		}
-	}
-
-	controllerResp["value"] = Rotator->GetVoltString();
-	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
-
-	res.set("Content-Type", "application/json");
-	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-}
-
 void shutterVoltageCutoffValue(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
@@ -2223,6 +2205,34 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
+
+#endif
+
+void domeVoltageCutoffValue(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				Rotator->SetLowVoltageCutoff(FormData["value"]);
+			}
+		}
+	}
+
+	controllerResp["value"] = Rotator->GetVoltString();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
 
 void unsafeDomeAction(Request &req, Response &res)
 {
@@ -2282,21 +2292,24 @@ private :
 
 DomeAlpacaServer::DomeAlpacaServer(int port)
 {
+	uint32_t uidBuf[4];  // Board unique ID
+	byte macAddress[6];    // Mac address, uses part of the unique ID
+	getMacAddress(macAddress, uidBuf);
 	m_nRestPort = port;
 	mRestServer = nullptr;
 	m_AlpacaRestServer = nullptr;
 	nTransactionID = 0;
+	uuid.seed(uidBuf[4],uidBuf[5]);
 }
 
 void DomeAlpacaServer::startServer()
-{
+{	
 	mRestServer = new EthernetServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
 
 	DBPrintln("m_AlpacaRestServer starting");
 	DBPrintln("m_AlpacaRestServer UUID : " + String(uuid.toCharArray()));
 	mRestServer->begin();
-
 	sRedirectURL = String("http://")+ sLocalIPAdress + String(":") + String(ALPACA_SERVER_PORT) + String("/setup/v1/dome/0/setup");
 	DBPrintln("Redirect URL for setup : " + sRedirectURL);
 
@@ -2357,47 +2370,41 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/park", &doPark);
 	m_AlpacaRestServer->put("/api/v1/dome/0/setpark", &setPark);
 	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoaltitude", &doAltitudeSlew);
-	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoazimuth", &doGoTo);
-	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
 	// adding our own endpoints for the settings
 	m_AlpacaRestServer->use("/setup/homePosition", &homePosition);
 	m_AlpacaRestServer->use("/setup/parkPosition", &parkPosition);
-
 	m_AlpacaRestServer->use("/setup/reverseDirection", &reverseDirectionState);
-	m_AlpacaRestServer->use("/setup/shutterOpenOrder", &shutterOpenOrderValue);
-
-	m_AlpacaRestServer->use("/setup/wifiSSID", &wifiSSIDValue);
-	m_AlpacaRestServer->get("/setup/shutterPresentState", &isShutterPresentState);
-
+	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoazimuth", &doGoTo);
+	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
 	m_AlpacaRestServer->use("/setup/useDHCP", &useDHCPState);
-
 	m_AlpacaRestServer->get("/setup/macAddress", &macAddressValue);
 	m_AlpacaRestServer->use("/setup/ipAddress", &ipAddressValue);
 	m_AlpacaRestServer->use("/setup/subnetMask", &subnetMaskValue);
 	m_AlpacaRestServer->use("/setup/ipGeteway", &ipGetewayValue);
 
-
 	m_AlpacaRestServer->use("/setup/domeCalibrate", &domeCalibrateAction);
-
 	m_AlpacaRestServer->use("/setup/stepPerRevolution", &stepPerRevolutionValue);
 	m_AlpacaRestServer->use("/setup/rotationSpeed", &rotationSpeedValue);
 	m_AlpacaRestServer->use("/setup/rotationAcceleration", &rotationAccelerationValue);
 	m_AlpacaRestServer->put("/setup/restoreRotationMotorSettings", &restoreRotationMotorValues);
+	m_AlpacaRestServer->use("/setup/domeVoltageCutoff", &domeVoltageCutoffValue);
+	m_AlpacaRestServer->use("/setup/unsafeDomeAction", &unsafeDomeAction);
+	m_AlpacaRestServer->get("/setup/domeVoltage", &domeVoltageCutoffValue);
+	m_AlpacaRestServer->get("/setup/envCondition", &envConditionState);
 
+#ifdef USE_WIFI
+	m_AlpacaRestServer->use("/setup/shutterOpenOrder", &shutterOpenOrderValue);
+	m_AlpacaRestServer->use("/setup/wifiSSID", &wifiSSIDValue);
+	m_AlpacaRestServer->get("/setup/shutterPresentState", &isShutterPresentState);
 	m_AlpacaRestServer->use("/setup/shutterSpeed", &shutterSpeedValue);
 	m_AlpacaRestServer->use("/setup/shutterAcceleration", &shutterAccelerationValue);
 	m_AlpacaRestServer->put("/setup/restoreShutterMotorSettings", &restoreShutterMotorValues);
-
 	m_AlpacaRestServer->use("/setup/shutterWatchdogTimerValue", &shutterWatchdogTimerValue);
-	m_AlpacaRestServer->use("/setup/domeVoltageCutoff", &domeVoltageCutoffValue);
 	m_AlpacaRestServer->use("/setup/shutterVoltageCutoff", &shutterVoltageCutoffValue);
-	m_AlpacaRestServer->use("/setup/unsafeDomeAction", &unsafeDomeAction);
-
-	m_AlpacaRestServer->get("/setup/domeVoltage", &domeVoltageCutoffValue);
 	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageCutoffValue);
-	m_AlpacaRestServer->get("/setup/envCondition", &envConditionState);
+#endif
 
 	DBPrintln("m_AlpacaRestServer started");
 }

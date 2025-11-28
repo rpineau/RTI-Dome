@@ -12,7 +12,8 @@
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
-// #define DEBUG   // enable debug to serial port defined as DebugPort
+
+#define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -33,6 +34,7 @@
 #define USE_EXT_EEPROM
 #define USE_ETHERNET
 #define USE_ALPACA
+#define USE_OTA_UPDATE
 // if uncommented, USE_WIFI will enable all code related to the shutter over WiFi.
 // This is useful for people who only want to automate the rotation.
 #define USE_WIFI
@@ -46,6 +48,11 @@
 // include and some defines for ethernet connection
 #include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
 #include <Ethernet.h>
+#ifdef USE_OTA_UPDATE
+#pragma message "OTA Update enable"
+#include <WebServer.h>
+#include <HTTPUpdateServer.h>
+#endif
 #include "EtherMac.h"
 #define ETHERNET_CS     5
 #define ETHERNET_INT	0
@@ -61,6 +68,11 @@ EthernetClient domeClient;
 int nbEthernetClient = 0;
 String networkBuffer = "";
 String sLocalIPAdress = "";
+// OTA update stuff
+#ifdef USE_OTA_UPDATE
+WebServer httpServer(8080);
+HTTPUpdateServer httpUpdater;
+#endif
 #endif // USE_ETHERNET
 
 #ifdef USE_WIFI
@@ -89,7 +101,7 @@ RotatorClass *Rotator = NULL;
 
 static const unsigned long pingInterval = 5000; // 5 seconds, can't be changed with command
 
-// Once booting is done and XBee is ready, broadcast a hello message
+// Once booting is done and wifi is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
 std::atomic<bool> bSentHello{false};
@@ -200,6 +212,9 @@ void setup()
 	Rotator->Stop();
 	Rotator->EnableMotor(false);
 
+#ifdef USE_ETHERNET
+	configureEthernet();
+#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 	bSentHello = false;
@@ -207,9 +222,6 @@ void setup()
 	configureWiFi();
 #endif
 
-#ifdef USE_ETHERNET
-	configureEthernet();
-#endif // USE_ETHERNET
 	// rtc_wdt_protect_off();
 	esp_task_wdt_deinit();
 	esp_task_wdt_init(&twdt_config);
@@ -220,6 +232,12 @@ void setup()
 
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
+
+#ifdef USE_OTA_UPDATE
+	httpUpdater.setup(&httpServer);
+	httpServer.begin();
+#endif
+
 #ifdef USE_ALPACA
 	AlpacaDiscoveryServer = new DomeAlpacaDiscoveryServer();
 	AlpacaDiscoveryServer->startServer();
@@ -259,7 +277,7 @@ void loop()
 			}
 		}
 		if(!bSentHello) {
-				SendHello();
+			SendHello();
 		}
 		else {
 			PingWiFiShutter();
@@ -271,10 +289,13 @@ void loop()
 	}
 #endif // USE_WIFI
 
-		CheckForCommands();
-		CheckForConditions();
-		taskYIELD();
-		esp_task_wdt_reset();
+	CheckForCommands();
+	CheckForConditions();
+#ifdef USE_OTA_UPDATE
+	httpServer.handleClient();
+#endif
+	taskYIELD();
+	esp_task_wdt_reset();
 }
 
 //
@@ -357,10 +378,11 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 		return false;
 	}
 	DBPrintln("W5500 Ok.");
-	DBPrintln("W5500 IP = " + RotatorClass::IpAddress2String(Ethernet.localIP()));
-	Ethernet.setRetransmissionCount(3);
-
+	DBPrintln("W5500 IP = " + RotatorClass::IpAddress2String(domeEthernet.localIP()));
+	domeEthernet.setRetransmissionCount(3);
 	DBPrintln("Server ready");
+
+	sLocalIPAdress = RotatorClass::IpAddress2String(domeEthernet.localIP());
 	return true;
 }
 
