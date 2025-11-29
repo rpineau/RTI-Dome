@@ -2264,7 +2264,7 @@ int CRTIDome::getSSID(std::string &sSSID)
 	}
 
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] sSSID = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << sSSID << std::endl;
 	m_sLogFile.flush();
 #endif
 
@@ -2313,7 +2313,7 @@ int CRTIDome::getShutterSSID(std::string &sSSID)
 		sSSID.clear();
 	}
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
-	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] nPanId = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << nPanId << std::endl;
+	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] sSSID = " << std::uppercase << std::setfill('0') << std::setw(4) << std::hex << sSSID << std::endl;
 	m_sLogFile.flush();
 #endif
 

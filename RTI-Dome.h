@@ -51,7 +51,7 @@
 #define PLUGIN_VERSION      2.00
 #define PLUGIN_ID   1
 
-#define PLUGIN_DEBUG 1
+// #define PLUGIN_DEBUG 3
 
 
 #include "dome_commands.h"

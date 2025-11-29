@@ -1229,14 +1229,16 @@ void ProcessCommand(int nSource)
 		switch(nSource) {
 			case SERIAL_CMD:
 				if(Computer) {
-					Computer.write(serialMessage .c_str(), serialMessage.length());
+					DBPrintln("Computer serialMessage = " + serialMessage);
+					Computer.write(serialMessage.c_str(), serialMessage.length());
+					Computer.flush();
 				}
 				break;
 	#ifdef USE_ETHERNET
 			case NETWORK_CMD:
 				if(domeClient.connected()) {
 					DBPrintln("Network serialMessage = " + serialMessage);
-					domeClient.write(serialMessage .c_str(), serialMessage.length());
+					domeClient.write(serialMessage.c_str(), serialMessage.length());
 					domeClient.flush();
 				}
 				break;
