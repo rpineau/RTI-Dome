@@ -52,6 +52,7 @@
 #pragma message "OTA Update enable"
 #include <WebServer.h>
 #include <HTTPUpdateServer.h>
+#define OTA_PORT	8080
 #endif
 #include "EtherMac.h"
 #define ETHERNET_CS     5
@@ -69,7 +70,7 @@ String networkBuffer = "";
 String sLocalIPAdress = "";
 // OTA update stuff
 #ifdef USE_OTA_UPDATE
-WebServer httpServer(8080);
+WebServer httpServer(OTA_PORT);
 HTTPUpdateServer httpUpdater;
 #endif
 #endif // USE_ETHERNET
@@ -163,12 +164,11 @@ DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 #endif
 
 void MotorTask(void *);
-esp_task_wdt_config_t twdt_config =
-    {
-        .timeout_ms = 1000000,
-        .idle_core_mask = 0,    // Bitmask of cores
-        .trigger_panic = false,
-    };
+esp_task_wdt_config_t twdt_config = {
+	.timeout_ms = 1000000,
+	.idle_core_mask = 0,    // Bitmask of cores
+	.trigger_panic = false,
+};
 
 //
 // Setup and main loops
