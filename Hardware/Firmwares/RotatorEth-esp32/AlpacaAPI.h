@@ -2292,14 +2292,13 @@ private :
 
 DomeAlpacaServer::DomeAlpacaServer(int port)
 {
-	uint32_t uidBuf[4];  // Board unique ID
 	byte macAddress[6];    // Mac address, uses part of the unique ID
-	getMacAddress(macAddress, uidBuf);
+	getMacAddress(macAddress);
 	m_nRestPort = port;
 	mRestServer = nullptr;
 	m_AlpacaRestServer = nullptr;
 	nTransactionID = 0;
-	uuid.seed(uidBuf[4],uidBuf[5]);
+	uuid.seed(macAddress[4],macAddress[5]);
 	uuid.generate();
 }
 

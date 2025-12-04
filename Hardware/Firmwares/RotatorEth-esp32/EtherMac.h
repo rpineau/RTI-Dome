@@ -11,7 +11,7 @@
 // Create MAC address from unique ID
 //
 
-void getMacAddress(byte* macBuffer, uint32_t* uid)
+void getMacAddress(byte* macBuffer)
 {
 	uint64_t nUUID = ESP.getEfuseMac();
 	macBuffer[0] = 0x52;

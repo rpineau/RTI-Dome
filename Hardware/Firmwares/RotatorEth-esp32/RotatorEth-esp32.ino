@@ -59,7 +59,6 @@
 #define ETHERNET_RESET  4
 #define CMD_SERVER_PORT 2323
 #define domeEthernet Ethernet
-uint32_t uidBuffer[4];  // Board unique ID
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 IPConfig ServerConfig;
 std::atomic<bool> ethernetPresent{false};
@@ -194,7 +193,7 @@ void setup()
 #endif // USE_ETHERNET
 
 #ifdef USE_ETHERNET
-	getMacAddress(MAC_Address, uidBuffer);
+	getMacAddress(MAC_Address);
 	DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
 					String(MAC_Address[1], HEX) + String(":") +
 					String(MAC_Address[2], HEX) + String(":") +
