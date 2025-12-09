@@ -12,34 +12,8 @@
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
+#include "config.h"
 
-#define DEBUG   // enable debug to serial port defined as DebugPort
-
-#ifdef DEBUG
-#pragma message "Debug messages enabled"
-#define DebugPort Serial1    //  Rx2,Tx2 =  Serial1
-#define DBPrint(x) if(DebugPort) DebugPort.print(x)
-#define DBPrintln(x) if(DebugPort) DebugPort.println(x)
-#define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
-#else
-#pragma message "Debug messages disabled"
-#define DBPrint(x)
-#define DBPrintln(x)
-#define DBPrintHex(x)
-#endif // DEBUG
-
-#define VERSION "2.645"
-#define MAX_TIMEOUT 10
-
-#define USE_EXT_EEPROM
-#define USE_ETHERNET
-#define USE_ALPACA
-#define USE_OTA_UPDATE
-// if uncommented, USE_WIFI will enable all code related to the shutter over WiFi.
-// This is useful for people who only want to automate the rotation.
-#define USE_WIFI
-
-#define Computer Serial     // USB = Serial
 
 #include "RotatorClass.h"
 
@@ -48,18 +22,14 @@
 // include and some defines for ethernet connection
 #include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
 #include <Ethernet.h>
+
 #ifdef USE_OTA_UPDATE
 #pragma message "OTA Update enable"
 #include <WebServer.h>
 #include <HTTPUpdateServer.h>
-#define OTA_PORT	8080
 #endif
+
 #include "EtherMac.h"
-#define ETHERNET_CS     5
-#define ETHERNET_INT	0
-#define ETHERNET_RESET  4
-#define CMD_SERVER_PORT 2323
-#define domeEthernet Ethernet
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 IPConfig ServerConfig;
 std::atomic<bool> ethernetPresent{false};
@@ -80,8 +50,6 @@ HTTPUpdateServer httpUpdater;
 #include "RemoteShutterClass.h"
 #include <WiFi.h>
 #include <WiFiAP.h>
-#define SHUTTER_PORT 2424
-#define shutterWiFi WiFi
 std::atomic<bool> wifiPresent{false};
 WIFIConfig wifiConfig;
 WiFiServer *shutterServer = nullptr;

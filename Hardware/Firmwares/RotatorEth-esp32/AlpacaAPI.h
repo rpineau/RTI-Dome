@@ -15,7 +15,7 @@
 #include <aWOT.h>
 
 // test
-#include <LittleFS.h>
+// #include <LittleFS.h>
 
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
@@ -32,7 +32,6 @@ UUID uuid;
 String sAlpacaDiscovery = "alpacadiscovery1";
 String sRedirectURL;
 volatile bool bAlpacaConnected = false;
-
 
 class DomeAlpacaDiscoveryServer
 {
@@ -2303,7 +2302,7 @@ DomeAlpacaServer::DomeAlpacaServer(int port)
 }
 
 void DomeAlpacaServer::startServer()
-{	
+{
 	mRestServer = new EthernetServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
 

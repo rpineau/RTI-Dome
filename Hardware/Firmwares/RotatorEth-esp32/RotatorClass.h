@@ -563,7 +563,6 @@ void RotatorClass::getWiFiConfig(WIFIConfig &config)
 	strncpy(config.sSSID, m_Config.wifiIpConfig.sSSID, WIFI_VAR_LEN);
 	strncpy(config.sPassword, m_Config.wifiIpConfig.sPassword, WIFI_VAR_LEN);
 }
-#endif
 
 void RotatorClass::setWifiDefault()
 {
@@ -574,6 +573,7 @@ void RotatorClass::setWifiDefault()
 	strncpy(m_Config.wifiIpConfig.sPassword,"RTIShutter", WIFI_VAR_LEN);
  	SaveToEEProm();
 }
+#endif
 
 String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 {
