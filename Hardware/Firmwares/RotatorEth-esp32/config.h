@@ -20,10 +20,7 @@
 #endif // DEBUG
 
 #define VERSION "2.645"
-#define MAX_TIMEOUT 10
 
-#define USE_EXT_EEPROM
-#define USE_ETHERNET
 #define USE_ALPACA
 #define USE_OTA_UPDATE
 // if uncommented, USE_WIFI will enable all code related to the shutter over WiFi.
@@ -32,10 +29,6 @@
 
 #define Computer Serial     // USB = Serial
 
-#define I2C_WIRE    Wire
-
-#define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  16
 
 //
 // ESP32 dev boards
@@ -54,7 +47,6 @@
 #define STEP_PIN            32  // Digital Output
 #define SPARE_OUT1			 0
 #define SPARE_OUT2			12
-
 // analog
 #define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
 #define AD_REF      3.3f
@@ -78,7 +70,7 @@
 #define ACCELERATION        7000
 
 /*
-Micro-steps per rotation with or 200 step per rotaton stepper and 15.3:1 gearbox
+Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
 	NexDome 2m      : 440640
 	Explora-Dome 8' : 479800
 */
@@ -86,31 +78,24 @@ Micro-steps per rotation with or 200 step per rotaton stepper and 15.3:1 gearbox
 #define STEPS_DEFAULT       440640
 
 // DM556T stepper controller min pulse width  = 2.5uS
-// #define MIN_PULSE_WIDTH 3
-
 // ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
 // TB6600 Stepper controller min pulse width = 5uS
+// set to a safer value for all controllers
 #define MIN_PULSE_WIDTH 5
 
-// used to offset the config location.. at some point.
-#define EEPROM_LOCATION     0  // not used with Arduino Due flash
-#define EEPROM_SIGNATURE    0001
-
-#define WIFI_VAR_LEN 64
-#ifdef USE_OTA_UPDATE
-#define OTA_PORT	8080
-#endif
-#ifdef USE_ETHERNET
 #define ETHERNET_CS     5
 #define ETHERNET_INT	0
 #define ETHERNET_RESET  4
 #define CMD_SERVER_PORT 2323
 #define domeEthernet Ethernet
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 #define SHUTTER_PORT 2424
 #define shutterWiFi WiFi
+#endif
+
+#ifdef USE_OTA_UPDATE
+#define OTA_PORT	8080
 #endif
 
 #endif

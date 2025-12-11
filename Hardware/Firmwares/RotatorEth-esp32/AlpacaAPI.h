@@ -1777,9 +1777,9 @@ void wifiSSIDValue(Request &req, Response &res)
 		}
 		else {
 			if(FormData["value"].is<String>()) {
-				strncpy(l_WifiConfig.sSSID, FormData["value"], WIFI_VAR_LEN);
+				l_WifiConfig.sSSID = FormData["value"].as<String>();
 				// need implementation
-				//Rotator->setWiFiConfig(l_WifiConfig);
+				// Rotator->setWiFiConfig(l_WifiConfig);
 				configureWiFi();
 
 			}
@@ -1897,7 +1897,7 @@ void subnetMaskValue(Request &req, Response &res)
 		}
 		else {
 			if(FormData["value"].is<String>()) {
-				Rotator->setIPSubnet(FormData["value"]);
+				Rotator->setIPSubnetMask(FormData["value"]);
 			}
 		}
 	}

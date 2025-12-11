@@ -17,7 +17,6 @@
 
 #include "RotatorClass.h"
 
-#ifdef USE_ETHERNET
 #pragma message "Ethernet enabled"
 // include and some defines for ethernet connection
 #include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
@@ -43,7 +42,6 @@ String sLocalIPAdress = "";
 WebServer httpServer(OTA_PORT);
 HTTPUpdateServer httpUpdater;
 #endif
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 #pragma message "Local WiFi shutter enable"
@@ -91,11 +89,9 @@ const char ERR_NO_DATA = -1;
 #include "dome_commands.h"
 enum CmdSource {SERIAL_CMD, NETWORK_CMD};
 // function prototypes
-#ifdef USE_ETHERNET
 void configureEthernet();
-bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet, bool bReconfigure);
+bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnetMask, bool bReconfigure);
 void checkForNewTCPClient();
-#endif // USE_ETHERNET
 #ifdef USE_WIFI
 void configureWiFi();
 bool initWiFi(IPAddress ip, String sSSID, String sPassword);
@@ -111,9 +107,7 @@ void SendHello();
 void requestShutterData();
 void CheckForCommands();
 void CheckForConditions();
-#ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client);
-#endif // USE_ETHERNET
 void ReceiveComputer();
 void ProcessCommand(int nSource);
 #ifdef USE_WIFI
@@ -155,12 +149,8 @@ void setup()
 	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
 
-#ifdef USE_ETHERNET
 	digitalWrite(ETHERNET_RESET, 0);
 	pinMode(ETHERNET_RESET, OUTPUT);
-#endif // USE_ETHERNET
-
-#ifdef USE_ETHERNET
 	getMacAddress(MAC_Address);
 	DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
 					String(MAC_Address[1], HEX) + String(":") +
@@ -168,7 +158,6 @@ void setup()
 					String(MAC_Address[3], HEX) + String(":") +
 					String(MAC_Address[4], HEX) + String(":") +
 					String(MAC_Address[5], HEX) );
-#endif // USE_ETHERNET
 
 	Computer.begin(115200);
 	//Computer.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
@@ -179,9 +168,7 @@ void setup()
 	Rotator->Stop();
 	Rotator->EnableMotor(false);
 
-#ifdef USE_ETHERNET
 	configureEthernet();
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 	bSentHello = false;
@@ -221,13 +208,11 @@ void setup()
 
 void loop()
 {
-#ifdef USE_ETHERNET
 	if(ethernetPresent) {
 		checkForNewTCPClient();
 		AlpacaDiscoveryServer->checkForRequest();
 		AlpacaServer->checkForRequest();
 	}
-#endif //USE_ETHERNET
 
 #ifdef USE_WIFI
 	if(wifiPresent) {
@@ -289,7 +274,6 @@ void MotorTask(void *)
 //
 //
 //
-#ifdef USE_ETHERNET
 void configureEthernet()
 {
         DBPrintln("========== Configuring Ethernet ==========");
@@ -298,11 +282,11 @@ void configureEthernet()
 										ServerConfig.ip,
 										ServerConfig.dns,
 										ServerConfig.gateway,
-										ServerConfig.subnet);
+										ServerConfig.subnetMask);
 }
 
 
-bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnet)
+bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnetMask)
 {
 	bool bDhcpOk;
 	int nTimeout = 0;
@@ -327,7 +311,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 		if(!bDhcpOk) {
 			DBPrintln("DHCP Failed!");
 			if(domeEthernet.linkStatus() == LinkON ) {
-				domeEthernet.begin(MAC_Address, ip, dns, gateway, subnet);
+				domeEthernet.begin(MAC_Address, ip, dns, gateway, subnetMask);
 			}
 			else {
 				DBPrintln("No cable");
@@ -336,7 +320,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 		}
 	}
 	else {
-		domeEthernet.begin(MAC_Address, ip, dns, gateway, subnet);
+		domeEthernet.begin(MAC_Address, ip, dns, gateway, subnetMask);
 	}
 
 	DBPrintln("========== Checking hardware status ==========");
@@ -386,7 +370,6 @@ void checkForNewTCPClient()
 		DBPrintln("nb client = " + String(nbEthernetClient));
 	}
 }
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 void configureWiFi()
@@ -558,11 +541,9 @@ void CheckForCommands()
 {
 	ReceiveComputer();
 
-#ifdef USE_ETHERNET
 	if(ethernetPresent ) {
 		ReceiveNetwork(domeClient);
 	}
-#endif // USE_ETHERNET
 #ifdef USE_WIFI
 	if(wifiPresent) {
 		ReceiveWiFi(shutterClient);
@@ -642,7 +623,6 @@ void PingWiFiShutter()
 }
 #endif
 
-#ifdef USE_ETHERNET
 void ReceiveNetwork(EthernetClient client)
 {
 	char networkCharacter;
@@ -671,7 +651,6 @@ void ReceiveNetwork(EthernetClient client)
 		}
 	}
 }
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 void ReceiveWiFi(WiFiClient client)
@@ -753,13 +732,11 @@ void ProcessCommand(int nSource)
 			// Payload
 			value = computerBuffer.substring(1);
 			break;
-#ifdef USE_ETHERNET
 		case NETWORK_CMD:
 			command = networkBuffer.charAt(0);
 			// Payload
 			value = networkBuffer.substring(1);
 			break;
-#endif
 	}
 
 	// payload has data
@@ -917,7 +894,7 @@ void ProcessCommand(int nSource)
 		case IS_SHUTTER_PRESENT:
 			serialMessage = String(IS_SHUTTER_PRESENT) + String( bShutterPresent? "1" : "0");
 			break;
-#ifdef USE_ETHERNET
+
 		case ETH_RECONFIG :
 			if(nbEthernetClient > 0) {
 				domeClient.stop();
@@ -962,11 +939,11 @@ void ProcessCommand(int nSource)
 
 		case IP_SUBNET:
 			if (hasValue) {
-				Rotator->setIPSubnet(value);
+				Rotator->setIPSubnetMask(value);
 				Rotator->getIpConfig(ServerConfig);
 			}
 			if(!ServerConfig.bUseDHCP)
-				serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnet());
+				serialMessage = String(IP_SUBNET) + String(Rotator->getIPSubnetMask());
 			else {
 				serialMessage = String(IP_SUBNET) + String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
 			}
@@ -983,7 +960,6 @@ void ProcessCommand(int nSource)
 				serialMessage = String(IP_GATEWAY) + String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
 			}
 			break;
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 		case SSID:
@@ -1201,7 +1177,6 @@ void ProcessCommand(int nSource)
 					Computer.flush();
 				}
 				break;
-	#ifdef USE_ETHERNET
 			case NETWORK_CMD:
 				if(domeClient.connected()) {
 					DBPrintln("Network serialMessage = " + serialMessage);
@@ -1209,7 +1184,6 @@ void ProcessCommand(int nSource)
 					domeClient.flush();
 				}
 				break;
-	#endif
 		}
 	}
 }

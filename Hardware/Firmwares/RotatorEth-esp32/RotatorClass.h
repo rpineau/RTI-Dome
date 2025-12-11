@@ -6,105 +6,33 @@
 //
 
 #include <atomic>
-
-// #include <extEEPROM.h>
-#include <Wire.h>
-
-#define I2C_WIRE    Wire
-
-#define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  16
-
-
+#include <Preferences.h>
 #include <AccelStepper.h>
 #include "StopWatch.h"
+#include "config.h"
 
 // set this to match the type of steps configured on the
 // stepper controller
 #define STEP_TYPE 8
 
 
-//
-// ESP32 dev boards
-//
-// input
-#define HOME_PIN            15  // Also used for Shutter open status
-#define SPARE_OPENED_PIN 	33	// Digital Input, shutter open limit swith, not used on rotator board, spare input.
-#define BUTTON_CCW          27 // Digital Input
-#define BUTTON_CW           14 // Digital Input
-#define CONDITION_SENSOR_PIN     25  // Digital Input from RG11 and other similar devices
-#define SPARE1				34
-#define SPARE2				26
-// ouput
-#define STEPPER_ENABLE_PIN  13  // Digital Output
-#define DIRECTION_PIN        2  // Digital Output
-#define STEP_PIN            32  // Digital Output
-#define SPARE_OUT1			 0
-#define SPARE_OUT2			12
-
-// analog
-#define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
-#define AD_REF      3.3f
-#define RES_MULT    5.0f // resistor voltage divider on the shield
-
-
-#define MOVE_NEGATIVE       -1
-#define MOVE_NONE            0
-#define MOVE_POSITIVE        1
-
-// #define M_ENABLE    HIGH
-// #define M_DISABLE   LOW
-#define M_ENABLE    LOW
-#define M_DISABLE   HIGH
-
-// A4988
-//#define M_ENABLE    LOW
-//#define M_DISABLE   HIGH
-
-#define MAX_SPEED           8000
-#define ACCELERATION        7000
-
-/*
-Micro-steps per rotation with original motor and 15.3:1 gearbox
-	NexDome 2m      : 440640
-	Explora-Dome 8' : 479800
-*/
-
-#define STEPS_DEFAULT       440640
-
-// DM556T stepper controller min pulse width  = 2.5uS
-// #define MIN_PULSE_WIDTH 3
-
-// ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
-// TB6600 Stepper controller min pulse width = 5uS
-#define MIN_PULSE_WIDTH 5
-
-// used to offset the config location.. at some point.
-#define EEPROM_LOCATION     0  // not used with Arduino Due flash
-#define EEPROM_SIGNATURE    0001
-
-#define WIFI_VAR_LEN 64
-
-#ifdef USE_ETHERNET
 typedef struct IPCONFIG {
 	bool            bUseDHCP;
 	IPAddress       ip;
 	IPAddress       dns;
 	IPAddress       gateway;
-	IPAddress       subnet;
+	IPAddress       subnetMask;
 } IPConfig;
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 typedef struct WIFICONFIG {
 	IPAddress       ip;
-	char 			sSSID[WIFI_VAR_LEN];
-	char			sPassword[WIFI_VAR_LEN];
+	String 			sSSID;
+	String			sPassword;
 } WIFIConfig;
 #endif // USE_WIFI
 
 typedef struct RotatorConfiguration {
-	int             signature;
 	long            stepsPerRotation;
 	long            acceleration;
 	long            maxSpeed;
@@ -113,9 +41,7 @@ typedef struct RotatorConfiguration {
 	float           parkAzimuth;
 	int             cutOffVolts;
 	int             conditionsAction;
-#ifdef USE_ETHERNET
 	IPConfig        ipConfig;
-#endif // USE_ETHERNET
 #ifdef USE_WIFI
 	// Use WiFi instead of XBee
 	WIFIConfig		wifiIpConfig;
@@ -147,8 +73,6 @@ class RotatorClass
 public:
 
 	RotatorClass();
-
-	void		SaveToEEProm();
 
 	// condition sensor methods
 	bool		GetConditionsStatus();
@@ -214,17 +138,15 @@ public:
 	void		ButtonCheck();
 	bool 		checkBoundaries(float dTargetAz, float dDomeAz, float dMargin);
 
-#ifdef USE_ETHERNET
 	void        getIpConfig(IPConfig &config);
 	bool        getDHCPFlag();
 	void        setDHCPFlag(bool bUseDHCP);
 	String      getIPAddress();
 	void        setIPAddress(String ipAddress);
-	String      getIPSubnet();
-	void        setIPSubnet(String ipSubnet);
+	String      getIPSubnetMask();
+	void        setIPSubnetMask(String subnetMask);
 	String      getIPGateway();
 	void        setIPGateway(String ipGateway);
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 	String      getSSID();
@@ -236,6 +158,7 @@ public:
 	static String IpAddress2String(const IPAddress& ipAddress);
 private:
 	Configuration   m_Config;
+	Preferences 	m_preferences;
 
 	// Rotator
 	bool            m_bWasRunning;
@@ -265,32 +188,16 @@ private:
 
 
 	// Utility
-	bool        LoadFromEEProm();
-	void        SetDefaultConfig();
-
+	bool 			LoadConfig();
 	std::atomic<bool>	m_bIsSafe{true};
-
-	bool        m_bDoEEPromSave;
-	// eeprom
-	byte        m_EEPROMpageSize;
-
-
-	byte        readEEPROMByte(int deviceaddress, unsigned int eeaddress);
-	void        readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
-	void        readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
-	void        writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
-	void        writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
+	bool				m_bDoSave;
 };
 
 
 
 RotatorClass::RotatorClass()
 {
-	DBPrintln("Using external AT24AA128 eeprom");
-	Wire.setClock(100000);
-	Wire.begin();
-	// AT24AA128 page size is 64 byte
-	m_EEPROMpageSize = 64;
+	m_preferences.begin("RTI_Dome", false);
 
 	m_seekMode = NOT_MOVING;
 	m_bWasRunning = false;
@@ -316,17 +223,16 @@ RotatorClass::RotatorClass()
 	pinMode(SPARE_OUT1,     		OUTPUT);
 	pinMode(SPARE_OUT2,     		OUTPUT);
 
-	LoadFromEEProm();
+	LoadConfig();
 
-	m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
+	m_bDoSave = false;  // we just read the config, no need to resave all the value we're setting
 	SetMaxSpeed(m_Config.maxSpeed);
 	SetAcceleration(m_Config.acceleration);
 	SetStepsPerRotation(m_Config.stepsPerRotation);
 	SetReversed(m_Config.reversed);
+	m_bDoSave = true;
 	// set pulse width
 	stepper.setMinPulseWidth(MIN_PULSE_WIDTH); // 5uS to test. Default in the source seems to be set to 1 ...
-
-	m_bDoEEPromSave = true;
 
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
 		m_bIsSafe = false;
@@ -400,36 +306,33 @@ inline void RotatorClass::conditionsInterrupt()
 		m_bIsSafe = true;
 }
 
-void RotatorClass::SaveToEEProm()
-{
-	if(!m_bDoEEPromSave)
-		return;
 
-	DBPrintln("RotatorClass::SaveToEEProm");
-
-	m_Config.signature = EEPROM_SIGNATURE;
-
-	writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
-}
-
-bool RotatorClass::LoadFromEEProm()
+bool RotatorClass::LoadConfig()
 {
 	bool response = true;
 
-	DBPrintln("RotatorClass::LoadFromEEProm");
-	//  zero the structure so currently unused parts
-	//  dont end up loaded with random garbage
-	memset(&m_Config, 0, sizeof(Configuration));
-	readEEPROMBuffer(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration) );
+	DBPrintln("RotatorClass::LoadConfig");
 
-	if (m_Config.signature != EEPROM_SIGNATURE) {
-		DBPrintln("Setting default value for new signature");
-		SetDefaultConfig();
-		SaveToEEProm();
-		response = false;
-	}
-	DBPrintln("expected signature : " + String(EEPROM_SIGNATURE));
-	DBPrintln("m_Config.signature : " + String(m_Config.signature));
+	m_Config.stepsPerRotation = m_preferences.getLong("stepsPerRotation",STEPS_DEFAULT);
+	m_Config.acceleration = m_preferences.getLong("acceleration",ACCELERATION);
+	m_Config.maxSpeed = m_preferences.getLong("maxSpeed",MAX_SPEED);
+	m_Config.reversed = m_preferences.getBool("reversed", false);
+	m_Config.homeAzimuth = m_preferences.getFloat("homeAzimuth", 0.0f);
+	m_Config.parkAzimuth = m_preferences.getFloat("parkAzimuth", 0.0f);
+	m_Config.cutOffVolts = m_preferences.getInt("cutOffVolts",1150);
+	m_Config.conditionsAction = m_preferences.getInt("conditionsAction", DO_NOTHING);
+
+	m_Config.ipConfig.bUseDHCP = m_preferences.getBool("bUseDHCP", true);
+	m_Config.ipConfig.ip.fromString(m_preferences.getString("ip","192.168.0.99"));
+	m_Config.ipConfig.dns.fromString(m_preferences.getString("dns","192.168.0.1"));
+	m_Config.ipConfig.gateway.fromString(m_preferences.getString("gateway","192.168.0.1"));
+	m_Config.ipConfig.subnetMask.fromString(m_preferences.getString("subnetMask","255.255.255.0"));
+#ifdef USE_WIFI
+	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.1"));
+	m_Config.wifiIpConfig.sSSID = m_preferences.getString("AP_SSID", "RTIShutter");
+	m_Config.wifiIpConfig.sPassword = m_preferences.getString("AP_Password", "RTIShutter");
+#endif // USE_WIFI
+
 	DBPrintln("maxSpeed          : " + String(m_Config.maxSpeed));
 	DBPrintln("acceleration      : " + String(m_Config.acceleration));
 	DBPrintln("stepsPerRotation  : " + String(m_Config.stepsPerRotation));
@@ -438,56 +341,26 @@ bool RotatorClass::LoadFromEEProm()
 	DBPrintln("parkAzimuth       : " + String(m_Config.parkAzimuth));
 	DBPrintln("cutOffVolts       : " + String(m_Config.cutOffVolts));
 	DBPrintln("conditionsAction        : " + String(m_Config.conditionsAction));
-#ifdef USE_ETHERNET
 	DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP?"Yes":"No"));
 	DBPrintln("ipConfig.ip       : " + IpAddress2String(m_Config.ipConfig.ip));
 	DBPrintln("ipConfig.dns      : " + IpAddress2String(m_Config.ipConfig.dns));
 	DBPrintln("ipConfig.gateway  : " + IpAddress2String(m_Config.ipConfig.gateway));
-	DBPrintln("ipConfig.subnet   : " + IpAddress2String(m_Config.ipConfig.subnet));
-#endif
+	DBPrintln("ipConfig.subnet   : " + IpAddress2String(m_Config.ipConfig.subnetMask));
 #ifdef USE_WIFI
 	DBPrintln("wifiIpConfig.ip        : " + IpAddress2String(m_Config.wifiIpConfig.ip));
-	DBPrintln("wifiIpConfig.sSSID     : " + String(m_Config.wifiIpConfig.sSSID));
-	DBPrintln("wifiIpConfig.sPassword : " + String(m_Config.wifiIpConfig.sPassword));
+	DBPrintln("wifiIpConfig.sSSID     : " + m_Config.wifiIpConfig.sSSID);
+	DBPrintln("wifiIpConfig.sPassword : " + m_Config.wifiIpConfig.sPassword);
 #endif
 	return response;
 }
 
-void RotatorClass::SetDefaultConfig()
-{
-	memset(&m_Config, 0, sizeof(Configuration));
-
-	m_Config.signature = EEPROM_SIGNATURE;
-	m_Config.maxSpeed = MAX_SPEED;
-	m_Config.acceleration = ACCELERATION;
-	m_Config.stepsPerRotation = STEPS_DEFAULT;
-	m_Config.reversed = 0;
-	m_Config.homeAzimuth = 0;
-	m_Config.parkAzimuth = 0;
-	m_Config.cutOffVolts = 1150;
-	m_Config.conditionsAction = DO_NOTHING;
-#ifdef USE_ETHERNET
-	m_Config.ipConfig.bUseDHCP = true;
-	m_Config.ipConfig.ip.fromString("192.168.0.99");
-	m_Config.ipConfig.dns.fromString("192.168.0.1");
-	m_Config.ipConfig.gateway.fromString("192.168.0.1");
-	m_Config.ipConfig.subnet.fromString("255.255.255.0");
-#endif // USE_ETHERNET
-#ifdef USE_WIFI
-	m_Config.wifiIpConfig.ip.fromString("172.31.255.1");
-	strncpy(m_Config.wifiIpConfig.sSSID,"RTIShutter", WIFI_VAR_LEN);
-	strncpy(m_Config.wifiIpConfig.sPassword,"RTIShutter", WIFI_VAR_LEN);
-#endif
-}
-
-#ifdef USE_ETHERNET
 void RotatorClass::getIpConfig(IPConfig &config)
 {
 	config.bUseDHCP = m_Config.ipConfig.bUseDHCP;
 	config.ip = m_Config.ipConfig.ip;
 	config.dns = m_Config.ipConfig.dns;
 	config.gateway = m_Config.ipConfig.gateway;
-	config.subnet = m_Config.ipConfig.subnet;
+	config.subnetMask = m_Config.ipConfig.subnetMask;
 }
 
 
@@ -500,7 +373,7 @@ void RotatorClass::setDHCPFlag(bool bUseDHCP)
 {
 	m_Config.ipConfig.bUseDHCP = bUseDHCP;
 	DBPrintln("New bUseDHCP : " + bUseDHCP?"Yes":"No");
-	SaveToEEProm();
+	m_preferences.putBool("bUseDHCP", bUseDHCP);
 }
 
 String RotatorClass::getIPAddress()
@@ -512,19 +385,19 @@ void RotatorClass::setIPAddress(String ipAddress)
 {
 	m_Config.ipConfig.ip.fromString(ipAddress);
 	DBPrintln("New IP address : " + IpAddress2String(m_Config.ipConfig.ip));
-	SaveToEEProm();
+	m_preferences.putString("ip", ipAddress);
 }
 
-String RotatorClass::getIPSubnet()
+String RotatorClass::getIPSubnetMask()
 {
-	return IpAddress2String(m_Config.ipConfig.subnet);
+	return IpAddress2String(m_Config.ipConfig.subnetMask);
 }
 
-void RotatorClass::setIPSubnet(String ipSubnet)
+void RotatorClass::setIPSubnetMask(String subnetMask)
 {
-	m_Config.ipConfig.subnet.fromString(ipSubnet);
-	DBPrintln("New subnet mask : " + IpAddress2String(m_Config.ipConfig.subnet));
-	SaveToEEProm();
+	m_Config.ipConfig.subnetMask.fromString(subnetMask);
+	DBPrintln("New subnet mask : " + subnetMask);
+	m_preferences.putString("subnetMask", subnetMask);
 }
 
 String RotatorClass::getIPGateway()
@@ -535,45 +408,45 @@ String RotatorClass::getIPGateway()
 void RotatorClass::setIPGateway(String ipGateway)
 {
 	m_Config.ipConfig.gateway.fromString(ipGateway);
-	DBPrintln("New gateway : " + IpAddress2String(m_Config.ipConfig.gateway));
-
+	DBPrintln("New gateway : " + ipGateway);
 	// setting DNS IP to gateway IP as we don't use it and this is probably correct for most home users
 	m_Config.ipConfig.dns.fromString(ipGateway);
-	SaveToEEProm();
+	m_preferences.putString("gateway", ipGateway);
 }
-
-#endif // USE_ETHERNET
 
 #ifdef USE_WIFI
 String RotatorClass::getSSID()
 {
-	return String(m_Config.wifiIpConfig.sSSID);
+	return m_Config.wifiIpConfig.sSSID;
 }
 
 void RotatorClass::setSSID(String sSSID)
 {
-	strncpy(m_Config.wifiIpConfig.sSSID,sSSID.c_str(), WIFI_VAR_LEN);
-	SaveToEEProm();
+	m_Config.wifiIpConfig.sSSID = sSSID;
+	m_preferences.putString("AP_SSID", sSSID);
 }
 
 
 void RotatorClass::getWiFiConfig(WIFIConfig &config)
 {
 	config.ip = m_Config.wifiIpConfig.ip;
-	strncpy(config.sSSID, m_Config.wifiIpConfig.sSSID, WIFI_VAR_LEN);
-	strncpy(config.sPassword, m_Config.wifiIpConfig.sPassword, WIFI_VAR_LEN);
+	config.sSSID = m_Config.wifiIpConfig.sSSID;
+	config.sPassword = m_Config.wifiIpConfig.sPassword;
 }
+#endif
 
 void RotatorClass::setWifiDefault()
 {
 	DBPrintln("Resseting WiFi to default SSID and IP");
 
 	m_Config.wifiIpConfig.ip.fromString("172.31.255.1");
-	strncpy(m_Config.wifiIpConfig.sSSID,"RTIShutter", WIFI_VAR_LEN);
-	strncpy(m_Config.wifiIpConfig.sPassword,"RTIShutter", WIFI_VAR_LEN);
- 	SaveToEEProm();
+	m_Config.wifiIpConfig.sSSID = "RTIShutter";
+	m_Config.wifiIpConfig.sPassword = "RTIShutter";
+
+	m_preferences.putString("wifi_ip","172.31.255.1");
+	m_preferences.putString("AP_SSID","RTIShutter");
+	m_preferences.putString("AP_Password","RTIShutter");
 }
-#endif
 
 String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
 {
@@ -605,7 +478,7 @@ inline int RotatorClass::GetConditionsAction()
 inline void RotatorClass::SetConditionsAction(const int value)
 {
 	m_Config.conditionsAction = value;
-	SaveToEEProm();
+	m_preferences.putInt("conditionsAction", value);
 }
 
 //
@@ -620,7 +493,8 @@ void RotatorClass::SetAcceleration(const long newAccel)
 {
 	m_Config.acceleration = newAccel;
 	stepper.setAcceleration(float(newAccel));
-	SaveToEEProm();
+	if(m_bDoSave)
+		m_preferences.putLong("acceleration", newAccel);
 }
 
 long RotatorClass::GetMaxSpeed()
@@ -632,7 +506,8 @@ void RotatorClass::SetMaxSpeed(const long newSpeed)
 {
 	m_Config.maxSpeed = newSpeed;
 	stepper.setMaxSpeed(float(newSpeed));
-	SaveToEEProm();
+	if(m_bDoSave)
+		m_preferences.putLong("maxSpeed", newSpeed);
 }
 
 long RotatorClass::GetPosition()
@@ -702,7 +577,8 @@ void RotatorClass::SetReversed(const bool isReversed)
 {
 	m_Config.reversed = isReversed;
 	stepper.setPinsInverted(isReversed, isReversed, isReversed);
-	SaveToEEProm();
+	if(m_bDoSave)
+		m_preferences.putBool("reversed", isReversed);
 }
 
 int RotatorClass::GetDirection()
@@ -719,7 +595,8 @@ void RotatorClass::SetStepsPerRotation(const long newCount)
 {
 	m_fStepsPerDegree = (float)newCount / 360.0f;
 	m_Config.stepsPerRotation = newCount;
-	SaveToEEProm();
+	if(m_bDoSave)
+		m_preferences.putBool("stepsPerRotation", newCount);
 }
 
 void RotatorClass::restoreDefaultMotorSettings()
@@ -759,7 +636,7 @@ int RotatorClass::GetLowVoltageCutoff()
 void RotatorClass::SetLowVoltageCutoff(const int lowVolts)
 {
 	m_Config.cutOffVolts = lowVolts;
-	SaveToEEProm();
+	m_preferences.putInt("cutOffVolts", lowVolts);
 }
 
 inline bool RotatorClass::GetVoltsAreLow()
@@ -797,7 +674,7 @@ float RotatorClass::GetHomeAzimuth()
 void RotatorClass::SetHomeAzimuth(const float newHome)
 {
 	m_Config.homeAzimuth = newHome;
-	SaveToEEProm();
+	m_preferences.putFloat("homeAzimuth", newHome);
 }
 
 int RotatorClass::GetHomeStatus()
@@ -822,7 +699,7 @@ float RotatorClass::GetParkAzimuth()
 void RotatorClass::SetParkAzimuth(const float newPark)
 {
 	m_Config.parkAzimuth = newPark;
-	SaveToEEProm();
+	m_preferences.putFloat("parkAzimuth", newPark);
 }
 
 int RotatorClass::GetSeekMode()
@@ -1115,108 +992,4 @@ bool RotatorClass::checkBoundaries(float dTargetAz, float dDomeAz, float dMargin
 	}
 
 	return false;
-}
-//
-// EEProm code to access the AT24AA128 I2C eeprom
-//
-
-// read one byte
-byte RotatorClass::readEEPROMByte(int deviceaddress, unsigned int eeaddress)
-{
-	byte rdata = 0xFF;
-	Wire.beginTransmission(deviceaddress);
-	Wire.write(byte(eeaddress >> 8)); // MSB
-	Wire.write(byte(eeaddress & 0xFF)); // LSB
-	Wire.endTransmission();
-	Wire.requestFrom(deviceaddress,1);
-	if (Wire.available()) {
-		rdata = Wire.read();
-	}
-	return rdata;
-}
-
-// Read from EEPROM into a buffer
-// slice read into I2C_CHUNK_SIZE block read. I2C_CHUNK_SIZE <=16
-void RotatorClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length)
-{
-
-	int c = length;
-	int offD = 0;
-	int nc = 0;
-
-	// read until length bytes is read
-	while (c > 0) {
-		// read maximal I2C_CHUNK_SIZE bytes
-		nc = c;
-		if (nc > I2C_CHUNK_SIZE)
-			nc = I2C_CHUNK_SIZE;
-		readEEPROMBlock(deviceaddress, eeaddress, buffer, offD, nc);
-		eeaddress+=nc;
-		offD+=nc;
-		c-=nc;
-	}
-}
-
-// Read from eeprom into a buffer  (assuming read lenght if I2C_CHUNK_SIZE or less)
-void RotatorClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
-{
-	int r = 0;
-
-
-	Wire.beginTransmission(deviceaddress);
-	if (Wire.endTransmission()==0) {
-	 	Wire.beginTransmission(deviceaddress);
-		Wire.write(byte(eeaddress >> 8));
-		Wire.write(byte(eeaddress & 0xFF));
-		if (Wire.endTransmission()==0) {
-			r = 0;
-			Wire.requestFrom(deviceaddress, length);
-			while (Wire.available() > 0 && r<length) {
-				data[offset+r] = (byte)Wire.read();
-				r++;
-			}
-		}
-	}
-}
-
-
-
-// Write a buffer to EEPROM
-// slice write into CHUNK_SIZE block write. I2C_CHUNK_SIZE <=16
-void RotatorClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *data, int length)
-{
-	int c = length;					// bytes left to write
-	int offD = 0;					// current offset in data pointer
-	int offP;						// current offset in page
-	int nc = 0;						// next n bytes to write
-
-	// write all bytes in multiple steps
-	while (c > 0) {
-		// calc offset in page
-		offP = eeaddress % m_EEPROMpageSize;
-		// maximal 30 bytes to write
-		nc = min(min(c, I2C_CHUNK_SIZE), m_EEPROMpageSize - offP);
-		writeEEPROMBlock(deviceaddress, eeaddress, data, offD, nc);
-		c-=nc;
-		offD+=nc;
-		eeaddress+=nc;
-	}
-}
-
-// Write a buffer to EEPROM
-void RotatorClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
-{
-
-	Wire.beginTransmission(deviceaddress);
-	if (Wire.endTransmission()==0) {
-	 	Wire.beginTransmission(deviceaddress);
-		Wire.write(byte(eeaddress >> 8));
-		Wire.write(byte(eeaddress & 0xFF));
-		byte *adr = data+offset;
-		Wire.write(adr, length);
-		Wire.endTransmission();
-		delay(20);
-	} else {
-		DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
-	}
 }
