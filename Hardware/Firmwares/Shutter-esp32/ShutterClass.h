@@ -1,75 +1,25 @@
 //
-// RTI-Zone Dome Rotator firmware. Based on https://github.com/nexdome/Automation/tree/master/Firmwares
-// As I contributed to the "old" 2,x firmware and was somewhat familiar with it I decided to reuse it and
-// fix most of the known issues. I also added some feature related to XBee init and reset.
-// This also is meant to run on an Arduino DUE as we put the AccelStepper run() call in an interrupt
+// RTI-Zone Dome shutter firmware.
+//
+//  Copyright © 2024 Rodolphe Pineau. All rights reserved.
+//
 //
 
 #include <atomic>
-
-#include <extEEPROM.h>
-#include <Wire.h>
-
-#define I2C_WIRE    Wire
-
-#define EEPROM_ADDR 0x50
-#define I2C_CHUNK_SIZE  4
-
-#define WIFI_VAR_LEN 64
-
+#include <Preferences.h>
+#include <nvs_flash.h>
 #include <AccelStepper.h>
+#include "config.h"
 #include "StopWatch.h"
 
-//
-// RP2040 boards
-//
-// input
-#define CLOSED_PIN				15 	// Digital Input
-#define OPENED_PIN 				33	// Digital Input
-#define BUTTON_CLOSE			14	// Digital Input
-#define BUTTON_OPEN				27	// Digital Input
-#define CONDITION_SENSOR_PIN	25  // Digital Input from RG11 ands other similar device. Might be use as a spare input on shutter board.
-#define SPARE1					34
-#define SPARE2					26
-// output
-#define STEPPER_ENABLE_PIN		13  // Digital Output
-#define STEPPER_DIRECTION_PIN	 2  // Digital Output
-#define STEPPER_STEP_PIN		32  // Digital Output
-#define SPARE_OUT1			 	 0
-#define SPARE_OUT2				12
-
-// analog
-#define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
-#define AD_REF      3.3
-#define RES_MULT    5.0 // resistor voltage divider on the shield
-
-
-#define     EEPROM_LOCATION         0
-#define     EEPROM_SIGNATURE        0002
-
-#define MIN_WATCHDOG_INTERVAL       15000
-#define MAX_WATCHDOG_INTERVAL       300000
-
-#define BATTERY_CHECK_INTERVAL      60000   // check battery once a minute
-
-#define M_ENABLE    HIGH
-#define M_DISABLE   LOW
-
-// DM556T stepper controller min pulse width  = 2.5uS
-// #define MIN_PULSE_WIDTH 3
-
-// ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
-// TB6600 tepper controller min pulse width = 5uS
-#define MIN_PULSE_WIDTH 5
 typedef struct WIFICONFIG {
 	IPAddress       ip;
-	char 			sSSID[WIFI_VAR_LEN];
-	char			sPassword[WIFI_VAR_LEN];
+	String 			sSSID;
+	String			sPassword;
 } WIFIConfig;
 
 
 typedef struct ShutterConfiguration {
-	int             signature;
 	unsigned long   stepsPerStroke;
 	int             acceleration;
 	int             maxSpeed;
@@ -121,8 +71,8 @@ public:
 	int         GetEndSwitchStatus();
 	int         GetState();
 
-	unsigned long   GetStepsPerStroke();
-	void            SetStepsPerStroke(const unsigned long);
+	unsigned long	GetStepsPerStroke();
+	void		SetStepsPerStroke(const unsigned long);
 
 	bool        GetVoltsAreLow();
 	String      GetVoltString();
@@ -142,8 +92,6 @@ public:
 	void		motorMoveRelative(const long amount);
 
 	// persistent data
-	void		LoadFromEEProm();
-	void		SaveToEEProm();
 	void		restoreDefaultMotorSettings();
 
 	// interrupts
@@ -159,6 +107,8 @@ public:
 private:
 
 	Configuration   m_Config;
+	Preferences 	m_preferences;
+
 	float           m_fAdcConvert;
 	int             m_nVolts;
 	StopWatch       m_batteryCheckTimer;
@@ -166,17 +116,9 @@ private:
 	bool            m_bUserButtonStop;
 
 	int             MeasureVoltage();
-	void            SetDefaultConfig();
 
-	bool        m_bDoEEPromSave;
-	// eeprom
-	byte        m_EEPROMpageSize;
-	byte        readEEPROMByte(int deviceaddress, unsigned int eeaddress);
-	void        readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length);
-	void        readEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
-	void        writeEEPROM(int deviceaddress, unsigned int address, byte *data, int length);
-	void        writeEEPROMBlock(int deviceaddress, unsigned int address, byte *data, int offset, int length);
-
+	void 			LoadConfig();
+	bool			m_bDoSave;
 };
 
 
@@ -184,11 +126,6 @@ ShutterClass::ShutterClass()
 {
 	int sw1, sw2;
 
-	DBPrintln("Using external AT24AA128 eeprom");
-	Wire.setClock(100000);
-	Wire.begin();
-	// AT24AA128 page size is 64 byte
-	m_EEPROMpageSize = 64;
 	shutterState = ERROR;
 	
 	m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
@@ -207,13 +144,13 @@ ShutterClass::ShutterClass()
 	pinMode(STEPPER_DIRECTION_PIN,  OUTPUT);
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
-	DBPrintln("Loading config from EEProm");
+	DBPrintln("Loading config");
 
-	LoadFromEEProm();
+	LoadConfig();
 
 	DBPrintln("Configuring stepper");
 
-	m_bDoEEPromSave = false;  // we just read the config, no need to resave all the value we're setting
+	m_bDoSave = false;  // we just read the config, no need to resave all the value we're setting
 	stepper.setEnablePin(STEPPER_ENABLE_PIN);
 	SetAcceleration(m_Config.acceleration);
 	SetMaxSpeed(m_Config.maxSpeed);
@@ -238,7 +175,7 @@ ShutterClass::ShutterClass()
 	m_bUserButtonStop=false;
 	m_bButtonUsed = false;
 	m_nVolts = MeasureVoltage();
-	m_bDoEEPromSave = true;
+	m_bDoSave = true;
 }
 
 void ShutterClass::ClosedInterrupt()
@@ -263,52 +200,39 @@ void ShutterClass::OpenInterrupt()
 	}
 }
 
-// EEPROM
-void ShutterClass::SetDefaultConfig()
+
+
+void ShutterClass::LoadConfig()
 {
-	memset(&m_Config, 0, sizeof(Configuration));
-	m_Config.signature = EEPROM_SIGNATURE;
-	m_Config.stepsPerStroke = 885000; // 368000
-	m_Config.acceleration = 7000;
-	m_Config.maxSpeed = 6400;
-	m_Config.reversed = false;
-	m_Config.cutoffVolts = 1150;
-	m_Config.watchdogInterval = 30000;
-	m_Config.bHasDropShutter = false;
-	m_Config.bTopShutterOpenFirst = true;
-	m_Config.wifiIpConfig.ip.fromString("172.31.255.2"); // rotator is 172.31.255.1
-	strncpy(m_Config.wifiIpConfig.sSSID,"RTIShutter", WIFI_VAR_LEN);
-	strncpy(m_Config.wifiIpConfig.sPassword,"RTIShutter", WIFI_VAR_LEN);
-}
+	bool nvsInitDone = false;
 
-void ShutterClass::restoreDefaultMotorSettings()
-{
-	m_Config.stepsPerStroke = 885000; // 368000
-	m_Config.acceleration = 7000;
-	m_Config.maxSpeed = 6400;
-
-	SetAcceleration(m_Config.acceleration);
-	SetMaxSpeed(m_Config.maxSpeed);
-	SetStepsPerStroke(m_Config.stepsPerStroke);
-}
-
-
-void ShutterClass::LoadFromEEProm()
-{
-	DBPrintln("LoadFromEEProm");
+	DBPrintln("LoadConfig");
 	//  zero the structure so currently unused parts
 	//  dont end up loaded with random garbage
-	memset(&m_Config, 0, sizeof(Configuration));
-	readEEPROMBuffer(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration) );
-
-	if (m_Config.signature != EEPROM_SIGNATURE) {
-		DBPrintln("Setting default value for new signature");
-		SetDefaultConfig();
-		SaveToEEProm();
+	m_preferences.begin("RTI_Shutter", false);
+	nvsInitDone = m_preferences.isKey("nvsInit");
+	if(!nvsInitDone) {
+		DBPrintln("Initializing NVS");
+		m_preferences.end();
+		nvs_flash_erase();
+		nvs_flash_init();
+		m_preferences.begin("RTI_Shutter", false);
+		m_preferences.putBool("nvsInit", true);
 	}
 
-	DBPrintln("expected signature            : " + String(EEPROM_SIGNATURE));
-	DBPrintln("m_Config.signature            : " + String(m_Config.signature));
+	m_Config.stepsPerStroke = m_preferences.getULong("stepsPerStroke",STEPS_DEFAULT);
+	m_Config.acceleration = m_preferences.getInt("acceleration",ACCELERATION);
+	m_Config.maxSpeed = m_preferences.getInt("maxSpeed",MAX_SPEED);
+	m_Config.reversed = m_preferences.getBool("reversed", false);
+	m_Config.cutoffVolts = m_preferences.getInt("cutoffVolts",1150);
+	m_Config.watchdogInterval = m_preferences.getULong("watchdogInterval",DEFAULT_WATCHDOG_INTERVAL);
+	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
+	m_Config.bTopShutterOpenFirst = m_preferences.getBool("topShutterOpenFirst", false);
+
+	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.1"));
+	m_Config.wifiIpConfig.sSSID = m_preferences.getString("wifiSSID", "RTIShutter");
+	m_Config.wifiIpConfig.sPassword = m_preferences.getString("wifiassword", "RTIShutter");
+
 	DBPrintln("m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
 	DBPrintln("m_Config.acceleration         : " + String(m_Config.acceleration));
 	DBPrintln("m_Config.maxSpeed             : " + String(m_Config.maxSpeed));
@@ -317,51 +241,42 @@ void ShutterClass::LoadFromEEProm()
 	DBPrintln("m_Config.watchdogInterval     : " + String(m_Config.watchdogInterval));
 	DBPrintln("m_Config.bHasDropShutter      : " + String(m_Config.bHasDropShutter?"Yes":"No"));
 	DBPrintln("m_Config.bTopShutterOpenFirst : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
-
-	DBPrintln("wifiIpConfig.ip        : " + IpAddress2String(m_Config.wifiIpConfig.ip));
-	DBPrintln("wifiIpConfig.sSSID     : " + String(m_Config.wifiIpConfig.sSSID));
-	DBPrintln("wifiIpConfig.sPassword : " + String(m_Config.wifiIpConfig.sPassword));
-
 	DBPrintln("wifiIpConfig.ip               : " + IpAddress2String(m_Config.wifiIpConfig.ip));
 	DBPrintln("wifiIpConfig.sSSID            : " + String(m_Config.wifiIpConfig.sSSID));
 	DBPrintln("wifiIpConfig.sPassword        : " + String(m_Config.wifiIpConfig.sPassword));
 
-	if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL)
+	if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL) {
 		m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
-	if(m_Config.watchdogInterval < MIN_WATCHDOG_INTERVAL)
+		m_preferences.putULong("watchdogInterval", m_Config.watchdogInterval);
+	}
+	if(m_Config.watchdogInterval < MIN_WATCHDOG_INTERVAL) {
 		m_Config.watchdogInterval = MIN_WATCHDOG_INTERVAL;
+		m_preferences.putULong("watchdogInterval", m_Config.watchdogInterval);
+	}
+	m_preferences.end();
 }
 
-void ShutterClass::SaveToEEProm()
-{
-
-	DBPrintln("ShutterClass::SaveToEEProm : " + String(m_bDoEEPromSave?"Yes":"No"));
-	if(!m_bDoEEPromSave)
-		return;
-
-	m_Config.signature = EEPROM_SIGNATURE;
-
-	DBPrintln("Saving config to external AT24AA128 eeprom");
-	writeEEPROM(EEPROM_ADDR, EEPROM_LOCATION, (byte *) &m_Config, sizeof(Configuration));
-}
 
 String ShutterClass::getSSID()
 {
-	return String(m_Config.wifiIpConfig.sSSID);
+	return m_Config.wifiIpConfig.sSSID;
 }
 
 void ShutterClass::setSSID(String sSSID)
 {
-	strncpy(m_Config.wifiIpConfig.sSSID,sSSID.c_str(), WIFI_VAR_LEN);
-	SaveToEEProm();	
+	m_Config.wifiIpConfig.sSSID = sSSID;
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putString("wifiSSID", sSSID);
+	m_preferences.end();
+
 }
 
 
 void ShutterClass::getWiFiConfig(WIFIConfig &config)
 {
 	config.ip = m_Config.wifiIpConfig.ip;
-	strncpy(config.sSSID, m_Config.wifiIpConfig.sSSID, WIFI_VAR_LEN);
-	strncpy(config.sPassword, m_Config.wifiIpConfig.sPassword, WIFI_VAR_LEN);
+	config.sSSID = m_Config.wifiIpConfig.sSSID;
+	config.sPassword = m_Config.wifiIpConfig.sPassword;
 }
 
 float ShutterClass::PositionToAltitude(const long pos)
@@ -388,7 +303,11 @@ void ShutterClass::SetAcceleration(const int accel)
 {
 	m_Config.acceleration = accel;
 	stepper.setAcceleration(accel);
-	SaveToEEProm();
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Shutter", false);
+		m_preferences.putInt("acceleration", accel);
+		m_preferences.end();
+	}
 }
 
 int ShutterClass::GetMaxSpeed()
@@ -400,7 +319,11 @@ void ShutterClass::SetMaxSpeed(const int speed)
 {
 	m_Config.maxSpeed = speed;
 	stepper.setMaxSpeed(speed);
-	SaveToEEProm();
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Shutter", false);
+		m_preferences.putInt("maxSpeed", speed);
+		m_preferences.end();
+	}
 }
 
 long ShutterClass::GetPosition()
@@ -454,7 +377,11 @@ void ShutterClass::SetReversed(const bool reversed)
 {
 	m_Config.reversed = reversed;
 	stepper.setPinsInverted(reversed, reversed, reversed);
-	SaveToEEProm();
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Shutter", false);
+		m_preferences.putBool("reversed", reversed);
+		m_preferences.end();
+	}
 }
 
 int ShutterClass::GetEndSwitchStatus()
@@ -482,8 +409,20 @@ unsigned long ShutterClass::GetStepsPerStroke()
 void ShutterClass::SetStepsPerStroke(const unsigned long newSteps)
 {
 	m_Config.stepsPerStroke = newSteps;
-	SaveToEEProm();
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Shutter", false);
+		m_preferences.putULong("stepsPerRot", newSteps);
+		m_preferences.end();
+	}
 }
+
+void ShutterClass::restoreDefaultMotorSettings()
+{
+	SetMaxSpeed(MAX_SPEED);
+	SetAcceleration(ACCELERATION);
+	SetStepsPerStroke(STEPS_DEFAULT);
+}
+
 
 inline bool ShutterClass::GetVoltsAreLow()
 {
@@ -502,7 +441,9 @@ String ShutterClass::GetVoltString()
 void ShutterClass::SetVoltsFromString(const String value)
 {
 	m_Config.cutoffVolts = value.toInt();
-	SaveToEEProm();
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putInt("cutoffVolts", m_Config.cutoffVolts);
+	m_preferences.end();
 }
 
 int ShutterClass::MeasureVoltage()
@@ -531,7 +472,9 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 	else
 		m_Config.watchdogInterval = newInterval;
 
-	SaveToEEProm();
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putULong("watchdogInterval", m_Config.watchdogInterval);
+	m_preferences.end();
 }
 
 // INPUTS
@@ -697,110 +640,3 @@ void ShutterClass::motorMoveRelative(const long amount)
 	EnableMotor(true);
 	stepper.move(amount);
 }
-
-
-//
-// EEProm code to access the AT24AA128 I2C eeprom
-//
-
-// read one byte
-byte ShutterClass::readEEPROMByte(int deviceaddress, unsigned int eeaddress)
-{
-	byte rdata = 0xFF;
-	Wire.beginTransmission(deviceaddress);
-	Wire.write(byte(eeaddress >> 8)); // MSB
-	Wire.write(byte(eeaddress & 0xFF)); // LSB
-	Wire.endTransmission();
-	Wire.requestFrom(deviceaddress,1);
-	if (Wire.available()) {
-		rdata = Wire.read();
-	}
-	return rdata;
-}
-
-// Read from EEPROM into a buffer
-// slice read into I2C_CHUNK_SIZE block read. I2C_CHUNK_SIZE <=16
-void ShutterClass::readEEPROMBuffer(int deviceaddress, unsigned int eeaddress, byte *buffer, int length)
-{
-
-	int c = length;
-	int offD = 0;
-	int nc = 0;
-
-	// read until length bytes is read
-	while (c > 0) {
-		// read maximal I2C_CHUNK_SIZE bytes
-		nc = c;
-		if (nc > I2C_CHUNK_SIZE)
-			nc = I2C_CHUNK_SIZE;
-		readEEPROMBlock(deviceaddress, eeaddress, buffer, offD, nc);
-		eeaddress+=nc;
-		offD+=nc;
-		c-=nc;
-	}
-}
-
-// Read from eeprom into a buffer  (assuming read lenght if I2C_CHUNK_SIZE or less)
-void ShutterClass::readEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
-{
-	int r = 0;
-
-
-	Wire.beginTransmission(deviceaddress);
-	if (Wire.endTransmission()==0) {
-	 	Wire.beginTransmission(deviceaddress);
-		Wire.write(byte(eeaddress >> 8));
-		Wire.write(byte(eeaddress & 0xFF));
-		if (Wire.endTransmission()==0) {
-			r = 0;
-			Wire.requestFrom(deviceaddress, length);
-			while (Wire.available() > 0 && r<length) {
-				data[offset+r] = (byte)Wire.read();
-				r++;
-			}
-		}
-	}
-}
-
-
-
-// Write a buffer to EEPROM
-// slice write into CHUNK_SIZE block write. I2C_CHUNK_SIZE <=16
-void ShutterClass::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte *data, int length)
-{
-	int c = length;					// bytes left to write
-	int offD = 0;					// current offset in data pointer
-	int offP;						// current offset in page
-	int nc = 0;						// next n bytes to write
-
-	// write all bytes in multiple steps
-	while (c > 0) {
-		// calc offset in page
-		offP = eeaddress % m_EEPROMpageSize;
-		// maximal 30 bytes to write
-		nc = min(min(c, I2C_CHUNK_SIZE), m_EEPROMpageSize - offP);
-		writeEEPROMBlock(deviceaddress, eeaddress, data, offD, nc);
-		c-=nc;
-		offD+=nc;
-		eeaddress+=nc;
-	}
-}
-
-// Write a buffer to EEPROM
-void ShutterClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, byte *data, int offset, int length)
-{
-
-	Wire.beginTransmission(deviceaddress);
-	if (Wire.endTransmission()==0) {
-	 	Wire.beginTransmission(deviceaddress);
-		Wire.write(byte(eeaddress >> 8));
-		Wire.write(byte(eeaddress & 0xFF));
-		byte *adr = data+offset;
-		Wire.write(adr, length);
-		Wire.endTransmission();
-		delay(20);
-	} else {
-		DBPrintln("No device at address 0x" + String(deviceaddress, HEX));
-	}
-}
-

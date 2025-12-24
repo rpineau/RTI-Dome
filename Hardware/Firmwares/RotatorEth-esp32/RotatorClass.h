@@ -12,11 +12,6 @@
 #include "StopWatch.h"
 #include "config.h"
 
-// set this to match the type of steps configured on the
-// stepper controller
-#define STEP_TYPE 8
-
-
 typedef struct IPCONFIG {
 	bool            bUseDHCP;
 	IPAddress       ip;
@@ -89,7 +84,7 @@ public:
 	void        SetMaxSpeed(const long);
 
 	long        GetPosition();
-	float      GetAzimuth();
+	float		GetAzimuth();
 	long        GetAzimuthToPosition(const float);
 	void        SyncPosition(const float);
 	void        GoToAzimuth(const float);
@@ -103,7 +98,7 @@ public:
 
 	void        restoreDefaultMotorSettings();
 
-	float      GetAngularDistance(const float fromAngle, const float toAngle);
+	float		GetAngularDistance(const float fromAngle, const float toAngle);
 
 	// Voltage methods
 	int         GetLowVoltageCutoff();
@@ -113,11 +108,11 @@ public:
 
 
 	// home and park methods
-	float      GetHomeAzimuth();
+	float		GetHomeAzimuth();
 	void        SetHomeAzimuth(const float);
 	int         GetHomeStatus();
 
-	float      GetParkAzimuth();
+	float		GetParkAzimuth();
 	void        SetParkAzimuth(const float);
 
 	int         GetSeekMode();
@@ -189,7 +184,7 @@ private:
 
 
 	// Utility
-	bool 			LoadConfig();
+	void 			LoadConfig();
 	std::atomic<bool>	m_bIsSafe{true};
 	bool				m_bDoSave;
 };
@@ -307,9 +302,8 @@ inline void RotatorClass::conditionsInterrupt()
 }
 
 
-bool RotatorClass::LoadConfig()
+void RotatorClass::LoadConfig()
 {
-	bool response = true;
 	bool nvsInitDone = false;
 	DBPrintln("RotatorClass::LoadConfig");
 
@@ -363,7 +357,6 @@ bool RotatorClass::LoadConfig()
 	DBPrintln("wifiIpConfig.sPassword : " + m_Config.wifiIpConfig.sPassword);
 #endif
 	m_preferences.end();
-	return response;
 }
 
 void RotatorClass::getIpConfig(IPConfig &config)
@@ -640,12 +633,9 @@ void RotatorClass::SetStepsPerRotation(const long newCount)
 
 void RotatorClass::restoreDefaultMotorSettings()
 {
-	m_Config.maxSpeed = MAX_SPEED;
-	m_Config.acceleration = ACCELERATION;
-	m_Config.stepsPerRotation = STEPS_DEFAULT;
-	SetMaxSpeed(m_Config.maxSpeed);
-	SetAcceleration(m_Config.acceleration);
-	SetStepsPerRotation(m_Config.stepsPerRotation);
+	SetMaxSpeed(MAX_SPEED);
+	SetAcceleration(ACCELERATION);
+	SetStepsPerRotation(STEPS_DEFAULT);
 }
 
 float RotatorClass::GetAngularDistance(const float fromAngle, const float toAngle)
