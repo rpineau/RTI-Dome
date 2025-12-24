@@ -81,7 +81,7 @@ Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
 // ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
 // TB6600 Stepper controller min pulse width = 5uS
 // set to a safer value for all controllers
-#define MIN_PULSE_WIDTH 5
+#define MIN_PULSE_WIDTH 5	
 
 #define ETHERNET_CS     5
 #define ETHERNET_INT	0

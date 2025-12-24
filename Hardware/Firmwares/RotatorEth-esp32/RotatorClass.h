@@ -8,6 +8,7 @@
 #include <atomic>
 #include <Preferences.h>
 #include <AccelStepper.h>
+#include <nvs_flash.h>
 #include "StopWatch.h"
 #include "config.h"
 
@@ -197,7 +198,6 @@ private:
 
 RotatorClass::RotatorClass()
 {
-	m_preferences.begin("RTI_Dome", false);
 
 	m_seekMode = NOT_MOVING;
 	m_bWasRunning = false;
@@ -232,7 +232,7 @@ RotatorClass::RotatorClass()
 	SetReversed(m_Config.reversed);
 	m_bDoSave = true;
 	// set pulse width
-	stepper.setMinPulseWidth(MIN_PULSE_WIDTH); // 5uS to test. Default in the source seems to be set to 1 ...
+	stepper.setMinPulseWidth(MIN_PULSE_WIDTH);
 
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
 		m_bIsSafe = false;
@@ -310,17 +310,28 @@ inline void RotatorClass::conditionsInterrupt()
 bool RotatorClass::LoadConfig()
 {
 	bool response = true;
-
+	bool nvsInitDone = false;
 	DBPrintln("RotatorClass::LoadConfig");
 
-	m_Config.stepsPerRotation = m_preferences.getLong("stepsPerRotation",STEPS_DEFAULT);
+	m_preferences.begin("RTI_Dome", false);
+	nvsInitDone = m_preferences.isKey("nvsInit");
+	if(!nvsInitDone) {
+		DBPrintln("Initializing NVS");
+		m_preferences.end();
+		nvs_flash_erase();
+		nvs_flash_init();
+		m_preferences.begin("RTI_Dome", false);
+		m_preferences.putBool("nvsInit", true);
+
+	}
+	m_Config.stepsPerRotation = m_preferences.getLong("stepsPerRot",STEPS_DEFAULT);
 	m_Config.acceleration = m_preferences.getLong("acceleration",ACCELERATION);
 	m_Config.maxSpeed = m_preferences.getLong("maxSpeed",MAX_SPEED);
 	m_Config.reversed = m_preferences.getBool("reversed", false);
 	m_Config.homeAzimuth = m_preferences.getFloat("homeAzimuth", 0.0f);
 	m_Config.parkAzimuth = m_preferences.getFloat("parkAzimuth", 0.0f);
 	m_Config.cutOffVolts = m_preferences.getInt("cutOffVolts",1150);
-	m_Config.conditionsAction = m_preferences.getInt("conditionsAction", DO_NOTHING);
+	m_Config.conditionsAction = m_preferences.getInt("condAction", DO_NOTHING);
 
 	m_Config.ipConfig.bUseDHCP = m_preferences.getBool("bUseDHCP", true);
 	m_Config.ipConfig.ip.fromString(m_preferences.getString("ip","192.168.0.99"));
@@ -340,7 +351,7 @@ bool RotatorClass::LoadConfig()
 	DBPrintln("homeAzimuth       : " + String(m_Config.homeAzimuth));
 	DBPrintln("parkAzimuth       : " + String(m_Config.parkAzimuth));
 	DBPrintln("cutOffVolts       : " + String(m_Config.cutOffVolts));
-	DBPrintln("conditionsAction        : " + String(m_Config.conditionsAction));
+	DBPrintln("conditionsAction  : " + String(m_Config.conditionsAction));
 	DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP?"Yes":"No"));
 	DBPrintln("ipConfig.ip       : " + IpAddress2String(m_Config.ipConfig.ip));
 	DBPrintln("ipConfig.dns      : " + IpAddress2String(m_Config.ipConfig.dns));
@@ -351,6 +362,7 @@ bool RotatorClass::LoadConfig()
 	DBPrintln("wifiIpConfig.sSSID     : " + m_Config.wifiIpConfig.sSSID);
 	DBPrintln("wifiIpConfig.sPassword : " + m_Config.wifiIpConfig.sPassword);
 #endif
+	m_preferences.end();
 	return response;
 }
 
@@ -373,7 +385,9 @@ void RotatorClass::setDHCPFlag(bool bUseDHCP)
 {
 	m_Config.ipConfig.bUseDHCP = bUseDHCP;
 	DBPrintln("New bUseDHCP : " + bUseDHCP?"Yes":"No");
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putBool("bUseDHCP", bUseDHCP);
+	m_preferences.end();
 }
 
 String RotatorClass::getIPAddress()
@@ -385,7 +399,9 @@ void RotatorClass::setIPAddress(String ipAddress)
 {
 	m_Config.ipConfig.ip.fromString(ipAddress);
 	DBPrintln("New IP address : " + IpAddress2String(m_Config.ipConfig.ip));
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putString("ip", ipAddress);
+	m_preferences.end();
 }
 
 String RotatorClass::getIPSubnetMask()
@@ -397,7 +413,9 @@ void RotatorClass::setIPSubnetMask(String subnetMask)
 {
 	m_Config.ipConfig.subnetMask.fromString(subnetMask);
 	DBPrintln("New subnet mask : " + subnetMask);
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putString("subnetMask", subnetMask);
+	m_preferences.end();
 }
 
 String RotatorClass::getIPGateway()
@@ -411,7 +429,9 @@ void RotatorClass::setIPGateway(String ipGateway)
 	DBPrintln("New gateway : " + ipGateway);
 	// setting DNS IP to gateway IP as we don't use it and this is probably correct for most home users
 	m_Config.ipConfig.dns.fromString(ipGateway);
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putString("gateway", ipGateway);
+	m_preferences.end();
 }
 
 #ifdef USE_WIFI
@@ -423,7 +443,9 @@ String RotatorClass::getSSID()
 void RotatorClass::setSSID(String sSSID)
 {
 	m_Config.wifiIpConfig.sSSID = sSSID;
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putString("AP_SSID", sSSID);
+	m_preferences.end();
 }
 
 
@@ -443,9 +465,11 @@ void RotatorClass::setWifiDefault()
 	m_Config.wifiIpConfig.sSSID = "RTIShutter";
 	m_Config.wifiIpConfig.sPassword = "RTIShutter";
 
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putString("wifi_ip","172.31.255.1");
 	m_preferences.putString("AP_SSID","RTIShutter");
 	m_preferences.putString("AP_Password","RTIShutter");
+	m_preferences.end();
 }
 
 String RotatorClass::IpAddress2String(const IPAddress& ipAddress)
@@ -478,7 +502,9 @@ inline int RotatorClass::GetConditionsAction()
 inline void RotatorClass::SetConditionsAction(const int value)
 {
 	m_Config.conditionsAction = value;
-	m_preferences.putInt("conditionsAction", value);
+	m_preferences.begin("RTI_Dome", false);
+	m_preferences.putInt("condAction", value);
+	m_preferences.end();
 }
 
 //
@@ -493,8 +519,11 @@ void RotatorClass::SetAcceleration(const long newAccel)
 {
 	m_Config.acceleration = newAccel;
 	stepper.setAcceleration(float(newAccel));
-	if(m_bDoSave)
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putLong("acceleration", newAccel);
+		m_preferences.end();
+	}
 }
 
 long RotatorClass::GetMaxSpeed()
@@ -506,8 +535,11 @@ void RotatorClass::SetMaxSpeed(const long newSpeed)
 {
 	m_Config.maxSpeed = newSpeed;
 	stepper.setMaxSpeed(float(newSpeed));
-	if(m_bDoSave)
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putLong("maxSpeed", newSpeed);
+		m_preferences.end();
+	}
 }
 
 long RotatorClass::GetPosition()
@@ -577,8 +609,11 @@ void RotatorClass::SetReversed(const bool isReversed)
 {
 	m_Config.reversed = isReversed;
 	stepper.setPinsInverted(isReversed, isReversed, isReversed);
-	if(m_bDoSave)
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putBool("reversed", isReversed);
+		m_preferences.end();
+	}
 }
 
 int RotatorClass::GetDirection()
@@ -593,10 +628,14 @@ long RotatorClass::GetStepsPerRotation()
 
 void RotatorClass::SetStepsPerRotation(const long newCount)
 {
+	long foo;
 	m_fStepsPerDegree = (float)newCount / 360.0f;
 	m_Config.stepsPerRotation = newCount;
-	if(m_bDoSave)
-		m_preferences.putBool("stepsPerRotation", newCount);
+	if(m_bDoSave) {
+		m_preferences.begin("RTI_Dome", false);
+		m_preferences.putLong("stepsPerRot", newCount);
+		m_preferences.end();
+	}
 }
 
 void RotatorClass::restoreDefaultMotorSettings()
@@ -636,7 +675,9 @@ int RotatorClass::GetLowVoltageCutoff()
 void RotatorClass::SetLowVoltageCutoff(const int lowVolts)
 {
 	m_Config.cutOffVolts = lowVolts;
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putInt("cutOffVolts", lowVolts);
+	m_preferences.end();
 }
 
 inline bool RotatorClass::GetVoltsAreLow()
@@ -674,7 +715,9 @@ float RotatorClass::GetHomeAzimuth()
 void RotatorClass::SetHomeAzimuth(const float newHome)
 {
 	m_Config.homeAzimuth = newHome;
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putFloat("homeAzimuth", newHome);
+	m_preferences.end();
 }
 
 int RotatorClass::GetHomeStatus()
@@ -699,7 +742,9 @@ float RotatorClass::GetParkAzimuth()
 void RotatorClass::SetParkAzimuth(const float newPark)
 {
 	m_Config.parkAzimuth = newPark;
+	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putFloat("parkAzimuth", newPark);
+	m_preferences.end();
 }
 
 int RotatorClass::GetSeekMode()
