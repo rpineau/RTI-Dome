@@ -128,7 +128,7 @@ ShutterClass::ShutterClass()
 
 	shutterState = ERROR;
 	
-	m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
+	m_fAdcConvert = RES_MULT * (AD_REF / 4095.0f) * 100.0f;
 
 	DBPrintln("configuring pins");
 
@@ -227,7 +227,7 @@ void ShutterClass::LoadConfig()
 	m_Config.cutoffVolts = m_preferences.getInt("cutoffVolts",1150);
 	m_Config.watchdogInterval = m_preferences.getULong("watchdogInterval",DEFAULT_WATCHDOG_INTERVAL);
 	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
-	m_Config.bTopShutterOpenFirst = m_preferences.getBool("topShutterOpenFirst", false);
+	m_Config.bTopShutterOpenFirst = m_preferences.getBool("topShutterOpenFirst", true); // this generaly the case.
 
 	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.1"));
 	m_Config.wifiIpConfig.sSSID = m_preferences.getString("wifiSSID", "RTIShutter");
@@ -282,7 +282,7 @@ void ShutterClass::getWiFiConfig(WIFIConfig &config)
 float ShutterClass::PositionToAltitude(const long pos)
 {
 	float result = (float)pos;
-	result = result / m_Config.stepsPerStroke * 90.0;
+	result = result / m_Config.stepsPerStroke * 90.0f;
 	return result;
 }
 
@@ -290,7 +290,7 @@ long ShutterClass::AltitudeToPosition(const float alt)
 {
 	long result;
 
-	result = (long)(m_Config.stepsPerStroke * alt / 90.0);
+	result = (long)(m_Config.stepsPerStroke * alt / 90.0f);
 	return result;
 }
 
@@ -453,7 +453,7 @@ int ShutterClass::MeasureVoltage()
 
 	adc = analogRead(VOLTAGE_MONITOR_PIN);
 	calc = adc * m_fAdcConvert;
-	DBPrintln("ADC volts = " + String(calc/100));
+	DBPrintln("ADC volts = " + String(calc/100.0f));
 	return int(calc);
 }
 

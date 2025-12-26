@@ -48,7 +48,7 @@
 #define SPARE_OUT1			 0
 #define SPARE_OUT2			12
 // analog
-#define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
+#define VOLTAGE_MONITOR_PIN A0  // GPIO36 / SENSOR_VP
 #define AD_REF      3.3f
 #define RES_MULT    5.0f // resistor voltage divider on the shield
 

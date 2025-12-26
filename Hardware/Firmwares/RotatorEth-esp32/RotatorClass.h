@@ -248,7 +248,7 @@ RotatorClass::RotatorClass()
 		DBPrintln("At park on startup");
 	}
 
-	m_fAdcConvert = RES_MULT * (AD_REF / 1023.0f) * 100.0f;
+	m_fAdcConvert = RES_MULT * (AD_REF / 4095.0f) * 100.0f;
 
 	// reset all timers
 	m_MoveOffUntilTimer.reset();

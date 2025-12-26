@@ -9,7 +9,7 @@
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
 #include <atomic>
-// #define DEBUG   // enable debug to serial port defined as DebugPort
+#include "config.h"
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"

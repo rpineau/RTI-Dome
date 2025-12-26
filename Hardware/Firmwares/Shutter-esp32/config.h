@@ -8,7 +8,7 @@
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
-#define DebugPort Serial1    //  Rx2,Tx2 =  Serial1
+#define DebugPort Serial    //  USB = Serial, Rx2,Tx2 =  Serial1
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
@@ -22,9 +22,6 @@
 #define VERSION "2.645"
 
 #define USE_OTA_UPDATE
-
-#define Computer Serial     // USB = Serial
-
 
 //
 // ESP32 dev boards
@@ -45,7 +42,7 @@
 #define SPARE_OUT2				12
 
 // analog
-#define VOLTAGE_MONITOR_PIN A0  // GPIO26/ADC0
+#define VOLTAGE_MONITOR_PIN A0  // GPIO36 / SENSOR_VP
 #define AD_REF      3.3f
 #define RES_MULT    5.0f // resistor voltage divider on the shield
 
