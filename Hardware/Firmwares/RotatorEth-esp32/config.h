@@ -47,11 +47,6 @@
 #define STEP_PIN            32  // Digital Output
 #define SPARE_OUT1			 0
 #define SPARE_OUT2			12
-// analog
-#define VOLTAGE_MONITOR_PIN A0  // GPIO36 / SENSOR_VP
-#define AD_REF      3.3f
-#define RES_MULT    5.0f // resistor voltage divider on the shield
-
 
 #define MOVE_NEGATIVE       -1
 #define MOVE_NONE            0
