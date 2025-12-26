@@ -489,7 +489,6 @@ void SendHello()
 		DBPrintln("Sending hello");
 		shutterMessage = String(HELLO) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 		bSentHello = true;
 	}
@@ -501,37 +500,30 @@ void requestWiFiShutterData()
 	if(nbWiFiClient && shutterClient.connected()) {
 		shutterMessage = String(STATE_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(VERSION_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(REVERSED_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(STEPSPER_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(SPEED_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(ACCELERATION_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(VOLTS_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 	}
 }
@@ -584,7 +576,6 @@ void CheckForConditions()
 		if(nbWiFiClient && shutterClient.connected()) {
 			shutterMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE) : String(UNSAFE)) + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-			// shutterClient.flush();
 		}
 #endif // USE_WIFI
 	}
@@ -610,7 +601,6 @@ void PingWiFiShutter()
 			DBPrintln("PingWiFiShutter");
 			shutterMessage = String(SHUTTER_PING) + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-			// shutterClient.flush();
 			ReceiveWiFi(shutterClient);
 			PingTimer.reset();
 		}
@@ -1039,7 +1029,6 @@ void ProcessCommand(int nSource)
 //          }
 //			shutterMessage += "#";
 //			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-//			// shutterClient.flush();
 //          ReceiveWiFi(shutterClient);
 //          serialMessage = sTmpString + RemoteShutter.position;
 //          break;
@@ -1301,7 +1290,6 @@ void Abort()
 	if(nbWiFiClient && shutterClient.connected()) {
 		shutterMessage = String(ABORT) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-		// shutterClient.flush();
 		ReceiveWiFi(shutterClient);
 	}
 #endif

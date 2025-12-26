@@ -264,18 +264,14 @@ void PingRotator()
 	}
 
 	shutterClient.write(wirelessMessage.c_str());
-	// shutterClient.flush();
 
 	// ask if condition are bad
 	wirelessMessage = String(CONDITION_SHUTTER) + "#";
 	shutterClient.write(wirelessMessage.c_str());
-	// shutterClient.flush();
 
 	// say hello :)
 	wirelessMessage = String(HELLO) + "#";
 	shutterClient.write(wirelessMessage.c_str());
-
-	// shutterClient.flush();
 	needFirstPing = false;
 }
 
@@ -497,6 +493,5 @@ void ProcessWifi()
 		sRotatorMessage+="#";
 		DBPrintln(">>> Sending " + sRotatorMessage);
 		shutterClient.write(sRotatorMessage.c_str());
-		// shutterClient.flush();
 	}
 }
