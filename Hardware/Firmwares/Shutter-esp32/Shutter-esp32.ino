@@ -139,6 +139,7 @@ void loop()
 			watchdogTimer.reset();
 			shutterClient.stop();
 			rotatorConnect(wifiConfig.ip);
+			needFirstPing = true;
 		}
 
 		if(needFirstPing) {

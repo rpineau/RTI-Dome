@@ -229,9 +229,9 @@ void ShutterClass::LoadConfig()
 	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
 	m_Config.bTopShutterOpenFirst = m_preferences.getBool("topShutterOpenFirst", true); // this generaly the case.
 
-	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.1"));
+	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.2"));
 	m_Config.wifiIpConfig.sSSID = m_preferences.getString("wifiSSID", "RTIShutter");
-	m_Config.wifiIpConfig.sPassword = m_preferences.getString("wifiassword", "RTIShutter");
+	m_Config.wifiIpConfig.sPassword = m_preferences.getString("wifiPassword", "RTIShutter");
 
 	DBPrintln("m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
 	DBPrintln("m_Config.acceleration         : " + String(m_Config.acceleration));

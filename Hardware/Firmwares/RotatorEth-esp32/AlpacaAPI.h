@@ -2207,32 +2207,6 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 
 #endif
 
-void domeVoltageCutoffValue(Request &req, Response &res)
-{
-	JsonDocument controllerResp;
-	String sResp;
-
-	if(req.method() == Request::PUT) {
-		JsonDocument FormData;
-		formDataToJson(req, FormData);
-		if(FormData.size()==0){
-		}
-		else {
-			if(FormData["value"].is<long>()) {
-				Rotator->SetLowVoltageCutoff(FormData["value"]);
-			}
-		}
-	}
-
-	controllerResp["value"] = Rotator->GetVoltString();
-	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
-
-	res.set("Content-Type", "application/json");
-	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-}
-
-
 void unsafeDomeAction(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
@@ -2388,9 +2362,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->use("/setup/rotationSpeed", &rotationSpeedValue);
 	m_AlpacaRestServer->use("/setup/rotationAcceleration", &rotationAccelerationValue);
 	m_AlpacaRestServer->put("/setup/restoreRotationMotorSettings", &restoreRotationMotorValues);
-	m_AlpacaRestServer->use("/setup/domeVoltageCutoff", &domeVoltageCutoffValue);
 	m_AlpacaRestServer->use("/setup/unsafeDomeAction", &unsafeDomeAction);
-	m_AlpacaRestServer->get("/setup/domeVoltage", &domeVoltageCutoffValue);
 	m_AlpacaRestServer->get("/setup/envCondition", &envConditionState);
 
 #ifdef USE_WIFI

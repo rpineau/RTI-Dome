@@ -35,7 +35,6 @@ typedef struct RotatorConfiguration {
 	bool            reversed;
 	float           homeAzimuth;
 	float           parkAzimuth;
-	int             cutOffVolts;
 	int             conditionsAction;
 	IPConfig        ipConfig;
 #ifdef USE_WIFI
@@ -99,13 +98,6 @@ public:
 	void        restoreDefaultMotorSettings();
 
 	float		GetAngularDistance(const float fromAngle, const float toAngle);
-
-	// Voltage methods
-	int         GetLowVoltageCutoff();
-	void        SetLowVoltageCutoff(const int);
-	bool        GetVoltsAreLow();
-	String      GetVoltString();
-
 
 	// home and park methods
 	float		GetHomeAzimuth();
@@ -173,16 +165,6 @@ private:
 	volatile 	long	m_nHomePosEdgePass2;
 	std::atomic<bool>	m_HomeFound{false};
 
-	// Power values
-	float           m_fAdcConvert;
-	int             m_nVolts;
-	int             ReadVolts();
-
-
-	StopWatch       m_periodicReadingTimer;
-	unsigned long   m_nNextPeriodicReadingLapse = 10;
-
-
 	// Utility
 	void 			LoadConfig();
 	std::atomic<bool>	m_bIsSafe{true};
@@ -247,12 +229,8 @@ RotatorClass::RotatorClass()
 		SyncPosition(m_Config.parkAzimuth);
 		DBPrintln("At park on startup");
 	}
-
-	m_fAdcConvert = RES_MULT * (AD_REF / 4095.0f) * 100.0f;
-
 	// reset all timers
 	m_MoveOffUntilTimer.reset();
-	m_periodicReadingTimer.reset();
 }
 
 
@@ -324,7 +302,6 @@ void RotatorClass::LoadConfig()
 	m_Config.reversed = m_preferences.getBool("reversed", false);
 	m_Config.homeAzimuth = m_preferences.getFloat("homeAzimuth", 0.0f);
 	m_Config.parkAzimuth = m_preferences.getFloat("parkAzimuth", 0.0f);
-	m_Config.cutOffVolts = m_preferences.getInt("cutOffVolts",1150);
 	m_Config.conditionsAction = m_preferences.getInt("condAction", DO_NOTHING);
 
 	m_Config.ipConfig.bUseDHCP = m_preferences.getBool("bUseDHCP", true);
@@ -344,7 +321,6 @@ void RotatorClass::LoadConfig()
 	DBPrintln("reversed          : " + String(m_Config.reversed));
 	DBPrintln("homeAzimuth       : " + String(m_Config.homeAzimuth));
 	DBPrintln("parkAzimuth       : " + String(m_Config.parkAzimuth));
-	DBPrintln("cutOffVolts       : " + String(m_Config.cutOffVolts));
 	DBPrintln("conditionsAction  : " + String(m_Config.conditionsAction));
 	DBPrintln("ipConfig.bUseDHCP : " + String(m_Config.ipConfig.bUseDHCP?"Yes":"No"));
 	DBPrintln("ipConfig.ip       : " + IpAddress2String(m_Config.ipConfig.ip));
@@ -655,46 +631,6 @@ float RotatorClass::GetAngularDistance(const float fromAngle, const float toAngl
 }
 
 //
-// Voltage methods
-//
-int RotatorClass::GetLowVoltageCutoff()
-{
-	return m_Config.cutOffVolts;
-}
-
-void RotatorClass::SetLowVoltageCutoff(const int lowVolts)
-{
-	m_Config.cutOffVolts = lowVolts;
-	m_preferences.begin("RTI_Dome", false);
-	m_preferences.putInt("cutOffVolts", lowVolts);
-	m_preferences.end();
-}
-
-inline bool RotatorClass::GetVoltsAreLow()
-{
-	bool voltsLow = false;
-
-	if (m_nVolts <= m_Config.cutOffVolts)
-		voltsLow = true;
-	return voltsLow;
-}
-
-inline String RotatorClass::GetVoltString()
-{
-	return String(m_nVolts) + "," + String(m_Config.cutOffVolts);
-}
-
-int RotatorClass::ReadVolts()
-{
-	int adc;
-	float calc;
-
-	adc = analogRead(VOLTAGE_MONITOR_PIN);
-	calc = adc * m_fAdcConvert;
-	return int(calc);
-}
-
-//
 // home and park methods
 //
 float RotatorClass::GetHomeAzimuth()
@@ -872,11 +808,6 @@ void RotatorClass::Run()
 	long stepsFromZero;
 	long position;
 	float azimuthDelta;
-
-	if (m_periodicReadingTimer.elapsed() >= m_nNextPeriodicReadingLapse) {
-		m_nVolts = ReadVolts();
-		m_periodicReadingTimer.reset();
-	}
 
 	if (m_seekMode > HOMING_HOME)
 		Calibrate();

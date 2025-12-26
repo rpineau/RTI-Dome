@@ -881,10 +881,7 @@ void ProcessCommand(int nSource)
 			break;
 
 		case VOLTS_ROTATOR:
-			if (hasValue) {
-				Rotator->SetLowVoltageCutoff(value.toInt());
-			}
-			serialMessage = String(VOLTS_ROTATOR) + String(Rotator->GetVoltString());
+			serialMessage = String(VOLTS_ROTATOR) + String("12.0,10.0");
 			break;
 
 		case CONDITION_SHUTTER:
