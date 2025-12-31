@@ -138,6 +138,9 @@ void loop()
 			taskYIELD();
 			esp_task_wdt_reset();
 		}
+		if(needFirstPing) {
+			PingRotator();
+		}
 	}
 
 	if(bWiFiOk) {
@@ -215,7 +218,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 		DBPrintln("Waiting for WiFi");
 		delay(1000);
 		nTimeout++;
-		if(nTimeout>10) { // 10 seconds should be plenty
+		if(nTimeout>20) { // 20 seconds should be plenty, the rotator takes a few seconds to start
 			DBPrintln("========== Failed to connect to Rotator ==========");
 			return false;
 		}

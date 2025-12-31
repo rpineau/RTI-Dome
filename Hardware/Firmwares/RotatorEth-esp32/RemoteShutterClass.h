@@ -9,11 +9,11 @@ class RemoteShutterClass
 {
 public:
 	// Todo: remove this if state becomes a string
-	enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, ERROR };
+	enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 
 	// TODO: See if these can all be strings
 	// These have to be real data for communications reasos
-	int state = 4; // Cause we don't know until the shutter tells us.
+	int state = ERROR; // Cause we don't know until the shutter tells us.
 
 	// These aren't used by Rotator so why bother converting them to numeric values?
 	int		acceleration = 0;

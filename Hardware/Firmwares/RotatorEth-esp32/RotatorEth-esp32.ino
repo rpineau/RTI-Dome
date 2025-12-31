@@ -981,6 +981,7 @@ void ProcessCommand(int nSource)
 				// send new SSID to shutter
 				shutterMessage = String(SHUTTER_SSID) + value + "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				delay(250);
 				// reconfigure wifi
 				configureWiFi();
 			}
