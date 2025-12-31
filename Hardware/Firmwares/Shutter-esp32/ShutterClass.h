@@ -8,7 +8,7 @@
 #include <atomic>
 #include <Preferences.h>
 #include <nvs_flash.h>
-#include <AccelStepper.h>
+#include <FastAccelStepper.h>
 #include "config.h"
 #include "StopWatch.h"
 
@@ -32,7 +32,8 @@ typedef struct ShutterConfiguration {
 } Configuration;
 
 
-AccelStepper stepper(AccelStepper::DRIVER, STEPPER_STEP_PIN, STEPPER_DIRECTION_PIN);
+FastAccelStepperEngine engine = FastAccelStepperEngine();
+FastAccelStepper *stepper = NULL;
 
 // All possible Shutter state, including option got a dropout
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
@@ -83,7 +84,6 @@ public:
 
 	// Move
 	void		DoButtons();
-	void		EnableMotor(const bool);
 	void		Open();
 	void		Close();
 	void		Run();
@@ -140,8 +140,8 @@ ShutterClass::ShutterClass()
 	pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
 
 	// Ouput pins
-	pinMode(STEPPER_STEP_PIN,       OUTPUT);
-	pinMode(STEPPER_DIRECTION_PIN,  OUTPUT);
+	pinMode(STEP_PIN,       		OUTPUT);
+	pinMode(DIRECTION_PIN,  		OUTPUT);
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
 	DBPrintln("Loading config");
@@ -151,12 +151,14 @@ ShutterClass::ShutterClass()
 	DBPrintln("Configuring stepper");
 
 	m_bDoSave = false;  // we just read the config, no need to resave all the value we're setting
-	stepper.setEnablePin(STEPPER_ENABLE_PIN);
-	SetAcceleration(m_Config.acceleration);
+	engine.init();
+   	stepper = engine.stepperConnectToPin(STEP_PIN);
+	stepper->setEnablePin(STEPPER_ENABLE_PIN);
+	stepper->setAutoEnable(true);
+
 	SetMaxSpeed(m_Config.maxSpeed);
-	// set pulse width
-	stepper.setMinPulseWidth(MIN_PULSE_WIDTH); // 5uS to test. Default in the source seems to be set to 1 ...
-	EnableMotor(false);
+	SetAcceleration(m_Config.acceleration);
+	SetReversed(m_Config.reversed);
 
 	// reset all timers
 	m_nBatteryCheckInterval = BATTERY_CHECK_INTERVAL;
@@ -302,7 +304,7 @@ int ShutterClass::GetAcceleration()
 void ShutterClass::SetAcceleration(const int accel)
 {
 	m_Config.acceleration = accel;
-	stepper.setAcceleration(accel);
+	stepper->setAcceleration(m_Config.acceleration);    //  steps/s²
 	if(m_bDoSave) {
 		m_preferences.begin("RTI_Shutter", false);
 		m_preferences.putInt("acceleration", accel);
@@ -312,13 +314,13 @@ void ShutterClass::SetAcceleration(const int accel)
 
 int ShutterClass::GetMaxSpeed()
 {
-	return stepper.maxSpeed();
+	return m_Config.maxSpeed;
 }
 
 void ShutterClass::SetMaxSpeed(const int speed)
 {
 	m_Config.maxSpeed = speed;
-	stepper.setMaxSpeed(speed);
+	stepper->setSpeedInHz(m_Config.maxSpeed);  //  steps/s
 	if(m_bDoSave) {
 		m_preferences.begin("RTI_Shutter", false);
 		m_preferences.putInt("maxSpeed", speed);
@@ -328,12 +330,12 @@ void ShutterClass::SetMaxSpeed(const int speed)
 
 long ShutterClass::GetPosition()
 {
-	return stepper.currentPosition();
+	return stepper->getCurrentPosition();
 }
 
 void ShutterClass::GotoPosition(const unsigned long newPos)
 {
-	uint64_t currentPos = stepper.currentPosition();
+	uint64_t currentPos = stepper->getCurrentPosition();
 	bool doMove = false;
 
 	// Check if this actually changes position, then move if necessary.
@@ -365,7 +367,7 @@ void ShutterClass::MoveRelative(const long amount)
 
 float ShutterClass::GetElevation()
 {
-	return PositionToAltitude(stepper.currentPosition());
+	return PositionToAltitude(stepper->getCurrentPosition());
 }
 
 bool ShutterClass::GetReversed()
@@ -376,7 +378,7 @@ bool ShutterClass::GetReversed()
 void ShutterClass::SetReversed(const bool reversed)
 {
 	m_Config.reversed = reversed;
-	stepper.setPinsInverted(reversed, reversed, reversed);
+	stepper->setDirectionPin(DIRECTION_PIN,(!reversed));
 	if(m_bDoSave) {
 		m_preferences.begin("RTI_Shutter", false);
 		m_preferences.putBool("reversed", reversed);
@@ -529,17 +531,6 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	}
 }
 
-// Setters
-void ShutterClass::EnableMotor(const bool newState)
-{
-	if (!newState) {
-		digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
-	}
-	else {
-		digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
-	}
-}
-
 // Movers
 void ShutterClass::Open()
 {
@@ -574,7 +565,7 @@ void ShutterClass::Close()
 void ShutterClass::Abort()
 {
 	m_bButtonUsed = true; // will stop and not try to finish close/open
-	stepper.stop();
+	stepper->stopMove();
 }
 
 void ShutterClass::Run()
@@ -593,9 +584,8 @@ void ShutterClass::Run()
 		m_batteryCheckTimer.reset();
 	}
 
-	stepper.run(); // RP2040 core1
 
-	if (stepper.isRunning()) {
+	if (stepper->isRunning()) {
 		m_bWasRunning = true;
 		return;
 	}
@@ -603,7 +593,7 @@ void ShutterClass::Run()
 	if (m_bWasRunning) { // This only runs once after stopping.
 		if (digitalRead(CLOSED_PIN) == 0) {
 			shutterState = CLOSED;
-			stepper.setCurrentPosition(0);
+			stepper->setCurrentPosition(0);
 			DBPrintln("Stopped at closed position");
 		}
 		else if (digitalRead(OPENED_PIN) == 0) {
@@ -622,7 +612,6 @@ void ShutterClass::Run()
 			Open();
 			return;
 		}
-		EnableMotor(false);
 		m_bWasRunning = false;
 	}
 	else { // make sure the state are accurate.
@@ -641,19 +630,17 @@ void ShutterClass::Run()
 
 void ShutterClass::motorStop()
 {
-	stepper.stop();
+	stepper->stopMove();
 
 }
 
 
 void ShutterClass::motorMoveTo(const long newPosition)
 {
-	EnableMotor(true);
-	stepper.moveTo(newPosition);
+	stepper->moveTo(newPosition);
 }
 
 void ShutterClass::motorMoveRelative(const long amount)
 {
-	EnableMotor(true);
-	stepper.move(amount);
+	stepper->move(amount);
 }

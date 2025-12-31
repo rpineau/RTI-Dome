@@ -175,7 +175,6 @@ void setup()
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
 	Rotator->Stop();
-	Rotator->EnableMotor(false);
 
 	configureEthernet();
 

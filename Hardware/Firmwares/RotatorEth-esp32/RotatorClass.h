@@ -7,7 +7,7 @@
 
 #include <atomic>
 #include <Preferences.h>
-#include <AccelStepper.h>
+#include <FastAccelStepper.h>
 #include <nvs_flash.h>
 #include "StopWatch.h"
 #include "config.h"
@@ -59,8 +59,8 @@ enum Seeks { NOT_MOVING,           // Not homing or calibrating
 enum ConditionsActions {DO_NOTHING=0, HOME, PARK};
 enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
 
-AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIRECTION_PIN);
-
+FastAccelStepperEngine engine = FastAccelStepperEngine();
+FastAccelStepper *stepper = NULL;
 
 class RotatorClass
 {
@@ -115,7 +115,6 @@ public:
 	void        Calibrate();
 
 	// Movers
-	void        EnableMotor(const bool);
 	void        MoveRelative(const long steps);
 	void        Run();
 	void        Stop();
@@ -202,13 +201,16 @@ RotatorClass::RotatorClass()
 	LoadConfig();
 
 	m_bDoSave = false;  // we just read the config, no need to resave all the value we're setting
+	engine.init();
+   	stepper = engine.stepperConnectToPin(STEP_PIN);
+	stepper->setEnablePin(STEPPER_ENABLE_PIN);
+	stepper->setAutoEnable(true);
+
 	SetMaxSpeed(m_Config.maxSpeed);
 	SetAcceleration(m_Config.acceleration);
 	SetStepsPerRotation(m_Config.stepsPerRotation);
 	SetReversed(m_Config.reversed);
 	m_bDoSave = true;
-	// set pulse width
-	stepper.setMinPulseWidth(MIN_PULSE_WIDTH);
 
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
 		m_bIsSafe = false;
@@ -241,7 +243,7 @@ void IRAM_ATTR RotatorClass::homeInterrupt()
 	if (digitalRead(HOME_PIN) != LOW)
 		return;
 
-	nPos = stepper.currentPosition(); // read position immediately
+	nPos = stepper->getCurrentPosition(); // read position immediately
 
 	switch(m_seekMode) {
 		case HOMING_HOME: // stop and take note of where we are so we can reverse.
@@ -486,7 +488,9 @@ long RotatorClass::GetAcceleration()
 void RotatorClass::SetAcceleration(const long newAccel)
 {
 	m_Config.acceleration = newAccel;
-	stepper.setAcceleration(float(newAccel));
+
+	stepper->setAcceleration(m_Config.acceleration);    //  steps/s²
+
 	if(m_bDoSave) {
 		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putLong("acceleration", newAccel);
@@ -502,7 +506,7 @@ long RotatorClass::GetMaxSpeed()
 void RotatorClass::SetMaxSpeed(const long newSpeed)
 {
 	m_Config.maxSpeed = newSpeed;
-	stepper.setMaxSpeed(float(newSpeed));
+	stepper->setSpeedInHz(m_Config.maxSpeed);  //  steps/s
 	if(m_bDoSave) {
 		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putLong("maxSpeed", newSpeed);
@@ -515,7 +519,8 @@ long RotatorClass::GetPosition()
 	/// Return change in steps relative to
 	/// last sync position
 	long position;
-	position = stepper.currentPosition();
+	position = stepper->getCurrentPosition();
+
 	if (m_seekMode < CALIBRATION_MOVE_OFF) {
 		while (position >= m_Config.stepsPerRotation)
 			position -= m_Config.stepsPerRotation;
@@ -553,7 +558,7 @@ void RotatorClass::SyncPosition(const float newAzimuth)
 	long newPosition;
 
 	newPosition = GetAzimuthToPosition(newAzimuth);
-	stepper.setCurrentPosition(newPosition);
+	stepper->setCurrentPosition(newPosition);
 }
 
 void RotatorClass::GoToAzimuth(const float newHeading)
@@ -576,7 +581,7 @@ bool RotatorClass::GetReversed()
 void RotatorClass::SetReversed(const bool isReversed)
 {
 	m_Config.reversed = isReversed;
-	stepper.setPinsInverted(isReversed, isReversed, isReversed);
+	stepper->setDirectionPin(DIRECTION_PIN,(!isReversed));
 	if(m_bDoSave) {
 		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putBool("reversed", isReversed);
@@ -704,7 +709,7 @@ void RotatorClass::StartHoming()
 
 void RotatorClass::StartCalibrating()
 {
-	stepper.setCurrentPosition(0);
+	stepper->setCurrentPosition(0);
 	m_bDoStepsPerRotation = false;
 	m_nHomePosEdgePass1 = 0;
 	m_nHomePosEdgePass2 = 0;
@@ -725,9 +730,9 @@ void RotatorClass::Calibrate()
 	if (m_seekMode > HOMING_HOME) {
 		switch (m_seekMode) {
 			case(CALIBRATION_MOVE_OFF):
-				if (!stepper.isRunning()) {
+				if (!stepper->isRunning()) {
 					m_seekMode = CALIBRATION_STEP1;
-					stepper.setCurrentPosition(0);
+					stepper->setCurrentPosition(0);
 					MoveRelative(160000000L);
 				}
 				break;
@@ -739,7 +744,7 @@ void RotatorClass::Calibrate()
 				break;
 
 			case(CALIBRATION_MEASURE):
-				if (!stepper.isRunning()) { // we have to wait for it to have stopped
+				if (!stepper->isRunning()) { // we have to wait for it to have stopped
 					m_seekMode = HOMING_FINISH;
 					m_bSetToHomeAzimuth = true;
 					m_bDoStepsPerRotation = true; // Once stopped, set SPR to stepper position and save to eeprom.
@@ -755,18 +760,6 @@ void RotatorClass::Calibrate()
 //
 // Movers
 //
-void RotatorClass::EnableMotor(const bool bEnabled)
-{
-	if (!bEnabled) {
-		DBPrintln("Motor OFF");
-		digitalWrite(STEPPER_ENABLE_PIN, M_DISABLE);
-	}
-	else {
-		DBPrintln("Motor ON");
-		digitalWrite(STEPPER_ENABLE_PIN, M_ENABLE);
-	}
-
-}
 
 void RotatorClass::MoveRelative(const long howFar)
 {
@@ -811,9 +804,7 @@ void RotatorClass::Run()
 	if (m_seekMode > HOMING_HOME)
 		Calibrate();
 
-	stepper.run(); // accellStepper run loop
-
-	if (stepper.isRunning()) {
+	if (stepper->isRunning()) {
 		m_bWasRunning = true;
 		if (m_seekMode == HOMING_HOME && m_HomeFound) { // We're looking for home and found it
 			Stop();
@@ -832,7 +823,7 @@ void RotatorClass::Run()
 	if (m_bDoStepsPerRotation) {
 		m_bDoStepsPerRotation = false;
 		SetStepsPerRotation(m_nHomePosEdgePass2 - m_nHomePosEdgePass1);
-		position = stepper.currentPosition();
+		position = stepper->getCurrentPosition();
 		azimuthDelta = (float)(position - m_nHomePosEdgePass2) / m_fStepsPerDegree;
 		SyncPosition(azimuthDelta + m_Config.homeAzimuth);
 		m_nStepsAtHome = 0;
@@ -840,10 +831,10 @@ void RotatorClass::Run()
 
 	if (m_bSetToHomeAzimuth) {
 		m_bSetToHomeAzimuth = false;
-		position = stepper.currentPosition();
+		position = stepper->getCurrentPosition();
 		azimuthDelta = (float)(position - m_nStepsAtHome) / m_fStepsPerDegree;
 		SyncPosition(azimuthDelta + m_Config.homeAzimuth);
-		position = stepper.currentPosition();
+		position = stepper->getCurrentPosition();
 		GoToAzimuth(m_Config.homeAzimuth); // moving to home now that we know where we are
 		m_seekMode = HOMING_BACK_HOME;
 	}
@@ -854,27 +845,26 @@ void RotatorClass::Run()
 			while (stepsFromZero < 0)
 				stepsFromZero += m_Config.stepsPerRotation;
 
-			stepper.setCurrentPosition(stepsFromZero);
+			stepper->setCurrentPosition(stepsFromZero);
 		}
 
 		if (stepsFromZero > m_Config.stepsPerRotation) {
 			while (stepsFromZero > m_Config.stepsPerRotation)
 				stepsFromZero -= m_Config.stepsPerRotation;
 
-			stepper.setCurrentPosition(stepsFromZero);
+			stepper->setCurrentPosition(stepsFromZero);
 		}
 
 		if( m_seekMode == NOT_MOVING) {
 			// not moving anymore ..
 			m_nMoveDirection = MOVE_NONE;
-			EnableMotor(false);
 			m_bWasRunning = false;
 			// check if we stopped on the home sensor
 			if(digitalRead(HOME_PIN) == LOW) {
 				// we're at the home position
 				m_bisAtHome = true;
 			}
-			position = stepper.currentPosition();
+			position = stepper->getCurrentPosition();
 			while (position >= m_Config.stepsPerRotation)
 				position -= m_Config.stepsPerRotation;
 
@@ -883,14 +873,13 @@ void RotatorClass::Run()
 
 			if(position == (m_Config.stepsPerRotation -1))
 				position = 0;
-			stepper.setCurrentPosition(position);
+			stepper->setCurrentPosition(position);
 		}
 
 		if(m_seekMode == MOVING_GOTO) {
 			m_nMoveDirection = MOVE_NONE;
-			EnableMotor(false);
 			m_seekMode = NOT_MOVING;
-			position = stepper.currentPosition();
+			position = stepper->getCurrentPosition();
 			while (position >= m_Config.stepsPerRotation)
 				position -= m_Config.stepsPerRotation;
 
@@ -899,14 +888,14 @@ void RotatorClass::Run()
 
 			if(position == (m_Config.stepsPerRotation -1))
 				position = 0;
-			stepper.setCurrentPosition(position);
+			stepper->setCurrentPosition(position);
 		}
 	} // end if (m_bWasRunning)
 }
 
 void RotatorClass::Stop()
 {
-	if (!stepper.isRunning())
+	if (!stepper->isRunning())
 		return;
 
 	m_seekMode = NOT_MOVING;
@@ -917,15 +906,14 @@ void RotatorClass::Stop()
 
 void RotatorClass::motorStop()
 {
-	stepper.stop();
+	stepper->stopMove();
 }
 
 
 void RotatorClass::motorMoveRelative(const long howFar)
 {
-	EnableMotor(true);
-	stepper.move(howFar);
-}
+	stepper->move(howFar);
+}	
 
 
 bool RotatorClass::checkBoundaries(float dTargetAz, float dDomeAz, float dMargin)

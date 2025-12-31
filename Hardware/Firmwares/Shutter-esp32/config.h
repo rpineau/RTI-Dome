@@ -36,8 +36,8 @@
 #define SPARE2					26
 // output
 #define STEPPER_ENABLE_PIN		13  // Digital Output
-#define STEPPER_DIRECTION_PIN	 2  // Digital Output
-#define STEPPER_STEP_PIN		32  // Digital Output
+#define DIRECTION_PIN	 		2  // Digital Output
+#define STEP_PIN				32  // Digital Output
 #define SPARE_OUT1			 	 0
 #define SPARE_OUT2				12
 
