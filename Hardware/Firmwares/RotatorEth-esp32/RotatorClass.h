@@ -811,7 +811,7 @@ void RotatorClass::Run()
 	if (m_seekMode > HOMING_HOME)
 		Calibrate();
 
-	stepper.run(); // RP2040 core1
+	stepper.run(); // accellStepper run loop
 
 	if (stepper.isRunning()) {
 		m_bWasRunning = true;
@@ -923,7 +923,6 @@ void RotatorClass::motorStop()
 
 void RotatorClass::motorMoveRelative(const long howFar)
 {
-	DBPrintln("motorMoveRelative");
 	EnableMotor(true);
 	stepper.move(howFar);
 }

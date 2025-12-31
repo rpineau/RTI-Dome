@@ -71,6 +71,16 @@ esp_task_wdt_config_t twdt_config =
         .trigger_panic = false,
     };
 
+// interrupt debouncing variables
+//variables to keep track of the timing of recent interrupts
+volatile unsigned long button_time = 0;
+volatile unsigned long last_button_time = 0;
+volatile unsigned long open_time = 0;
+volatile unsigned long last_open_time = 0;
+volatile unsigned long close_time = 0;
+volatile unsigned long last_close_time = 0;
+
+
 void MotorTask(void *);
 void handleClosedInterrupt();
 void handleOpenInterrupt();
@@ -106,7 +116,7 @@ void setup()
 		needFirstPing = true;
 
 	DBPrintln("========== Creating motor task ==========");
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 0, &MotorTaskHanle,  0);
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 0, &MotorTaskHanle,  0);
 
 	DBPrintln("========== Ready ==========");
 
@@ -161,10 +171,10 @@ void MotorTask(void *)
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 
-	attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
-	attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, FALLING);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, FALLING);
+	attachInterrupt(OPENED_PIN, handleOpenInterrupt, FALLING);
+	attachInterrupt(CLOSED_PIN, handleClosedInterrupt, FALLING);
+	attachInterrupt(BUTTON_OPEN, handleButtons, FALLING);
+	attachInterrupt(BUTTON_CLOSE, handleButtons, FALLING); 
 	esp_task_wdt_add(NULL);
 
 	DBPrintln("========== Motor task ready ==========");
@@ -238,17 +248,33 @@ bool rotatorConnect(IPAddress ip)
 // interrupt
 void IRAM_ATTR handleClosedInterrupt()
 {
-	Shutter->ClosedInterrupt();
+	close_time = millis();
+ 	if (close_time - last_close_time > DEBOUNCE_TIME) {
+		if(Shutter)
+			Shutter->ClosedInterrupt();
+		last_close_time = close_time;
+	}	
 }
 
 void IRAM_ATTR handleOpenInterrupt()
 {
-	Shutter->OpenInterrupt();
+	open_time = millis();
+ 	if (open_time - last_open_time > DEBOUNCE_TIME) {
+		if(Shutter)
+			Shutter->OpenInterrupt();
+		last_open_time = open_time;
+	}	
 }
 
 void IRAM_ATTR handleButtons()
 {
-	Shutter->DoButtons();
+	button_time = millis();
+ 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		if(Shutter)
+			Shutter->DoButtons();
+		last_button_time = button_time;
+	}
+	
 }
 
 

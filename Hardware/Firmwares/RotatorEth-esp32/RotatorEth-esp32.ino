@@ -131,6 +131,15 @@ esp_task_wdt_config_t twdt_config = {
 	.idle_core_mask = 0,    // Bitmask of cores
 	.trigger_panic = false,
 };
+\
+// interrupt debouncing variables
+//variables to keep track of the timing of recent interrupts
+volatile unsigned long button_time = 0;
+volatile unsigned long last_button_time = 0;
+volatile unsigned long condition_time = 0;
+volatile unsigned long last_condition_time = 0;
+volatile unsigned long home_time = 0;
+volatile unsigned long last_home_time = 0;
 
 //
 // Setup and main loops
@@ -182,7 +191,7 @@ void setup()
 	esp_task_wdt_add(NULL);
 	disableCore0WDT();
 	disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0);
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 1, NULL,  0);
 
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
@@ -263,15 +272,15 @@ void MotorTask(void *)
 {
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
-	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
-	attachInterrupt(digitalPinToInterrupt(CONDITION_SENSOR_PIN), conditionsIntHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+	attachInterrupt(HOME_PIN, homeIntHandler, FALLING);
+	attachInterrupt(CONDITION_SENSOR_PIN, conditionsIntHandler, CHANGE);
+	attachInterrupt(BUTTON_CW, buttonHandler, CHANGE);
+	attachInterrupt(BUTTON_CCW, buttonHandler, CHANGE);
 	esp_task_wdt_add(NULL);
 	DBPrintln("========== Motor task ready ==========");
 
 	for(;;) {
-		Rotator->Run();
+		Rotator->Run(); // accelStepper run is called in there
 		taskYIELD();
 		esp_task_wdt_reset();
 	}
@@ -459,20 +468,32 @@ void checkForNewWifiClient()
 #endif
 void IRAM_ATTR homeIntHandler()
 {
-   if(Rotator)
-	   Rotator->homeInterrupt();
+	home_time = millis();
+ 	if (home_time - last_home_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->homeInterrupt();
+		last_home_time = home_time;
+	}
 }
 
 void IRAM_ATTR conditionsIntHandler()
 {
-   if(Rotator)
-	   Rotator->conditionsInterrupt();
+	condition_time = millis();
+ 	if (condition_time - last_condition_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->conditionsInterrupt();
+		last_condition_time = condition_time;
+	}
 }
 
 void IRAM_ATTR buttonHandler()
 {
-   if(Rotator)
-	   Rotator->ButtonCheck();
+	button_time = millis();
+ 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->ButtonCheck();
+		last_button_time = button_time;
+	}
 }
 
 
