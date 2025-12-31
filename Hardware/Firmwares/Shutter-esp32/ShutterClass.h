@@ -133,10 +133,10 @@ ShutterClass::ShutterClass()
 	DBPrintln("configuring pins");
 
 	// Input pins
-	pinMode(CLOSED_PIN,             INPUT);
-	pinMode(OPENED_PIN,             INPUT);
-	pinMode(BUTTON_OPEN,            INPUT);
-	pinMode(BUTTON_CLOSE,           INPUT);
+	pinMode(CLOSED_PIN,             INPUT_PULLUP);
+	pinMode(OPENED_PIN,             INPUT_PULLUP);
+	pinMode(BUTTON_OPEN,            INPUT_PULLUP);
+	pinMode(BUTTON_CLOSE,           INPUT_PULLUP);
 	pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
 
 	// Ouput pins
@@ -178,7 +178,7 @@ ShutterClass::ShutterClass()
 	m_bDoSave = true;
 }
 
-void ShutterClass::ClosedInterrupt()
+void IRAM_ATTR ShutterClass::ClosedInterrupt()
 {
 	// debounce
 	if (digitalRead(CLOSED_PIN) == LOW) {
@@ -189,7 +189,7 @@ void ShutterClass::ClosedInterrupt()
 	}
 }
 
-void ShutterClass::OpenInterrupt()
+void IRAM_ATTR ShutterClass::OpenInterrupt()
 {
 	// debounce
 	if (digitalRead(OPENED_PIN) == LOW) {
@@ -453,7 +453,8 @@ int ShutterClass::MeasureVoltage()
 
 	adc = analogRead(VOLTAGE_MONITOR_PIN);
 	calc = adc * m_fAdcConvert;
-	DBPrintln("ADC volts = " + String(calc/100.0f));
+	if(calc - int(calc) >= 0.5)
+		return int(ceil(calc));
 	return int(calc);
 }
 
@@ -478,7 +479,7 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 }
 
 // INPUTS
-void ShutterClass::DoButtons()
+void IRAM_ATTR ShutterClass::DoButtons()
 {
 	int sw1, sw2, sw3, sw4;
 
@@ -488,11 +489,23 @@ void ShutterClass::DoButtons()
 	sw3 = digitalRead(CLOSED_PIN);
 	sw4 = digitalRead(OPENED_PIN);
 
-	// roof is moving and the user want to stop it in the middle
-	if((sw1 == LOW || sw2== LOW) && sw3 == HIGH && sw4 == HIGH && buttonStopTimer.elapsed() > 1.0 ) {
+	// shutter is between open and close and we want to open
+	if(sw1 == LOW  && sw3 == HIGH && sw4 == HIGH ) {
 		motorStop();
-		m_bUserButtonStop = true; // this allows us to not try to finish the open/close
+		shutterState = OPENING;
+		MoveRelative(160000000L);
 		m_bButtonUsed = true;
+		m_bUserButtonStop = false;
+		buttonStopTimer.reset();
+	}
+	// shutter is between open and close and we want to close
+	else if(sw2 == LOW && sw3 == HIGH && sw4 == HIGH ) {
+		motorStop();
+		shutterState = CLOSING;
+		MoveRelative(-160000000L);
+		m_bButtonUsed = true;
+		m_bUserButtonStop = false;
+		buttonStopTimer.reset();
 	}
 	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) { // button open pressed and we're closed
 		shutterState = OPENING;
@@ -535,23 +548,25 @@ void ShutterClass::Open()
 		return;
 
 	if (digitalRead(OPENED_PIN) == 0) {
+		DBPrintln("[Open()] shutterState = OPEN");
 		shutterState = OPEN;
 		return;
 	}
 
 	shutterState = OPENING;
-	DBPrintln("shutterState = OPENING");
+	DBPrintln("[Open()] shutterState = OPENING");
 	MoveRelative(160000000L);
 }
 
 void ShutterClass::Close()
 {
 	if (digitalRead(CLOSED_PIN) == 0) {
+		DBPrintln("[Close()] shutterState = CLOSE");
 		shutterState = CLOSED;
 		return;
 	}
 	shutterState = CLOSING;
-	DBPrintln("shutterState = CLOSING");
+	DBPrintln("[Close()]  shutterState = CLOSING");
 	MoveRelative(-160000000L);
 }
 
@@ -569,6 +584,8 @@ void ShutterClass::Run()
 	if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
 		DBPrintln("Measuring Battery");
 		m_nVolts = MeasureVoltage();
+		DBPrintln("Voltage : " + String(m_nVolts));
+
 		if(GetVoltsAreLow() && shutterState!=CLOSED) {
 			DBPrintln("Voltage is low, closing");
 			Close();

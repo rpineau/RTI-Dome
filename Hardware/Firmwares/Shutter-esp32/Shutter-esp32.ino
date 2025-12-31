@@ -63,7 +63,7 @@ std::atomic<bool> isBadCondition;
 std::atomic<bool> needFirstPing;
 StopWatch watchdogTimer;
 ShutterClass *Shutter = nullptr;
-
+TaskHandle_t MotorTaskHanle;
 esp_task_wdt_config_t twdt_config =
     {
         .timeout_ms = 1000000,
@@ -106,7 +106,7 @@ void setup()
 		needFirstPing = true;
 
 	DBPrintln("========== Creating motor task ==========");
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 16, NULL,  0);
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 0, &MotorTaskHanle,  0);
 
 	DBPrintln("========== Ready ==========");
 
@@ -163,8 +163,8 @@ void MotorTask(void *)
 
 	attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
 	attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, FALLING);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, FALLING);
 	esp_task_wdt_add(NULL);
 
 	DBPrintln("========== Motor task ready ==========");

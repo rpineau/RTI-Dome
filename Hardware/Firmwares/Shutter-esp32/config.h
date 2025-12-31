@@ -43,8 +43,8 @@
 
 // analog
 #define VOLTAGE_MONITOR_PIN A0  // GPIO36 / SENSOR_VP
-#define AD_REF      3.3f
-#define RES_MULT    5.0f // resistor voltage divider on the shield
+#define AD_REF      3.3f	// 
+#define RES_MULT    5.0f 	// 
 
 
 #define MOVE_NEGATIVE       -1

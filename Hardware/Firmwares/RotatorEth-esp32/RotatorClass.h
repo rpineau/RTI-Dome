@@ -233,7 +233,7 @@ RotatorClass::RotatorClass()
 }
 
 
-inline void RotatorClass::homeInterrupt()
+void IRAM_ATTR RotatorClass::homeInterrupt()
 {
 	long  nPos;
 
@@ -269,7 +269,7 @@ inline void RotatorClass::homeInterrupt()
 }
 
 
-inline void RotatorClass::conditionsInterrupt()
+void IRAM_ATTR RotatorClass::conditionsInterrupt()
 {
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
 		m_bIsSafe = false;
@@ -789,7 +789,7 @@ void RotatorClass::MoveRelative(const long howFar)
 }
 
 
-void RotatorClass::ButtonCheck()
+void IRAM_ATTR RotatorClass::ButtonCheck()
 {
 	if (digitalRead(BUTTON_CW) == LOW) {
 		MoveRelative(160000000L);

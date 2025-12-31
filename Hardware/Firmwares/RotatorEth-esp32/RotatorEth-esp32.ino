@@ -182,7 +182,7 @@ void setup()
 	esp_task_wdt_add(NULL);
 	disableCore0WDT();
 	disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 16, NULL,  0);
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 10000, NULL, 1, NULL,  0);
 
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
@@ -205,9 +205,15 @@ void setup()
 // These tasks take care of all communications and commands
 //
 
+bool firstLoop = true;
 
 void loop()
 {
+	if(firstLoop) {
+		firstLoop = false;
+		Computer.println("========== Rotator is Ready ==========");
+	}
+	
 	if(ethernetPresent) {
 		checkForNewTCPClient();
 		AlpacaDiscoveryServer->checkForRequest();
