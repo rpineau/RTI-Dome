@@ -8,7 +8,6 @@
 #include "Arduino.h"
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
-#include <atomic>
 #include "config.h"
 
 #ifdef DEBUG
@@ -58,9 +57,9 @@ void ReceiveWiFi(WiFiClient client);
 void ProcessWifi();
 bool rotatorConnect(IPAddress ip);
 String wifiBuffer = "";
-std::atomic<bool> bWiFiOk;
-std::atomic<bool> isBadCondition;
-std::atomic<bool> needFirstPing;
+volatile bool bWiFiOk = false;
+volatile bool isBadCondition = false;
+volatile bool needFirstPing = true;
 StopWatch watchdogTimer;
 ShutterClass *Shutter = nullptr;
 TaskHandle_t MotorTaskHanle;
