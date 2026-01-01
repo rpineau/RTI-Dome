@@ -5,7 +5,6 @@
 //
 
 #pragma message "Alpaca server enabled"
-#include <atomic>
 #include <vector>
 #include <functional>
 #include <EthernetUdp.h>

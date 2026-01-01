@@ -5,7 +5,6 @@
 //
 //
 
-#include <atomic>
 #include <Preferences.h>
 #include <FastAccelStepper.h>
 #include <nvs_flash.h>

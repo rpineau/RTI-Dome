@@ -11,7 +11,6 @@
 #include "Arduino.h"
 #include <rtc_wdt.h>
 #include <esp_task_wdt.h>
-#include <atomic>
 #include "config.h"
 
 bool firstLoop = true;
