@@ -55,7 +55,7 @@ WiFiClient shutterClient;
 String wifiBuffer = "";
 int nbWiFiClient = 0;
 String sLocalWifiIPAddress;
-volatle bool bGotHelloFromShutter = false;
+volatile bool bGotHelloFromShutter = false;
 RemoteShutterClass RemoteShutter;
 #endif
 
