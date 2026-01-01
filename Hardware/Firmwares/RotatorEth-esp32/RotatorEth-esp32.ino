@@ -216,37 +216,6 @@ void loop()
 	if(firstLoop) {
 		firstLoop = false;
 		Computer.println("========== Rotator is Ready ==========");
-		Computer.println("========== Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");	
-	}
-
-	if(bIntterruptHappened) {
-		switch (intType) {
-			case 0 :
-				Computer.println("========== Home Interrupt ==========");
-				break;
-			case 1 :
-				Computer.println("========== condition Interrupt ==========");
-				break;
-			case 2 :
-				Computer.println("========== button Interrupt ==========");
-				break;
-		}
-		bIntterruptHappened = false;
-	}
-
-	if(bIntterruptHappened) {
-		switch (intType) {
-			case 0 :
-				Computer.println("========== Home Interrupt ==========");
-				break;
-			case 1 :
-				Computer.println("========== condition Interrupt ==========");
-				break;
-			case 2 :
-				Computer.println("========== button Interrupt ==========");
-				break;
-		}
-		bIntterruptHappened = false;
 	}
 
 	if(ethernetPresent) {
@@ -297,7 +266,7 @@ void loop()
 void MotorTask(void *)
 {
 	DBPrintln("========== Motor task starting ==========");
-	Computer.println("========== MotorTask Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");	
+	DBPrintln("========== MotorTask Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");	
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 	attachInterrupt(HOME_PIN, homeIntHandler, FALLING);
 	attachInterrupt(CONDITION_SENSOR_PIN, conditionsIntHandler, CHANGE);

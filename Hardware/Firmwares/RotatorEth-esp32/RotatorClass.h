@@ -152,7 +152,7 @@ private:
 	// Rotator
 	bool            m_bWasRunning;
 	bool            m_bisAtHome;
-	std::atomic<enum Seeks>	m_seekMode{NOT_MOVING};
+	volatile enum Seeks	m_seekMode = NOT_MOVING;
 	bool            m_bSetToHomeAzimuth;
 	bool            m_bDoStepsPerRotation;
 
@@ -161,14 +161,14 @@ private:
 	unsigned long   m_nMOVE_OFFUntilLapse = 2000;
 	int             m_nMoveDirection;
 
-	std::atomic<long>	m_nStepsAtHome{0};
-	std::atomic<long>	m_nHomePosEdgePass1{0};
-	volatile 	long	m_nHomePosEdgePass2;
-	std::atomic<bool>	m_HomeFound{false};
+	volatile long	m_nStepsAtHome = 0;
+	volatile long	m_nHomePosEdgePass1 = 0;
+	volatile long	m_nHomePosEdgePass2;
+	volatile bool	m_HomeFound = false;
 
 	// Utility
 	void 			LoadConfig();
-	std::atomic<bool>	m_bIsSafe{true};
+	volatile bool	m_bIsSafe = true;
 	bool				m_bDoSave;
 };
 

@@ -11,10 +11,6 @@
 #include "config.h"
 #include "StopWatch.h"
 
-volatile bool bIntterruptHappened = false;
-volatile bool bIntterruptExiteded = false;
-volatile int intType = 0;
-
 typedef struct WIFICONFIG {
 	IPAddress       ip;
 	String 			sSSID;
@@ -573,23 +569,6 @@ void ShutterClass::Run()
 {
 	int sw1,sw2;
 
-	if(bIntterruptHappened) {
-		switch(intType) {
-			case 0 :
-				DBPrintln("Closed Interrupt");
-				if(bIntterruptExiteded)
-					DBPrintln("Closed Interrupt exited");
-				DBPrintln("SHutterState : " + String(shutterState));
-				break;
-			case 1 :
-				DBPrintln("Open Interrupt");
-				if(bIntterruptExiteded)
-					DBPrintln("Open Interrupt exited");
-				DBPrintln("SHutterState : " + String(shutterState));
-				break;
-		}
-		bIntterruptHappened = false;
-	}
 	if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
 		DBPrintln("Measuring Battery");
 		m_nVolts = MeasureVoltage();

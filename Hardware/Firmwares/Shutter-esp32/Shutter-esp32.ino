@@ -71,7 +71,6 @@ esp_task_wdt_config_t twdt_config =
     };
 
 // interrupt debouncing variables
-//variables to keep track of the timing of recent interrupts
 volatile unsigned long button_time = 0;
 volatile unsigned long last_button_time = 0;
 volatile unsigned long open_time = 0;
@@ -251,30 +250,22 @@ bool rotatorConnect(IPAddress ip)
 // interrupt
 void IRAM_ATTR handleClosedInterrupt()
 {
-	bIntterruptExiteded = false;
 	close_time = millis();
  	if (close_time - last_close_time > DEBOUNCE_TIME) {
-		intType = 0;
-		bIntterruptHappened = true;
 		if(Shutter)
 			Shutter->ClosedInterrupt();
 		last_close_time = close_time;
 	}
-	bIntterruptExiteded = true;
 }
 
 void IRAM_ATTR handleOpenInterrupt()
 {
-	bIntterruptExiteded = false;
 	open_time = millis();
  	if (open_time - last_open_time > DEBOUNCE_TIME) {
-		intType = 1;
-		bIntterruptHappened = true;
 		if(Shutter)
 			Shutter->OpenInterrupt();
 		last_open_time = open_time;
-	}	
-	bIntterruptExiteded = true;
+	}
 }
 
 void IRAM_ATTR handleButtons()
@@ -285,11 +276,7 @@ void IRAM_ATTR handleButtons()
 			Shutter->DoButtons();
 		last_button_time = button_time;
 	}
-	
 }
-
-
-
 
 void PingRotator()
 {
@@ -309,6 +296,11 @@ void PingRotator()
 	// say hello :)
 	wirelessMessage = String(HELLO) + "#";
 	shutterClient.write(wirelessMessage.c_str());
+
+	// report shutter state
+	wirelessMessage = String(STATE_SHUTTER) + String(Shutter->GetState()) + "#";
+	shutterClient.write(wirelessMessage.c_str());
+
 	needFirstPing = false;
 }
 
