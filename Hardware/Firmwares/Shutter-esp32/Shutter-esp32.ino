@@ -116,15 +116,22 @@ void setup()
 		needFirstPing = true;
 
 	DBPrintln("========== Creating motor task ==========");
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 0, &MotorTaskHanle,  0);
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 16, &MotorTaskHanle,  0);
 
 	DBPrintln("========== Ready ==========");
 
 }
 
+bool firstLoop = true;
 
 void loop()
 {
+	if(firstLoop) {
+		firstLoop = false;
+		DBPrintln("========== Shutter is Ready ==========");
+		DBPrintln("Loop task priority : " + String(uxTaskPriorityGet(NULL)));
+	}
+
 	// first check if we're connected to the WiFi AP of the rotator
 	if(!bWiFiOk) {
 		DBPrintln("No Wifi, trying to reconfigure");
@@ -138,26 +145,20 @@ void loop()
 			taskYIELD();
 			esp_task_wdt_reset();
 		}
-		if(needFirstPing) {
-			PingRotator();
-		}
 	}
 
-	if(bWiFiOk) {
-		// Check if we lost connection or didn't connect and need to reconnect
-		if(watchdogTimer.elapsed() >= Shutter->getWatchdogInterval()){
-			DBPrintln("Shutter->getWatchdogInterval() : " + String(Shutter->getWatchdogInterval()));
-			DBPrintln("watchdogTimer.elapsed() : " + String(watchdogTimer.elapsed()));
-
-			watchdogTimer.reset();
-			shutterClient.stop();
-			rotatorConnect(wifiConfig.ip);
+	// Check if we lost connection and need to reconnect
+	if(watchdogTimer.elapsed() >= Shutter->getWatchdogInterval()){
+		DBPrintln("Shutter->getWatchdogInterval() : " + String(Shutter->getWatchdogInterval()));
+		DBPrintln("watchdogTimer.elapsed() : " + String(watchdogTimer.elapsed()));
+		shutterWiFi.disconnect();
+		if(configureWiFi())
 			needFirstPing = true;
-		}
+		watchdogTimer.reset();
+	}
 
-		if(needFirstPing) {
-			PingRotator();
-		}
+	if(needFirstPing) {
+		PingRotator();
 	}
 
 	if(Shutter->m_bButtonUsed)
@@ -251,22 +252,30 @@ bool rotatorConnect(IPAddress ip)
 // interrupt
 void IRAM_ATTR handleClosedInterrupt()
 {
+	bIntterruptExiteded = false;
 	close_time = millis();
  	if (close_time - last_close_time > DEBOUNCE_TIME) {
+		intType = 0;
+		bIntterruptHappened = true;
 		if(Shutter)
 			Shutter->ClosedInterrupt();
 		last_close_time = close_time;
-	}	
+	}
+	bIntterruptExiteded = true;
 }
 
 void IRAM_ATTR handleOpenInterrupt()
 {
+	bIntterruptExiteded = false;
 	open_time = millis();
  	if (open_time - last_open_time > DEBOUNCE_TIME) {
+		intType = 1;
+		bIntterruptHappened = true;
 		if(Shutter)
 			Shutter->OpenInterrupt();
 		last_open_time = open_time;
 	}	
+	bIntterruptExiteded = true;
 }
 
 void IRAM_ATTR handleButtons()

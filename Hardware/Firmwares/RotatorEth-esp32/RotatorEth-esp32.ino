@@ -14,7 +14,7 @@
 #include <atomic>
 #include "config.h"
 
-
+bool firstLoop = true;
 #include "RotatorClass.h"
 
 #pragma message "Ethernet enabled"
@@ -31,7 +31,7 @@
 #include "EtherMac.h"
 byte MAC_Address[6];    // Mac address, uses part of the unique ID
 IPConfig ServerConfig;
-std::atomic<bool> ethernetPresent{false};
+volatile bool ethernetPresent = false;
 EthernetServer *domeServer = nullptr;
 EthernetClient domeClient;
 int nbEthernetClient = 0;
@@ -48,14 +48,14 @@ HTTPUpdateServer httpUpdater;
 #include "RemoteShutterClass.h"
 #include <WiFi.h>
 #include <WiFiAP.h>
-std::atomic<bool> wifiPresent{false};
+volatile bool wifiPresent = false;
 WIFIConfig wifiConfig;
 WiFiServer *shutterServer = nullptr;
 WiFiClient shutterClient;
 String wifiBuffer = "";
 int nbWiFiClient = 0;
 String sLocalWifiIPAddress;
-std::atomic<bool> bGotHelloFromShutter{false};
+volatle bool bGotHelloFromShutter = false;
 RemoteShutterClass RemoteShutter;
 #endif
 
@@ -70,7 +70,7 @@ static const unsigned long pingInterval = 5000; // 5 seconds, can't be changed w
 // Once booting is done and wifi is ready, broadcast a hello message
 // so a shutter knows you're around if it is already running. If not,
 // the shutter will send a hello when it boots.
-std::atomic<bool> bSentHello{false};
+volatile bool bSentHello = false;
 
 #ifdef USE_WIFI
 // Timer to periodically ping the shutter
@@ -78,11 +78,11 @@ StopWatch PingTimer;
 StopWatch ShutterWatchdog;
 #endif
 
-std::atomic<bool> bShutterPresent{false};
+volatile bool bShutterPresent = false;
 // global variable for condition status
-std::atomic<bool> bIsSafe{true};
+volatile bool bIsSafe{true};
 // global variable for shutter voltage state
-std::atomic<bool> bLowShutterVoltage{false};
+volatile bool bLowShutterVoltage = false;
 
 const char ERR_NO_DATA = -1;
 
@@ -171,7 +171,6 @@ void setup()
 	Computer.begin(115200);
 	//Computer.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
 
-
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
 	Rotator->Stop();
@@ -190,7 +189,7 @@ void setup()
 	esp_task_wdt_add(NULL);
 	disableCore0WDT();
 	disableCore1WDT();
-	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 1, NULL,  0);
+	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 16, NULL,  0);
 
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
@@ -210,18 +209,47 @@ void setup()
 }
 
 //
-// These tasks take care of all communications and commands
+// main loop task takes care of all communications and commands
 //
-
-bool firstLoop = true;
 
 void loop()
 {
 	if(firstLoop) {
 		firstLoop = false;
 		Computer.println("========== Rotator is Ready ==========");
+		Computer.println("========== Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");	
 	}
-	
+
+	if(bIntterruptHappened) {
+		switch (intType) {
+			case 0 :
+				Computer.println("========== Home Interrupt ==========");
+				break;
+			case 1 :
+				Computer.println("========== condition Interrupt ==========");
+				break;
+			case 2 :
+				Computer.println("========== button Interrupt ==========");
+				break;
+		}
+		bIntterruptHappened = false;
+	}
+
+	if(bIntterruptHappened) {
+		switch (intType) {
+			case 0 :
+				Computer.println("========== Home Interrupt ==========");
+				break;
+			case 1 :
+				Computer.println("========== condition Interrupt ==========");
+				break;
+			case 2 :
+				Computer.println("========== button Interrupt ==========");
+				break;
+		}
+		bIntterruptHappened = false;
+	}
+
 	if(ethernetPresent) {
 		checkForNewTCPClient();
 		AlpacaDiscoveryServer->checkForRequest();
@@ -270,16 +298,18 @@ void loop()
 void MotorTask(void *)
 {
 	DBPrintln("========== Motor task starting ==========");
+	Computer.println("========== MotorTask Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");	
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 	attachInterrupt(HOME_PIN, homeIntHandler, FALLING);
 	attachInterrupt(CONDITION_SENSOR_PIN, conditionsIntHandler, CHANGE);
 	attachInterrupt(BUTTON_CW, buttonHandler, CHANGE);
 	attachInterrupt(BUTTON_CCW, buttonHandler, CHANGE);
+
 	esp_task_wdt_add(NULL);
 	DBPrintln("========== Motor task ready ==========");
 
 	for(;;) {
-		Rotator->Run(); // accelStepper run is called in there
+		Rotator->Run();
 		taskYIELD();
 		esp_task_wdt_reset();
 	}
@@ -469,6 +499,8 @@ void IRAM_ATTR homeIntHandler()
 {
 	home_time = millis();
  	if (home_time - last_home_time > DEBOUNCE_TIME) {
+		intType = 0;
+		bIntterruptHappened = true;
 		if(Rotator)
 			Rotator->homeInterrupt();
 		last_home_time = home_time;
@@ -479,6 +511,8 @@ void IRAM_ATTR conditionsIntHandler()
 {
 	condition_time = millis();
  	if (condition_time - last_condition_time > DEBOUNCE_TIME) {
+		intType = 1;
+		bIntterruptHappened = true;
 		if(Rotator)
 			Rotator->conditionsInterrupt();
 		last_condition_time = condition_time;
@@ -489,6 +523,8 @@ void IRAM_ATTR buttonHandler()
 {
 	button_time = millis();
  	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		intType = 2;
+		bIntterruptHappened = true;
 		if(Rotator)
 			Rotator->ButtonCheck();
 		last_button_time = button_time;
@@ -563,9 +599,9 @@ void CheckForCommands()
 		ReceiveNetwork(domeClient);
 	}
 #ifdef USE_WIFI
-	if(wifiPresent) {
-		ReceiveWiFi(shutterClient);
-	}
+//	if(wifiPresent) {
+//		ReceiveWiFi(shutterClient);
+//	}
 #endif // USE_WIFI
 }
 
@@ -897,7 +933,7 @@ void ProcessCommand(int nSource)
 			break;
 
 		case VOLTS_ROTATOR:
-			serialMessage = String(VOLTS_ROTATOR) + String("12.0,10.0");
+			serialMessage = String(VOLTS_ROTATOR) + String("1200,1000");
 			break;
 
 		case CONDITION_SHUTTER:
@@ -1146,7 +1182,7 @@ void ProcessCommand(int nSource)
 			shutterMessage = sTmpString;
 			if (hasValue) {
 				shutterMessage += value;
-				RemoteShutter.voltsCutOff = value.toDouble();
+				RemoteShutter.voltsCutOff = value.toInt();
 			}
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
@@ -1273,8 +1309,8 @@ void ProcessWifi()
 			if (hasValue) {
 				String sVolts = value.substring(0,value.indexOf(","));
 				String sVoltsCutOff = value.substring(value.indexOf(",")+1);
-				RemoteShutter.volts = sVolts.toDouble();
-				RemoteShutter.voltsCutOff = sVoltsCutOff.toDouble();
+				RemoteShutter.volts = sVolts.toInt();
+				RemoteShutter.voltsCutOff = sVoltsCutOff.toInt();
 			}
 			break;
 

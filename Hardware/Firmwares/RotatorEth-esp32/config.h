@@ -4,7 +4,7 @@
 //
 #ifndef __R_CONFIG__
 #define __R_CONFIG__
-#define DEBUG   // enable debug to serial port defined as DebugPort
+// #define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
@@ -28,7 +28,6 @@
 #define USE_WIFI
 
 #define Computer Serial     // USB = Serial
-
 
 //
 // ESP32 dev boards
@@ -72,12 +71,6 @@ Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
 */
 
 #define STEPS_DEFAULT       440640
-
-// DM556T stepper controller min pulse width  = 2.5uS
-// ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).
-// TB6600 Stepper controller min pulse width = 5uS
-// set to a safer value for all controllers
-#define MIN_PULSE_WIDTH 5	
 
 #define ETHERNET_CS     5
 #define ETHERNET_INT	0

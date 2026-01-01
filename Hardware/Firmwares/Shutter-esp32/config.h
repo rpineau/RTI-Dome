@@ -45,6 +45,7 @@
 #define VOLTAGE_MONITOR_PIN A0  // GPIO36 / SENSOR_VP
 #define AD_REF      3.3f	// 
 #define RES_MULT    5.0f 	// 
+#define DEFAULT_CUT_OFF_VOLTS	1100 // 11.00 V
 
 
 #define MOVE_NEGATIVE       -1

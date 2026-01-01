@@ -24,8 +24,8 @@ public:
 	int		stepsPerStroke = 0;
 	// ASCOM checks version and if it's blank then shutter doesn't exist
 	String	version = "";
-	float	volts = 0.0f;
-	float	voltsCutOff = 0.0f;
+	int	volts = 0;
+	int	voltsCutOff = 0;
 	unsigned int	watchdogInterval = 90; // set proper default.. just in case.
 	String  ssid = "RTIShutter";
 	String  lowVoltStateOrBadConditions = "";

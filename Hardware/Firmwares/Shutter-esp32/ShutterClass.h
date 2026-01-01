@@ -5,12 +5,15 @@
 //
 //
 
-#include <atomic>
 #include <Preferences.h>
 #include <nvs_flash.h>
 #include <FastAccelStepper.h>
 #include "config.h"
 #include "StopWatch.h"
+
+volatile bool bIntterruptHappened = false;
+volatile bool bIntterruptExiteded = false;
+volatile int intType = 0;
 
 typedef struct WIFICONFIG {
 	IPAddress       ip;
@@ -35,9 +38,9 @@ typedef struct ShutterConfiguration {
 FastAccelStepperEngine engine = FastAccelStepperEngine();
 FastAccelStepper *stepper = NULL;
 
-// All possible Shutter state, including option got a dropout
+// All possible Shutter state, including option for a dropout
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
-std::atomic<ShutterStates> shutterState;
+volatile ShutterStates shutterState;
 
 StopWatch buttonStopTimer;
 
@@ -97,7 +100,7 @@ public:
 	// interrupts
 	void		ClosedInterrupt();
 	void		OpenInterrupt();
-	std::atomic<bool>     m_bButtonUsed;
+	volatile bool     m_bButtonUsed;
 
 	void    	Abort();
 
@@ -182,23 +185,21 @@ ShutterClass::ShutterClass()
 
 void IRAM_ATTR ShutterClass::ClosedInterrupt()
 {
-	// debounce
-	if (digitalRead(CLOSED_PIN) == LOW) {
-		if(shutterState == CLOSING) {
-			motorStop();
-			shutterState = FINISHING_CLOSE;
-		}
+	DBPrintln("[ClosedInterrupt] Shutter state : " + String(shutterState));
+	if(shutterState == CLOSING) {
+		DBPrintln("Closed Int stopping motor");
+		shutterState = FINISHING_CLOSE;
+		motorStop();
 	}
 }
 
 void IRAM_ATTR ShutterClass::OpenInterrupt()
 {
-	// debounce
-	if (digitalRead(OPENED_PIN) == LOW) {
-		if(shutterState == OPENING) {
-			motorStop();
-			shutterState = FINISHING_OPEN;
-		}
+	DBPrintln("[OpenInterrupt] Shutter state : " + String(shutterState));
+	if(shutterState == OPENING) {
+		DBPrintln("Open Int stopping motor");
+		motorStop();
+		shutterState = FINISHING_OPEN;
 	}
 }
 
@@ -226,7 +227,7 @@ void ShutterClass::LoadConfig()
 	m_Config.acceleration = m_preferences.getInt("acceleration",ACCELERATION);
 	m_Config.maxSpeed = m_preferences.getInt("maxSpeed",MAX_SPEED);
 	m_Config.reversed = m_preferences.getBool("reversed", false);
-	m_Config.cutoffVolts = m_preferences.getInt("cutoffVolts",1150);
+	m_Config.cutoffVolts = m_preferences.getInt("cutoffVolts",DEFAULT_CUT_OFF_VOLTS);
 	m_Config.watchdogInterval = m_preferences.getULong("watchdogInterval",DEFAULT_WATCHDOG_INTERVAL);
 	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
 	m_Config.bTopShutterOpenFirst = m_preferences.getBool("topShutterOpenFirst", true); // this generaly the case.
@@ -572,6 +573,23 @@ void ShutterClass::Run()
 {
 	int sw1,sw2;
 
+	if(bIntterruptHappened) {
+		switch(intType) {
+			case 0 :
+				DBPrintln("Closed Interrupt");
+				if(bIntterruptExiteded)
+					DBPrintln("Closed Interrupt exited");
+				DBPrintln("SHutterState : " + String(shutterState));
+				break;
+			case 1 :
+				DBPrintln("Open Interrupt");
+				if(bIntterruptExiteded)
+					DBPrintln("Open Interrupt exited");
+				DBPrintln("SHutterState : " + String(shutterState));
+				break;
+		}
+		bIntterruptHappened = false;
+	}
 	if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
 		DBPrintln("Measuring Battery");
 		m_nVolts = MeasureVoltage();
@@ -591,39 +609,35 @@ void ShutterClass::Run()
 	}
 
 	if (m_bWasRunning) { // This only runs once after stopping.
+		DBPrintln("m_bWasRunning 1 SHutterState : " + String(shutterState));
+
 		if (digitalRead(CLOSED_PIN) == 0) {
 			shutterState = CLOSED;
 			stepper->setCurrentPosition(0);
 			DBPrintln("Stopped at closed position");
+		DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
 		}
 		else if (digitalRead(OPENED_PIN) == 0) {
 			shutterState = OPEN;
 			DBPrintln("Stopped at open position");
+		DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));
 		}
 		else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bUserButtonStop) {
 			//motor stopped for some reason
 			DBPrintln("motor stopped for some reason but we're not closed... closing");
 			Close();
+		DBPrintln("m_bWasRunning 4 SHutterState : " + String(shutterState));
 			return;
 		}
 		else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bUserButtonStop) {
 			//motor stopped for some reason
 			DBPrintln("motor stopped for some reason but we're not open... opening");
 			Open();
+		DBPrintln("m_bWasRunning 5 SHutterState : " + String(shutterState));
 			return;
 		}
 		m_bWasRunning = false;
-	}
-	else { // make sure the state are accurate.
-		sw1 = digitalRead(CLOSED_PIN);
-		sw2 = digitalRead(OPENED_PIN);
-
-		if (sw1 == LOW && sw2 == HIGH) {
-			shutterState = CLOSED;
-			}
-		else if (sw1 == HIGH && sw2 == LOW) {
-			shutterState = OPEN;
-			}
+		DBPrintln("m_bWasRunning 6 SHutterState : " + String(shutterState));
 	}
 }
 

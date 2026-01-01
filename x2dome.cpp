@@ -768,7 +768,6 @@ int X2Dome::dapiGetAzEl(double* pdAz, double* pdEl)
 		return ERR_NOLINK;
 	
 	X2MutexLocker ml(GetMutex());
-	
 	*pdAz = m_RTIDome.getCurrentAz();
 	*pdEl = m_RTIDome.getCurrentEl();
 	return SB_OK;
@@ -912,11 +911,10 @@ int X2Dome::dapiIsGotoComplete(bool* pbComplete)
 
 int X2Dome::dapiIsOpenComplete(bool* pbComplete)
 {
-	int nErr;
-	
 	if(!m_bLinked)
 		return ERR_NOLINK;
-	
+
+	m_RTIDome.getShutterPresent(m_bHasShutterControl);
 	if(!m_bHasShutterControl)
 	{
 		*pbComplete = true;
@@ -925,20 +923,17 @@ int X2Dome::dapiIsOpenComplete(bool* pbComplete)
 	
 	X2MutexLocker ml(GetMutex());
 	
-	nErr = m_RTIDome.isOpenComplete(*pbComplete);
-	if(nErr)
-		return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
-	
+	m_RTIDome.isOpenComplete(*pbComplete);
+
 	return SB_OK;
 }
 
 int	X2Dome::dapiIsCloseComplete(bool* pbComplete)
 {
-	int nErr;
-	
 	if(!m_bLinked)
 		return ERR_NOLINK;
-	
+
+	m_RTIDome.getShutterPresent(m_bHasShutterControl);
 	if(!m_bHasShutterControl)
 	{
 		*pbComplete = false;    // it can't be open and closed at the same time :)
@@ -947,10 +942,7 @@ int	X2Dome::dapiIsCloseComplete(bool* pbComplete)
 	
 	X2MutexLocker ml(GetMutex());
 	
-	nErr = m_RTIDome.isCloseComplete(*pbComplete);
-	if(nErr)
-		return MAKE_ERR_CODE(PLUGIN_ID, DriverRootInterface::DT_DOME, nErr);
-	
+	m_RTIDome.isCloseComplete(*pbComplete);
 	return SB_OK;
 }
 

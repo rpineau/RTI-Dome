@@ -12,6 +12,9 @@
 #include "StopWatch.h"
 #include "config.h"
 
+volatile bool bIntterruptHappened = false;
+volatile int intType = 0;
+
 typedef struct IPCONFIG {
 	bool            bUseDHCP;
 	IPAddress       ip;
@@ -202,14 +205,14 @@ RotatorClass::RotatorClass()
 
 	m_bDoSave = false;  // we just read the config, no need to resave all the value we're setting
 	engine.init();
-   	stepper = engine.stepperConnectToPin(STEP_PIN);
+	stepper = engine.stepperConnectToPin(STEP_PIN);
 	stepper->setEnablePin(STEPPER_ENABLE_PIN);
 	stepper->setAutoEnable(true);
 
 	SetMaxSpeed(m_Config.maxSpeed);
 	SetAcceleration(m_Config.acceleration);
-	SetStepsPerRotation(m_Config.stepsPerRotation);
 	SetReversed(m_Config.reversed);
+	SetStepsPerRotation(m_Config.stepsPerRotation);
 	m_bDoSave = true;
 
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
@@ -238,10 +241,6 @@ RotatorClass::RotatorClass()
 void IRAM_ATTR RotatorClass::homeInterrupt()
 {
 	long  nPos;
-
-	// debounce
-	if (digitalRead(HOME_PIN) != LOW)
-		return;
 
 	nPos = stepper->getCurrentPosition(); // read position immediately
 
@@ -570,7 +569,7 @@ void RotatorClass::GoToAzimuth(const float newHeading)
 	currentHeading = GetAzimuth();
 	delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
 	m_seekMode = MOVING_GOTO;
-	MoveRelative(delta);
+	MoveRelative(long(delta));
 }
 
 bool RotatorClass::GetReversed()
@@ -791,7 +790,7 @@ void IRAM_ATTR RotatorClass::ButtonCheck()
 		MoveRelative(-160000000L);
 	}
 	else {
-		Stop();
+		motorStop();
 	}
 }
 
@@ -807,7 +806,7 @@ void RotatorClass::Run()
 	if (stepper->isRunning()) {
 		m_bWasRunning = true;
 		if (m_seekMode == HOMING_HOME && m_HomeFound) { // We're looking for home and found it
-			Stop();
+			motorStop();
 			m_bSetToHomeAzimuth = true; // Need to set home az but not until rotator is stopped;
 			m_seekMode = HOMING_FINISH;
 			return;
@@ -895,11 +894,8 @@ void RotatorClass::Run()
 
 void RotatorClass::Stop()
 {
-	if (!stepper->isRunning())
-		return;
-
 	m_seekMode = NOT_MOVING;
-	motorStop();
+	stepper->forceStop();
 }
 
 
