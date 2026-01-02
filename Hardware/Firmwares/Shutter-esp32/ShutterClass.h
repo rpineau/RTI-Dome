@@ -227,9 +227,13 @@ void ShutterClass::LoadConfig()
 	m_Config.watchdogInterval = m_preferences.getULong("watchdogInterval",DEFAULT_WATCHDOG_INTERVAL);
 	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
 	m_Config.bTopShutterOpenFirst = m_preferences.getBool("topShutterOpenFirst", true); // this generaly the case.
-
 	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.2"));
 	m_Config.wifiIpConfig.sSSID = m_preferences.getString("wifiSSID", "RTIShutter");
+	if(m_Config.wifiIpConfig.sSSID.length()<8) {
+		m_Config.wifiIpConfig.sSSID = "RTIShutter";	// set to default as something bad was set
+		m_preferences.putString("wifiSSID", m_Config.wifiIpConfig.sSSID );
+	}
+
 	m_Config.wifiIpConfig.sPassword = m_preferences.getString("wifiPassword", "RTIShutter");
 
 	DBPrintln("m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
@@ -263,6 +267,9 @@ String ShutterClass::getSSID()
 
 void ShutterClass::setSSID(String sSSID)
 {
+	if(sSSID.length()<8) {
+		sSSID = "RTIShutter";	// set to default
+	}
 	m_Config.wifiIpConfig.sSSID = sSSID;
 	m_preferences.begin("RTI_Shutter", false);
 	m_preferences.putString("wifiSSID", sSSID);
@@ -397,7 +404,7 @@ int ShutterClass::GetEndSwitchStatus()
 
 int ShutterClass::GetState()
 {
-	return shutterState;
+	return int(shutterState);
 }
 
 unsigned long ShutterClass::GetStepsPerStroke()
@@ -594,29 +601,29 @@ void ShutterClass::Run()
 			shutterState = CLOSED;
 			stepper->setCurrentPosition(0);
 			DBPrintln("Stopped at closed position");
-		DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
+			DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
 		}
 		else if (digitalRead(OPENED_PIN) == 0) {
 			shutterState = OPEN;
 			DBPrintln("Stopped at open position");
-		DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));
+			DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));
 		}
 		else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bUserButtonStop) {
 			//motor stopped for some reason
 			DBPrintln("motor stopped for some reason but we're not closed... closing");
 			Close();
-		DBPrintln("m_bWasRunning 4 SHutterState : " + String(shutterState));
+			DBPrintln("m_bWasRunning 4 SHutterState : " + String(shutterState));
 			return;
 		}
 		else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bUserButtonStop) {
 			//motor stopped for some reason
 			DBPrintln("motor stopped for some reason but we're not open... opening");
 			Open();
-		DBPrintln("m_bWasRunning 5 SHutterState : " + String(shutterState));
+			DBPrintln("m_bWasRunning 5 SHutterState : " + String(shutterState));
 			return;
 		}
 		m_bWasRunning = false;
-		DBPrintln("m_bWasRunning 6 SHutterState : " + String(shutterState));
+		DBPrintln("m_bWasRunning final SHutterState : " + String(shutterState));
 	}
 }
 

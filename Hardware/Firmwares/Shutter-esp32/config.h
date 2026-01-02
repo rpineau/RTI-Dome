@@ -79,8 +79,8 @@ Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
 // set to a safer value for all controllers
 #define MIN_PULSE_WIDTH 5
 
-#define DEFAULT_WATCHDOG_INTERVAL	30000
-#define MIN_WATCHDOG_INTERVAL       15000
+#define DEFAULT_WATCHDOG_INTERVAL	15000
+#define MIN_WATCHDOG_INTERVAL       5000
 #define MAX_WATCHDOG_INTERVAL       300000
 
 #define BATTERY_CHECK_INTERVAL      60000   // check battery once a minute

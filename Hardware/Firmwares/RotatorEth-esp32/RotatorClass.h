@@ -692,8 +692,10 @@ void RotatorClass::StartHoming()
 		// we're at the home position
 		m_bisAtHome = true;
 		SyncPosition(m_Config.homeAzimuth);
-		DBPrintln("At home on startup");
+		DBPrintln("Already at home");
+		return;
 	}
+
 	m_bisAtHome = false;
 	m_HomeFound = false;
 	// Always home in the same direction as we don't
@@ -714,8 +716,8 @@ void RotatorClass::StartCalibrating()
 
 	if(m_bisAtHome) {
 		m_MoveOffUntilTimer.reset();
-		m_seekMode = CALIBRATION_MOVE_OFF;
 		MoveRelative(-5000);
+		m_seekMode = CALIBRATION_MOVE_OFF;
 	}
 	else {
 		m_seekMode = CALIBRATION_STEP1;
@@ -728,6 +730,8 @@ void RotatorClass::Calibrate()
 	if (m_seekMode > HOMING_HOME) {
 		switch (m_seekMode) {
 			case(CALIBRATION_MOVE_OFF):
+				if(m_MoveOffUntilTimer.elapsed() <= m_nMOVE_OFFUntilLapse)
+					break;
 				if (!stepper->isRunning()) {
 					m_seekMode = CALIBRATION_STEP1;
 					stepper->setCurrentPosition(0);
@@ -761,11 +765,6 @@ void RotatorClass::Calibrate()
 
 void RotatorClass::MoveRelative(const long howFar)
 {
-	// Use by Home and Calibrate
-	// Tells dome to rotate more than 360 degrees
-	// from current position. Stopped only by
-	// homing or calibrating routine.
-
 	m_nMoveDirection = MOVE_NEGATIVE;
 	if (howFar > 0)
 		m_nMoveDirection = MOVE_POSITIVE;

@@ -265,6 +265,7 @@ void loop()
 //
 void MotorTask(void *)
 {
+	const TickType_t xDelay = 50/ portTICK_PERIOD_MS; // 50ms task block to give time back
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== MotorTask Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");	
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
@@ -280,6 +281,7 @@ void MotorTask(void *)
 		Rotator->Run();
 		taskYIELD();
 		esp_task_wdt_reset();
+		vTaskDelay(xDelay);
 	}
 }
 
@@ -310,7 +312,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 	// set an ip so we can get the link status
 	domeEthernet.begin(MAC_Address, "192.168.0.1", "1.1.1.1", "192.168.0.254", "255.255.255.0");
 	while(domeEthernet.linkStatus() == LinkOFF ) {
-		delay(250);
+		vTaskDelay(250 / portTICK_PERIOD_MS);
 		nTimeout++;
 		if(nTimeout == 10) {
 			return false;
@@ -504,9 +506,9 @@ void IRAM_ATTR buttonHandler()
 void resetChip(int nPin)
 {
 	digitalWrite(nPin, 0);
-	delay(2);
+	vTaskDelay(2 / portTICK_PERIOD_MS);
 	digitalWrite(nPin, 1);
-	delay(10);
+	vTaskDelay(10 / portTICK_PERIOD_MS);
 }
 
 #ifdef USE_WIFI
@@ -519,6 +521,7 @@ void SendHello()
 		DBPrintln("Sending hello");
 		shutterMessage = String(HELLO) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 		bSentHello = true;
 	}
@@ -530,30 +533,37 @@ void requestWiFiShutterData()
 	if(nbWiFiClient && shutterClient.connected()) {
 		shutterMessage = String(STATE_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(VERSION_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(REVERSED_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(STEPSPER_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(SPEED_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(ACCELERATION_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 
 		shutterMessage = String(VOLTS_SHUTTER) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 	}
 }
@@ -567,9 +577,7 @@ void CheckForCommands()
 		ReceiveNetwork(domeClient);
 	}
 #ifdef USE_WIFI
-//	if(wifiPresent) {
-//		ReceiveWiFi(shutterClient);
-//	}
+	ReceiveWiFi(shutterClient);
 #endif // USE_WIFI
 }
 
@@ -585,6 +593,7 @@ void CheckForConditions()
 		if(nbWiFiClient && shutterClient.connected()) {
 			shutterMessage = String(CONDITION_SHUTTER) + String(bIsSafe ? String(COND_SAFE) : String(UNSAFE)) + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 			ReceiveWiFi(shutterClient);
 		}
 #endif // USE_WIFI
@@ -631,6 +640,7 @@ void PingWiFiShutter()
 			DBPrintln("PingWiFiShutter");
 			shutterMessage = String(SHUTTER_PING) + "#";
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 			ReceiveWiFi(shutterClient);
 			PingTimer.reset();
 		}
@@ -918,7 +928,7 @@ void ProcessCommand(int nSource)
 				nbEthernetClient--;
 			}
 			DBPrintln("Rebooting for Ethernet reconfiguration");
-			delay(500);
+			vTaskDelay(500 / portTICK_PERIOD_MS);
 			ESP.restart();
 			break;
 
@@ -985,7 +995,7 @@ void ProcessCommand(int nSource)
 				// send new SSID to shutter
 				shutterMessage = String(SHUTTER_SSID) + value + "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
-				delay(250);
+				vTaskDelay(250 / portTICK_PERIOD_MS);
 				// reconfigure wifi
 				configureWiFi();
 			}
@@ -993,6 +1003,11 @@ void ProcessCommand(int nSource)
 			break;
 
 		case SHUTTER_SSID:
+			if(nbWiFiClient && shutterClient.connected()) {
+				shutterClient.write("Q#",2);
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+				ReceiveWiFi(shutterClient);
+			}
 			serialMessage = String(SHUTTER_SSID) + RemoteShutter.ssid;
 			break;
 
@@ -1001,6 +1016,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = String(SHUTTER_PING);
@@ -1018,6 +1034,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + String(RemoteShutter.acceleration);
@@ -1028,6 +1045,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString;
@@ -1038,12 +1056,15 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 				shutterMessage = String(SPEED_SHUTTER)+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 				shutterMessage = String(ACCELERATION_SHUTTER)+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString;
@@ -1069,6 +1090,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 				}
 			serialMessage = sTmpString + RemoteShutter.lowVoltStateOrBadConditions;
@@ -1086,6 +1108,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.reversed;
@@ -1103,6 +1126,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.speed;
@@ -1113,6 +1137,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage = sTmpString+ "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.state;
@@ -1130,6 +1155,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + String(RemoteShutter.stepsPerStroke);
@@ -1140,6 +1166,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.version;
@@ -1155,6 +1182,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString +  String(RemoteShutter.volts) + "," + String(RemoteShutter.voltsCutOff);
@@ -1171,6 +1199,7 @@ void ProcessCommand(int nSource)
 			if(nbWiFiClient && shutterClient.connected()) {
 				shutterMessage += "#";
 				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 			}
 			serialMessage = sTmpString + RemoteShutter.watchdogInterval;
@@ -1321,6 +1350,7 @@ void Abort()
 	if(nbWiFiClient && shutterClient.connected()) {
 		shutterMessage = String(ABORT) + "#";
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
 	}
 #endif

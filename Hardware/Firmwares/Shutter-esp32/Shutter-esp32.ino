@@ -170,6 +170,8 @@ void loop()
 
 void MotorTask(void *)
 {
+	const TickType_t xDelay = 50/ portTICK_PERIOD_MS; // 50ms task block to give time back
+
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 
@@ -184,6 +186,7 @@ void MotorTask(void *)
 		Shutter->Run();
 		taskYIELD();
 		esp_task_wdt_reset();
+		vTaskDelay(xDelay);
 	}
 }
 
@@ -215,16 +218,15 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	shutterWiFi.begin(sSSID.c_str(), sPassword.c_str());
 	while (shutterWiFi.status() != WL_CONNECTED) {
 		DBPrintln("Waiting for WiFi");
-		delay(1000);
+		vTaskDelay(1000 / portTICK_PERIOD_MS);
 		nTimeout++;
 		if(nTimeout>20) { // 20 seconds should be plenty, the rotator takes a few seconds to start
 			DBPrintln("========== Failed to connect to Rotator ==========");
 			return false;
 		}
     }
-
-	rotatorConnect(ip);
-	return true;
+	vTaskDelay(500 / portTICK_PERIOD_MS);
+	return rotatorConnect(ip);
 }
 
 bool rotatorConnect(IPAddress ip)
@@ -299,6 +301,10 @@ void PingRotator()
 
 	// report shutter state
 	wirelessMessage = String(STATE_SHUTTER) + String(Shutter->GetState()) + "#";
+	shutterClient.write(wirelessMessage.c_str());
+
+	// report SSID
+	wirelessMessage =  String(SHUTTER_SSID) + Shutter->getSSID() + "#";
 	shutterClient.write(wirelessMessage.c_str());
 
 	needFirstPing = false;
@@ -507,7 +513,8 @@ void ProcessWifi()
 			if (hasValue) {
 				sRotatorMessage = String(SHUTTER_SSID);
 				Shutter->setSSID(value);
-				configureWiFi();
+				if(!configureWiFi())
+					return; // this will be picked by the wtachdog timer
 			}
 			sRotatorMessage = String(SHUTTER_SSID) + Shutter->getSSID();
 			DBPrintln("SSID '" + String(Shutter->getSSID()) + "'");

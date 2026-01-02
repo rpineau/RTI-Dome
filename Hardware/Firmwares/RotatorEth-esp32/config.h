@@ -64,6 +64,8 @@
 #define ACCELERATION        7000
 
 #define DEBOUNCE_TIME		50
+#define DELAY_WIFI			10
+
 /*
 Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
 	NexDome 2m      : 440640
