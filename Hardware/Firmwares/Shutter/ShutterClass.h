@@ -331,23 +331,17 @@ ShutterClass::ShutterClass()
 
 void ShutterClass::ClosedInterrupt()
 {
-	// debounce
-	if (digitalRead(CLOSED_PIN) == LOW) {
-		if(shutterState == CLOSING) {
-			motorStop();
-			shutterState = FINISHING_CLOSE;
-		}
+	if(shutterState == CLOSING) {
+		motorStop();
+		shutterState = FINISHING_CLOSE;
 	}
 }
 
 void ShutterClass::OpenInterrupt()
 {
-	// debounce
-	if (digitalRead(OPENED_PIN) == LOW) {
-		if(shutterState == OPENING) {
-			motorStop();
-			shutterState = FINISHING_OPEN;
-		}
+	if(shutterState == OPENING) {
+		motorStop();
+		shutterState = FINISHING_OPEN;
 	}
 }
 
@@ -645,14 +639,14 @@ void ShutterClass::DoButtons()
 	}
 	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) { // button open pressed and we're closed
 		shutterState = OPENING;
-		MoveRelative(160000000L);
+		MoveRelative(2147483646L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
 	}
 	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) { // button close pressed and we're open
 		shutterState = CLOSING;
-		MoveRelative(-160000000L);
+		MoveRelative(-2147483646L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
@@ -699,7 +693,7 @@ void ShutterClass::Open()
 
 	shutterState = OPENING;
 	DBPrintln("shutterState = OPENING");
-	MoveRelative(160000000L);
+	MoveRelative(2147483646L );
 }
 
 void ShutterClass::Close()
@@ -710,7 +704,7 @@ void ShutterClass::Close()
 	}
 	shutterState = CLOSING;
 	DBPrintln("shutterState = CLOSING");
-	MoveRelative(-160000000L);
+	MoveRelative(-2147483646L );
 }
 
 

@@ -63,6 +63,16 @@ bool isResetingXbee = false;
 int XbeeResets = 0;
 bool needFirstPing = true;
 
+// interrupt debouncing variables
+#define DEBOUNCE_TIME	50
+volatile unsigned long button_time = 0;
+volatile unsigned long last_button_time = 0;
+volatile unsigned long open_time = 0;
+volatile unsigned long last_open_time = 0;
+volatile unsigned long close_time = 0;
+volatile unsigned long last_close_time = 0;
+
+
 void setup()
 {
 	digitalWrite(XBEE_RESET_PIN, 0);
@@ -176,17 +186,29 @@ void checkInterruptTimer()
 
 void handleClosedInterrupt()
 {
-	Shutter->ClosedInterrupt();
+	close_time = millis();
+ 	if (close_time - last_close_time > DEBOUNCE_TIME) {
+		Shutter->ClosedInterrupt();
+		last_close_time = close_time;
+	}
 }
 
 void handleOpenInterrupt()
 {
-	Shutter->OpenInterrupt();
+	open_time = millis();
+ 	if (open_time - last_open_time > DEBOUNCE_TIME) {
+		Shutter->OpenInterrupt();
+		last_open_time = open_time;
+	}
 }
 
 void handleButtons()
 {
-	Shutter->DoButtons();
+	button_time = millis();
+ 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		Shutter->DoButtons();
+		last_button_time = button_time;
+	}
 }
 
 

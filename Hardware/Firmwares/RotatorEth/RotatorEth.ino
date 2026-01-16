@@ -127,6 +127,17 @@ IPConfig ServerConfig;
 
 #include "dome_commands.h"
 
+\
+// interrupt debouncing variables
+//variables to keep track of the timing of recent interrupts
+#define DEBOUNCE_TIME		50
+volatile unsigned long button_time = 0;
+volatile unsigned long last_button_time = 0;
+volatile unsigned long condition_time = 0;
+volatile unsigned long last_condition_time = 0;
+volatile unsigned long home_time = 0;
+volatile unsigned long last_home_time = 0;
+
 // function prototypes
 #ifdef USE_ETHERNET
 void configureEthernet();
@@ -355,20 +366,32 @@ void checkForNewTCPClient()
 
 void homeIntHandler()
 {
-	if(Rotator)
-		Rotator->homeInterrupt();
+	home_time = millis();
+ 	if (home_time - last_home_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->homeInterrupt();
+		last_home_time = home_time;
+	}
 }
 
 void rainIntHandler()
 {
-	if(Rotator)
-		Rotator->rainInterrupt();
+	condition_time = millis();
+ 	if (condition_time - last_condition_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->rainInterrupt();
+		last_condition_time = condition_time;
+	}
 }
 
 void buttonHandler()
 {
-	if(Rotator)
-		Rotator->ButtonCheck();
+	button_time = millis();
+ 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->ButtonCheck();
+		last_button_time = button_time;
+	}
 }
 
 

@@ -433,10 +433,6 @@ inline void RotatorClass::homeInterrupt()
 {
 	long  nPos;
 
-	// debounce
-	if (digitalRead(HOME_PIN) != LOW)
-		return;
-
 	nPos = stepper.currentPosition(); // read position immediately
 
 	switch(m_seekMode) {
@@ -903,7 +899,7 @@ void RotatorClass::StartHoming()
 	// know the width of the home magnet in steps.
 	// We use edge interrupt to detect the left edge of the magnet as home.
 	m_nMoveDirection = MOVE_POSITIVE;
-	distance = (160000000L  * m_nMoveDirection);
+	distance = (2147483646L  * m_nMoveDirection);
 	m_seekMode = HOMING_HOME;
 	MoveRelative(distance);
 }
@@ -922,7 +918,7 @@ void RotatorClass::StartCalibrating()
 	}
 	else {
 		m_seekMode = CALIBRATION_STEP1;
-		MoveRelative(160000000L);
+		MoveRelative(2147483646L);
 	}
 }
 
@@ -934,7 +930,7 @@ void RotatorClass::Calibrate()
 				if (!stepper.isRunning()) {
 					m_seekMode = CALIBRATION_STEP1;
 					stepper.setCurrentPosition(0);
-					MoveRelative(160000000L);
+					MoveRelative(2147483646L);
 				}
 				break;
 
@@ -999,10 +995,10 @@ void RotatorClass::MoveRelative(const long howFar)
 void RotatorClass::ButtonCheck()
 {
 	if (digitalRead(BUTTON_CW) == LOW) {
-		MoveRelative(160000000L);
+		MoveRelative(2147483646L);
 	}
 	else if (digitalRead(BUTTON_CCW) == LOW)  {
-		MoveRelative(-160000000L);
+		MoveRelative(-2147483646L);
 	}
 	else {
 		Stop();
