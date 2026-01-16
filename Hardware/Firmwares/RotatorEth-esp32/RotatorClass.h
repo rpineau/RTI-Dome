@@ -11,9 +11,6 @@
 #include "StopWatch.h"
 #include "config.h"
 
-volatile bool bIntterruptHappened = false;
-volatile int intType = 0;
-
 typedef struct IPCONFIG {
 	bool            bUseDHCP;
 	IPAddress       ip;

@@ -469,8 +469,6 @@ void IRAM_ATTR homeIntHandler()
 {
 	home_time = millis();
  	if (home_time - last_home_time > DEBOUNCE_TIME) {
-		intType = 0;
-		bIntterruptHappened = true;
 		if(Rotator)
 			Rotator->homeInterrupt();
 		last_home_time = home_time;
@@ -481,8 +479,6 @@ void IRAM_ATTR conditionsIntHandler()
 {
 	condition_time = millis();
  	if (condition_time - last_condition_time > DEBOUNCE_TIME) {
-		intType = 1;
-		bIntterruptHappened = true;
 		if(Rotator)
 			Rotator->conditionsInterrupt();
 		last_condition_time = condition_time;
@@ -493,8 +489,6 @@ void IRAM_ATTR buttonHandler()
 {
 	button_time = millis();
  	if (button_time - last_button_time > DEBOUNCE_TIME) {
-		intType = 2;
-		bIntterruptHappened = true;
 		if(Rotator)
 			Rotator->ButtonCheck();
 		last_button_time = button_time;
