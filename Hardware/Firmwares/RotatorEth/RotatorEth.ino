@@ -146,7 +146,8 @@ void checkForNewTCPClient();
 #endif // USE_ETHERNET
 void homeIntHandler();
 void rainIntHandler();
-void buttonHandler();
+void buttonEastHandler();
+void buttonWestHandler();
 void resetChip(int);
 void resetFTDI(int);
 void StartWirelessConfig();
@@ -212,8 +213,8 @@ void setup()
 	noInterrupts();
 	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
 	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonHandler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CW), buttonEastHandler, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CCW), buttonWestHandler, CHANGE);
 	interrupts();
 #ifdef USE_ETHERNET
 	configureEthernet();
@@ -384,16 +385,25 @@ void rainIntHandler()
 	}
 }
 
-void buttonHandler()
+void buttonEastHandler()
 {
 	button_time = millis();
  	if (button_time - last_button_time > DEBOUNCE_TIME) {
 		if(Rotator)
-			Rotator->ButtonCheck();
+			Rotator->ButtonEastCheck();
 		last_button_time = button_time;
 	}
 }
 
+void buttonWestHandler()
+{
+	button_time = millis();
+ 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->ButtonWestCheck();
+		last_button_time = button_time;
+	}
+}
 
 // reset chip with /reset connected to nPin
 void resetChip(int nPin)

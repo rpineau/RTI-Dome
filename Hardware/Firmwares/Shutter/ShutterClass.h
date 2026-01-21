@@ -284,10 +284,10 @@ ShutterClass::ShutterClass()
 	m_fAdcConvert = RES_MULT * (AD_REF / 1023.0) * 100;
 
 	// Input pins
-	pinMode(CLOSED_PIN,             INPUT);
-	pinMode(OPENED_PIN,             INPUT);
-	pinMode(BUTTON_OPEN,            INPUT);
-	pinMode(BUTTON_CLOSE,           INPUT);
+	pinMode(CLOSED_PIN,             INPUT_PULLUP);
+	pinMode(OPENED_PIN,             INPUT_PULLUP);
+	pinMode(BUTTON_OPEN,            INPUT_PULLUP);
+	pinMode(BUTTON_CLOSE,           INPUT_PULLUP);
 	pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
 
 	// Ouput pins
@@ -925,6 +925,3 @@ void ShutterClass::writeEEPROMBlock(int deviceaddress, unsigned int eeaddress, b
 }
 
 #endif
-
-
-

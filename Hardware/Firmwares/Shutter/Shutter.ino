@@ -1,5 +1,5 @@
 //
-// RTI-Zone Dome Rotator firmware. 
+// RTI-Zone Dome Rotator firmware.
 //
 //  Copyright © 2018 Rodolphe Pineau. All rights reserved.
 //
@@ -91,8 +91,8 @@ void setup()
 	noInterrupts();
 	attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
 	attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleOpenButtons, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleCloseButtons, CHANGE);
 	ResetInterruptWatchdog.reset();
 	interrupts();
 	// enable input buffers
@@ -175,8 +175,8 @@ void checkInterruptTimer()
 			// re-attach interrupts
 			attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
 			attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-			attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleButtons, CHANGE);
-			attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleButtons, CHANGE);
+			attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleOpenButtons, CHANGE);
+			attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleCloseButtons, CHANGE);
 			ResetInterruptWatchdog.reset();
 			interrupts();
 		}
@@ -202,7 +202,16 @@ void handleOpenInterrupt()
 	}
 }
 
-void handleButtons()
+void handleOpenButtons()
+{
+	button_time = millis();
+ 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		Shutter->DoButtons();
+		last_button_time = button_time;
+	}
+}
+
+void handleCloseButtons()
 {
 	button_time = millis();
  	if (button_time - last_button_time > DEBOUNCE_TIME) {
@@ -542,5 +551,3 @@ void ProcessMessages(String buffer)
 		Wireless.write(wirelessMessage.c_str());
 	}
 }
-
-

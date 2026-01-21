@@ -281,7 +281,8 @@ public:
 	void        stopInterrupt();
 	void        homeInterrupt();
 
-	void		ButtonCheck();
+	void		ButtonEastCheck();
+	void		ButtonWestCheck();
 
 	void        bufferEnable(bool bEnable);
 
@@ -992,13 +993,20 @@ void RotatorClass::MoveRelative(const long howFar)
 }
 
 
-void RotatorClass::ButtonCheck()
+void RotatorClass::ButtonEastCheck()
+{
+	if (digitalRead(BUTTON_CCW) == LOW)  {
+		MoveRelative(-2147483646L);
+	}
+	else {
+		Stop();
+	}
+}
+
+void RotatorClass::ButtonWestCheck()
 {
 	if (digitalRead(BUTTON_CW) == LOW) {
 		MoveRelative(2147483646L);
-	}
-	else if (digitalRead(BUTTON_CCW) == LOW)  {
-		MoveRelative(-2147483646L);
 	}
 	else {
 		Stop();

@@ -121,7 +121,8 @@ public:
 	void        motorMoveRelative(const long howFar);
 	void        homeInterrupt();
 
-	void		ButtonCheck();
+	void		ButtonEastCheck();
+	void		ButtonWestCheck();
 	bool 		checkBoundaries(float dTargetAz, float dDomeAz, float dMargin);
 
 	void        getIpConfig(IPConfig &config);
@@ -776,13 +777,20 @@ void RotatorClass::MoveRelative(const long howFar)
 }
 
 
-void IRAM_ATTR RotatorClass::ButtonCheck()
+void IRAM_ATTR RotatorClass::ButtonEastCheck()
+{
+	if (digitalRead(BUTTON_CCW) == LOW)  {
+		MoveRelative(-2147483646L);
+	}
+	else {
+		motorStop();
+	}
+}
+
+void IRAM_ATTR RotatorClass::ButtonWestCheck()
 {
 	if (digitalRead(BUTTON_CW) == LOW) {
-		MoveRelative(2147483646L );
-	}
-	else if (digitalRead(BUTTON_CCW) == LOW)  {
-		MoveRelative(-2147483646L );
+		MoveRelative(2147483646L);
 	}
 	else {
 		motorStop();
@@ -904,7 +912,7 @@ void RotatorClass::motorStop()
 void RotatorClass::motorMoveRelative(const long howFar)
 {
 	stepper->move(howFar);
-}	
+}
 
 
 bool RotatorClass::checkBoundaries(float dTargetAz, float dDomeAz, float dMargin)

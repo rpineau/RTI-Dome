@@ -98,7 +98,8 @@ void checkForNewWifiClient();
 #endif
 void homeIntHandler();
 void conditionsIntHandler();
-void buttonHandler();
+void buttonWestHandler();
+void buttonEastHandler();
 void resetChip(int);
 void StartWirelessConfig();
 void ConfigXBee();
@@ -267,12 +268,13 @@ void MotorTask(void *)
 {
 	const TickType_t xDelay = 50/ portTICK_PERIOD_MS; // 50ms task block to give time back
 	DBPrintln("========== Motor task starting ==========");
-	DBPrintln("========== MotorTask Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");	
+	DBPrintln("========== MotorTask Priority " + String(uxTaskPriorityGet(NULL)) + " ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
+
 	attachInterrupt(HOME_PIN, homeIntHandler, FALLING);
 	attachInterrupt(CONDITION_SENSOR_PIN, conditionsIntHandler, CHANGE);
-	attachInterrupt(BUTTON_CW, buttonHandler, CHANGE);
-	attachInterrupt(BUTTON_CCW, buttonHandler, CHANGE);
+	attachInterrupt(BUTTON_CW, buttonWestHandler, CHANGE);
+	attachInterrupt(BUTTON_CCW, buttonEastHandler, CHANGE);
 
 	esp_task_wdt_add(NULL);
 	DBPrintln("========== Motor task ready ==========");
@@ -485,16 +487,25 @@ void IRAM_ATTR conditionsIntHandler()
 	}
 }
 
-void IRAM_ATTR buttonHandler()
+void IRAM_ATTR buttonEastHandler()
 {
 	button_time = millis();
  	if (button_time - last_button_time > DEBOUNCE_TIME) {
 		if(Rotator)
-			Rotator->ButtonCheck();
+			Rotator->ButtonEastCheck();
 		last_button_time = button_time;
 	}
 }
 
+void IRAM_ATTR buttonWestHandler()
+{
+	button_time = millis();
+ 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+		if(Rotator)
+			Rotator->ButtonWestCheck();
+		last_button_time = button_time;
+	}
+}
 
 // reset chip with /reset connected to nPin
 void resetChip(int nPin)
