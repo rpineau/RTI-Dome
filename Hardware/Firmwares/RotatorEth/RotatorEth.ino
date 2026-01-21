@@ -131,8 +131,11 @@ IPConfig ServerConfig;
 // interrupt debouncing variables
 //variables to keep track of the timing of recent interrupts
 #define DEBOUNCE_TIME		50
-volatile unsigned long button_time = 0;
-volatile unsigned long last_button_time = 0;
+volatile unsigned long button_east_time = 0;
+volatile unsigned long last_button_east_time = 0;
+volatile unsigned long button_west_time = 0;
+volatile unsigned long last_button_west_time = 0;
+
 volatile unsigned long condition_time = 0;
 volatile unsigned long last_condition_time = 0;
 volatile unsigned long home_time = 0;
@@ -387,21 +390,21 @@ void rainIntHandler()
 
 void buttonEastHandler()
 {
-	button_time = millis();
- 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+	button_east_time = millis();
+ 	if (button_east_time - last_button_east_time > DEBOUNCE_TIME) {
 		if(Rotator)
 			Rotator->ButtonEastCheck();
-		last_button_time = button_time;
+		last_button_east_time = button_east_time;
 	}
 }
 
 void buttonWestHandler()
 {
-	button_time = millis();
- 	if (button_time - last_button_time > DEBOUNCE_TIME) {
+	button_west_time = millis();
+ 	if (button_west_time - last_button_west_time > DEBOUNCE_TIME) {
 		if(Rotator)
 			Rotator->ButtonWestCheck();
-		last_button_time = button_time;
+		last_button_west_time = button_west_time;
 	}
 }
 
