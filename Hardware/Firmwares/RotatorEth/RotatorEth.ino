@@ -127,7 +127,6 @@ IPConfig ServerConfig;
 
 #include "dome_commands.h"
 
-\
 // interrupt debouncing variables
 //variables to keep track of the timing of recent interrupts
 #define DEBOUNCE_TIME		50
