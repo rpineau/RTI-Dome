@@ -86,7 +86,7 @@ RotatorClass *Rotator = NULL;
 #if defined(XBEE_S1)
 #define NB_AT_OK  17
 /// ATAC,CE1,ID4242,CH0C,MY0,DH0,DLFFFF,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
-String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATCH0C","ATMY0","ATDH0","ATDLFFFF",
+String ATString[18] = {"ATRE","ATWR","ATAC","ATCE1","","ATCH0B","ATMY0","ATDH0","ATDLFFFF",
 						"ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
 #if defined(XBEE_S2C)

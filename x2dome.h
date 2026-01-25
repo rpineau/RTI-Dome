@@ -32,11 +32,14 @@
 
 #define LOG_BUFFER_SIZE 256
 
+#ifndef __CLASS_ATTRIBUTE__
 #if defined(WIN32)
 #define __CLASS_ATTRIBUTE__(x)
 #else
 #define __CLASS_ATTRIBUTE__(x) __attribute__(x)
 #endif
+#endif
+
 
 class __CLASS_ATTRIBUTE__((weak,visibility("default"))) X2Dome: public DomeDriverInterface, public SerialPortParams2Interface, public ModalSettingsDialogInterface, public X2GUIEventInterface, public DomeHasHighlyRelaibleOpenCloseSensors
 {

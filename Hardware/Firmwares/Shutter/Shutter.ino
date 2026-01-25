@@ -35,7 +35,7 @@ const String version = "2.645";
 #if defined(XBEE_S1)
 #define NB_AT_OK  17
 // ATAC,CE0,ID4242,CH0C,MY1,DH0,DL0,RR6,RN2,PL4,AP0,SM0,BD3,WR,FR,CN
-String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATCH0C","ATMY1","ATDH0","ATDL0",
+String ATString[18] = {"ATRE","ATWR","ATAC","ATCE0","","ATCH0B","ATMY1","ATDH0","ATDL0",
 						"ATRR6","ATRN2","ATPL4","ATAP0","ATSM0","ATBD3","ATWR","ATFR","ATCN"};
 #endif
 
