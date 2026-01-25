@@ -528,13 +528,13 @@ void ProcessMessages(String buffer)
 			wirelessMessage = String(RESTORE_MOTOR_DEFAULT);
 			break;
 
-		case PANID:
+		case SHUTTER_PANID:
 			if (hasValue) {
-				wirelessMessage = String(PANID);
+				wirelessMessage = String(SHUTTER_PANID);
 				setPANID(value);
 			}
 			else {
-				wirelessMessage = String(PANID) + Shutter->GetPANID();
+				wirelessMessage = String(SHUTTER_PANID) + Shutter->GetPANID();
 			}
 			DBPrintln("PAN ID '" + String(Shutter->GetPANID()) + "'");
 			break;
