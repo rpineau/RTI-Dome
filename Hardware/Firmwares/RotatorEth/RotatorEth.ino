@@ -389,22 +389,24 @@ void rainIntHandler()
 
 void buttonEastHandler()
 {
+	// BUTTON_CW
 	button_east_time = millis();
- 	if (button_east_time - last_button_east_time > DEBOUNCE_TIME) {
+ 	//if (button_east_time - last_button_east_time > DEBOUNCE_TIME) {
 		if(Rotator)
 			Rotator->ButtonEastCheck();
 		last_button_east_time = button_east_time;
-	}
+	//}
 }
 
 void buttonWestHandler()
 {
+	// BUTTON_CCW
 	button_west_time = millis();
- 	if (button_west_time - last_button_west_time > DEBOUNCE_TIME) {
+ 	// if (button_west_time - last_button_west_time > DEBOUNCE_TIME) {
 		if(Rotator)
 			Rotator->ButtonWestCheck();
 		last_button_west_time = button_west_time;
-	}
+	// }
 }
 
 // reset chip with /reset connected to nPin
@@ -544,12 +546,16 @@ void CheckForRain()
 	int nPosition, nParkPos;
 	String sCmd;
 
-	bIsRaining = Rotator->GetRainStatus();
+	bool bCurrentCondition = Rotator->GetRainStatus();
+
 #ifndef STANDALONE
-	// Send the rains state to the sutter
-	sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
-	Wireless.write(sCmd.c_str());
-	ReceiveWireless();
+	if(bIsRaining != bCurrentCondition) { // was there a state change ?
+		bIsRaining = bCurrentCondition;
+		// Send the rains state to the sutter
+		sCmd = String(RAIN_SHUTTER) + String(bIsRaining ? "1" : "0") + "#";
+		Wireless.write(sCmd.c_str());
+		ReceiveWireless();
+	}
 #endif // STANDALONE
 	if (bIsRaining) {
 		if (Rotator->GetRainAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {

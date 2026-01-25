@@ -995,8 +995,8 @@ void RotatorClass::MoveRelative(const long howFar)
 
 void RotatorClass::ButtonEastCheck()
 {
-	if (digitalRead(BUTTON_CCW) == LOW)  {
-		MoveRelative(-2147483646L);
+	if (digitalRead(BUTTON_CW) == LOW)  {
+		MoveRelative(2147483646L);
 	}
 	else {
 		Stop();
@@ -1005,8 +1005,8 @@ void RotatorClass::ButtonEastCheck()
 
 void RotatorClass::ButtonWestCheck()
 {
-	if (digitalRead(BUTTON_CW) == LOW) {
-		MoveRelative(2147483646L);
+	if (digitalRead(BUTTON_CCW) == LOW) {
+		MoveRelative(-2147483646L);
 	}
 	else {
 		Stop();

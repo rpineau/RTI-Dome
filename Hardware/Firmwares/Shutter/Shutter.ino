@@ -446,7 +446,7 @@ void ProcessMessages(String buffer)
 				}
 				else {
 					isRaining = false;
-					DBPrintln("It's not raining");
+					// DBPrintln("It's not raining");
 				}
 			}
 			break;
