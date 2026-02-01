@@ -131,20 +131,6 @@ esp_task_wdt_config_t twdt_config = {
 	.idle_core_mask = 0,    // Bitmask of cores
 	.trigger_panic = false,
 };
-\
-// interrupt debouncing variables
-//variables to keep track of the timing of recent interrupts
-volatile unsigned long button_east_time = 0;
-volatile unsigned long last_button_east_time = 0;
-
-volatile unsigned long button_west_time = 0;
-volatile unsigned long last_button_west_time = 0;
-
-volatile unsigned long condition_time = 0;
-volatile unsigned long last_condition_time = 0;
-
-volatile unsigned long home_time = 0;
-volatile unsigned long last_home_time = 0;
 
 //
 // Setup and main loops
@@ -472,44 +458,30 @@ void checkForNewWifiClient()
 }
 
 #endif
+
+// no need for software debouncing as all input have hardware debouncing via a 10uF capacitor
 void IRAM_ATTR homeIntHandler()
 {
-	home_time = millis();
- 	if (home_time - last_home_time > DEBOUNCE_TIME) {
-		if(Rotator)
-			Rotator->homeInterrupt();
-		last_home_time = home_time;
-	}
+	if(Rotator)
+		Rotator->homeInterrupt();
 }
 
 void IRAM_ATTR conditionsIntHandler()
 {
-	condition_time = millis();
- 	if (condition_time - last_condition_time > DEBOUNCE_TIME) {
-		if(Rotator)
-			Rotator->conditionsInterrupt();
-		last_condition_time = condition_time;
-	}
+	if(Rotator)
+		Rotator->conditionsInterrupt();
 }
 
 void IRAM_ATTR buttonEastHandler()
 {
-	button_east_time = millis();
- 	if (button_east_time - last_button_east_time > DEBOUNCE_TIME) {
-		if(Rotator)
-			Rotator->ButtonEastCheck();
-		last_button_east_time = button_east_time;
-	}
+	if(Rotator)
+		Rotator->ButtonEastCheck();
 }
 
 void IRAM_ATTR buttonWestHandler()
 {
-	button_west_time = millis();
- 	if (button_west_time - last_button_west_time > DEBOUNCE_TIME) {
-		if(Rotator)
-			Rotator->ButtonWestCheck();
-		last_button_west_time = button_west_time;
-	}
+	if(Rotator)
+		Rotator->ButtonWestCheck();
 }
 
 // reset chip with /reset connected to nPin

@@ -212,6 +212,19 @@ void setup()
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
 	Rotator->EnableMotor(false);
+
+	button_east_time = millis();
+	last_button_east_time = button_east_time;
+
+	button_west_time = button_east_time;
+	last_button_west_time = button_east_time;
+
+	condition_time = button_east_time;
+	last_condition_time = button_east_time;
+
+	home_time = button_east_time;
+	last_home_time = button_east_time;
+
 	noInterrupts();
 	attachInterrupt(digitalPinToInterrupt(HOME_PIN), homeIntHandler, FALLING);
 	attachInterrupt(digitalPinToInterrupt(RAIN_SENSOR_PIN), rainIntHandler, CHANGE);
@@ -370,20 +383,20 @@ void checkForNewTCPClient()
 void homeIntHandler()
 {
 	home_time = millis();
- 	if (home_time - last_home_time > DEBOUNCE_TIME) {
+ 	if (home_time - last_home_time >= DEBOUNCE_TIME) {
+		last_home_time = home_time;
 		if(Rotator)
 			Rotator->homeInterrupt();
-		last_home_time = home_time;
 	}
 }
 
 void rainIntHandler()
 {
 	condition_time = millis();
- 	if (condition_time - last_condition_time > DEBOUNCE_TIME) {
+ 	if (condition_time - last_condition_time >= DEBOUNCE_TIME) {
+		last_condition_time = condition_time;
 		if(Rotator)
 			Rotator->rainInterrupt();
-		last_condition_time = condition_time;
 	}
 }
 
@@ -391,10 +404,10 @@ void buttonEastHandler()
 {
 	// BUTTON_CW
 	button_east_time = millis();
- 	//if (button_east_time - last_button_east_time > DEBOUNCE_TIME) {
+ 	//if (button_east_time - last_button_east_time >= DEBOUNCE_TIME) {
+		last_button_east_time = button_east_time;
 		if(Rotator)
 			Rotator->ButtonEastCheck();
-		last_button_east_time = button_east_time;
 	//}
 }
 
@@ -402,10 +415,10 @@ void buttonWestHandler()
 {
 	// BUTTON_CCW
 	button_west_time = millis();
- 	// if (button_west_time - last_button_west_time > DEBOUNCE_TIME) {
+ 	// if (button_west_time - last_button_west_time >= DEBOUNCE_TIME) {
+		last_button_west_time = button_west_time;
 		if(Rotator)
 			Rotator->ButtonWestCheck();
-		last_button_west_time = button_west_time;
 	// }
 }
 
