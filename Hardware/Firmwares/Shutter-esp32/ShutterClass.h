@@ -513,14 +513,16 @@ void IRAM_ATTR ShutterClass::DoButtons()
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
 	}
-	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) { // button open pressed and we're closed
+	// button open pressed and we're closed
+	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) {
 		shutterState = OPENING;
 		MoveRelative(2147483646L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
 	}
-	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) { // button close pressed and we're open
+	// button close pressed and we're open
+	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) {
 		shutterState = CLOSING;
 		MoveRelative(-2147483646L );
 		m_bButtonUsed = true;

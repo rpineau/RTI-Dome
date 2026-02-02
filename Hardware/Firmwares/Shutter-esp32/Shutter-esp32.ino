@@ -70,15 +70,6 @@ esp_task_wdt_config_t twdt_config =
         .trigger_panic = false,
     };
 
-// interrupt debouncing variables
-volatile unsigned long button_time = 0;
-volatile unsigned long last_button_time = 0;
-volatile unsigned long open_time = 0;
-volatile unsigned long last_open_time = 0;
-volatile unsigned long close_time = 0;
-volatile unsigned long last_close_time = 0;
-
-
 void MotorTask(void *);
 void handleClosedInterrupt();
 void handleOpenInterrupt();
@@ -252,32 +243,20 @@ bool rotatorConnect(IPAddress ip)
 // interrupt
 void IRAM_ATTR handleClosedInterrupt()
 {
-	close_time = millis();
- 	if (close_time - last_close_time > DEBOUNCE_TIME) {
-		if(Shutter)
-			Shutter->ClosedInterrupt();
-		last_close_time = close_time;
-	}
+	if(Shutter)
+		Shutter->ClosedInterrupt();
 }
 
 void IRAM_ATTR handleOpenInterrupt()
 {
-	open_time = millis();
- 	if (open_time - last_open_time > DEBOUNCE_TIME) {
-		if(Shutter)
-			Shutter->OpenInterrupt();
-		last_open_time = open_time;
-	}
+	if(Shutter)
+		Shutter->OpenInterrupt();
 }
 
 void IRAM_ATTR handleButtons()
 {
-	button_time = millis();
- 	if (button_time - last_button_time > DEBOUNCE_TIME) {
-		if(Shutter)
-			Shutter->DoButtons();
-		last_button_time = button_time;
-	}
+	if(Shutter)
+		Shutter->DoButtons();
 }
 
 void PingRotator()

@@ -161,6 +161,7 @@ void startTimer(Tc *tc, uint32_t channel, IRQn_Type irq, uint32_t frequency)
 	tc->TC_CHANNEL[channel].TC_IDR=~TC_IER_CPCS;
 
 	NVIC_EnableIRQ(irq);
+
 }
 
 void stopTimer(Tc *tc, uint32_t channel, IRQn_Type irq)
@@ -296,7 +297,7 @@ ShutterClass::ShutterClass()
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
 	// old board buffer enable
-	// pinMode(BUFFERN_EN, OUTPUT);
+	pinMode(BUFFERN_EN, OUTPUT);
 	// bufferEnable(true);
 
 	LoadFromEEProm();
@@ -625,6 +626,7 @@ void ShutterClass::DoButtons()
 {
 	int sw1, sw2, sw3, sw4;
 
+
 	sw1 = digitalRead(BUTTON_OPEN);
 	sw2 = digitalRead(BUTTON_CLOSE);
 
@@ -632,12 +634,7 @@ void ShutterClass::DoButtons()
 	sw4 = digitalRead(OPENED_PIN);
 
 	// roof is moving and the user want to stop it in the middle
-	if((sw1 == LOW || sw2== LOW) && sw3 == HIGH && sw4 == HIGH && buttonStopTimer.elapsed() > 1.0 ) {
-		motorStop();
-		m_bUserButtonStop = true; // this allows us to not try to finish the open/close
-		m_bButtonUsed = true;
-	}
-	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) { // button open pressed and we're closed
+	if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) { // button open pressed and we're closed
 		shutterState = OPENING;
 		MoveRelative(2147483646L );
 		m_bButtonUsed = true;
@@ -645,6 +642,22 @@ void ShutterClass::DoButtons()
 		buttonStopTimer.reset();
 	}
 	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) { // button close pressed and we're open
+		shutterState = CLOSING;
+		MoveRelative(-2147483646L );
+		m_bButtonUsed = true;
+		m_bUserButtonStop = false;
+		buttonStopTimer.reset();
+	}
+	else if (sw1 == LOW) {
+		// open
+		shutterState = OPENING;
+		MoveRelative(2147483646L );
+		m_bButtonUsed = true;
+		m_bUserButtonStop = false;
+		buttonStopTimer.reset();
+	}
+	else if (sw2 == LOW) {
+		// open
 		shutterState = CLOSING;
 		MoveRelative(-2147483646L );
 		m_bButtonUsed = true;
@@ -804,7 +817,6 @@ void ShutterClass::motorMoveTo(const long newPosition)
 void ShutterClass::motorMoveRelative(const long amount)
 {
 	int nFreq;
-
 	EnableMotor(true);
 	stepper.move(amount);
 	// Why *3 .. I noticed that I don't do at least 3 times the amount of interrupt needed

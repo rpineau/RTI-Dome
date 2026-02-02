@@ -63,16 +63,6 @@ bool isResetingXbee = false;
 int XbeeResets = 0;
 bool needFirstPing = true;
 
-// interrupt debouncing variables
-#define DEBOUNCE_TIME	50
-volatile unsigned long button_time = 0;
-volatile unsigned long last_button_time = 0;
-volatile unsigned long open_time = 0;
-volatile unsigned long last_open_time = 0;
-volatile unsigned long close_time = 0;
-volatile unsigned long last_close_time = 0;
-
-
 void setup()
 {
 	digitalWrite(XBEE_RESET_PIN, 0);
@@ -91,11 +81,11 @@ void setup()
 	noInterrupts();
 	attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
 	attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleOpenButtons, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleCloseButtons, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleOpenButtons, FALLING);
+	attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleCloseButtons, FALLING);
 	ResetInterruptWatchdog.reset();
 	interrupts();
-	// enable input buffers
+	// enable input buffers on old boards.
 	Shutter->bufferEnable(true);
 	Shutter->motorStop();
 	Shutter->EnableMotor(false);
@@ -186,38 +176,22 @@ void checkInterruptTimer()
 
 void handleClosedInterrupt()
 {
-	close_time = millis();
- 	if (close_time - last_close_time > DEBOUNCE_TIME) {
 		Shutter->ClosedInterrupt();
-		last_close_time = close_time;
-	}
 }
 
 void handleOpenInterrupt()
 {
-	open_time = millis();
- 	if (open_time - last_open_time > DEBOUNCE_TIME) {
 		Shutter->OpenInterrupt();
-		last_open_time = open_time;
-	}
 }
 
 void handleOpenButtons()
 {
-	button_time = millis();
- 	if (button_time - last_button_time > DEBOUNCE_TIME) {
 		Shutter->DoButtons();
-		last_button_time = button_time;
-	}
 }
 
 void handleCloseButtons()
 {
-	button_time = millis();
- 	if (button_time - last_button_time > DEBOUNCE_TIME) {
 		Shutter->DoButtons();
-		last_button_time = button_time;
-	}
 }
 
 
