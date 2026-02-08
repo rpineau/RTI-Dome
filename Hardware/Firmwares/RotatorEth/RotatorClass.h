@@ -997,6 +997,7 @@ void RotatorClass::ButtonEastCheck()
 {
 	if (digitalRead(BUTTON_CW) == LOW)  {
 		MoveRelative(2147483646L);
+		m_seekMode = MOVING_GOTO;
 	}
 	else {
 		Stop();
@@ -1007,6 +1008,7 @@ void RotatorClass::ButtonWestCheck()
 {
 	if (digitalRead(BUTTON_CCW) == LOW) {
 		MoveRelative(-2147483646L);
+		m_seekMode = MOVING_GOTO;
 	}
 	else {
 		Stop();

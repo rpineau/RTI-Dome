@@ -659,8 +659,7 @@ void ShutterClass::DoButtons()
 		m_bUserButtonStop = false;
 	}
 	else { // stop
-		motorStop();
-		m_bButtonUsed = true;
+		Abort();
 		m_bUserButtonStop = true;
 	}
 }
@@ -696,10 +695,10 @@ void ShutterClass::Open()
 		shutterState = OPEN;
 		return;
 	}
-
+	Abort();
 	shutterState = OPENING;
 	DBPrintln("shutterState = OPENING");
-	MoveRelative(2147483646L );
+	MoveRelative(2147483646L);
 }
 
 void ShutterClass::Close()
@@ -708,15 +707,17 @@ void ShutterClass::Close()
 		shutterState = CLOSED;
 		return;
 	}
+	Abort();
 	shutterState = CLOSING;
 	DBPrintln("shutterState = CLOSING");
-	MoveRelative(-2147483646L );
+	MoveRelative(-2147483646L);
 }
 
 
 void ShutterClass::Abort()
 {
 	m_bButtonUsed = true; // will stop and not try to finish close/open
+	shutterState = ERROR;
 	stepper.stop();
 }
 
