@@ -98,7 +98,6 @@ enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED,
 volatile ShutterStates shutterState = ERROR;
 
 StopWatch watchdogTimer;
-StopWatch buttonStopTimer;
 
 /*
  * As demonstrated by RCArduino and modified by BKM:
@@ -273,7 +272,7 @@ private:
 
 ShutterClass::ShutterClass()
 {
-	int sw1, sw2;
+	int sw_pin_close, sw_pin_open;
 
 #ifdef USE_EXT_EEPROM
 	DBPrintln("Using external AT24AA128 eeprom");
@@ -315,13 +314,13 @@ ShutterClass::ShutterClass()
 	m_batteryCheckTimer.reset();
 
 	// read initial shutter state
-	sw1 = digitalRead(CLOSED_PIN);
-	sw2 = digitalRead(OPENED_PIN);
+	sw_pin_close = digitalRead(CLOSED_PIN);
+	sw_pin_open = digitalRead(OPENED_PIN);
 
 	shutterState = ERROR;
-	if (sw1 == LOW && sw2 == HIGH)
+	if (sw_pin_close == LOW && sw_pin_open == HIGH)
 		shutterState = CLOSED;
-	else if (sw1 == HIGH && sw2 == LOW)
+	else if (sw_pin_close == HIGH && sw_pin_open == LOW)
 		shutterState = OPEN;
 
 	m_bUserButtonStop=false;
@@ -624,51 +623,45 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 // INPUTS
 void ShutterClass::DoButtons()
 {
-	int sw1, sw2, sw3, sw4;
+	int button_open, button_close, sw_pin_close, sw_pin_open;
 
 
-	sw1 = digitalRead(BUTTON_OPEN);
-	sw2 = digitalRead(BUTTON_CLOSE);
+	button_open = digitalRead(BUTTON_OPEN);
+	button_close = digitalRead(BUTTON_CLOSE);
 
-	sw3 = digitalRead(CLOSED_PIN);
-	sw4 = digitalRead(OPENED_PIN);
+	sw_pin_close = digitalRead(CLOSED_PIN);
+	sw_pin_open = digitalRead(OPENED_PIN);
 
-	// roof is moving and the user want to stop it in the middle
-	if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) { // button open pressed and we're closed
+	if (button_open == LOW && sw_pin_close == LOW && sw_pin_open == HIGH) { // button open pressed and we're closed
 		shutterState = OPENING;
 		MoveRelative(2147483646L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
-		buttonStopTimer.reset();
 	}
-	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) { // button close pressed and we're open
+	else if (button_close == LOW && sw_pin_close == HIGH && sw_pin_open == LOW) { // button close pressed and we're open
 		shutterState = CLOSING;
 		MoveRelative(-2147483646L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
-		buttonStopTimer.reset();
 	}
-	else if (sw1 == LOW) {
+	else if (button_open == LOW && sw_pin_close == HIGH && sw_pin_open == HIGH) { // somewhere in between and we're opening
 		// open
 		shutterState = OPENING;
 		MoveRelative(2147483646L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
-		buttonStopTimer.reset();
 	}
-	else if (sw2 == LOW) {
+	else if (button_close == LOW && sw_pin_close == HIGH && sw_pin_open == HIGH) { // somewhere in between and we're closing
 		// open
 		shutterState = CLOSING;
 		MoveRelative(-2147483646L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
-		buttonStopTimer.reset();
 	}
-	else {
-		buttonStopTimer.reset();
+	else { // stop
 		motorStop();
-		m_bButtonUsed = false;
-		m_bUserButtonStop = false;
+		m_bButtonUsed = true;
+		m_bUserButtonStop = true;
 	}
 }
 

@@ -165,8 +165,8 @@ void checkInterruptTimer()
 			// re-attach interrupts
 			attachInterrupt(digitalPinToInterrupt(OPENED_PIN), handleOpenInterrupt, FALLING);
 			attachInterrupt(digitalPinToInterrupt(CLOSED_PIN), handleClosedInterrupt, FALLING);
-			attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleOpenButtons, CHANGE);
-			attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleCloseButtons, CHANGE);
+			attachInterrupt(digitalPinToInterrupt(BUTTON_OPEN), handleOpenButtons, FALLING);
+			attachInterrupt(digitalPinToInterrupt(BUTTON_CLOSE), handleCloseButtons, FALLING);
 			ResetInterruptWatchdog.reset();
 			interrupts();
 		}
