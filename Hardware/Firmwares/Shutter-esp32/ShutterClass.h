@@ -570,7 +570,8 @@ void ShutterClass::Close()
 
 void ShutterClass::Abort()
 {
-	m_bButtonUsed = true; // will stop and not try to finish close/open
+	m_bButtonUsed = true;
+	m_bUserButtonStop = true; //don't try to continue open/close
 	stepper->stopMove();
 }
 

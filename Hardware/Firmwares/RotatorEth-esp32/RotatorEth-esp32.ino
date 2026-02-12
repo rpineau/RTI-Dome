@@ -215,7 +215,7 @@ void setup()
 void loop()
 {
 	String sTmpString;
-
+	String ShutterAction;
 	if(firstLoop) {
 		firstLoop = false;
 		Computer.println("========== Rotator is Ready ==========");
@@ -262,22 +262,34 @@ void loop()
 	if(bOpenShutterButtonPressed) {
 		bOpenShutterButtonPressed = false;
 		if(shutterClient.connected()) {
-			sTmpString = String(OPEN_SHUTTER);
+			if(RemoteShutter.state == OPENING) {
+				sTmpString = String(ABORT); // we're stopping in the middle.
+			}
+			else {
+				sTmpString = String(OPEN_SHUTTER);
+				RemoteShutter.state = OPENING; // force it
+			}
 			sTmpString = sTmpString+ "#";
 			shutterClient.write(sTmpString .c_str(), sTmpString.length());
 			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 			ReceiveWiFi(shutterClient);
-			}
+		}
 	}
 	if(bCloseShutterButtonPressed) {
 		bCloseShutterButtonPressed = false;
 		if(shutterClient.connected()) {
-			sTmpString = String(CLOSE_SHUTTER);
+			if(RemoteShutter.state == CLOSING) {
+				sTmpString = String(ABORT); // we're stopping in the middle.
+			}
+			else {
+				sTmpString = String(CLOSE_SHUTTER);
+				RemoteShutter.state = CLOSING; // force it
+			}
 			sTmpString = sTmpString+ "#";
 			shutterClient.write(sTmpString .c_str(), sTmpString.length());
 			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 			ReceiveWiFi(shutterClient);
-			}
+		}
 	}
 	taskYIELD();
 	esp_task_wdt_reset();
