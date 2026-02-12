@@ -187,8 +187,8 @@ RotatorClass::RotatorClass()
 	pinMode(HOME_PIN,               INPUT_PULLUP);
 	pinMode(BUTTON_CCW,             INPUT_PULLUP);
 	pinMode(BUTTON_CW,              INPUT_PULLUP);
-	pinMode(CONDITION_SENSOR_PIN,        INPUT_PULLUP);
-	pinMode(SPARE1,    				INPUT);
+	pinMode(CONDITION_SENSOR_PIN,	INPUT_PULLUP);
+	pinMode(SPARE1,    				INPUT_PULLUP);
 	pinMode(SPARE2,    				INPUT_PULLUP);
 
 	// output

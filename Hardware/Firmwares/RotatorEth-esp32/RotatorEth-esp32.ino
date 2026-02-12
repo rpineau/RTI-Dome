@@ -83,6 +83,10 @@ volatile bool bIsSafe{true};
 // global variable for shutter voltage state
 volatile bool bLowShutterVoltage = false;
 
+// shutter button on rotation controller
+volatile bool bOpenShutterButtonPressed = false;
+volatile bool bCloseShutterButtonPressed = false;
+
 const char ERR_NO_DATA = -1;
 
 #include "dome_commands.h"
@@ -100,6 +104,8 @@ void homeIntHandler();
 void conditionsIntHandler();
 void buttonWestHandler();
 void buttonEastHandler();
+void openShutterButtonInt();
+void closeShutterButtonInt();
 void resetChip(int);
 void StartWirelessConfig();
 void ConfigXBee();
@@ -185,6 +191,9 @@ void setup()
 	domeServer = new EthernetServer(CMD_SERVER_PORT);
 	domeServer->begin();
 
+	attachInterrupt(SPARE1, openShutterButtonInt, FALLING);
+	attachInterrupt(SPARE2, closeShutterButtonInt, FALLING);
+
 #ifdef USE_OTA_UPDATE
 	httpUpdater.setup(&httpServer);
 	httpServer.begin();
@@ -205,6 +214,8 @@ void setup()
 
 void loop()
 {
+	String sTmpString;
+
 	if(firstLoop) {
 		firstLoop = false;
 		Computer.println("========== Rotator is Ready ==========");
@@ -248,6 +259,26 @@ void loop()
 #ifdef USE_OTA_UPDATE
 	httpServer.handleClient();
 #endif
+	if(bOpenShutterButtonPressed) {
+		bOpenShutterButtonPressed = false;
+		if(shutterClient.connected()) {
+			sTmpString = String(OPEN_SHUTTER);
+			sTmpString = sTmpString+ "#";
+			shutterClient.write(sTmpString .c_str(), sTmpString.length());
+			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+			ReceiveWiFi(shutterClient);
+			}
+	}
+	if(bCloseShutterButtonPressed) {
+		bCloseShutterButtonPressed = false;
+		if(shutterClient.connected()) {
+			sTmpString = String(CLOSE_SHUTTER);
+			sTmpString = sTmpString+ "#";
+			shutterClient.write(sTmpString .c_str(), sTmpString.length());
+			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+			ReceiveWiFi(shutterClient);
+			}
+	}
 	taskYIELD();
 	esp_task_wdt_reset();
 }
@@ -482,6 +513,17 @@ void IRAM_ATTR buttonWestHandler()
 {
 	if(Rotator)
 		Rotator->ButtonWestCheck();
+}
+
+void IRAM_ATTR openShutterButtonInt()
+{
+	bOpenShutterButtonPressed = true;
+}
+
+void IRAM_ATTR closeShutterButtonInt()
+{
+	bCloseShutterButtonPressed = true;
+
 }
 
 // reset chip with /reset connected to nPin
