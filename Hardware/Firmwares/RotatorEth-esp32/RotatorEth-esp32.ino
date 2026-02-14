@@ -18,8 +18,11 @@ bool firstLoop = true;
 
 #pragma message "Ethernet enabled"
 // include and some defines for ethernet connection
-#include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
+// #include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
 #include <Ethernet.h>
+//#include <ETH.h>
+//#include <EthernetServer.h>
+//#include <EthernetClient.h>
 
 #ifdef USE_OTA_UPDATE
 #pragma message "OTA Update enable"

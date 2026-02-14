@@ -22,6 +22,7 @@
 #define ALPACA_OK 0
 #define DISCOVERY_ERROR -1
 #define DOME_INTERFACE_VERSION 3
+#define UDP_MAX_DATA_SIZE 64
 
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 enum AlpacaShutterStates { A_OPEN=0, A_CLOSED, A_OPENING, A_CLOSING,  A_ERROR};
@@ -69,12 +70,14 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 	String sDiscoveryResponse = "{\"AlpacaPort\":"+String(ALPACA_SERVER_PORT)+"}";
 	String sDiscoveryRequest;
 
-	char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
+	char packetBuffer[UDP_MAX_DATA_SIZE+1];
 	int packetSize = discoveryServer->parsePacket();
 	if (packetSize) {
 		DBPrintln("Alpaca discovery server request");
 		memset(packetBuffer,0,sizeof(packetBuffer));
-		discoveryServer->read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+		if(packetSize > UDP_MAX_DATA_SIZE)
+			packetSize = UDP_MAX_DATA_SIZE;
+		discoveryServer->read(packetBuffer, packetSize);
 		// do stuff
 		sDiscoveryRequest = String(packetBuffer);
 		DBPrintln("Alpaca discovery server sDiscoveryRequest : " + sDiscoveryRequest);
@@ -85,7 +88,7 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 		DBPrintln("Alpaca discovery server sending response : " + sDiscoveryResponse);
 		// send discovery reponse
 		discoveryServer->beginPacket(discoveryServer->remoteIP(), discoveryServer->remotePort());
-		discoveryServer->write(sDiscoveryResponse.c_str());
+		discoveryServer->write(sDiscoveryResponse.c_str(), sDiscoveryResponse.length());
 		discoveryServer->endPacket();
 	}
 	return ALPACA_OK;
