@@ -96,6 +96,8 @@ public:
 	// interrupts
 	void		ClosedInterrupt();
 	void		OpenInterrupt();
+	void		LowerClosedInterrupt();
+	void		LowerOpenInterrupt();
 	volatile bool     m_bButtonUsed;
 
 	void    	Abort();
@@ -126,17 +128,20 @@ ShutterClass::ShutterClass()
 	int sw1, sw2;
 
 	shutterState = ERROR;
-	
+
 	m_fAdcConvert = RES_MULT * (AD_REF / 4095.0f) * 100.0f;
 
 	DBPrintln("configuring pins");
 
 	// Input pins
-	pinMode(CLOSED_PIN,             INPUT_PULLUP);
-	pinMode(OPENED_PIN,             INPUT_PULLUP);
-	pinMode(BUTTON_OPEN,            INPUT_PULLUP);
-	pinMode(BUTTON_CLOSE,           INPUT_PULLUP);
-	pinMode(VOLTAGE_MONITOR_PIN,    INPUT);
+	pinMode(CLOSED_PIN,				INPUT_PULLUP);
+	pinMode(OPEN_PIN,				INPUT_PULLUP);
+	pinMode(BUTTON_OPEN,			INPUT_PULLUP);
+	pinMode(BUTTON_CLOSE,			INPUT_PULLUP);
+	pinMode(VOLTAGE_MONITOR_PIN,	INPUT);
+
+	pinMode(LOWER_CLOSE_PIN,		INPUT_PULLUP);
+	pinMode(LOWER_OPEN_PIN,			INPUT_PULLUP);
 
 	// Ouput pins
 	pinMode(STEP_PIN,       		OUTPUT);
@@ -165,7 +170,7 @@ ShutterClass::ShutterClass()
 
 	// read initial shutter state
 	sw1 = digitalRead(CLOSED_PIN);
-	sw2 = digitalRead(OPENED_PIN);
+	sw2 = digitalRead(OPEN_PIN);
 
 	shutterState = ERROR;
 	if (sw1 == LOW && sw2 == HIGH)
@@ -199,6 +204,25 @@ void IRAM_ATTR ShutterClass::OpenInterrupt()
 	}
 }
 
+void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
+{
+	DBPrintln("[LowerClosedInterrupt] Shutter state : " + String(shutterState));
+	if(shutterState == CLOSING) {
+		DBPrintln("Closed Int stopping motor");
+		shutterState = FINISHING_CLOSE;
+		motorStop();
+	}
+}
+
+void IRAM_ATTR ShutterClass::LowerOpenInterrupt()
+{
+	DBPrintln("[LowerOpenInterrupt] Shutter state : " + String(shutterState));
+	if(shutterState == OPENING) {
+		DBPrintln("Open Int stopping motor");
+		motorStop();
+		shutterState = FINISHING_OPEN;
+	}
+}
 
 
 void ShutterClass::LoadConfig()
@@ -397,7 +421,7 @@ int ShutterClass::GetEndSwitchStatus()
 	if (digitalRead(CLOSED_PIN) == LOW)
 		result = CLOSED;
 
-	if (digitalRead(OPENED_PIN) == LOW)
+	if (digitalRead(OPEN_PIN) == LOW)
 		result = OPEN;
 	return result;
 }
@@ -493,7 +517,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	sw2 = digitalRead(BUTTON_CLOSE);
 
 	sw3 = digitalRead(CLOSED_PIN);
-	sw4 = digitalRead(OPENED_PIN);
+	sw4 = digitalRead(OPEN_PIN);
 
 	// shutter is between open and close and we want to open
 	if(sw1 == LOW  && sw3 == HIGH && sw4 == HIGH ) {
@@ -544,7 +568,7 @@ void ShutterClass::Open()
 	if(GetVoltsAreLow()) // do not try to open if we're already at low voltage
 		return;
 
-	if (digitalRead(OPENED_PIN) == 0) {
+	if (digitalRead(OPEN_PIN) == 0) {
 		DBPrintln("[Open()] shutterState = OPEN");
 		shutterState = OPEN;
 		return;
@@ -606,7 +630,7 @@ void ShutterClass::Run()
 			DBPrintln("Stopped at closed position");
 			DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
 		}
-		else if (digitalRead(OPENED_PIN) == 0) {
+		else if (digitalRead(OPEN_PIN) == 0) {
 			shutterState = OPEN;
 			DBPrintln("Stopped at open position");
 			DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));

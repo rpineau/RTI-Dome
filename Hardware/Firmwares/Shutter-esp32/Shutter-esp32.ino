@@ -73,6 +73,8 @@ esp_task_wdt_config_t twdt_config =
 void MotorTask(void *);
 void handleClosedInterrupt();
 void handleOpenInterrupt();
+void handleLowerClosedInterrupt();
+void handleLowerOpenInterrupt();
 void handleButtons();
 
 void setup()
@@ -166,10 +168,14 @@ void MotorTask(void *)
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 
-	attachInterrupt(OPENED_PIN, handleOpenInterrupt, FALLING);
+	attachInterrupt(OPEN_PIN, handleOpenInterrupt, FALLING);
 	attachInterrupt(CLOSED_PIN, handleClosedInterrupt, FALLING);
+
+	attachInterrupt(LOWER_OPEN_PIN, handleLowerOpenInterrupt, FALLING);
+	attachInterrupt(LOWER_CLOSE_PIN, handleLowerClosedInterrupt, FALLING);
+
 	attachInterrupt(BUTTON_OPEN, handleButtons, FALLING);
-	attachInterrupt(BUTTON_CLOSE, handleButtons, FALLING); 
+	attachInterrupt(BUTTON_CLOSE, handleButtons, FALLING);
 	esp_task_wdt_add(NULL);
 
 	DBPrintln("========== Motor task ready ==========");
@@ -251,6 +257,18 @@ void IRAM_ATTR handleOpenInterrupt()
 {
 	if(Shutter)
 		Shutter->OpenInterrupt();
+}
+
+void IRAM_ATTR handleLowerClosedInterrupt()
+{
+	if(Shutter)
+		Shutter->LowerClosedInterrupt();
+}
+
+void IRAM_ATTR handleLowerOpenInterrupt()
+{
+	if(Shutter)
+		Shutter->LowerOpenInterrupt();
 }
 
 void IRAM_ATTR handleButtons()
@@ -487,7 +505,7 @@ void ProcessWifi()
 			Shutter->restoreDefaultMotorSettings();
 			sRotatorMessage = String(RESTORE_MOTOR_DEFAULT);
 			break;
-		
+
 		case SHUTTER_SSID:
 			if (hasValue) {
 				sRotatorMessage = String(SHUTTER_SSID);

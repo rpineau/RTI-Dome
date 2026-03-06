@@ -28,12 +28,16 @@
 //
 // input
 #define CLOSED_PIN				15 	// Digital Input
-#define OPENED_PIN 				33	// Digital Input
+#define OPEN_PIN 				33	// Digital Input
 #define BUTTON_CLOSE			14	// Digital Input
 #define BUTTON_OPEN				27	// Digital Input
 #define CONDITION_SENSOR_PIN	25  // Digital Input from RG11 ands other similar device. Might be use as a spare input on shutter board.
-#define SPARE1					34
-#define SPARE2					26
+#define SPARE1					34	// lower shutter closed
+#define SPARE2					26	// lower shutter open
+// just for ease of coding
+#define LOWER_CLOSE_PIN			34	// lower shutter closed
+#define LOWER_OPEN_PIN			26	// lower shutter open
+
 // output
 #define STEPPER_ENABLE_PIN		13  // Digital Output
 #define DIRECTION_PIN	 		2  // Digital Output
@@ -43,8 +47,8 @@
 
 // analog
 #define VOLTAGE_MONITOR_PIN A0  // GPIO36 / SENSOR_VP
-#define AD_REF      3.3f	// 
-#define RES_MULT    5.0f 	// 
+#define AD_REF      3.3f	//
+#define RES_MULT    5.0f 	//
 #define DEFAULT_CUT_OFF_VOLTS	1100 // 11.00 V
 
 
