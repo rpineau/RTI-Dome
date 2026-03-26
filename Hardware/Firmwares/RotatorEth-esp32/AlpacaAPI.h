@@ -642,37 +642,44 @@ void getDomeState(Request &req, Response &res)
 			Alt = 0.0f;
 			break;
 	}
-	jsTmp["Altitude"] = Alt;
+	jsTmp["Name"] = "Altitude";
+	jsTmp["Value"] = Alt;
 	AlpacaResp["Value"].add(jsTmp);
+	jsTmp.clear();
 #endif
 
-	jsTmp.clear();
-	jsTmp["AtHome"] = (Rotator->GetHomeStatus() == ATHOME);
+	jsTmp["Name"] = "AtHome";
+	jsTmp["Value"] = (Rotator->GetHomeStatus() == ATHOME);
 	AlpacaResp["Value"].add(jsTmp);
-
 	jsTmp.clear();
+
 	dParkPos = Rotator->GetParkAzimuth();
 	dCurrentAz = Rotator->GetAzimuth();
 	if(Rotator->checkBoundaries(dParkPos, dCurrentAz, 1.0)) {
 		bParked = true;
 	}
-	jsTmp["AtPark"] = bParked;
+	jsTmp["Name"] = "AtPark";
+	jsTmp["Value"] = bParked;
 	AlpacaResp["Value"].add(jsTmp);
-
 	jsTmp.clear();
-	jsTmp["Azimuth"] = Rotator->GetAzimuth();
+
+	jsTmp["Name"] = "Azimuth";
+	jsTmp["Value"] = Rotator->GetAzimuth();
 	AlpacaResp["Value"].add(jsTmp);
-
 	jsTmp.clear();
-	jsTmp["ShutterStatus"] = getAlpacaShutterState();
+
+	jsTmp["Name"] = "ShutterStatus";
+	jsTmp["Value"] = getAlpacaShutterState();
 	AlpacaResp["Value"].add(jsTmp);
-
 	jsTmp.clear();
+
+
+	jsTmp["Name"] = "Slewing";
 	if(Rotator->GetSeekMode() != NOT_MOVING) {
-		AlpacaResp["Slewing"] = true;
+		jsTmp["Value"] = true;
 	}
 	else {
-		AlpacaResp["Slewing"] = false;
+		jsTmp["Value"] = false;
 	}
 	AlpacaResp["Value"].add(jsTmp);
 
