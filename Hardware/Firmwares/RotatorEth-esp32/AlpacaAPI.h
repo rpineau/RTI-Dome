@@ -1920,7 +1920,7 @@ void subnetMaskValue(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void ipGetewayValue(Request &req, Response &res)
+void ipGatewayValue(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
 	String sResp;
@@ -2354,18 +2354,19 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/api/v1/dome/0/setpark", &setPark);
 	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoaltitude", &doAltitudeSlew);
 
+	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoazimuth", &doGoTo);
+	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
+
 	// adding our own endpoints for the settings
 	m_AlpacaRestServer->use("/setup/homePosition", &homePosition);
 	m_AlpacaRestServer->use("/setup/parkPosition", &parkPosition);
 	m_AlpacaRestServer->use("/setup/reverseDirection", &reverseDirectionState);
-	m_AlpacaRestServer->put("/api/v1/dome/0/slewtoazimuth", &doGoTo);
-	m_AlpacaRestServer->put("/api/v1/dome/0/synctoazimuth", &doSyncAzimuth);
 
 	m_AlpacaRestServer->use("/setup/useDHCP", &useDHCPState);
 	m_AlpacaRestServer->get("/setup/macAddress", &macAddressValue);
 	m_AlpacaRestServer->use("/setup/ipAddress", &ipAddressValue);
 	m_AlpacaRestServer->use("/setup/subnetMask", &subnetMaskValue);
-	m_AlpacaRestServer->use("/setup/ipGeteway", &ipGetewayValue);
+	m_AlpacaRestServer->use("/setup/ipGateway", &ipGatewayValue);
 
 	m_AlpacaRestServer->use("/setup/domeCalibrate", &domeCalibrateAction);
 	m_AlpacaRestServer->use("/setup/stepPerRevolution", &stepPerRevolutionValue);
