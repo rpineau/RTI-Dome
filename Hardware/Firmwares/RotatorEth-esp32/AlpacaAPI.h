@@ -7,7 +7,8 @@
 #pragma message "Alpaca server enabled"
 #include <vector>
 #include <functional>
-#include <EthernetUdp.h>
+// #include <NetworkUDP.h>
+#include <Network.h>
 #include <ArduinoJson.h>
 // Alpaca REST server
 #include <UUID.h>
@@ -40,7 +41,7 @@ public:
 	void startServer();
 	int checkForRequest();
 private:
-	EthernetUDP *discoveryServer;
+	NetworkUDP *discoveryServer;
 	int m_UDPPort;
 };
 
@@ -53,7 +54,7 @@ DomeAlpacaDiscoveryServer::DomeAlpacaDiscoveryServer(int port)
 
 void DomeAlpacaDiscoveryServer::startServer()
 {
-	discoveryServer = new EthernetUDP();
+	discoveryServer = new NetworkUDP();
 	if(!discoveryServer) {
 		discoveryServer = nullptr;
 		return;
@@ -88,7 +89,7 @@ int DomeAlpacaDiscoveryServer::checkForRequest()
 		DBPrintln("Alpaca discovery server sending response : " + sDiscoveryResponse);
 		// send discovery reponse
 		discoveryServer->beginPacket(discoveryServer->remoteIP(), discoveryServer->remotePort());
-		discoveryServer->write(sDiscoveryResponse.c_str(), sDiscoveryResponse.length());
+		discoveryServer->write((uint8_t *)sDiscoveryResponse.c_str(), sDiscoveryResponse.length());
 		discoveryServer->endPacket();
 	}
 	return ALPACA_OK;
@@ -2267,26 +2268,26 @@ public :
 
 
 private :
-	EthernetServer *mRestServer;
+	NetworkServer *mRestServer;
 	Application  *m_AlpacaRestServer;
 	int m_nRestPort;
 };
 
 DomeAlpacaServer::DomeAlpacaServer(int port)
 {
-	byte macAddress[6];    // Mac address, uses part of the unique ID
-	getMacAddress(macAddress);
+	byte fuseMacForUUID[6];
+	getFuseMac(fuseMacForUUID);
 	m_nRestPort = port;
 	mRestServer = nullptr;
 	m_AlpacaRestServer = nullptr;
 	nTransactionID = 0;
-	uuid.seed(macAddress[4],macAddress[5]);
+	uuid.seed(fuseMacForUUID[4],fuseMacForUUID[5]);
 	uuid.generate();
 }
 
 void DomeAlpacaServer::startServer()
 {
-	mRestServer = new EthernetServer(m_nRestPort);
+	mRestServer = new NetworkServer(m_nRestPort);
 	m_AlpacaRestServer = new Application();
 
 	DBPrintln("m_AlpacaRestServer starting");
@@ -2393,7 +2394,7 @@ void DomeAlpacaServer::startServer()
 void DomeAlpacaServer::checkForRequest()
 {
 	// process incoming connections one at a time
-	EthernetClient client = mRestServer->accept();
+	NetworkClient client = mRestServer->accept();
 	if (client.connected()) {
 		m_AlpacaRestServer->process(&client);
 		client.stop();

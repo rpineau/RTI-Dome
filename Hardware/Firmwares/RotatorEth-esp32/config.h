@@ -4,7 +4,7 @@
 //
 #ifndef __R_CONFIG__
 #define __R_CONFIG__
-// #define DEBUG   // enable debug to serial port defined as DebugPort
+#define DEBUG   // enable debug to serial port defined as DebugPort
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
 #define DebugPort Serial1    //  Rx2,Tx2 =  Serial1
@@ -74,10 +74,26 @@ Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
 #define STEPS_DEFAULT       440640
 
 #define ETHERNET_CS     5
-#define ETHERNET_INT	0
+#define ETHERNET_INT	-1
 #define ETHERNET_RESET  4
 #define CMD_SERVER_PORT 2323
-#define domeEthernet Ethernet
+
+// network interfaces
+#include <ETH.h>
+#include <Network.h>
+#define domeEthernet ETH
+
+#define ETH_PHY_TYPE ETH_PHY_W5500
+#define ETH_PHY_ADDR 1
+#define ETH_PHY_CS   ETHERNET_CS
+#define ETH_PHY_IRQ  -1
+#define ETH_PHY_RST  ETHERNET_RESET
+
+// SPI pins
+#define ETH_SPI_SCK         SCK
+#define ETH_SPI_MISO        MISO
+#define ETH_SPI_MOSI        MOSI
+
 
 #ifdef USE_WIFI
 #define SHUTTER_PORT 2424

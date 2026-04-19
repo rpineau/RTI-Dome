@@ -11,7 +11,7 @@
 // Create MAC address from unique ID
 //
 
-void getMacAddress(byte* macBuffer)
+void getFuseMac(byte* macBuffer)
 {
 	uint64_t nUUID = ESP.getEfuseMac();
 	macBuffer[0] = 0x52;
@@ -20,7 +20,7 @@ void getMacAddress(byte* macBuffer)
 	macBuffer[3] = (byte)(nUUID>>16);
 	macBuffer[4] = (byte)(nUUID>>8);
 	macBuffer[5] = (byte)(nUUID);
-	DBPrintln("mac : " + String(nUUID, HEX));
+	DBPrintln("fuseMac : " + String(nUUID, HEX));
 }
 #endif // __ETHER_MAC__
 

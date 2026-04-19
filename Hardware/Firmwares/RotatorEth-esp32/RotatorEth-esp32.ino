@@ -19,10 +19,8 @@ bool firstLoop = true;
 #pragma message "Ethernet enabled"
 // include and some defines for ethernet connection
 // #include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
-#include <Ethernet.h>
-//#include <ETH.h>
-//#include <EthernetServer.h>
-//#include <EthernetClient.h>
+// #include <Ethernet.h>
+#include <Network.h>
 
 #ifdef USE_OTA_UPDATE
 #pragma message "OTA Update enable"
@@ -31,12 +29,14 @@ bool firstLoop = true;
 #endif
 
 #include "EtherMac.h"
-byte MAC_Address[6];    // Mac address, uses part of the unique ID
+byte MAC_Address[6];
+byte fuseMAC[6];    // Mac address, uses part of the unique ID
+
 IPConfig ServerConfig;
 volatile bool ethernetPresent = false;
-EthernetServer *domeServer = nullptr;
-EthernetClient domeClient;
-int nbEthernetClient = 0;
+NetworkServer *domeServer = nullptr;
+NetworkClient domeClient;
+int nbNetworkClient = 0;
 String networkBuffer = "";
 String sLocalIPAdress = "";
 // OTA update stuff
@@ -116,7 +116,7 @@ void SendHello();
 void requestShutterData();
 void CheckForCommands();
 void CheckForConditions();
-void ReceiveNetwork(EthernetClient client);
+void ReceiveNetwork(NetworkClient client);
 void ReceiveComputer();
 void ProcessCommand(int nSource);
 #ifdef USE_WIFI
@@ -149,32 +149,23 @@ void setup()
 #ifdef USE_WIFI
 	nbWiFiClient = 0;
 #endif
-	nbEthernetClient = 0;
+	nbNetworkClient = 0;
 
 #ifdef DEBUG
 	DebugPort.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
-	//DebugPort.begin(115200);
 	delay(1000);
 	DBPrintln("========== RTI-Zone controller booting ==========");
 #endif
 
 	digitalWrite(ETHERNET_RESET, 0);
 	pinMode(ETHERNET_RESET, OUTPUT);
-	getMacAddress(MAC_Address);
-	DBPrintln("MAC : " + String(MAC_Address[0], HEX) + String(":") +
-					String(MAC_Address[1], HEX) + String(":") +
-					String(MAC_Address[2], HEX) + String(":") +
-					String(MAC_Address[3], HEX) + String(":") +
-					String(MAC_Address[4], HEX) + String(":") +
-					String(MAC_Address[5], HEX) );
-
 	Computer.begin(115200);
 	//Computer.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
 
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
 	Rotator->Stop();
-
+	Network.begin();
 	configureEthernet();
 
 #ifdef USE_WIFI
@@ -191,7 +182,7 @@ void setup()
 	disableCore1WDT();
 	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 16, NULL,  0);
 
-	domeServer = new EthernetServer(CMD_SERVER_PORT);
+	domeServer = new NetworkServer(CMD_SERVER_PORT);
 	domeServer->begin();
 
 	attachInterrupt(SPARE1, openShutterButtonInt, FALLING);
@@ -338,52 +329,107 @@ void configureEthernet()
 										ServerConfig.subnetMask);
 }
 
-
+#ifdef DEBUG
+void onEvent(arduino_event_id_t event, arduino_event_info_t info)
+{
+  switch (event) {
+    case ARDUINO_EVENT_ETH_START:
+      DBPrintln("ETH Started");
+      //set eth hostname here
+      DBPrintln("esp32-eth0");
+      break;
+    case ARDUINO_EVENT_ETH_CONNECTED:
+      DBPrintln("ETH Connected");
+      break;
+    case ARDUINO_EVENT_ETH_GOT_IP:
+      DBPrintln("ETH Got IP: '" + String(esp_netif_get_desc(info.got_ip.esp_netif)) +"'");
+      DBPrintln(ETH);
+      break;
+    case ARDUINO_EVENT_ETH_LOST_IP:
+      DBPrintln("ETH Lost IP");
+      break;
+    case ARDUINO_EVENT_ETH_DISCONNECTED:
+      DBPrintln("ETH Disconnected");
+      break;
+    case ARDUINO_EVENT_ETH_STOP:
+      DBPrintln("ETH Stopped");
+      break;
+    default:
+      break;
+  }
+}
+#endif
 bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway, IPAddress subnetMask)
 {
 	bool bDhcpOk;
 	int nTimeout = 0;
+#ifdef DEBUG
+	Network.onEvent(onEvent); // this is just for debugging
+#endif
 	DBPrintln("========== Init Ethernet ==========");
-	resetChip(ETHERNET_RESET);
+	// resetChip(ETHERNET_RESET);
+	SPI.begin(ETH_SPI_SCK, ETH_SPI_MISO, ETH_SPI_MOSI);
 	// network configuration
-	Ethernet.init(ETHERNET_CS);
-	nbEthernetClient = 0;
+	if(!ETH.begin(ETH_PHY_TYPE, ETH_PHY_ADDR, ETH_PHY_CS, ETH_PHY_IRQ, ETH_PHY_RST, SPI)) {
+		DBPrintln("NO HARDWARE !!!");
+		return false;
+	}
+	nbNetworkClient = 0;
 	// set an ip so we can get the link status
-	domeEthernet.begin(MAC_Address, "192.168.0.1", "1.1.1.1", "192.168.0.254", "255.255.255.0");
-	while(domeEthernet.linkStatus() == LinkOFF ) {
+	domeEthernet.config(ip, gateway, subnetMask);
+	while(!domeEthernet.linkUp() ) {
 		vTaskDelay(250 / portTICK_PERIOD_MS);
 		nTimeout++;
 		if(nTimeout == 10) {
 			return false;
 		}
 	}
+
+	domeEthernet.macAddress(MAC_Address);
+	domeEthernet.setHostname("RTI-Dome");
+
 	DBPrintln("========== Setting IP config ==========");
 	// try DHCP if set
 	if(bUseDHCP) {
-		bDhcpOk = domeEthernet.begin(MAC_Address, 10000, 4000); // short timeout
-		if(!bDhcpOk) {
-			DBPrintln("DHCP Failed!");
-			if(domeEthernet.linkStatus() == LinkON ) {
-				domeEthernet.begin(MAC_Address, ip, dns, gateway, subnetMask);
-			}
-			else {
-				DBPrintln("No cable");
-				return false;
+		bDhcpOk = domeEthernet.config(IPAddress(0, 0, 0, 0), IPAddress(0, 0, 0, 0), IPAddress(0, 0, 0, 0)); // all value set to the default 0 means use dhcp.
+		if(bDhcpOk) {
+			nTimeout = 0;
+			while(domeEthernet.localIP() == IPAddress(0,0,0,0) ) {
+				vTaskDelay(250 / portTICK_PERIOD_MS);
+				nTimeout++;
+				if(nTimeout == 30) {
+					break;
+				}
 			}
 		}
 	}
 	else {
-		domeEthernet.begin(MAC_Address, ip, dns, gateway, subnetMask);
+		domeEthernet.config(ip, gateway, subnetMask);
+		domeEthernet.dnsIP(0,dns);
 	}
 
-	DBPrintln("========== Checking hardware status ==========");
-	if(domeEthernet.hardwareStatus() == EthernetNoHardware) {
-		 DBPrintln("NO HARDWARE !!!");
-		return false;
+	if(domeEthernet.localIP() == IPAddress(0,0,0,0)) {
+			domeEthernet.config(ip, gateway, subnetMask); // use defaults
+			vTaskDelay(250 / portTICK_PERIOD_MS);
 	}
+
+	domeEthernet.setDefault();
+
+	DBPrintln("========== Checking hardware status ==========");
 	DBPrintln("W5500 Ok.");
 	DBPrintln("W5500 IP = " + RotatorClass::IpAddress2String(domeEthernet.localIP()));
-	domeEthernet.setRetransmissionCount(3);
+#ifdef DEBUG
+	char macBuffer[20];
+	snprintf(macBuffer,20,"%02x:%02x:%02x:%02x:%02x:%02x",
+		MAC_Address[0],
+		MAC_Address[1],
+		MAC_Address[2],
+		MAC_Address[3],
+		MAC_Address[4],
+		MAC_Address[5]);
+	DBPrintln("Dome MAC : " + String(macBuffer));
+#endif
+
 	DBPrintln("Server ready");
 
 	sLocalIPAdress = RotatorClass::IpAddress2String(domeEthernet.localIP());
@@ -393,34 +439,31 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 
 void checkForNewTCPClient()
 {
-	if(ServerConfig.bUseDHCP)
-		domeEthernet.maintain();
-
 	if(!domeServer)
 		return;
 
-	EthernetClient newClient = domeServer->accept();
+	NetworkClient newClient = domeServer->accept();
 	if(newClient) {
 		DBPrintln("new client");
-		if(nbEthernetClient > 0) { // we only accept 1 client
+		if(nbNetworkClient > 0) { // we only accept 1 client
 			newClient.write("Already in use#");
 			newClient.flush();
 			newClient.stop();
 			DBPrintln("new client rejected");
 		}
 		else {
-			nbEthernetClient++;
+			nbNetworkClient++;
 			domeClient = newClient;
 			DBPrintln("new client accepted");
-			DBPrintln("nb client = " + String(nbEthernetClient));
+			DBPrintln("nb client = " + String(nbNetworkClient));
 		}
 	}
 
-	if((nbEthernetClient>0) && !domeClient.connected()) {
+	if((nbNetworkClient>0) && !domeClient.connected()) {
 		DBPrintln("client disconnected");
 		domeClient.stop();
-		nbEthernetClient--;
-		DBPrintln("nb client = " + String(nbEthernetClient));
+		nbNetworkClient--;
+		DBPrintln("nb client = " + String(nbNetworkClient));
 	}
 }
 
@@ -692,7 +735,7 @@ void PingWiFiShutter()
 }
 #endif
 
-void ReceiveNetwork(EthernetClient client)
+void ReceiveNetwork(NetworkClient client)
 {
 	char networkCharacter;
 
@@ -962,9 +1005,9 @@ void ProcessCommand(int nSource)
 			break;
 
 		case ETH_RECONFIG :
-			if(nbEthernetClient > 0) {
+			if(nbNetworkClient > 0) {
 				domeClient.stop();
-				nbEthernetClient--;
+				nbNetworkClient--;
 			}
 			DBPrintln("Rebooting for Ethernet reconfiguration");
 			vTaskDelay(500 / portTICK_PERIOD_MS);
