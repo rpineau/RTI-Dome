@@ -447,7 +447,6 @@ void checkForNewTCPClient()
 		DBPrintln("new client");
 		if(nbNetworkClient > 0) { // we only accept 1 client
 			newClient.write("Already in use#");
-			newClient.flush();
 			newClient.stop();
 			DBPrintln("new client rejected");
 		}
@@ -1309,7 +1308,6 @@ void ProcessCommand(int nSource)
 				if(domeClient.connected()) {
 					DBPrintln("Network serialMessage = " + serialMessage);
 					domeClient.write(serialMessage.c_str(), serialMessage.length());
-					domeClient.flush();
 				}
 				break;
 		}
