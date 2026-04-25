@@ -120,24 +120,17 @@ components:
 
     ErrorCode:
       type: integer
+      description: Error codes. Same as Alpaca
       enum:
       - 0
-      - -1
-      - -2
-      - -3
-      - -4
-      - -5
-      - -6
-      - -7
-      - -8
-      - -9
-      - -10
-      - -11
-      - -12
-      - -13
-      - -14
-      - -15
-      - -16
+      - 1024
+      - 1025
+      - 1026
+      - 1031
+      - 1032
+      - 1033
+      - 1035
+      - 1036
 
     Response400ErrorInfo:
       type: object
@@ -152,10 +145,10 @@ components:
 
   examples:
     ERROR_BUSY_SLEWING:
-      value: { ErrorNumber: -1, ErrorMessage: "Controller is busy slewing to a new position." }
+      value: { ErrorNumber: 1035, ErrorMessage: "Controller is busy slewing to a new position." }
       description: No Error
     ERROR_BUSY_CALIBRATING:
-      value: { ErrorNumber: -2, ErrorMessage: "Controller is busy calibrating." }
+      value: { ErrorNumber: 1035, ErrorMessage: "Controller is busy calibrating." }
       description: Controller is busy
 
   responses:
