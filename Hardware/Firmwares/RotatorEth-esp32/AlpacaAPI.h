@@ -1669,14 +1669,14 @@ void homePosition(Request &req, Response &res)
 		if(FormData.size()==0){
 		}
 		else {
-			if(FormData["value"].is<float>()) {
-				dPosition = FormData["value"];
+			if(FormData["degrees"].is<float>()) {
+				dPosition = FormData["degrees"];
 				Rotator->SetHomeAzimuth(dPosition);
 			}
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetHomeAzimuth();
+	controllerResp["degrees"] = Rotator->GetHomeAzimuth();
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1696,14 +1696,14 @@ void parkPosition(Request &req, Response &res)
 		if(FormData.size()==0){
 		}
 		else {
-			if(FormData["value"].is<float>()) {
-				dPosition = FormData["value"];
+			if(FormData["degrees"].is<float>()) {
+				dPosition = FormData["degrees"];
 				Rotator->SetParkAzimuth(dPosition);
 			}
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetParkAzimuth();
+	controllerResp["degrees"] = Rotator->GetParkAzimuth();
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 

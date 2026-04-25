@@ -33,9 +33,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getHomePosition'
+                $ref: '#/components/schemas/Position'
         '400':
           $ref: '#/components/responses/Response400'
+      tags:
+      - Positions
     put:
       summary: Set the controller home position
       description: |
@@ -55,22 +57,25 @@ paths:
           description: Position successfully set
         '400':
           $ref: '#/components/responses/Response400'
+      tags:
+      - Positions
 
 components:
   schemas:
-    getHomePosition:
+    Position:
       type: object
       properties:
-        azimuth:
+        degrees:
           type: number
           format: float
-          description: current home position azimuth
+          description: position in degrees
       required:
-      - azimuth
+      - degrees
 
     ErrorCode:
       type: integer
       enum:
+      - 0
       - -1
       - -2
       - -3
@@ -91,21 +96,20 @@ components:
     Response400ErrorInfo:
       type: object
       properties:
-        errorCode:
+        ErrorNumber:
           $ref: '#/components/schemas/ErrorCode'
-        errorMessage:
+        ErrorMessage:
           type: string
       required:
       - errorCode
       - errorMessage
-      x-exception: OperationException
 
   examples:
     ERROR_BUSY_SLEWING:
-      value: { errorCode: -1, errorMessage: "Controller is busy slewing to a new position." }
+      value: { ErrorNumber: -1, ErrorMessage: "Controller is busy slewing to a new position." }
       description: No Error
     ERROR_BUSY_CALIBRATING:
-      value: { errorCode: -2, errorMessage: "Controller is busy calibrating." }
+      value: { ErrorNumber: -2, ErrorMessage: "Controller is busy calibrating." }
       description: Controller is busy
 
   responses:
