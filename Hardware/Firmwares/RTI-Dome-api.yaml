@@ -45,7 +45,7 @@ paths:
         azimuth to motor step position.
       operationId: setHomePosition
       parameters:
-      - name: degrees
+      - name: value
         in: query
         description: New home position azimuth in degrees
         required: true
@@ -65,12 +65,12 @@ components:
     Position:
       type: object
       properties:
-        degrees:
+        value:
           type: number
           format: float
           description: position in degrees
       required:
-      - degrees
+      - value
 
     ErrorCode:
       type: integer

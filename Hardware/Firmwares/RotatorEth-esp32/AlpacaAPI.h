@@ -1669,14 +1669,14 @@ void homePosition(Request &req, Response &res)
 		if(FormData.size()==0){
 		}
 		else {
-			if(FormData["degrees"].is<float>()) {
-				dPosition = FormData["degrees"];
+			if(FormData["value"].is<float>()) {
+				dPosition = FormData["value"];
 				Rotator->SetHomeAzimuth(dPosition);
 			}
 		}
 	}
 
-	controllerResp["degrees"] = Rotator->GetHomeAzimuth();
+	controllerResp["value"] = Rotator->GetHomeAzimuth();
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1696,14 +1696,14 @@ void parkPosition(Request &req, Response &res)
 		if(FormData.size()==0){
 		}
 		else {
-			if(FormData["degrees"].is<float>()) {
-				dPosition = FormData["degrees"];
+			if(FormData["value"].is<float>()) {
+				dPosition = FormData["value"];
 				Rotator->SetParkAzimuth(dPosition);
 			}
 		}
 	}
 
-	controllerResp["degrees"] = Rotator->GetParkAzimuth();
+	controllerResp["value"] = Rotator->GetParkAzimuth();
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1743,7 +1743,7 @@ void shutterOpenOrderValue(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
 	String sResp;
-	bool bReversed = false;
+	bool bBottomfirst = false;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
@@ -1752,14 +1752,14 @@ void shutterOpenOrderValue(Request &req, Response &res)
 		}
 		else {
 			if(FormData["value"].is<int>()) {
-				bReversed = FormData["value"];
+				bBottomfirst = FormData["value"];
 				// need implementation
-				// Rotator->;
+				// Rotator->GetOpenOrder(bBottomfirst);
 			}
 		}
 	}
 	// need implementation
-	// controllerResp["value"] = Rotator->GetReversed();
+	// controllerResp["value"] = Rotator->GetOpenOrder();
 	controllerResp["value"] = 1; // for now
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
