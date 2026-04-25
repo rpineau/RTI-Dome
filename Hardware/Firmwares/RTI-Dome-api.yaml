@@ -1,0 +1,122 @@
+openapi: 3.0.3
+
+info:
+  title: RTI-Zone Dome API
+  version: 1.0.0
+  description: This API describes communications with the RTI-Zone dome server.
+  contact:
+    name: RTI-Zone
+    url: https://rti-zone.org/
+
+externalDocs:
+  description: Find out more about the RTI-Zone dome controller
+  url: https://rti-zone.org/astro_dome_control.php
+
+servers:
+- url: http://{host}/
+  description: hostname or ip address of dome controller
+  variables:
+    host:
+      default: 192.168.0.99
+      description: The hostname or ip address.
+
+paths:
+  /setup/homePosition:
+    get:
+      summary: Get the controller home position
+      description: |
+        Retrieve the controller home position.
+      operationId: getHomePosition
+      responses:
+        '200':
+          description: Position successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getHomePosition'
+        '400':
+          $ref: '#/components/responses/Response400'
+    put:
+      summary: Set the controller home position
+      description: |
+        Set the controller home position which is then used to properly calculate
+        azimuth to motor step position.
+      operationId: setHomePosition
+      parameters:
+      - name: degrees
+        in: query
+        description: New home position azimuth in degrees
+        required: true
+        schema:
+          type: number
+          format: float
+      responses:
+        '200':
+          description: Position successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+
+components:
+  schemas:
+    getHomePosition:
+      type: object
+      properties:
+        azimuth:
+          type: number
+          format: float
+          description: current home position azimuth
+      required:
+      - azimuth
+
+    ErrorCode:
+      type: integer
+      enum:
+      - -1
+      - -2
+      - -3
+      - -4
+      - -5
+      - -6
+      - -7
+      - -8
+      - -9
+      - -10
+      - -11
+      - -12
+      - -13
+      - -14
+      - -15
+      - -16
+
+    Response400ErrorInfo:
+      type: object
+      properties:
+        errorCode:
+          $ref: '#/components/schemas/ErrorCode'
+        errorMessage:
+          type: string
+      required:
+      - errorCode
+      - errorMessage
+      x-exception: OperationException
+
+  examples:
+    ERROR_BUSY_SLEWING:
+      value: { errorCode: -1, errorMessage: "Controller is busy slewing to a new position." }
+      description: No Error
+    ERROR_BUSY_CALIBRATING:
+      value: { errorCode: -2, errorMessage: "Controller is busy calibrating." }
+      description: Controller is busy
+
+  responses:
+    Response400:
+      description: Dome controller error. Additional information encoded in the response content.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response400ErrorInfo'
+          examples:
+            ERROR_BUSY_SLEWING:
+              $ref: '#/components/examples/ERROR_BUSY_SLEWING'
+            ERROR_BUSY_CALIBRATING:
+              $ref: '#/components/examples/ERROR_BUSY_CALIBRATING'
