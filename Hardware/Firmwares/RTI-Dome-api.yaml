@@ -101,8 +101,8 @@ components:
         ErrorMessage:
           type: string
       required:
-      - errorCode
-      - errorMessage
+      - ErrorNumber
+      - ErrorMessage
 
   examples:
     ERROR_BUSY_SLEWING:
