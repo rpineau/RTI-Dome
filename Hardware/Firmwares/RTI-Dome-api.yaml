@@ -55,6 +55,10 @@ paths:
       responses:
         '200':
           description: Position successfully set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
         '400':
           $ref: '#/components/responses/Response400'
       tags:
