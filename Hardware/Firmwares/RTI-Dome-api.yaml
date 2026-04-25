@@ -64,6 +64,48 @@ paths:
       tags:
       - Positions
 
+  /setup/parkPosition:
+    get:
+      summary: Get the controller park position
+      description: |
+        Retrieve the controller park position.
+      operationId: getParkPosition
+      responses:
+        '200':
+          description: Position successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Positions
+    put:
+      summary: Set the controller park position
+      description: |
+        Set the controller park position.
+      operationId: setParkPosition
+      parameters:
+      - name: value
+        in: query
+        description: New park position azimuth in degrees
+        required: true
+        schema:
+          type: number
+          format: float
+      responses:
+        '200':
+          description: Position successfully set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Positions
+
 components:
   schemas:
     Position:
