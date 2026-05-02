@@ -444,6 +444,10 @@ paths:
       responses:
         '200':
           description: Controller action in case of an unsafe weather condition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
         '400':
           $ref: '#/components/responses/Response400'
       tags:
@@ -481,6 +485,223 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Rotation Controller
+
+  /setup/shutterOpenOrder:
+    get:
+      summary: Get the shutter controller open order if a drop off shutter is present
+      description: |
+        Retrieve the shutter controller open order if a drop off shutter is present.
+      operationId: getShutterOpenOrder
+      responses:
+        '200':
+          description: Shutter controller open order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShuterOpenOrder'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+    put:
+      summary: set the controller open order if a drop off shutter is present
+      description: |
+        Set the controller  open order if a drop off shutter is present.
+      operationId: setShutterOpenOrder
+      parameters:
+      - name: value
+        in: query
+        description: Open order if a drop off shutter is present.
+        required: true
+        schema:
+          $ref: '#/components/schemas/ShuterOpenOrder'
+      responses:
+        '200':
+          description: Shutter Open order successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+
+  /setup/wifiSSID:
+    get:
+      summary: Get the shutter controller WiFi SSID used to communicate with the shutter
+      description: |
+        Retrieve the controller WiFi SSID used to communicate with the shutter.
+      operationId: getShutterWiFiSSID
+      responses:
+        '200':
+          description: Shutter controller SSID
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+    put:
+      summary: set the controller WiFi SSID used to communicate with the shutter
+      description: |
+        Set the controller WiFi SSID used to communicate with the shutter.
+      operationId: setShutterWiFiSSID
+      parameters:
+      - name: value
+        in: query
+        description: Open order if a drop off shutter is present.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Shutter Open order successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+
+  /setup/shutterPresentState:
+    get:
+      summary: Get the shutter present status
+      description: |
+        Retrieve the controller shutter present status
+      operationId: getShutterPresent
+      responses:
+        '200':
+          description: Shutter controller present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShutterPresent'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+
+  /setup/shutterSpeed:
+    get:
+      summary: Get the shutter controller speed
+      description: |
+        Retrieve the shutter controller speed in step per second.
+      operationId: getShutterSpeed
+      responses:
+        '200':
+          description: Shutter controller speed in step per second
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+    put:
+      summary: set the shutter controller speed in step per second
+      description: |
+        Set the shutter controller speed ins step per second.
+      operationId: setShutterSpeed
+      parameters:
+      - name: value
+        in: query
+        description: Shutter controller speed in step per second 
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Shutter controller speed successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+
+  /setup/shutterAcceleration:
+    get:
+      summary: Get the shutter controller acceleration
+      description: |
+        Retrieve the shutter controller acceleration in step per second per second.
+      operationId: getShutterAcceleration
+      responses:
+        '200':
+          description: Shutter controller acceleration in step per second per second
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+    put:
+      summary: set the shutter controller acceleration in step per second per second
+      description: |
+        Set the shutter controller acceleration ins step per second per second.
+      operationId: setShutterAcceleration
+      parameters:
+      - name: value
+        in: query
+        description: Shutter controller acceleration in step per second per second 
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Shutter controller acceleration successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+
+  /setup/restoreShutterMotorSettings:
+    put:
+      summary: set the shutter controller motor settings back to default
+      description: |
+        Set the shutter controller motor settings back to default.
+      operationId: setShutterMotorDefault
+      responses:
+        '200':
+          description: Shutter controller motor settings successfully reset to default
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+
+  /setup/shutterVoltageCutoff:
+      get:
+        summary: Get the shutter controller voltage cutoff
+        description: |
+          Retrieve the shutter controller voltage cutoff.
+          If the voltage get to this value or bellow, the shutter will close.
+        operationId: getShutterCutOff
+        responses:
+          '200':
+            description: Shutter controller voltage cutoff
+          '400':
+            $ref: '#/components/responses/Response400'
+        tags:
+        - Shutter Controller
+      put:
+        summary: Set the shutter controller voltage cutoff
+        description: |
+          Set the shutter controller voltage cutoff.
+          If the voltage get to this value or bellow, the shutter will close.
+        operationId: setShutterCutOff
+        parameters:
+        - name: value
+          in: query
+          description: Shutter controller voltage cutoff
+          required: true
+          schema:
+            type: integer
+        responses:
+          '200':
+            description: Shutter controller voltage cutoff successfully set
+          '400':
+            $ref: '#/components/responses/Response400'
+        tags:
+        - Shutter Controller
+
+  /setup/shutterVoltage:
+    get:
+      summary: Get the shutter controller voltage
+      description: |
+        Retrieve the shutter controller voltage.
+      operationId: getShutterVoltage
+      responses:
+        '200':
+          description: Shutter controller voltage
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
 
 components:
   schemas:
@@ -544,6 +765,15 @@ components:
       - HOME
       - PARK
 
+    ShuterOpenOrder:
+      type: string
+      enum:
+      - BOTTOM_FIRST
+      - TOP_FIRST
+      x-enum-varnames:
+      - BOTTOM_FIRST
+      - TOP_FIRST
+
     Response400ErrorInfo:
       type: object
       properties:
@@ -560,6 +790,15 @@ components:
       properties:
         value:
           $ref: '#/components/schemas/CalibrationStates'
+      required:
+      - value
+
+    ShutterPresent:
+      type: object
+      properties:
+        value:
+          type: boolean
+          description: shuter present true/falcse
       required:
       - value
 
