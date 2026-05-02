@@ -106,9 +106,197 @@ paths:
       tags:
       - Positions
 
+  /setup/reverseDirection:
+    get:
+      summary: Get the controller default rotation direction
+      description: |
+        Retrieve the controller rotation direction.
+      operationId: getReverseDirection
+      responses:
+        '200':
+          description: Direction successfully retrieved
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Positions
+    put:
+      summary: Set the controller direction, normal or reversed
+      description: |
+        Set the controller direction, normal or reversed.
+      operationId: setReverseDirection
+      parameters:
+      - name: value
+        in: query
+        description: reversed true or false
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Direction successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Positions
+
+  /setup/useDHCP:
+    get:
+      summary: Get the controller DHCP setting
+      description: |
+        Retrieve the controller DHCP setting.
+      operationId: getDHCPEnabled
+      responses:
+        '200':
+          description: DHCP value successfully retrieved
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+    put:
+      summary: Set the controller DHCP setting
+      description: |
+        Set the controller DHCP setting.
+      operationId: setDHCPEnabled
+      parameters:
+      - name: value
+        in: query
+        description: DHCP enabled is true or false
+        required: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: DHCP successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+
+  /setup/macAddress:
+    get:
+      summary: Get the controller MAC Address
+      description: |
+        Retrieve the controller MAC Address.
+      operationId: getMACAddress
+      responses:
+        '200':
+          description: MAC Address value successfully retrieved
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+
+  /setup/ipAddress:
+    get:
+      summary: Get the controller IP Address
+      description: |
+        Retrieve the controller IP Address.
+      operationId: getIpAddress
+      responses:
+        '200':
+          description: IP Address value successfully retrieved
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+    put:
+      summary: Set the controller IP Address
+      description: |
+        Set the controller IP Address.
+      operationId: setIpAddress
+      parameters:
+      - name: value
+        in: query
+        description: IP Address 
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: IP Address successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+
+  /setup/subnetMask:
+    get:
+      summary: Get the controller subnet mask
+      description: |
+        Retrieve the controller subnet mask.
+      operationId: getSubnetMask
+      responses:
+        '200':
+          description: Subnet mask value successfully retrieved
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+    put:
+      summary: Set the controller subnet mask
+      description: |
+        Set the controller subnet mask.
+      operationId: setSubnetMask
+      parameters:
+      - name: value
+        in: query
+        description: Subnet mask 
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subnet mask successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+
+  /setup/ipGateway:
+    get:
+      summary: Get the controller gateway IP
+      description: |
+        Retrieve the controller gateway IP.
+      operationId: getGatewayIP
+      responses:
+        '200':
+          description: Gateway IP value successfully retrieved
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+    put:
+      summary: Set the controller gateway IP
+      description: |
+        Set the controller gateway IP.
+      operationId: setGatewayIP
+      parameters:
+      - name: value
+        in: query
+        description: Gateway IP 
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Gateway IP successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
+
 components:
   schemas:
     Position:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+          description: position in degrees
+      required:
+      - value
+    Direction:
       type: object
       properties:
         value:
