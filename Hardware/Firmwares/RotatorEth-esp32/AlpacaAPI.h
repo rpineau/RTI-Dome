@@ -371,7 +371,7 @@ void doAction(Request &req, Response &res)
 		AlpacaResp["ErrorMessage"] = "Invalid parameters";
 		serializeJson(AlpacaResp, sResp);
 		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		return;
 	}
 
 	serializeJson(FormData["action"], sAction);
@@ -1642,7 +1642,9 @@ void doSetup(Request &req, Response &res)
 	sHTML += "</head>\n";
 	sHTML += "<body>\n";
 
-	sHTML += "<H1>RTI Dome Setup</H1>\n";
+	sHTML += "<H1>RTI Dome Setup .. coming soon.</H1>\n";
+	sHTML += "<p>For now you need to use the direct command over TCP</p>\n";
+	sHTML += "<p>Or the REST interface via HTTP.</p>\n";
 
 	// display passed data
 	if(FormData.size()!=0){
@@ -1667,6 +1669,12 @@ void homePosition(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<float>()) {
@@ -1694,6 +1702,12 @@ void parkPosition(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<float>()) {
@@ -1721,6 +1735,12 @@ void reverseDirectionState(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<bool>()) {
@@ -1749,6 +1769,12 @@ void shutterOpenOrderValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<int>()) {
@@ -1784,6 +1810,12 @@ void wifiSSIDValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<String>()) {
@@ -1833,6 +1865,12 @@ void useDHCPState(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<bool>()) {
@@ -1879,6 +1917,12 @@ void ipAddressValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<String>()) {
@@ -1904,6 +1948,12 @@ void subnetMaskValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<String>()) {
@@ -1929,6 +1979,12 @@ void ipGatewayValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<String>()) {
@@ -1954,6 +2010,12 @@ void domeCalibrateAction(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<String>()) {
@@ -1966,8 +2028,18 @@ void domeCalibrateAction(Request &req, Response &res)
 			}
 		}
 	}
-
-	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
+	switch(Rotator->GetCalibrationState()) {
+		case CALIBRATION_MOVE_OFF:
+		case CALIBRATION_STEP1:
+			controllerResp["value"] = "Calibration Step 1";
+			break;
+		case CALIBRATION_MOVE_OFF2:
+		case CALIBRATION_MEASURE:
+			controllerResp["value"] = "Finishing Calibrarion";
+			break;
+		default:
+			controllerResp["value"] = "Not Calibrating";
+	}
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1984,6 +2056,12 @@ void stepPerRevolutionValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {
@@ -2009,6 +2087,12 @@ void rotationSpeedValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {
@@ -2034,6 +2118,12 @@ void rotationAccelerationValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {
@@ -2075,6 +2165,12 @@ void shutterSpeedValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {
@@ -2082,7 +2178,7 @@ void shutterSpeedValue(Request &req, Response &res)
 				String sTmpString = String(SPEED_SHUTTER);
 				RemoteShutter.speed = FormData["value"];
 				shutterMessage = sTmpString + String(RemoteShutter.speed);
-				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
 		}
@@ -2105,6 +2201,12 @@ void shutterAccelerationValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {
@@ -2112,7 +2214,7 @@ void shutterAccelerationValue(Request &req, Response &res)
 				String sTmpString = String(ACCELERATION_SHUTTER);
 				RemoteShutter.acceleration = FormData["value"];
 				shutterMessage = sTmpString + String(RemoteShutter.acceleration);
-				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
 		}
@@ -2137,13 +2239,13 @@ void restoreShutterMotorValues(Request &req, Response &res)
 		String shutterMessage;
 		String sTmpString = String(SHUTTER_RESTORE_MOTOR_DEFAULT);
 		shutterMessage = sTmpString+ "#";
-		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 		ReceiveWiFi(shutterClient);
 		shutterMessage = String(SPEED_SHUTTER)+ "#";
-		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 		ReceiveWiFi(shutterClient);
 		shutterMessage = String(ACCELERATION_SHUTTER)+ "#";
-		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 		ReceiveWiFi(shutterClient);
 	}
 
@@ -2164,6 +2266,12 @@ void shutterWatchdogTimerValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {
@@ -2171,7 +2279,7 @@ void shutterWatchdogTimerValue(Request &req, Response &res)
 				String sTmpString = String(WATCHDOG_INTERVAL);
 				RemoteShutter.watchdogInterval = FormData["value"];
 				shutterMessage = sTmpString + String(RemoteShutter.watchdogInterval);
-				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
 		}
@@ -2194,6 +2302,12 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {
@@ -2201,7 +2315,7 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 				String sTmpString = String(VOLTS_SHUTTER);
 				RemoteShutter.voltsCutOff = FormData["value"];
 				shutterMessage = sTmpString + String(RemoteShutter.voltsCutOff);
-				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
 		}
@@ -2226,6 +2340,12 @@ void unsafeDomeAction(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
 		}
 		else {
 			if(FormData["value"].is<long>()) {

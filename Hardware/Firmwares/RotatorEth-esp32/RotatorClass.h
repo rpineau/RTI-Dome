@@ -112,7 +112,7 @@ public:
 	void        StartHoming();
 	void        StartCalibrating();
 	void        Calibrate();
-
+	int			GetCalibrationState();
 	// Movers
 	void        MoveRelative(const long steps);
 	void        Run();
@@ -755,6 +755,11 @@ void RotatorClass::Calibrate()
 				break;
 		}
 	}
+}
+
+int	RotatorClass::GetCalibrationState()
+{
+	return m_seekMode;
 }
 
 //
