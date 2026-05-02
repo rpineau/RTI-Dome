@@ -14,6 +14,7 @@
 #include <UUID.h>
 #include <aWOT.h>
 
+#include "dome_controller_html.h"
 // test
 // #include <LittleFS.h>
 
@@ -1635,24 +1636,7 @@ void doSetup(Request &req, Response &res)
 
 	DBPrintln("[ ********** doSetup ********** ]");
 	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	sHTML = "<!DOCTYPE html>\n<html>\n";
-	sHTML += "<head>";
-	sHTML += "<title>RTI Dome Setup</title>\n";
-	sHTML += "</head>\n";
-	sHTML += "<body>\n";
-
-	sHTML += "<H1>RTI Dome Setup .. coming soon.</H1>\n";
-	sHTML += "<p>For now you need to use the direct command over TCP</p>\n";
-	sHTML += "<p>Or the REST interface via HTTP.</p>\n";
-
-	// display passed data
-	if(FormData.size()!=0){
-		sHTML += "<p>data passed : </p>\n";
-		sHTML += "<p>"+sResp+"</p>\n";
-	}
-
-	sHTML += "</body>\n</html>\n";
+	res.print(DOME_CONTROLLER_HTML);
 	res.print(sHTML);
 }
 
