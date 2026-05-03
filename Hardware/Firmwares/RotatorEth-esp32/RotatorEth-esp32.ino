@@ -380,7 +380,7 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 	while(!domeEthernet.linkUp() ) {
 		vTaskDelay(250 / portTICK_PERIOD_MS);
 		nTimeout++;
-		if(nTimeout == 10) {
+		if(nTimeout == 120) { // 30 seconds timeout, 250ms per loop, 120 loops = 30 seconds
 			return false;
 		}
 	}
