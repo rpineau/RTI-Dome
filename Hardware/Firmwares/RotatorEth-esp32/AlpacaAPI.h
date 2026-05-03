@@ -1983,6 +1983,25 @@ void ipGatewayValue(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+
+void restoreNetworkDefaults(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		Rotator->resetNetworkToDefaults();
+	}
+
+	controllerResp["value"] = "Restored";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
 void domeCalibrateAction(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
@@ -2478,6 +2497,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->use("/setup/ipAddress", &ipAddressValue);
 	m_AlpacaRestServer->use("/setup/subnetMask", &subnetMaskValue);
 	m_AlpacaRestServer->use("/setup/ipGateway", &ipGatewayValue);
+	m_AlpacaRestServer->use("/setup/restoreNetworkDefaults", &restoreNetworkDefaults);
 
 	m_AlpacaRestServer->use("/setup/domeCalibrate", &domeCalibrateAction);
 	m_AlpacaRestServer->use("/setup/stepPerRevolution", &stepPerRevolutionValue);

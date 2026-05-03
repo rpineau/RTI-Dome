@@ -133,7 +133,8 @@ public:
 	void        setIPSubnetMask(String subnetMask);
 	String      getIPGateway();
 	void        setIPGateway(String ipGateway);
-
+	void		resetNetworkToDefaults();
+	
 #ifdef USE_WIFI
 	String      getSSID();
 	void        setSSID(String sSSID);
@@ -396,6 +397,37 @@ void RotatorClass::setIPGateway(String ipGateway)
 	m_Config.ipConfig.dns.fromString(ipGateway);
 	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putString("gateway", ipGateway);
+	m_preferences.end();
+}
+
+void RotatorClass::resetNetworkToDefaults()
+{
+	m_preferences.begin("RTI_Dome", false);
+	m_preferences.remove("bUseDHCP");
+	m_preferences.remove("ip");
+	m_preferences.remove("subnetMask");
+	m_preferences.remove("gateway");
+	m_preferences.remove("dns");
+
+#ifdef USE_WIFI
+	m_preferences.remove("wifi_ip");
+	m_preferences.remove("AP_SSID");
+	m_preferences.remove("AP_Password");
+#endif
+	m_preferences.end();
+
+	// reload defaults
+	m_preferences.begin("RTI_Dome", false);
+	m_Config.ipConfig.bUseDHCP = m_preferences.getBool("bUseDHCP", true);
+	m_Config.ipConfig.ip.fromString(m_preferences.getString("ip","192.168.1.9"));
+	m_Config.ipConfig.dns.fromString(m_preferences.getString("dns","192.168.1.1"));
+	m_Config.ipConfig.gateway.fromString(m_preferences.getString("gateway","192.168.1.1"));
+	m_Config.ipConfig.subnetMask.fromString(m_preferences.getString("subnetMask","255.255.255.0"));
+#ifdef USE_WIFI
+	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.1"));
+	m_Config.wifiIpConfig.sSSID = m_preferences.getString("AP_SSID", "RTIShutter");
+	m_Config.wifiIpConfig.sPassword = m_preferences.getString("AP_Password", "RTIShutter");
+#endif // USE_WIFI
 	m_preferences.end();
 }
 
