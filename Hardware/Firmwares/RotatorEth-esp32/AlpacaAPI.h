@@ -28,6 +28,7 @@
 
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 enum AlpacaShutterStates { A_OPEN=0, A_CLOSED, A_OPENING, A_CLOSING,  A_ERROR};
+enum shutterOrder {BOTTOM_FIRST, TOP_FIRST};
 
 uint32_t nTransactionID;
 UUID uuid;
@@ -149,7 +150,6 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 	String sValue;
 	memset(name,0,ALPACA_VAR_BUF_LEN);
 	memset(value,0,ALPACA_VAR_BUF_LEN);
-
 	while(req.form(name, ALPACA_VAR_BUF_LEN-1, value, ALPACA_VAR_BUF_LEN-1)){
 		sName  = String(name);
 		sName.toLowerCase();
@@ -1770,7 +1770,7 @@ void shutterOpenOrderValue(Request &req, Response &res)
 	}
 	// need implementation
 	// controllerResp["value"] = Rotator->GetOpenOrder();
-	controllerResp["value"] = "TOP_FIRST"; // for now
+	controllerResp["value"] = TOP_FIRST; // for now
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -2013,14 +2013,14 @@ void domeCalibrateAction(Request &req, Response &res)
 	switch(Rotator->GetCalibrationState()) {
 		case CALIBRATION_MOVE_OFF:
 		case CALIBRATION_STEP1:
-			controllerResp["value"] = "STEP1";
+			controllerResp["value"] = CALIBRATION_STEP1;
 			break;
 		case CALIBRATION_MOVE_OFF2:
 		case CALIBRATION_MEASURE:
-			controllerResp["value"] = "MEASURING";
+			controllerResp["value"] = CALIBRATION_MEASURE;
 			break;
 		default:
-			controllerResp["value"] = "NOT_CALIBRATING";
+			controllerResp["value"] = NOT_MOVING;
 	}
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -2337,13 +2337,13 @@ void unsafeDomeAction(Request &req, Response &res)
 	}
 	switch(Rotator->GetConditionsAction()) {
 		case DO_NOTHING:
-			controllerResp["value"] = "DO_NOTHING";
+			controllerResp["value"] = DO_NOTHING;
 			break;
 		case HOME:
-			controllerResp["value"] = "HOME";
+			controllerResp["value"] = HOME;
 			break;
 		case PARK:
-			controllerResp["value"] = "PARK";
+			controllerResp["value"] = PARK;
 			break;
 	}
 	serializeJson(controllerResp, sResp);

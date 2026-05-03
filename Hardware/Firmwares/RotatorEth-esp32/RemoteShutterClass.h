@@ -10,6 +10,7 @@ class RemoteShutterClass
 public:
 	// Todo: remove this if state becomes a string
 	enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
+	enum shutterOrder {BOTTOM_FIRST, TOP_FIRST};
 
 	// TODO: See if these can all be strings
 	// These have to be real data for communications reasos

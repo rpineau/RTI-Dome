@@ -7,11 +7,9 @@ info:
   contact:
     name: RTI-Zone
     url: https://rti-zone.org/
-
 externalDocs:
   description: Find out more about the RTI-Zone dome controller
   url: https://rti-zone.org/astro_dome_control.php
-
 servers:
 - url: http://{host}/
   description: hostname or ip address of dome controller
@@ -19,13 +17,11 @@ servers:
     host:
       default: 192.168.0.99
       description: The hostname or ip address.
-
 paths:
   /setup/homePosition:
     get:
       summary: Get the controller home position
-      description: |
-        Retrieve the controller home position.
+      description: 'Retrieve the controller home position.'
       operationId: getHomePosition
       responses:
         '200':
@@ -40,18 +36,9 @@ paths:
       - Positions
     put:
       summary: Set the controller home position
-      description: |
-        Set the controller home position which is then used to properly calculate
-        azimuth to motor step position.
+      description: 'Set the controller home position which is then used to properly
+        calculate azimuth to motor step position.'
       operationId: setHomePosition
-      parameters:
-      - name: value
-        in: query
-        description: New home position azimuth in degrees
-        required: true
-        schema:
-          type: number
-          format: float
       responses:
         '200':
           description: Position successfully set
@@ -63,12 +50,23 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Positions
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  format: float
+              required:
+              - value
 
   /setup/parkPosition:
     get:
       summary: Get the controller park position
-      description: |
-        Retrieve the controller park position.
+      description: 'Retrieve the controller park position.'
       operationId: getParkPosition
       responses:
         '200':
@@ -83,17 +81,8 @@ paths:
       - Positions
     put:
       summary: Set the controller park position
-      description: |
-        Set the controller park position.
+      description: 'Set the controller park position.'
       operationId: setParkPosition
-      parameters:
-      - name: value
-        in: query
-        description: New park position azimuth in degrees
-        required: true
-        schema:
-          type: number
-          format: float
       responses:
         '200':
           description: Position successfully set
@@ -105,12 +94,23 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Positions
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  format: float
+              required:
+              - value
 
   /setup/reverseDirection:
     get:
       summary: Get the controller default rotation direction
-      description: |
-        Retrieve the controller rotation direction.
+      description: 'Retrieve the controller rotation direction.'
       operationId: getReverseDirection
       responses:
         '200':
@@ -121,16 +121,8 @@ paths:
       - Positions
     put:
       summary: Set the controller direction, normal or reversed
-      description: |
-        Set the controller direction, normal or reversed.
+      description: 'Set the controller direction, normal or reversed.'
       operationId: setReverseDirection
-      parameters:
-      - name: value
-        in: query
-        description: reversed true or false
-        required: true
-        schema:
-          type: boolean
       responses:
         '200':
           description: Direction successfully set
@@ -138,12 +130,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Positions
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: boolean
+              required:
+              - value
 
   /setup/useDHCP:
     get:
       summary: Get the controller DHCP setting
-      description: |
-        Retrieve the controller DHCP setting.
+      description: 'Retrieve the controller DHCP setting.'
       operationId: getDHCPEnabled
       responses:
         '200':
@@ -154,16 +156,8 @@ paths:
       - Networking
     put:
       summary: Set the controller DHCP setting
-      description: |
-        Set the controller DHCP setting.
+      description: 'Set the controller DHCP setting.'
       operationId: setDHCPEnabled
-      parameters:
-      - name: value
-        in: query
-        description: DHCP enabled is true or false
-        required: true
-        schema:
-          type: boolean
       responses:
         '200':
           description: DHCP successfully set
@@ -171,12 +165,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Networking
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: boolean
+              required:
+              - value
 
   /setup/macAddress:
     get:
       summary: Get the controller MAC Address
-      description: |
-        Retrieve the controller MAC Address.
+      description: 'Retrieve the controller MAC Address.'
       operationId: getMACAddress
       responses:
         '200':
@@ -185,12 +189,11 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Networking
-
+ 
   /setup/ipAddress:
     get:
       summary: Get the controller IP Address
-      description: |
-        Retrieve the controller IP Address.
+      description: 'Retrieve the controller IP Address.'
       operationId: getIpAddress
       responses:
         '200':
@@ -201,16 +204,8 @@ paths:
       - Networking
     put:
       summary: Set the controller IP Address
-      description: |
-        Set the controller IP Address.
+      description: 'Set the controller IP Address.'
       operationId: setIpAddress
-      parameters:
-      - name: value
-        in: query
-        description: IP Address 
-        required: true
-        schema:
-          type: string
       responses:
         '200':
           description: IP Address successfully set
@@ -218,12 +213,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Networking
-
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+              required:
+              - value
+ 
   /setup/subnetMask:
     get:
       summary: Get the controller subnet mask
-      description: |
-        Retrieve the controller subnet mask.
+      description: 'Retrieve the controller subnet mask.'
       operationId: getSubnetMask
       responses:
         '200':
@@ -234,16 +239,8 @@ paths:
       - Networking
     put:
       summary: Set the controller subnet mask
-      description: |
-        Set the controller subnet mask.
+      description: 'Set the controller subnet mask.'
       operationId: setSubnetMask
-      parameters:
-      - name: value
-        in: query
-        description: Subnet mask 
-        required: true
-        schema:
-          type: string
       responses:
         '200':
           description: Subnet mask successfully set
@@ -251,12 +248,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Networking
-
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+              required:
+              - value
+ 
   /setup/ipGateway:
     get:
       summary: Get the controller gateway IP
-      description: |
-        Retrieve the controller gateway IP.
+      description: 'Retrieve the controller gateway IP.'
       operationId: getGatewayIP
       responses:
         '200':
@@ -267,16 +274,8 @@ paths:
       - Networking
     put:
       summary: Set the controller gateway IP
-      description: |
-        Set the controller gateway IP.
+      description: 'Set the controller gateway IP.'
       operationId: setGatewayIP
-      parameters:
-      - name: value
-        in: query
-        description: Gateway IP 
-        required: true
-        schema:
-          type: string
       responses:
         '200':
           description: Gateway IP successfully set
@@ -284,12 +283,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Networking
-
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+              required:
+              - value
+ 
   /setup/domeCalibrate:
     get:
       summary: Get the controller calibration status
-      description: |
-        Retrieve the controller calibration status.
+      description: 'Retrieve the controller calibration status.'
       operationId: getCalibrationStatus
       responses:
         '200':
@@ -304,16 +313,8 @@ paths:
       - Rotation Controller
     put:
       summary: Start or stop calibration
-      description: |
-        Start or stop the controller calibration.
+      description: 'Start or stop the controller calibration.'
       operationId: setCalibrationStatus
-      parameters:
-      - name: value
-        in: query
-        description: Calibration 
-        required: true
-        schema:
-          $ref: '#/components/schemas/CalibrationAction'
       responses:
         '200':
           description: Calibration state successfully set
@@ -321,12 +322,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Rotation Controller
-
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  $ref: '#/components/schemas/CalibrationAction'
+              required:
+              - value
+ 
   /setup/stepPerRevolution:
     get:
       summary: Get the controller steps per revolution
-      description: |
-        Retrieve the controller steps per revolution.
+      description: 'Retrieve the controller steps per revolution.'
       operationId: getStepPerRev
       responses:
         '200':
@@ -337,16 +348,8 @@ paths:
       - Rotation Controller
     put:
       summary: set the controller steps per revolution
-      description: |
-        Set the controller steps per revolution.
+      description: 'Set the controller steps per revolution.'
       operationId: setStepPerRev
-      parameters:
-      - name: value
-        in: query
-        description: Controller steps per revolution 
-        required: true
-        schema:
-          type: integer
       responses:
         '200':
           description: Controller steps per revolution successfully set
@@ -354,12 +357,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Rotation Controller
-
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+              required:
+              - value
+ 
   /setup/rotationSpeed:
     get:
       summary: Get the controller rotation speed
-      description: |
-        Retrieve the controller rotation speed in step per second.
+      description: 'Retrieve the controller rotation speed in step per second.'
       operationId: getRotationSpeed
       responses:
         '200':
@@ -370,16 +383,8 @@ paths:
       - Rotation Controller
     put:
       summary: set the controller rotation speed in step per second
-      description: |
-        Set the controller rotation speed ins step per second.
+      description: 'Set the controller rotation speed ins step per second.'
       operationId: setRotationSpeed
-      parameters:
-      - name: value
-        in: query
-        description: Controller rotation speed in step per second 
-        required: true
-        schema:
-          type: integer
       responses:
         '200':
           description: Controller rotation speed successfully set
@@ -387,12 +392,23 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Rotation Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+              required:
+              - value
 
   /setup/rotationAcceleration:
     get:
       summary: Get the controller rotation acceleration
-      description: |
-        Retrieve the controller rotation acceleration in step per second per second.
+      description: 'Retrieve the controller rotation acceleration in step per second
+        per second.'
       operationId: getRotationAcceleration
       responses:
         '200':
@@ -403,16 +419,9 @@ paths:
       - Rotation Controller
     put:
       summary: set the controller rotation acceleration in step per second per second
-      description: |
-        Set the controller rotation acceleration ins step per second per second.
+      description: 'Set the controller rotation acceleration ins step per second per
+        second.'
       operationId: setRotationAcceleration
-      parameters:
-      - name: value
-        in: query
-        description: Controller rotation acceleration in step per second per second 
-        required: true
-        schema:
-          type: integer
       responses:
         '200':
           description: Controller rotation acceleration successfully set
@@ -420,12 +429,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Rotation Controller
-
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+              required:
+              - value
+ 
   /setup/restoreRotationMotorSettings:
     put:
       summary: set the controller motor settings back to default
-      description: |
-        Set the controller motor settings back to default.
+      description: 'Set the controller motor settings back to default.'
       operationId: setRotationMotorDefault
       responses:
         '200':
@@ -438,8 +457,7 @@ paths:
   /setup/unsafeDomeAction:
     get:
       summary: Get the controller action in case of an unsafe weather condition
-      description: |
-        Retrieve the controller action in case of an unsafe weather condition.
+      description: 'Retrieve the controller action in case of an unsafe weather condition.'
       operationId: getUnsafeAction
       responses:
         '200':
@@ -454,29 +472,33 @@ paths:
       - Rotation Controller
     put:
       summary: set the controller action in case of an unsafe weather condition
-      description: |
-        Set the controller action in case of an unsafe weather condition.
+      description: 'Set the controller action in case of an unsafe weather condition.'
       operationId: setUnsafeAction
-      parameters:
-      - name: value
-        in: query
-        description: Action to take in case of an unsafe weather condition
-        required: true
-        schema:
-          $ref: '#/components/schemas/UnsafeAction'
       responses:
         '200':
-          description: Controller Action to take in case of an unsafe weather condition successfully set
+          description: Controller Action to take in case of an unsafe weather condition
+            successfully set
         '400':
           $ref: '#/components/responses/Response400'
       tags:
       - Rotation Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  $ref: '#/components/schemas/UnsafeAction'
+              required:
+              - value
 
   /setup/envCondition:
     get:
       summary: Get the controller weather condition
-      description: |
-        Retrieve the controller weather condition based on sensor pin value.
+      description: 'Retrieve the controller weather condition based on sensor pin
+        value.'
       operationId: getEnvCondition
       responses:
         '200':
@@ -489,8 +511,8 @@ paths:
   /setup/shutterOpenOrder:
     get:
       summary: Get the shutter controller open order if a drop off shutter is present
-      description: |
-        Retrieve the shutter controller open order if a drop off shutter is present.
+      description: 'Retrieve the shutter controller open order if a drop off shutter
+        is present.'
       operationId: getShutterOpenOrder
       responses:
         '200':
@@ -505,16 +527,8 @@ paths:
       - Shutter Controller
     put:
       summary: set the controller open order if a drop off shutter is present
-      description: |
-        Set the controller  open order if a drop off shutter is present.
+      description: 'Set the controller  open order if a drop off shutter is present.'
       operationId: setShutterOpenOrder
-      parameters:
-      - name: value
-        in: query
-        description: Open order if a drop off shutter is present.
-        required: true
-        schema:
-          $ref: '#/components/schemas/ShuterOpenOrder'
       responses:
         '200':
           description: Shutter Open order successfully set
@@ -522,12 +536,23 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Shutter Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  $ref: '#/components/schemas/ShuterOpenOrder'
+              required:
+              - value
 
   /setup/wifiSSID:
     get:
       summary: Get the shutter controller WiFi SSID used to communicate with the shutter
-      description: |
-        Retrieve the controller WiFi SSID used to communicate with the shutter.
+      description: 'Retrieve the controller WiFi SSID used to communicate with the
+        shutter.'
       operationId: getShutterWiFiSSID
       responses:
         '200':
@@ -538,16 +563,8 @@ paths:
       - Shutter Controller
     put:
       summary: set the controller WiFi SSID used to communicate with the shutter
-      description: |
-        Set the controller WiFi SSID used to communicate with the shutter.
+      description: 'Set the controller WiFi SSID used to communicate with the shutter.'
       operationId: setShutterWiFiSSID
-      parameters:
-      - name: value
-        in: query
-        description: Open order if a drop off shutter is present.
-        required: true
-        schema:
-          type: string
       responses:
         '200':
           description: Shutter Open order successfully set
@@ -555,12 +572,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Shutter Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+              required:
+              - value
 
   /setup/shutterPresentState:
     get:
       summary: Get the shutter present status
-      description: |
-        Retrieve the controller shutter present status
+      description: 'Retrieve the controller shutter present status'
       operationId: getShutterPresent
       responses:
         '200':
@@ -577,8 +604,7 @@ paths:
   /setup/shutterSpeed:
     get:
       summary: Get the shutter controller speed
-      description: |
-        Retrieve the shutter controller speed in step per second.
+      description: 'Retrieve the shutter controller speed in step per second.'
       operationId: getShutterSpeed
       responses:
         '200':
@@ -589,16 +615,8 @@ paths:
       - Shutter Controller
     put:
       summary: set the shutter controller speed in step per second
-      description: |
-        Set the shutter controller speed ins step per second.
+      description: 'Set the shutter controller speed ins step per second.'
       operationId: setShutterSpeed
-      parameters:
-      - name: value
-        in: query
-        description: Shutter controller speed in step per second 
-        required: true
-        schema:
-          type: integer
       responses:
         '200':
           description: Shutter controller speed successfully set
@@ -606,12 +624,23 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Shutter Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+              required:
+              - value
 
   /setup/shutterAcceleration:
     get:
       summary: Get the shutter controller acceleration
-      description: |
-        Retrieve the shutter controller acceleration in step per second per second.
+      description: 'Retrieve the shutter controller acceleration in step per second
+        per second.'
       operationId: getShutterAcceleration
       responses:
         '200':
@@ -622,16 +651,9 @@ paths:
       - Shutter Controller
     put:
       summary: set the shutter controller acceleration in step per second per second
-      description: |
-        Set the shutter controller acceleration ins step per second per second.
+      description: 'Set the shutter controller acceleration ins step per second per
+        second.'
       operationId: setShutterAcceleration
-      parameters:
-      - name: value
-        in: query
-        description: Shutter controller acceleration in step per second per second 
-        required: true
-        schema:
-          type: integer
       responses:
         '200':
           description: Shutter controller acceleration successfully set
@@ -639,12 +661,22 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Shutter Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+              required:
+              - value
 
   /setup/restoreShutterMotorSettings:
     put:
       summary: set the shutter controller motor settings back to default
-      description: |
-        Set the shutter controller motor settings back to default.
+      description: 'Set the shutter controller motor settings back to default.'
       operationId: setShutterMotorDefault
       responses:
         '200':
@@ -655,45 +687,48 @@ paths:
       - Shutter Controller
 
   /setup/shutterVoltageCutoff:
-      get:
-        summary: Get the shutter controller voltage cutoff
-        description: |
-          Retrieve the shutter controller voltage cutoff.
-          If the voltage get to this value or bellow, the shutter will close.
-        operationId: getShutterCutOff
-        responses:
-          '200':
-            description: Shutter controller voltage cutoff
-          '400':
-            $ref: '#/components/responses/Response400'
-        tags:
-        - Shutter Controller
-      put:
-        summary: Set the shutter controller voltage cutoff
-        description: |
-          Set the shutter controller voltage cutoff.
-          If the voltage get to this value or bellow, the shutter will close.
-        operationId: setShutterCutOff
-        parameters:
-        - name: value
-          in: query
+    get:
+      summary: Get the shutter controller voltage cutoff
+      description: 'Retrieve the shutter controller voltage cutoff.
+
+        If the voltage get to this value or bellow, the shutter will close.'
+      operationId: getShutterCutOff
+      responses:
+        '200':
           description: Shutter controller voltage cutoff
-          required: true
-          schema:
-            type: integer
-        responses:
-          '200':
-            description: Shutter controller voltage cutoff successfully set
-          '400':
-            $ref: '#/components/responses/Response400'
-        tags:
-        - Shutter Controller
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+    put:
+      summary: Set the shutter controller voltage cutoff
+      description: 'Set the shutter controller voltage cutoff.
+
+        If the voltage get to this value or bellow, the shutter will close.'
+      operationId: setShutterCutOff
+      responses:
+        '200':
+          description: Shutter controller voltage cutoff successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+              required:
+              - value
 
   /setup/shutterVoltage:
     get:
       summary: Get the shutter controller voltage
-      description: |
-        Retrieve the shutter controller voltage.
+      description: 'Retrieve the shutter controller voltage.'
       operationId: getShutterVoltage
       responses:
         '200':
@@ -739,40 +774,47 @@ components:
       - stop
 
     CalibrationStates:
-      type: string
+      type: integer
       description: Calibration states
       enum:
-        - STEP1
-        - MEASURING
-        - NOT_CALIBRATING
+      - 6
+      - 8
+      - 0
       x-enum-varnames:
-      - STEP1
+      - CALIBRATING
       - MEASURING
-      - NOT_CALIBRATING
+      - IDLE
       x-enum-descriptions:
       - Controller is doing a rotation for step calibration
       - Controller is measuring number of steps per rotation.
-      - Controller is not calibrating.
+      - Controller is idle.
 
     UnsafeAction:
-      type: string
+      type: integer
       enum:
-      - DO_NOTHING
-      - HOME
-      - PARK
+      - 0
+      - 1
+      - 2
       x-enum-varnames:
       - DO_NOTHING
       - HOME
       - PARK
+      x-enum-descriptions:
+      - Do nothing
+      - Home dome
+      - Park dome
 
     ShuterOpenOrder:
-      type: string
+      type: integer
       enum:
-      - BOTTOM_FIRST
-      - TOP_FIRST
+      - 0
+      - 1
       x-enum-varnames:
       - BOTTOM_FIRST
       - TOP_FIRST
+      x-enum-descriptions:
+      - Open bottom shutter first
+      - Open top shutter first
 
     Response400ErrorInfo:
       type: object
@@ -804,15 +846,20 @@ components:
 
   examples:
     ERROR_BUSY_SLEWING:
-      value: { ErrorNumber: 1035, ErrorMessage: "Controller is busy slewing to a new position." }
+      value:
+        ErrorNumber: 1035
+        ErrorMessage: Controller is busy slewing to a new position.
       description: No Error
     ERROR_BUSY_CALIBRATING:
-      value: { ErrorNumber: 1035, ErrorMessage: "Controller is busy calibrating." }
+      value:
+        ErrorNumber: 1035
+        ErrorMessage: Controller is busy calibrating.
       description: Controller is busy
 
   responses:
     Response400:
-      description: Dome controller error. Additional information encoded in the response content.
+      description: Dome controller error. Additional information encoded in the response
+        content.
       content:
         application/json:
           schema:

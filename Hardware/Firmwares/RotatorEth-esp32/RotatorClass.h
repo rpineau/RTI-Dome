@@ -57,7 +57,6 @@ enum Seeks { NOT_MOVING,           // Not homing or calibrating
 
 enum ConditionsActions {DO_NOTHING=0, HOME, PARK};
 enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
-
 FastAccelStepperEngine engine = FastAccelStepperEngine();
 FastAccelStepper *stepper = NULL;
 
