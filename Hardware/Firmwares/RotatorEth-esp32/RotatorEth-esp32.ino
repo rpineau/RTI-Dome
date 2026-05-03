@@ -1069,6 +1069,11 @@ void ProcessCommand(int nSource)
 			}
 			break;
 
+		case RESTORE_NET_DEFAULT:
+			Rotator->resetNetworkToDefaults();
+			serialMessage = String(RESTORE_NET_DEFAULT);
+			break;
+
 #ifdef USE_WIFI
 		case SSID:
 			if (hasValue) {
