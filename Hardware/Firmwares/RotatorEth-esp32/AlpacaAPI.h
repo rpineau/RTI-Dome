@@ -1770,7 +1770,7 @@ void shutterOpenOrderValue(Request &req, Response &res)
 	}
 	// need implementation
 	// controllerResp["value"] = Rotator->GetOpenOrder();
-	controllerResp["value"] = 1; // for now
+	controllerResp["value"] = "TOP_FIRST"; // for now
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -1812,9 +1812,7 @@ void wifiSSIDValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["SSID"] = l_WifiConfig.sSSID;
-	controllerResp["Ip"] = RotatorClass::IpAddress2String(l_WifiConfig.ip);
-	controllerResp["Password"] = l_WifiConfig.sPassword;
+	controllerResp["value"] = l_WifiConfig.sSSID;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -2015,14 +2013,14 @@ void domeCalibrateAction(Request &req, Response &res)
 	switch(Rotator->GetCalibrationState()) {
 		case CALIBRATION_MOVE_OFF:
 		case CALIBRATION_STEP1:
-			controllerResp["value"] = "Calibration Step 1";
+			controllerResp["value"] = "STEP1";
 			break;
 		case CALIBRATION_MOVE_OFF2:
 		case CALIBRATION_MEASURE:
-			controllerResp["value"] = "Finishing Calibrarion";
+			controllerResp["value"] = "MEASURING";
 			break;
 		default:
-			controllerResp["value"] = "Not Calibrating";
+			controllerResp["value"] = "NOT_CALIBRATING";
 	}
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -2337,8 +2335,17 @@ void unsafeDomeAction(Request &req, Response &res)
 			}
 		}
 	}
-
-	controllerResp["value"] = Rotator->GetConditionsAction();
+	switch(Rotator->GetConditionsAction()) {
+		case DO_NOTHING:
+			controllerResp["value"] = "DO_NOTHING";
+			break;
+		case HOME:
+			controllerResp["value"] = "HOME";
+			break;
+		case PARK:
+			controllerResp["value"] = "PARK";
+			break;
+	}
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
