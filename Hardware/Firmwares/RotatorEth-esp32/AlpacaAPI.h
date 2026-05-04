@@ -2386,6 +2386,87 @@ void envConditionState(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+void homeDome(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		Rotator->StartHoming();
+	}
+
+	controllerResp["value"] = "Homing";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void parkDome(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	float fParkAz;
+
+	if(req.method() == Request::PUT) {
+		fParkAz = Rotator->GetParkAzimuth();
+		Rotator->GoToAzimuth(fParkAz);
+	}
+
+	controllerResp["value"] = "Parking";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void gotoAzimuth(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+			controllerResp["ErrorNumber"] = 0x401;
+			controllerResp["ErrorMessage"] = "Invalid parameters";
+			serializeJson(controllerResp, sResp);
+			res.set("Content-Type", "application/json");
+			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			return;
+		}
+		else {
+			if(FormData["value"].is<float>()) {
+				Rotator->GoToAzimuth(FormData["value"]);
+			}
+		}
+	}
+	controllerResp["value"] = "Moving";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void getDomeAzimuth(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	controllerResp["value"] = Rotator->GetAzimuth();
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
 //
 // Alpaca server class
 //
@@ -2518,6 +2599,12 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->use("/setup/shutterVoltageCutoff", &shutterVoltageCutoffValue);
 	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageCutoffValue);
 #endif
+
+	// special endpoint to control the dome directly
+	m_AlpacaRestServer->put("/setup/homeDome", &homeDome);
+	m_AlpacaRestServer->put("/setup/parkDome", &parkDome);
+	m_AlpacaRestServer->put("/setup/gotoAzimuth", &gotoAzimuth);
+	m_AlpacaRestServer->get("/setup/getAzimuth", &getDomeAzimuth);
 
 	DBPrintln("m_AlpacaRestServer started");
 }

@@ -189,7 +189,7 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Networking
- 
+
   /setup/ipAddress:
     get:
       summary: Get the controller IP Address
@@ -224,7 +224,7 @@ paths:
                   type: string
               required:
               - value
- 
+
   /setup/subnetMask:
     get:
       summary: Get the controller subnet mask
@@ -259,7 +259,7 @@ paths:
                   type: string
               required:
               - value
- 
+
   /setup/ipGateway:
     get:
       summary: Get the controller gateway IP
@@ -346,7 +346,7 @@ paths:
                   $ref: '#/components/schemas/CalibrationAction'
               required:
               - value
- 
+
   /setup/stepPerRevolution:
     get:
       summary: Get the controller steps per revolution
@@ -381,7 +381,7 @@ paths:
                   type: integer
               required:
               - value
- 
+
   /setup/rotationSpeed:
     get:
       summary: Get the controller rotation speed
@@ -453,7 +453,7 @@ paths:
                   type: integer
               required:
               - value
- 
+
   /setup/restoreRotationMotorSettings:
     put:
       summary: set the controller motor settings back to default
@@ -750,6 +750,110 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Shutter Controller
+
+  /setup/homeDome:
+    put:
+      summary: Home the dome
+      description: 'This will send the dome to the home azimuth'
+      operationId: homeDome
+      responses:
+        '200':
+          description: Homing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  format: float
+              required:
+              - value
+
+  /setup/parkDome:
+    put:
+      summary: Path the dome
+      description: 'This will send the dome to the park azimuth'
+      operationId: homeDome
+      responses:
+        '200':
+          description: Parking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  format: float
+              required:
+              - value
+
+  /setup/gotoAzimuth:
+    put:
+      summary: Got to the specified azimuth
+      description: 'Go to the specified azimuth.'
+      operationId: gotoAzimuth
+      responses:
+        '200':
+          description: Position successfully set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  format: float
+              required:
+              - value
+
+  /setup/getAzimuth:
+    get:
+      summary: Get the dome azimuth
+      description: 'Retrieve the dome current azimuth in degrees'
+      operationId: getAzimuth
+      responses:
+        '200':
+          description: Position successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
 
 components:
   schemas:
