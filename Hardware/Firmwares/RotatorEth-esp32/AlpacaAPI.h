@@ -29,7 +29,7 @@
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 enum AlpacaShutterStates { A_OPEN=0, A_CLOSED, A_OPENING, A_CLOSING,  A_ERROR};
 enum shutterOrder {BOTTOM_FIRST, TOP_FIRST};
-
+enum domeState {MOVING, HOMING, PARKING, IDLE};
 uint32_t nTransactionID;
 UUID uuid;
 String sAlpacaDiscovery = "alpacadiscovery1";
@@ -2395,7 +2395,7 @@ void homeDome(Request &req, Response &res)
 		Rotator->StartHoming();
 	}
 
-	controllerResp["value"] = "Homing";
+	controllerResp["value"] = HOMING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -2414,7 +2414,7 @@ void parkDome(Request &req, Response &res)
 		Rotator->GoToAzimuth(fParkAz);
 	}
 
-	controllerResp["value"] = "Parking";
+	controllerResp["value"] = PARKING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -2445,7 +2445,7 @@ void gotoAzimuth(Request &req, Response &res)
 			}
 		}
 	}
-	controllerResp["value"] = "Moving";
+	controllerResp["value"] = MOVING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -2466,6 +2466,72 @@ void getDomeAzimuth(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+
+void openShutter(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		bOpenShutterButtonPressed = true;
+	}
+
+	controllerResp["value"] = "Opening";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void closeShutter(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	float fParkAz;
+
+	if(req.method() == Request::PUT) {
+		bCloseShutterButtonPressed = true;
+	}
+
+	controllerResp["value"] = "Closing";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void getShutterState(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	switch(RemoteShutter.state){
+		case OPEN :
+			controllerResp["value"] = A_OPEN;
+			break;
+		case CLOSED : 
+			controllerResp["value"] = A_CLOSED;
+			break;
+		case OPENING : 
+			controllerResp["value"] = A_OPENING;
+			break;
+		case CLOSING : 
+			controllerResp["value"] = A_CLOSING;
+			break;
+		case ERROR : 
+			controllerResp["value"] = A_ERROR;
+			break;
+		default:
+			controllerResp["value"] = A_ERROR;
+			break;
+	}
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
 
 //
 // Alpaca server class
@@ -2605,6 +2671,9 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/setup/parkDome", &parkDome);
 	m_AlpacaRestServer->put("/setup/gotoAzimuth", &gotoAzimuth);
 	m_AlpacaRestServer->get("/setup/getAzimuth", &getDomeAzimuth);
+	m_AlpacaRestServer->put("/setup/openShutter", &openShutter);
+	m_AlpacaRestServer->put("/setup/closeShutter", &closeShutter);
+	m_AlpacaRestServer->put("/setup/getShutterState", &getShutterState);
 
 	DBPrintln("m_AlpacaRestServer started");
 }

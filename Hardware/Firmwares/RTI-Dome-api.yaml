@@ -762,23 +762,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Position'
+                $ref: '#/components/schemas/DomeStatus'
         '400':
           $ref: '#/components/responses/Response400'
       tags:
       - Dome Control
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                value:
-                  type: number
-                  format: float
-              required:
-              - value
 
   /setup/parkDome:
     put:
@@ -791,23 +779,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Position'
+                $ref: '#/components/schemas/DomeStatus'
         '400':
           $ref: '#/components/responses/Response400'
       tags:
       - Dome Control
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                value:
-                  type: number
-                  format: float
-              required:
-              - value
 
   /setup/gotoAzimuth:
     put:
@@ -820,7 +796,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Position'
+                $ref: '#/components/schemas/DomeStatus'
         '400':
           $ref: '#/components/responses/Response400'
       tags:
@@ -850,6 +826,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Position'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
+
+  /setup/openShutter:
+    put:
+      summary: Open the dome shutter(s)
+      description: 'This will open the dome shutter(s)'
+      operationId: openShutter
+      responses:
+        '200':
+          description: Homing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShutterStatus'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
+
+  /setup/closeShutter:
+    put:
+      summary: Path the dome
+      description: 'This will send the dome to the park azimuth'
+      operationId: closeShutter
+      responses:
+        '200':
+          description: Parking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShutterStatus'
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
+
+  /setup/getShutterState:
+    get:
+      summary: Get the shutter(s) state
+      description: 'Retrieve the shutter(s) state'
+      operationId: getShutterState
+      responses:
+        '200':
+          description: Shutter state successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShutterStatus'
         '400':
           $ref: '#/components/responses/Response400'
       tags:
@@ -932,6 +959,45 @@ components:
       x-enum-descriptions:
       - Open bottom shutter first
       - Open top shutter first
+
+    DomeStatus:
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      x-enum-varnames:
+      - MOVING
+      - HOMING
+      - PARKING
+      - IDLE
+      x-enum-descriptions:
+      - Dome is slewing
+      - Dome is homing
+      - Dome is parking
+      - dome is idle
+
+    ShutterStatus:
+      type: integer
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 6
+      x-enum-varnames:
+      - OPEN
+      - CLOSED
+      - OPENING
+      - CLOSING
+      - ERROR
+      x-enum-descriptions:
+      - Shutter is open
+      - Shutter is closed
+      - Shutter is opening
+      - Shutter is closing
+      - Shutter state is unknown
 
     Response400ErrorInfo:
       type: object
