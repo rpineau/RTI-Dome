@@ -18,7 +18,7 @@
 #define DBPrintHex(x)
 #endif // DEBUG
 
-#define VERSION "2.645"
+#define VERSION "3.000"
 
 #define USE_ALPACA
 #define USE_OTA_UPDATE
