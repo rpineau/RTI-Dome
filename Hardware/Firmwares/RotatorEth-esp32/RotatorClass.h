@@ -596,6 +596,7 @@ void RotatorClass::GoToAzimuth(const float newHeading)
 
 	currentHeading = GetAzimuth();
 	delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
+	DBPrintln("Moving to " + String(newHeading) + " , steps : " + String(long(delta)));
 	m_seekMode = MOVING_GOTO;
 	MoveRelative(long(delta));
 }
