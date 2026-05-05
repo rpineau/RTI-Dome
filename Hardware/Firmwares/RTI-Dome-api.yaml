@@ -296,17 +296,17 @@ paths:
               - value
 
   /setup/restoreNetworkDefaults:
-  put:
-    summary: Reset all network configs to their defaults value
-    description: 'Reset all network configs to their defaults values for Ethernet and Wifi.'
-    operationId: setNetworkDefaults
-    responses:
-      '200':
-        description: Shutter controller network settings successfully reset to default
-      '400':
-        $ref: '#/components/responses/Response400'
-    tags:
-    - Networking
+    put:
+      summary: Reset all network configs to their defaults value
+      description: 'Reset all network configs to their defaults values for Ethernet and Wifi.'
+      operationId: setNetworkDefaults
+      responses:
+        '200':
+          description: Shutter controller network settings successfully reset to default
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Networking
 
   /setup/domeCalibrate:
     get:
