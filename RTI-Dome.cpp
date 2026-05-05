@@ -174,7 +174,7 @@ int CRTIDome::Connect(const std::string sPortName)
 	m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] Got Firmware "<<  m_sFirmwareVersion << "( " << std::fixed << std::setprecision(2) << m_fVersion << ")."<< nErr << std::endl;
 	m_sLogFile.flush();
 #endif
-	if(m_fVersion < 2.0f && m_fVersion != 0.523f && m_fVersion != 0.522f)  {
+	if(m_fVersion < 3.0f)  {
 		return FIRMWARE_NOT_SUPPORTED;
 	}
 
