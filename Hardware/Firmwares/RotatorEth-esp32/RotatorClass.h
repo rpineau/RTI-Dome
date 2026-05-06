@@ -134,7 +134,7 @@ public:
 	String      getIPGateway();
 	void        setIPGateway(String ipGateway);
 	void		resetNetworkToDefaults();
-	
+
 #ifdef USE_WIFI
 	String      getSSID();
 	void        setSSID(String sSSID);
@@ -938,19 +938,15 @@ void RotatorClass::Stop()
 	stepper->forceStop();
 }
 
-
-
 void RotatorClass::motorStop()
 {
 	stepper->stopMove();
 }
 
-
 void RotatorClass::motorMoveRelative(const long howFar)
 {
 	stepper->move(howFar);
 }
-
 
 bool RotatorClass::checkBoundaries(float dTargetAz, float dDomeAz, float dMargin)
 {

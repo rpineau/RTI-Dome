@@ -5,6 +5,14 @@
 //  Copyright © 2024 Rodolphe Pineau. All rights reserved.
 //
 
+//
+// Board Settings (Tools menu):
+// --------------------------------
+// Board:            ESP32 Dev Module
+// Flash Size:       4MB
+// Partition Scheme: Minimal SPIFFS (1.9MB APP with OTA / 128KB SPIFFS)
+// --------------------------------
+//
 
 // Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
 
