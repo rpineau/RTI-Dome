@@ -770,9 +770,9 @@ paths:
 
   /setup/parkDome:
     put:
-      summary: Path the dome
+      summary: Park the dome
       description: 'This will send the dome to the park azimuth'
-      operationId: homeDome
+      operationId: parkDome
       responses:
         '200':
           description: Parking
@@ -850,8 +850,8 @@ paths:
 
   /setup/closeShutter:
     put:
-      summary: Path the dome
-      description: 'This will send the dome to the park azimuth'
+      summary: Close the dome shutter(s)
+      description: 'This will close the dome shutter(s)'
       operationId: closeShutter
       responses:
         '200':

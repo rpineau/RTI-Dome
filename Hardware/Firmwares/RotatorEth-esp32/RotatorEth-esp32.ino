@@ -168,7 +168,6 @@ void setup()
 	digitalWrite(ETHERNET_RESET, 0);
 	pinMode(ETHERNET_RESET, OUTPUT);
 	Computer.begin(115200);
-	//Computer.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
 
 	Rotator = new RotatorClass();
 	Rotator->motorStop();
