@@ -2506,6 +2506,15 @@ void getShutterState(Request &req, Response &res)
 {
 	JsonDocument controllerResp;
 	String sResp;
+
+	String sTmpString = String(STATE_SHUTTER);
+	if(nbWiFiClient && shutterClient.connected()) {
+		String shutterMessage = sTmpString+ "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+		ReceiveWiFi(shutterClient);
+	}
+
 	switch(RemoteShutter.state){
 		case OPEN :
 			controllerResp["value"] = A_OPEN;
