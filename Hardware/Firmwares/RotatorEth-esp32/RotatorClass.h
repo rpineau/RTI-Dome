@@ -595,6 +595,7 @@ void RotatorClass::GoToAzimuth(const float newHeading)
 	float delta;
 
 	currentHeading = GetAzimuth();
+	SyncPosition(currentHeading); // to make sure the internal FastStepper counter is at this position.
 	delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
 	DBPrintln("Moving to " + String(newHeading) + " , steps : " + String(long(delta)));
 	m_seekMode = MOVING_GOTO;
