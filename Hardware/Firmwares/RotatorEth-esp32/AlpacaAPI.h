@@ -2673,7 +2673,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("/setup/getAzimuth", &getDomeAzimuth);
 	m_AlpacaRestServer->put("/setup/openShutter", &openShutter);
 	m_AlpacaRestServer->put("/setup/closeShutter", &closeShutter);
-	m_AlpacaRestServer->put("/setup/getShutterState", &getShutterState);
+	m_AlpacaRestServer->get("/setup/getShutterState", &getShutterState);
 
 	DBPrintln("m_AlpacaRestServer started");
 }
