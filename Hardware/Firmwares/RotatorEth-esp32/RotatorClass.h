@@ -567,7 +567,9 @@ float RotatorClass::GetAzimuth()
 
 	currentPosition = GetPosition();
 	azimuth = (float)currentPosition / (float)m_Config.stepsPerRotation * 360.0f;
-
+	while(azimuth >= 360)
+		azimuth-=360;
+		
 	return float(azimuth);
 }
 
