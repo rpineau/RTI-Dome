@@ -817,7 +817,7 @@ void RotatorClass::MoveRelative(const long howFar)
 void IRAM_ATTR RotatorClass::ButtonEastCheck()
 {
 	if (digitalRead(BUTTON_CCW) == LOW)  {
-		MoveRelative(-2147483646L);
+		MoveRelative(-1073741823L);
 	}
 	else {
 		motorStop();
@@ -827,7 +827,7 @@ void IRAM_ATTR RotatorClass::ButtonEastCheck()
 void IRAM_ATTR RotatorClass::ButtonWestCheck()
 {
 	if (digitalRead(BUTTON_CW) == LOW) {
-		MoveRelative(2147483646L);
+		MoveRelative(1073741823L);
 	}
 	else {
 		motorStop();
