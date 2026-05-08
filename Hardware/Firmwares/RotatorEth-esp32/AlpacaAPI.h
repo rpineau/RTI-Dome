@@ -2391,10 +2391,7 @@ void homeDome(Request &req, Response &res)
 	JsonDocument controllerResp;
 	String sResp;
 
-	if(req.method() == Request::PUT) {
-		Rotator->StartHoming();
-	}
-
+	Rotator->StartHoming();
 	controllerResp["value"] = HOMING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -2409,11 +2406,8 @@ void parkDome(Request &req, Response &res)
 	String sResp;
 	float fParkAz;
 
-	if(req.method() == Request::PUT) {
-		fParkAz = Rotator->GetParkAzimuth();
-		Rotator->GoToAzimuth(fParkAz);
-	}
-
+	fParkAz = Rotator->GetParkAzimuth();
+	Rotator->GoToAzimuth(fParkAz);
 	controllerResp["value"] = PARKING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -2428,21 +2422,19 @@ void gotoAzimuth(Request &req, Response &res)
 	JsonDocument controllerResp;
 	String sResp;
 
-	if(req.method() == Request::PUT) {
-		JsonDocument FormData;
-		formDataToJson(req, FormData);
-		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
-		}
-		else {
-			if(FormData["value"].is<float>()) {
-				Rotator->GoToAzimuth(FormData["value"]);
-			}
+	JsonDocument FormData;
+	formDataToJson(req, FormData);
+	if(FormData.size()==0){
+		controllerResp["ErrorNumber"] = 0x401;
+		controllerResp["ErrorMessage"] = "Invalid parameters";
+		serializeJson(controllerResp, sResp);
+		res.set("Content-Type", "application/json");
+		res.write((uint8_t*)(sResp.c_str()),sResp.length());
+		return;
+	}
+	else {
+		if(FormData["value"].is<float>()) {
+			Rotator->GoToAzimuth(FormData["value"]);
 		}
 	}
 	controllerResp["value"] = MOVING;
@@ -2472,10 +2464,7 @@ void openShutter(Request &req, Response &res)
 	JsonDocument controllerResp;
 	String sResp;
 
-	if(req.method() == Request::PUT) {
-		bOpenShutterButtonPressed = true;
-	}
-
+	bOpenShutterButtonPressed = true;
 	controllerResp["value"] = A_OPENING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
@@ -2490,10 +2479,7 @@ void closeShutter(Request &req, Response &res)
 	String sResp;
 	float fParkAz;
 
-	if(req.method() == Request::PUT) {
-		bCloseShutterButtonPressed = true;
-	}
-
+	bCloseShutterButtonPressed = true;
 	controllerResp["value"] = A_CLOSING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
