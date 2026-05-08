@@ -735,7 +735,7 @@ void RotatorClass::StartHoming()
 	// know the width of the home magnet in steps.
 	// We use edge interrupt to detect the left edge of the magnet as home.
 	m_nMoveDirection = MOVE_POSITIVE;
-	distance = (2147483646L   * m_nMoveDirection);
+	distance = (1073741823L   * m_nMoveDirection);
 	m_seekMode = HOMING_HOME;
 	MoveRelative(distance);
 }
@@ -754,7 +754,7 @@ void RotatorClass::StartCalibrating()
 	}
 	else {
 		m_seekMode = CALIBRATION_STEP1;
-		MoveRelative(2147483646L );
+		MoveRelative(1073741823L );
 	}
 }
 
@@ -768,7 +768,7 @@ void RotatorClass::Calibrate()
 				if (!stepper->isRunning()) {
 					m_seekMode = CALIBRATION_STEP1;
 					stepper->setCurrentPosition(0);
-					MoveRelative(2147483646L );
+					MoveRelative(1073741823L );
 				}
 				break;
 

@@ -2522,10 +2522,14 @@ void getShutterState(Request &req, Response &res)
 		case CLOSED : 
 			controllerResp["value"] = A_CLOSED;
 			break;
-		case OPENING : 
+		case OPENING :
+		case FINISHING_OPEN :
+		case BOTTOM_OPENING :
 			controllerResp["value"] = A_OPENING;
 			break;
-		case CLOSING : 
+		case CLOSING :
+		case FINISHING_CLOSE :
+		case BOTTOM_CLOSING :
 			controllerResp["value"] = A_CLOSING;
 			break;
 		case ERROR : 

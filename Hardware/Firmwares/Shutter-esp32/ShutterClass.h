@@ -523,7 +523,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	if(sw1 == LOW  && sw3 == HIGH && sw4 == HIGH ) {
 		motorStop();
 		shutterState = OPENING;
-		MoveRelative(2147483646L );
+		MoveRelative(1073741823L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
@@ -532,7 +532,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	else if(sw2 == LOW && sw3 == HIGH && sw4 == HIGH ) {
 		motorStop();
 		shutterState = CLOSING;
-		MoveRelative(-2147483646L );
+		MoveRelative(-1073741823L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
@@ -540,7 +540,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	// button open pressed and we're closed
 	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) {
 		shutterState = OPENING;
-		MoveRelative(2147483646L );
+		MoveRelative(1073741823L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
@@ -548,7 +548,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	// button close pressed and we're open
 	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) {
 		shutterState = CLOSING;
-		MoveRelative(-2147483646L );
+		MoveRelative(-1073741823L );
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
@@ -576,7 +576,7 @@ void ShutterClass::Open()
 
 	shutterState = OPENING;
 	DBPrintln("[Open()] shutterState = OPENING");
-	MoveRelative(2147483646L );
+	MoveRelative(1073741823L );
 }
 
 void ShutterClass::Close()
@@ -588,7 +588,7 @@ void ShutterClass::Close()
 	}
 	shutterState = CLOSING;
 	DBPrintln("[Close()]  shutterState = CLOSING");
-	MoveRelative(-2147483646L );
+	MoveRelative(-1073741823L );
 }
 
 
