@@ -2476,7 +2476,7 @@ void openShutter(Request &req, Response &res)
 		bOpenShutterButtonPressed = true;
 	}
 
-	controllerResp["value"] = "Opening";
+	controllerResp["value"] = A_OPENING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
@@ -2494,7 +2494,7 @@ void closeShutter(Request &req, Response &res)
 		bCloseShutterButtonPressed = true;
 	}
 
-	controllerResp["value"] = "Closing";
+	controllerResp["value"] = A_CLOSING;
 	serializeJson(controllerResp, sResp);
 	DBPrintln("sResp : " + sResp);
 
