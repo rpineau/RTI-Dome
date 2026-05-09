@@ -2023,7 +2023,7 @@ void domeCalibrateAction(Request &req, Response &res)
 				if(FormData["value"] == "start") {
 					Rotator->StartCalibrating();
 				}
-				if(FormData["value"] == "abort") {
+				if(FormData["value"] == "stop") {
 					Rotator->Stop();
 				}
 			}
