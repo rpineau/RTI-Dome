@@ -4,7 +4,7 @@
 //
 #ifndef __R_CONFIG__
 #define __R_CONFIG__
-#define DEBUG   // enable debug to serial port defined as DebugPort
+// #define DEBUG   // enable debug to serial port defined as DebugPort
 
 #ifdef DEBUG
 #pragma message "Debug messages enabled"

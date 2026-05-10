@@ -207,11 +207,18 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	bWiFiOk = false;
 	DBPrintln("========== disconnect ==========");
 	shutterWiFi.disconnect();
+
 	DBPrintln("========== config ==========");
+	DBPrintln("WiFi IP = " + IpAddress2String(ip));
+	DBPrintln("WiFi gateway = " + IpAddress2String(gwIp));
 	shutterWiFi.config(ip,  gwIp, IPAddress(255,255,255,0));
+	
 	DBPrintln("========== setHostname ==========");
 	shutterWiFi.setHostname("RTI-Shutter");
+	
 	DBPrintln("========== begin ==========");
+	DBPrintln("WiFi SSID = " + sSSID);
+	DBPrintln("WiFi Password = " + sPassword);
 	shutterWiFi.begin(sSSID.c_str(), sPassword.c_str());
 	while (shutterWiFi.status() != WL_CONNECTED) {
 		DBPrintln("Waiting for WiFi");

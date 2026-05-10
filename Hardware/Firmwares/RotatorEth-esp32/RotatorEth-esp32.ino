@@ -498,10 +498,14 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 
 	shutterWiFi.disconnect();
 	shutterWiFi.mode(WIFI_AP);
-	bWiFiOk = shutterWiFi.softAP(sSSID.c_str(), sPassword.c_str());
-	if(!bWiFiOk)
-		return false;
+	DBPrintln("WiFi SSID = " + sSSID);
+	DBPrintln("WiFi Password = " + sPassword);
 
+	bWiFiOk = shutterWiFi.softAP(sSSID.c_str(), sPassword.c_str());
+	if(!bWiFiOk) {
+		DBPrintln("Failled to configure WiFi");
+		return false;
+	}
 	shutterWiFi.softAPConfig(ip, ip, IPAddress(255,255,255,0));
 	shutterWiFi.setHostname("RTI-Dome");
 	DBPrintln("WiFi IP = " + RotatorClass::IpAddress2String(WiFi.softAPIP()));
