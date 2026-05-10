@@ -135,6 +135,8 @@ public:
 	void        setIPGateway(String ipGateway);
 	void		resetNetworkToDefaults();
 
+	void		resetAlltoDefault();
+
 #ifdef USE_WIFI
 	String      getSSID();
 	void        setSSID(String sSSID);
@@ -291,7 +293,6 @@ void RotatorClass::LoadConfig()
 		nvs_flash_init();
 		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putBool("nvsInit", true);
-
 	}
 	m_Config.stepsPerRotation = m_preferences.getLong("stepsPerRot",STEPS_DEFAULT);
 	m_Config.acceleration = m_preferences.getLong("acceleration",ACCELERATION);
@@ -429,6 +430,19 @@ void RotatorClass::resetNetworkToDefaults()
 	m_Config.wifiIpConfig.sPassword = m_preferences.getString("AP_Password", "RTIShutter");
 #endif // USE_WIFI
 	m_preferences.end();
+}
+
+void RotatorClass::resetAlltoDefault()
+{
+	DBPrintln("Resetting do factory defaults");
+	DBPrintln("Initializing NVS");
+	m_preferences.end();
+	nvs_flash_erase();
+	nvs_flash_init();
+	m_preferences.begin("RTI_Dome", false);
+	m_preferences.putBool("nvsInit", true);
+	m_preferences.end();
+	ESP.restart();
 }
 
 #ifdef USE_WIFI

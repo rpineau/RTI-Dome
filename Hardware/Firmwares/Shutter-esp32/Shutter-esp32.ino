@@ -524,6 +524,10 @@ void ProcessWifi()
 			DBPrintln("SSID '" + String(Shutter->getSSID()) + "'");
 			break;
 
+		case RESET_ALL:
+			Shutter->resetAlltoDefault(); // this reboots the ESP.
+			break;
+
 		default:
 			DBPrintln("Unknown command " + String(command));
 			break;

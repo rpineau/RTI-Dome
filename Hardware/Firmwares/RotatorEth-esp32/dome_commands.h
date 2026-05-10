@@ -1,7 +1,7 @@
 //
-// Rotator commands
+// commands
 //
-//  Copyright © 2020 Rodolphe Pineau. All rights reserved.
+// Copyright © 2020 Rodolphe Pineau. All rights reserved.
 //
 const char ABORT                        = 'a'; // Tell everything to STOP!
 const char ETH_RECONFIG                 = 'b'; // reconfigure ethernet
@@ -30,7 +30,7 @@ const char RESTORE_NET_DEFAULT			= 'x'; //
 const char REVERSED_ROTATOR             = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR           = 'z'; // Get homed status
 const char CONDITION_SHUTTER            = 'F'; // Get conditions status (from client) or tell shutter if conditions are bad (from Rotator)
-
+const char RESET_ALL					= 'A'; // resets all setting to factory default
 // available A B J N S U W X Z
 // Shutter commands
 const char CLOSE_SHUTTER                    = 'C'; // Close shutter

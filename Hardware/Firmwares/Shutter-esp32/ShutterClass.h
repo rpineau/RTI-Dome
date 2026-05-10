@@ -92,6 +92,7 @@ public:
 
 	// persistent data
 	void		restoreDefaultMotorSettings();
+	void		resetAlltoDefault();
 
 	// interrupts
 	void		ClosedInterrupt();
@@ -307,6 +308,20 @@ void ShutterClass::getWiFiConfig(WIFIConfig &config)
 	config.ip = m_Config.wifiIpConfig.ip;
 	config.sSSID = m_Config.wifiIpConfig.sSSID;
 	config.sPassword = m_Config.wifiIpConfig.sPassword;
+}
+
+void ShutterClass::resetAlltoDefault()
+{
+	DBPrintln("Resetting do factory defaults");
+	DBPrintln("Initializing NVS");
+	m_preferences.end();
+	nvs_flash_erase();
+	nvs_flash_init();
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putBool("nvsInit", true);
+	m_preferences.end();
+	ESP.restart();
+
 }
 
 float ShutterClass::PositionToAltitude(const long pos)

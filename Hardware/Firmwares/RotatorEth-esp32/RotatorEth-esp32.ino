@@ -1085,6 +1085,13 @@ void ProcessCommand(int nSource)
 			serialMessage = String(RESTORE_NET_DEFAULT);
 			break;
 
+		case RESET_ALL:
+			shutterMessage = String(RESET_ALL) + "#";
+			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+			vTaskDelay(250 / portTICK_PERIOD_MS);
+			Rotator->resetAlltoDefault(); // this reboots the ESP.
+			break;
+
 #ifdef USE_WIFI
 		case SSID:
 			if (hasValue) {
