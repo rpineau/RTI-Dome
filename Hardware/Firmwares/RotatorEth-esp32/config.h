@@ -5,7 +5,7 @@
 #ifndef __R_CONFIG__
 #define __R_CONFIG__
 #define DEBUG   // enable debug to serial port defined as DebugPort
-#ifdef DEBUG
+// #ifdef DEBUG
 #pragma message "Debug messages enabled"
 #define DebugPort Serial1    //  Rx2,Tx2 =  Serial1
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
