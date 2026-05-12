@@ -2532,6 +2532,20 @@ void getShutterState(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+void resetToFactory(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	float fParkAz;
+
+	controllerResp["value"] = "Resetting to factory";
+	serializeJson(controllerResp, sResp);
+	DBPrintln("sResp : " + sResp);
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+	Rotator->resetAlltoDefault();
+}
+
 //
 // Alpaca server class
 //
@@ -2673,6 +2687,8 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/setup/openShutter", &openShutter);
 	m_AlpacaRestServer->put("/setup/closeShutter", &closeShutter);
 	m_AlpacaRestServer->get("/setup/getShutterState", &getShutterState);
+
+	m_AlpacaRestServer->put("/setup/resetToFactory", &resetToFactory);
 
 	DBPrintln("m_AlpacaRestServer started");
 }

@@ -118,7 +118,7 @@ paths:
         '400':
           $ref: '#/components/responses/Response400'
       tags:
-      - Positions
+      - Rotation Controller
     put:
       summary: Set the controller direction, normal or reversed
       description: 'Set the controller direction, normal or reversed.'
@@ -881,6 +881,19 @@ paths:
           $ref: '#/components/responses/Response400'
       tags:
       - Dome Control
+
+  /setup/resetToFactory:
+    put:
+      summary: Reset all configs to their factory values
+      description: 'Reset all configs to their factory values.'
+      operationId: resetToFactory
+      responses:
+        '200':
+          description: All settings successfully reset to default
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Advanced
 
 components:
   schemas:
