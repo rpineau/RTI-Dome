@@ -484,7 +484,7 @@ void configureWiFi()
 
 	DBPrintln("========== Configuring WiFi ==========");
 	Rotator->getWiFiConfig(wifiConfig);
-	if(Rotator->getSSID().length() < 8) {
+	if(Rotator->getSSID().length() < 1) {
 		Rotator->setWifiDefault();
 	}
 	wifiPresent = initWiFi(wifiConfig.ip,
