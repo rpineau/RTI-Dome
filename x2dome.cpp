@@ -524,7 +524,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 					uiex->setPropertyDouble("lowShutBatCutOff","value", dShutterCutOff);
 				} else {
 					if(m_SetSSIDTimer.GetElapsedSeconds()>SSID_TIMEOUT ) {// 15 seconds is way more than needed.. something when wrong
-						sErrorMessage << "Timeout setting Xbee PAN ID";
+						sErrorMessage << "Timeout setting SSID";
 						uiex->messageBox("RTI-Dome Set SSID", sErrorMessage.str().c_str());
 						uiex->setEnabled("pushButton_2", true);
 						m_bSettingSSID = false;
