@@ -129,7 +129,7 @@ paths:
         '400':
           $ref: '#/components/responses/Response400'
       tags:
-      - Positions
+      - Rotation Controller
       requestBody:
         required: true
         content:
