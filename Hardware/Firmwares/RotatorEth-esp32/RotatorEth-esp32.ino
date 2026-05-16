@@ -160,9 +160,11 @@ void setup()
 	nbNetworkClient = 0;
 
 #ifdef DEBUG
+#ifndef DEBUG_TO_COMPUTER
 	DebugPort.begin(115200, SERIAL_8N1, 16, 17); // pins 16 rx2, 17 tx2, 115200 bps, 8 bits no parity 1 stop bit
 	delay(1000);
 	DBPrintln("========== RTI-Zone controller booting ==========");
+#endif
 #endif
 
 	digitalWrite(ETHERNET_RESET, 0);

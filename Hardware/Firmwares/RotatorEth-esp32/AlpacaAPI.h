@@ -155,8 +155,7 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 		sName.toLowerCase();
 		sValue = String(value);
 		sValue.toLowerCase();
-		DBPrintln("name : " + sName);
-		DBPrintln("value : " + sValue);
+		DBPrintln(String(__func__) + " : name : " + sName + "\tvalue : " + sValue);
 
 		if(isDigit(value[0]) ) {
 			if(sValue.indexOf('.') == -1) {
@@ -304,7 +303,7 @@ void getApiVersion(Request &req, Response &res)
 
 	serializeJson(AlpacaResp, sResp);
 
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -326,7 +325,7 @@ void getDescription(Request &req, Response &res)
 	AlpacaResp["Value"]["Location"]= "Earth";
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -348,7 +347,7 @@ void getConfiguredDevice(Request &req, Response &res)
 	AlpacaResp["Value"][0] ["UniqueID"]= uuid;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -386,7 +385,7 @@ void doAction(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = "Ok";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -416,7 +415,7 @@ void doCommandBlind(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -447,7 +446,7 @@ void doCommandBool(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = true;
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -478,7 +477,7 @@ void doCommandString(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = "Ok";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -498,7 +497,7 @@ void getConnected(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = bAlpacaConnected;
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -540,7 +539,7 @@ void setConnected(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -574,7 +573,7 @@ void domeConnect(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -606,7 +605,7 @@ void domeConnecting(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"] = false; // it's already connected
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -686,7 +685,7 @@ void getDomeState(Request &req, Response &res)
 	AlpacaResp["Value"].add(jsTmp);
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -720,7 +719,7 @@ void domeDisconnect(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -740,7 +739,7 @@ void getDeviceDescription(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= "RTI-Zone dome controller";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -760,7 +759,7 @@ void getDriverInfo(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= "RTI-Zone Dome controller";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -781,7 +780,7 @@ void getDriverVersion(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= String(VERSION);
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -801,7 +800,7 @@ void getInterfaceVersion(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= DOME_INTERFACE_VERSION;
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -821,7 +820,7 @@ void getName(Request &req, Response &res)
 	AlpacaResp["ErrorMessage"] = "";
 	AlpacaResp["Value"]= "RTI-Zone Dome controller";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -842,7 +841,7 @@ void getSupportedActions(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -881,7 +880,7 @@ void getAltitude(Request &req, Response &res)
 	AlpacaResp["Value"] = 0.0f;
 #endif
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 
@@ -908,7 +907,7 @@ void geAtHome(Request &req, Response &res)
 		AlpacaResp["Value"] = false;
 	}
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 
@@ -933,7 +932,7 @@ void geAtPark(Request &req, Response &res)
 		AlpacaResp["Value"] = false;
 	}
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 
@@ -956,7 +955,7 @@ void getAzimuth(Request &req, Response &res)
 	AlpacaResp["Value"] = Rotator->GetAzimuth();
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -978,7 +977,7 @@ void canfindhome(Request &req, Response &res)
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1000,7 +999,7 @@ void canPark(Request &req, Response &res)
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1022,7 +1021,7 @@ void canSetAltitude(Request &req, Response &res)
 	AlpacaResp["Value"] = false;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1044,7 +1043,7 @@ void canSetAzimuth(Request &req, Response &res)
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1066,7 +1065,7 @@ void canSetPark(Request &req, Response &res)
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1096,7 +1095,7 @@ void canSetShutter(Request &req, Response &res)
 	}
 #endif
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1118,7 +1117,7 @@ void canSlave(Request &req, Response &res)
 	AlpacaResp["Value"] = false;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1140,7 +1139,7 @@ void canSyncAzimuth(Request &req, Response &res)
 	AlpacaResp["Value"] = true;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1175,7 +1174,7 @@ void getShutterStatus(Request &req, Response &res)
 	}
 #endif
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1196,7 +1195,7 @@ void getSlaved(Request &req, Response &res)
 	AlpacaResp["Value"] = false;
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1244,7 +1243,7 @@ void getSlewing(Request &req, Response &res)
 	}
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1275,7 +1274,7 @@ void doAbort(Request &req, Response &res)
 	Abort(); // this is in the RotatorEth-esp32.ino
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1317,7 +1316,7 @@ void doCloseShutter(Request &req, Response &res)
 	}
 #endif
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1356,7 +1355,7 @@ void doFindHome(Request &req, Response &res)
 	Rotator->StartHoming();
 
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1406,7 +1405,7 @@ void doOpenShutter(Request &req, Response &res)
 	}
 #endif
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1439,7 +1438,7 @@ void doPark(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1469,7 +1468,7 @@ void setPark(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 	fParkPos = Rotator->GetAzimuth();
@@ -1508,7 +1507,7 @@ void doAltitudeSlew(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0x400;
 	AlpacaResp["ErrorMessage"] = "Not implemented";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 #else
 	AlpacaResp["ErrorNumber"] = 0x400;
 	AlpacaResp["ErrorMessage"] = "Invalid method";
@@ -1570,7 +1569,7 @@ void doGoTo(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1618,7 +1617,7 @@ void doSyncAzimuth(Request &req, Response &res)
 	AlpacaResp["ErrorNumber"] = 0;
 	AlpacaResp["ErrorMessage"] = "";
 	serializeJson(AlpacaResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
@@ -1670,7 +1669,7 @@ void homePosition(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->GetHomeAzimuth();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1703,7 +1702,7 @@ void parkPosition(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->GetParkAzimuth();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1714,7 +1713,6 @@ void reverseDirectionState(Request &req, Response &res)
 	JsonDocument controllerResp;
 	String sResp;
 	bool bReversed = false;
-
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
@@ -1736,7 +1734,7 @@ void reverseDirectionState(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->GetReversed();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1772,7 +1770,7 @@ void shutterOpenOrderValue(Request &req, Response &res)
 	// controllerResp["value"] = Rotator->GetOpenOrder();
 	controllerResp["value"] = TOP_FIRST; // for now
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1814,7 +1812,7 @@ void wifiSSIDValue(Request &req, Response &res)
 
 	controllerResp["value"] = l_WifiConfig.sSSID;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1830,7 +1828,7 @@ void isShutterPresentState(Request &req, Response &res)
 
 	controllerResp["value"] = bool(bShutterPresent);
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1864,7 +1862,7 @@ void useDHCPState(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->getDHCPFlag();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1883,7 +1881,7 @@ void macAddressValue(Request &req, Response &res)
 					String(MAC_Address[5], HEX);
 
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1915,7 +1913,7 @@ void ipAddressValue(Request &req, Response &res)
 
 	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.localIP()));
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1946,7 +1944,7 @@ void subnetMaskValue(Request &req, Response &res)
 
 	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1977,7 +1975,7 @@ void ipGatewayValue(Request &req, Response &res)
 
 	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -1995,7 +1993,7 @@ void restoreNetworkDefaults(Request &req, Response &res)
 
 	controllerResp["value"] = "Restored";
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2042,7 +2040,7 @@ void domeCalibrateAction(Request &req, Response &res)
 			controllerResp["value"] = NOT_MOVING;
 	}
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2073,7 +2071,7 @@ void stepPerRevolutionValue(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->GetStepsPerRotation();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2104,7 +2102,7 @@ void rotationSpeedValue(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->GetMaxSpeed();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2135,7 +2133,7 @@ void rotationAccelerationValue(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->GetAcceleration();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2150,7 +2148,7 @@ void restoreRotationMotorValues(Request &req, Response &res)
 	Rotator->restoreDefaultMotorSettings();
 	controllerResp["value"] = "Restored";
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2187,7 +2185,7 @@ void shutterSpeedValue(Request &req, Response &res)
 
 	controllerResp["value"] = RemoteShutter.speed;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2223,7 +2221,7 @@ void shutterAccelerationValue(Request &req, Response &res)
 
 	controllerResp["value"] = RemoteShutter.acceleration;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2252,7 +2250,7 @@ void restoreShutterMotorValues(Request &req, Response &res)
 
 	controllerResp["value"] = "Restored";
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2288,7 +2286,7 @@ void shutterWatchdogTimerValue(Request &req, Response &res)
 
 	controllerResp["value"] = RemoteShutter.watchdogInterval;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2324,7 +2322,7 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 
 	controllerResp["value"] = RemoteShutter.voltsCutOff;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2366,7 +2364,7 @@ void unsafeDomeAction(Request &req, Response &res)
 			break;
 	}
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2380,7 +2378,7 @@ void envConditionState(Request &req, Response &res)
 
 	controllerResp["value"] = bool(bIsSafe);
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2394,7 +2392,7 @@ void homeDome(Request &req, Response &res)
 	Rotator->StartHoming();
 	controllerResp["value"] = HOMING;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2410,7 +2408,7 @@ void parkDome(Request &req, Response &res)
 	Rotator->GoToAzimuth(fParkAz);
 	controllerResp["value"] = PARKING;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2439,7 +2437,7 @@ void gotoAzimuth(Request &req, Response &res)
 	}
 	controllerResp["value"] = MOVING;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2452,7 +2450,7 @@ void getDomeAzimuth(Request &req, Response &res)
 
 	controllerResp["value"] = Rotator->GetAzimuth();
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2467,7 +2465,7 @@ void openShutter(Request &req, Response &res)
 	bOpenShutterButtonPressed = true;
 	controllerResp["value"] = A_OPENING;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2482,7 +2480,7 @@ void closeShutter(Request &req, Response &res)
 	bCloseShutterButtonPressed = true;
 	controllerResp["value"] = A_CLOSING;
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2526,7 +2524,7 @@ void getShutterState(Request &req, Response &res)
 			break;
 	}
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
@@ -2540,7 +2538,7 @@ void resetToFactory(Request &req, Response &res)
 
 	controllerResp["value"] = "Resetting to factory";
 	serializeJson(controllerResp, sResp);
-	DBPrintln("sResp : " + sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 	Rotator->resetAlltoDefault();

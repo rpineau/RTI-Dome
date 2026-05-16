@@ -313,7 +313,7 @@ void RotatorClass::LoadConfig()
 	DBPrintln("maxSpeed          : " + String(m_Config.maxSpeed));
 	DBPrintln("acceleration      : " + String(m_Config.acceleration));
 	DBPrintln("stepsPerRotation  : " + String(m_Config.stepsPerRotation));
-	DBPrintln("reversed          : " + String(m_Config.reversed));
+	DBPrintln("reversed          : " + String(m_Config.reversed?"Yes":"No"));
 	DBPrintln("homeAzimuth       : " + String(m_Config.homeAzimuth));
 	DBPrintln("parkAzimuth       : " + String(m_Config.parkAzimuth));
 	DBPrintln("conditionsAction  : " + String(m_Config.conditionsAction));

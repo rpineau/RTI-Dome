@@ -5,9 +5,12 @@
 #ifndef __R_CONFIG__
 #define __R_CONFIG__
 // #define DEBUG   // enable debug to serial port defined as DebugPort
+// #define DEBUG_TO_COMPUTER // send all debug to usb serial instead of 3 pin serial debug.
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
+#ifndef DEBUG_TO_COMPUTER
 #define DebugPort Serial1    //  Rx2,Tx2 =  Serial1
+#endif
 #define DBPrint(x) if(DebugPort) DebugPort.print(x)
 #define DBPrintln(x) if(DebugPort) DebugPort.println(x)
 #define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
@@ -27,6 +30,9 @@
 #define USE_WIFI
 
 #define Computer Serial     // USB = Serial
+#ifdef DEBUG_TO_COMPUTER
+#define DebugPort Serial
+#endif
 
 //
 // ESP32 dev boards
