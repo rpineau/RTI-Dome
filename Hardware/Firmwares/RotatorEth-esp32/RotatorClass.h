@@ -87,11 +87,11 @@ public:
 	void        GoToAzimuth(const float);
 
 	bool        GetReversed();
-	void        SetReversed(const bool reversed);
+	void        SetReversed(const bool reverseDirection);
 	int         GetDirection();
 
 	long        GetStepsPerRotation();
-	void        SetStepsPerRotation(const long);
+	void        SetStepsPerRotation(const long, bool bSave=true);
 
 	void        restoreDefaultMotorSettings();
 
@@ -169,7 +169,6 @@ private:
 	// Utility
 	void 			LoadConfig();
 	volatile bool	m_bIsSafe = true;
-	bool				m_bDoSave;
 };
 
 
@@ -202,17 +201,15 @@ RotatorClass::RotatorClass()
 
 	LoadConfig();
 
-	m_bDoSave = false;  // we just read the config, no need to resave all the value we're setting
 	engine.init();
 	stepper = engine.stepperConnectToPin(STEP_PIN);
+	stepper->setDirectionPin(DIRECTION_PIN,(!m_Config.reversed));
 	stepper->setEnablePin(STEPPER_ENABLE_PIN);
 	stepper->setAutoEnable(true);
+	stepper->setSpeedInHz(m_Config.maxSpeed);  //  steps/s
+	stepper->setAcceleration(m_Config.acceleration);    //  steps/s²
+	SetStepsPerRotation(m_Config.stepsPerRotation, false);
 
-	SetMaxSpeed(m_Config.maxSpeed);
-	SetAcceleration(m_Config.acceleration);
-	SetReversed(m_Config.reversed);
-	SetStepsPerRotation(m_Config.stepsPerRotation);
-	m_bDoSave = true;
 
 	if (digitalRead(CONDITION_SENSOR_PIN) == LOW) {
 		m_bIsSafe = false;
@@ -531,12 +528,9 @@ void RotatorClass::SetAcceleration(const long newAccel)
 	m_Config.acceleration = newAccel;
 
 	stepper->setAcceleration(m_Config.acceleration);    //  steps/s²
-
-	if(m_bDoSave) {
-		m_preferences.begin("RTI_Dome", false);
-		m_preferences.putLong("acceleration", newAccel);
-		m_preferences.end();
-	}
+	m_preferences.begin("RTI_Dome", false);
+	m_preferences.putLong("acceleration", newAccel);
+	m_preferences.end();
 }
 
 long RotatorClass::GetMaxSpeed()
@@ -548,11 +542,9 @@ void RotatorClass::SetMaxSpeed(const long newSpeed)
 {
 	m_Config.maxSpeed = newSpeed;
 	stepper->setSpeedInHz(m_Config.maxSpeed);  //  steps/s
-	if(m_bDoSave) {
-		m_preferences.begin("RTI_Dome", false);
-		m_preferences.putLong("maxSpeed", newSpeed);
-		m_preferences.end();
-	}
+	m_preferences.begin("RTI_Dome", false);
+	m_preferences.putLong("maxSpeed", newSpeed);
+	m_preferences.end();
 }
 
 long RotatorClass::GetPosition()
@@ -626,12 +618,10 @@ bool RotatorClass::GetReversed()
 void RotatorClass::SetReversed(const bool isReversed)
 {
 	m_Config.reversed = isReversed;
-	stepper->setDirectionPin(DIRECTION_PIN,(!isReversed));
-	if(m_bDoSave) {
-		m_preferences.begin("RTI_Dome", false);
-		m_preferences.putBool("reversed", isReversed);
-		m_preferences.end();
-	}
+	stepper->setDirectionPin(DIRECTION_PIN,(!m_Config.reversed));
+	m_preferences.begin("RTI_Dome", false);
+	m_preferences.putBool("reversed", isReversed);
+	m_preferences.end();
 }
 
 int RotatorClass::GetDirection()
@@ -644,12 +634,12 @@ long RotatorClass::GetStepsPerRotation()
 	return m_Config.stepsPerRotation;
 }
 
-void RotatorClass::SetStepsPerRotation(const long newCount)
+void RotatorClass::SetStepsPerRotation(const long newCount, bool bSave)
 {
 	long foo;
 	m_fStepsPerDegree = (float)newCount / 360.0f;
 	m_Config.stepsPerRotation = newCount;
-	if(m_bDoSave) {
+	if(bSave) {
 		m_preferences.begin("RTI_Dome", false);
 		m_preferences.putLong("stepsPerRot", newCount);
 		m_preferences.end();
