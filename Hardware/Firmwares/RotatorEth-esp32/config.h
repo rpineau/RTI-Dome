@@ -30,10 +30,11 @@
 #define USE_WIFI
 
 #define Computer Serial     // USB = Serial
+#ifdef DEBUG
 #ifdef DEBUG_TO_COMPUTER
 #define DebugPort Serial
 #endif
-
+#endif
 //
 // ESP32 dev boards
 //

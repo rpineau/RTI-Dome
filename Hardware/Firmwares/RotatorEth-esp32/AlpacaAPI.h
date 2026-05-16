@@ -155,15 +155,24 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 		sName.toLowerCase();
 		sValue = String(value);
 		sValue.toLowerCase();
-		DBPrintln(String(__func__) + " : name : " + sName + "\tvalue : " + sValue);
 
-		if(isDigit(value[0]) ) {
+		DBPrintln(String(__func__) + " : name :'" + String(sName) + "' with value : '" + String(sValue) + "'");
+
+		if(isDigit(value[0])) {
 			if(sValue.indexOf('.') == -1) {
 				// int
-				FormData[sName]=sValue.toInt();
+				FormData[sName] = sValue.toInt();
 			} else {
-				// float
-				FormData[sName]=sValue.toFloat();
+				// check if it could be an IP (more than one dot)
+				int dotCount = 0;
+				for(char c : sValue) if(c == '.') dotCount++;
+				if(dotCount > 1) {
+					// IP address or similar — treat as string
+					FormData[sName] = sValue;
+				} else {
+					// float
+					FormData[sName] = sValue.toFloat();
+				}
 			}
 		}
 		else {
@@ -1911,7 +1920,12 @@ void ipAddressValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.localIP()));
+	if(Rotator->getDHCPFlag()) {
+		controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.localIP()));
+	} 
+	else {
+		controllerResp["value"] = Rotator->getIPAddress();
+	}
 	serializeJson(controllerResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
@@ -1942,7 +1956,13 @@ void subnetMaskValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
+	if(Rotator->getDHCPFlag()) {
+		controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
+	} 
+	else {
+		controllerResp["value"] = Rotator->getIPSubnetMask();
+	}
+
 	serializeJson(controllerResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
@@ -1973,7 +1993,13 @@ void ipGatewayValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
+	if(Rotator->getDHCPFlag()) {
+		controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
+	} 
+	else {
+		controllerResp["value"] = Rotator->getIPGateway();
+	}
+
 	serializeJson(controllerResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 

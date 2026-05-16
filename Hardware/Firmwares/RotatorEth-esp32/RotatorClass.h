@@ -301,7 +301,7 @@ void RotatorClass::LoadConfig()
 
 	m_Config.ipConfig.bUseDHCP = m_preferences.getBool("bUseDHCP", true);
 	m_Config.ipConfig.ip.fromString(m_preferences.getString("ip","192.168.1.9"));
-	m_Config.ipConfig.dns.fromString(m_preferences.getString("dns","192.168.1.1"));
+	m_Config.ipConfig.dns.fromString(m_preferences.getString("dns","1.1.1.1"));
 	m_Config.ipConfig.gateway.fromString(m_preferences.getString("gateway","192.168.1.1"));
 	m_Config.ipConfig.subnetMask.fromString(m_preferences.getString("subnetMask","255.255.255.0"));
 #ifdef USE_WIFI

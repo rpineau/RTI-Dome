@@ -72,7 +72,7 @@ public:
 	int         GetState();
 
 	unsigned long	GetStepsPerStroke();
-	void		SetStepsPerStroke(const unsigned long);
+	void		SetStepsPerStroke(const unsigned long, bool bSave=true);
 
 	bool        GetVoltsAreLow();
 	String      GetVoltString();
@@ -89,6 +89,10 @@ public:
 	static void	motorStop();
 	void		motorMoveTo(const long newPosition);
 	void		motorMoveRelative(const long amount);
+	// double shutter methods
+	void		enableDoubleShutter(bool bEnable);
+	void		setOpenOrder(bool bBottomfirst);
+	void		getOpenOrder(bool &bBottomfirst);
 
 	// persistent data
 	void		restoreDefaultMotorSettings();
@@ -106,7 +110,8 @@ public:
 	String      getSSID();
 	void        setSSID(String sSSID);
 	void		getWiFiConfig(WIFIConfig &config);
-private:
+
+	private:
 
 	Configuration   m_Config;
 	Preferences 	m_preferences;
@@ -120,7 +125,6 @@ private:
 	int             MeasureVoltage();
 
 	void 			LoadConfig();
-	bool			m_bDoSave;
 };
 
 
@@ -155,15 +159,14 @@ ShutterClass::ShutterClass()
 
 	DBPrintln("Configuring stepper");
 
-	m_bDoSave = false;  // we just read the config, no need to resave all the value we're setting
 	engine.init();
    	stepper = engine.stepperConnectToPin(STEP_PIN);
+	stepper->setDirectionPin(DIRECTION_PIN,(!m_Config.reversed));
 	stepper->setEnablePin(STEPPER_ENABLE_PIN);
 	stepper->setAutoEnable(true);
-
-	SetMaxSpeed(m_Config.maxSpeed);
-	SetAcceleration(m_Config.acceleration);
-	SetReversed(m_Config.reversed);
+	stepper->setSpeedInHz(m_Config.maxSpeed);  //  steps/s
+	stepper->setAcceleration(m_Config.acceleration);    //  steps/s²
+	SetStepsPerStroke(m_Config.stepsPerStroke, false);
 
 	// reset all timers
 	m_nBatteryCheckInterval = BATTERY_CHECK_INTERVAL;
@@ -182,7 +185,6 @@ ShutterClass::ShutterClass()
 	m_bUserButtonStop=false;
 	m_bButtonUsed = false;
 	m_nVolts = MeasureVoltage();
-	m_bDoSave = true;
 }
 
 void IRAM_ATTR ShutterClass::ClosedInterrupt()
@@ -208,9 +210,9 @@ void IRAM_ATTR ShutterClass::OpenInterrupt()
 void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 {
 	DBPrintln("[LowerClosedInterrupt] Shutter state : " + String(shutterState));
-	if(shutterState == CLOSING) {
+	if(shutterState == BOTTOM_CLOSING) {
 		DBPrintln("Closed Int stopping motor");
-		shutterState = FINISHING_CLOSE;
+		shutterState = BOTTOM_CLOSED;
 		motorStop();
 	}
 }
@@ -218,10 +220,10 @@ void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 void IRAM_ATTR ShutterClass::LowerOpenInterrupt()
 {
 	DBPrintln("[LowerOpenInterrupt] Shutter state : " + String(shutterState));
-	if(shutterState == OPENING) {
+	if(shutterState == BOTTOM_OPENING) {
 		DBPrintln("Open Int stopping motor");
 		motorStop();
-		shutterState = FINISHING_OPEN;
+		shutterState = BOTTOM_OPEN;
 	}
 }
 
@@ -348,11 +350,9 @@ void ShutterClass::SetAcceleration(const int accel)
 {
 	m_Config.acceleration = accel;
 	stepper->setAcceleration(m_Config.acceleration);    //  steps/s²
-	if(m_bDoSave) {
-		m_preferences.begin("RTI_Shutter", false);
-		m_preferences.putInt("acceleration", accel);
-		m_preferences.end();
-	}
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putInt("acceleration", accel);
+	m_preferences.end();
 }
 
 int ShutterClass::GetMaxSpeed()
@@ -364,11 +364,9 @@ void ShutterClass::SetMaxSpeed(const int speed)
 {
 	m_Config.maxSpeed = speed;
 	stepper->setSpeedInHz(m_Config.maxSpeed);  //  steps/s
-	if(m_bDoSave) {
-		m_preferences.begin("RTI_Shutter", false);
-		m_preferences.putInt("maxSpeed", speed);
-		m_preferences.end();
-	}
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putInt("maxSpeed", speed);
+	m_preferences.end();
 }
 
 long ShutterClass::GetPosition()
@@ -422,11 +420,9 @@ void ShutterClass::SetReversed(const bool reversed)
 {
 	m_Config.reversed = reversed;
 	stepper->setDirectionPin(DIRECTION_PIN,(!reversed));
-	if(m_bDoSave) {
-		m_preferences.begin("RTI_Shutter", false);
-		m_preferences.putBool("reversed", reversed);
-		m_preferences.end();
-	}
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putBool("reversed", reversed);
+	m_preferences.end();
 }
 
 int ShutterClass::GetEndSwitchStatus()
@@ -451,10 +447,10 @@ unsigned long ShutterClass::GetStepsPerStroke()
 	return m_Config.stepsPerStroke;
 }
 
-void ShutterClass::SetStepsPerStroke(const unsigned long newSteps)
+void ShutterClass::SetStepsPerStroke(const unsigned long newSteps, bool bSave)
 {
 	m_Config.stepsPerStroke = newSteps;
-	if(m_bDoSave) {
+	if(bSave) {
 		m_preferences.begin("RTI_Shutter", false);
 		m_preferences.putULong("stepsPerRot", newSteps);
 		m_preferences.end();
@@ -686,3 +682,27 @@ void ShutterClass::motorMoveRelative(const long amount)
 {
 	stepper->move(amount);
 }
+
+// double shutter methods
+void ShutterClass::enableDoubleShutter(bool bEnable)
+{
+	m_Config.bHasDropShutter = bEnable;
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putInt("hasDropShutter", m_Config.bHasDropShutter);
+	m_preferences.end();
+}
+
+void ShutterClass::setOpenOrder(bool bBottomfirst)
+{
+	m_Config.bTopShutterOpenFirst = bBottomfirst;
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putInt("topShutterOpenFirst", m_Config.bTopShutterOpenFirst);
+	m_preferences.end();
+
+}
+
+void ShutterClass::getOpenOrder(bool &bBottomfirst)
+{
+	bBottomfirst = m_Config.bTopShutterOpenFirst;
+}
+

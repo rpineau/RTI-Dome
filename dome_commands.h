@@ -31,7 +31,7 @@ const char REVERSED_ROTATOR             = 'y'; // Get/Set stepper reversed statu
 const char HOMESTATUS_ROTATOR           = 'z'; // Get homed status
 const char CONDITION_SHUTTER            = 'F'; // Get conditions status (from client) or tell shutter if conditions are bad (from Rotator)
 const char RESET_ALL					= 'A'; // resets all setting to factory default
-// available A B J N S U W X Z
+// available B J N S U W X Z
 // Shutter commands
 const char CLOSE_SHUTTER                    = 'C'; // Close shutter
 const char SHUTTER_RESTORE_MOTOR_DEFAULT    = 'D'; // Restore default values for motor control.

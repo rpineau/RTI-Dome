@@ -32,8 +32,9 @@
 #define BUTTON_CLOSE			14	// Digital Input
 #define BUTTON_OPEN				27	// Digital Input
 #define CONDITION_SENSOR_PIN	25  // Digital Input from RG11 ands other similar device. Might be use as a spare input on shutter board.
-#define SPARE1					34	// lower shutter closed
-#define SPARE2					26	// lower shutter open
+#define SPARE1					34	// SPARE1 or lower shutter closed
+#define SPARE2					26	// SPARE2 or lower shutter open
+
 // just for ease of coding
 #define LOWER_CLOSE_PIN			34	// lower shutter closed
 #define LOWER_OPEN_PIN			26	// lower shutter open
