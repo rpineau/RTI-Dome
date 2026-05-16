@@ -391,8 +391,6 @@ void RotatorClass::setIPGateway(String ipGateway)
 {
 	m_Config.ipConfig.gateway.fromString(ipGateway);
 	DBPrintln("New gateway : " + ipGateway);
-	// setting DNS IP to gateway IP as we don't use it and this is probably correct for most home users
-	m_Config.ipConfig.dns.fromString(ipGateway);
 	m_preferences.begin("RTI_Dome", false);
 	m_preferences.putString("gateway", ipGateway);
 	m_preferences.end();
@@ -419,7 +417,7 @@ void RotatorClass::resetNetworkToDefaults()
 	m_Config.ipConfig.bUseDHCP = m_preferences.getBool("bUseDHCP", true);
 	m_Config.ipConfig.ip.fromString(m_preferences.getString("ip","192.168.1.9"));
 	m_Config.ipConfig.dns.fromString(m_preferences.getString("dns","192.168.1.1"));
-	m_Config.ipConfig.gateway.fromString(m_preferences.getString("gateway","192.168.1.1"));
+	m_Config.ipConfig.gateway.fromString(m_preferences.getString("gateway","1.1.1.1"));
 	m_Config.ipConfig.subnetMask.fromString(m_preferences.getString("subnetMask","255.255.255.0"));
 #ifdef USE_WIFI
 	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.1"));
