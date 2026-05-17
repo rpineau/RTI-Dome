@@ -478,7 +478,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Position'
+                $ref: '#/components/schemas/UnsafeAction'
         '400':
           $ref: '#/components/responses/Response400'
       tags:
@@ -580,7 +580,7 @@ paths:
       operationId: setShutterWiFiSSID
       responses:
         '200':
-          description: Shutter Open order successfully set
+          description: Shutter SSID successfully set
         '400':
           $ref: '#/components/responses/Response400'
       tags:
@@ -838,7 +838,7 @@ paths:
       operationId: openShutter
       responses:
         '200':
-          description: Homing
+          description: Opening
           content:
             application/json:
               schema:
@@ -855,7 +855,7 @@ paths:
       operationId: closeShutter
       responses:
         '200':
-          description: Parking
+          description: Closing
           content:
             application/json:
               schema:
@@ -1036,7 +1036,7 @@ components:
       properties:
         value:
           type: boolean
-          description: shuter present true/falcse
+          description: shutter present true/falcse
       required:
       - value
 
