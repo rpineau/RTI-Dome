@@ -7,7 +7,6 @@
 #pragma message "Alpaca server enabled"
 #include <vector>
 #include <functional>
-// #include <NetworkUDP.h>
 #include <Network.h>
 #include <ArduinoJson.h>
 // Alpaca REST server

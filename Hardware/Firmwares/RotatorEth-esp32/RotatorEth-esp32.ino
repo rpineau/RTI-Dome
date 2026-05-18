@@ -183,7 +183,6 @@ void setup()
 	configureWiFi();
 #endif
 
-	// rtc_wdt_protect_off();
 	esp_task_wdt_deinit();
 	esp_task_wdt_init(&twdt_config);
 	esp_task_wdt_add(NULL);
