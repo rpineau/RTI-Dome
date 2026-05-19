@@ -151,7 +151,6 @@ private:
 	bool        m_bHasShutterControl;
 	bool        m_bHomeOnPark;
 	bool        m_bHomeOnUnpark;
-	bool        m_bOpenUpperShutterOnly;
 	bool        m_bCalibratingDome;
 	int			m_nSavedTicksPerRev;
 	std::string m_sSSID;

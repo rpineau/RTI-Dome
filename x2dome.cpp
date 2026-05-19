@@ -131,6 +131,8 @@ int X2Dome::execModalSettingsDialog()
 	double dDomeBattery = 0 , dDomeCutOff = 0;
 	double dShutterBattery =0 , dShutterCutOff = 0;
 	bool nReverseDir = false;
+	bool bDoubleShutter = false;
+
 	int n_nbStepPerRev = 0;
 	int nConditionSensorStatus = COND_SAFE;
 	int nRSpeed = 0;
@@ -174,10 +176,7 @@ int X2Dome::execModalSettingsDialog()
 	else {
 		dx->setChecked("homeOnUnpark",false);
 	}
-	// disbale these for now, these will be for the number of shuter and sequence for openging/closing
-	dx->setEnabled("checkBox_3",false);
-	dx->setEnabled("comboBox_2",false);
-	
+
 	
 	if(m_bLogConditionStatus) {
 		dx->setChecked("checkBox",true);
@@ -217,6 +216,10 @@ int X2Dome::execModalSettingsDialog()
 		dx->setEnabled("pushButton_3", true);
 		
 		if(m_bHasShutterControl) {
+			// shutter type, single or double
+			dx->setChecked("checkBox_3", bDoubleShutter?1:0);
+			dx->setEnabled("comboBox_2",bDoubleShutter);
+
 			dx->setEnabled("shutterSpeed",true);
 			nErr = m_RTIDome.getShutterSpeed(nSSpeed);
 			dx->setPropertyInt("shutterSpeed","value", nSSpeed);
@@ -244,6 +247,9 @@ int X2Dome::execModalSettingsDialog()
 			dx->setPropertyInt("shutterWatchdog", "value", 0);
 			dx->setEnabled("lowShutBatCutOff",false);
 			dx->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#FF0000;\">No Shutter detected</span></p></body></html>");
+			dx->setEnabled("checkBox_3",false);
+			dx->setEnabled("comboBox_2",false);
+
 		}
 		
 		// SSID
@@ -656,8 +662,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 		uiex->setPropertyInt("shutterAcceleration","value", nAcc);
 	}
 	
-	else if (!strcmp(pszEvent, "on_checkBox_stateChanged"))
-	{
+	else if (!strcmp(pszEvent, "on_checkBox_stateChanged")) {
 		m_bLogConditionStatus = uiex->isChecked("checkBox");
 		if(m_bLogConditionStatus) {
 			m_RTIDome.getConditionStatusFileName(fName);
@@ -700,8 +705,16 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 			uiex->setEnabled("GatewayIP", true);
 		}
 	}
-}
+	else if (!strcmp(pszEvent, "on_checkBox_3_stateChanged")) {
+		if(uiex->isChecked("checkBox_2")) {
+			uiex->setEnabled("comboBox_2", true);
+		}
+		else {
+			uiex->setEnabled("comboBox_2", false);
+		}
+	}
 
+}
 //
 //HardwareInfoInterface
 //
