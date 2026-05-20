@@ -57,6 +57,8 @@ enum Seeks { NOT_MOVING,           // Not homing or calibrating
 
 enum ConditionsActions {DO_NOTHING=0, HOME, PARK};
 enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
+enum ShutterOrder {TOP_FIRST = 0, BOTTOM_FIRST};
+
 FastAccelStepperEngine engine = FastAccelStepperEngine();
 FastAccelStepper *stepper = NULL;
 
@@ -573,7 +575,7 @@ float RotatorClass::GetAzimuth()
 	azimuth = (float)currentPosition / (float)m_Config.stepsPerRotation * 360.0f;
 	while(azimuth >= 360)
 		azimuth-=360;
-		
+
 	return float(azimuth);
 }
 

@@ -1823,6 +1823,81 @@ double CRTIDome::getCurrentEl()
 	return m_dCurrentElPosition;
 }
 
+int CRTIDome::getDoubleShutterEnabled(bool &bEnable)
+{
+
+	int nErr = PLUGIN_OK;
+	std::stringstream ssCmd;
+	std::string sResp;
+
+	bEnable = false;
+
+	if(!m_bIsConnected)
+		return NOT_CONNECTED;
+	ssCmd << DOUBLE_SHUTTER << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, DOUBLE_SHUTTER);
+	if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
+		m_sLogFile.flush();
+#endif
+		return nErr;
+	}
+	bEnable = (std::stoi(sResp) == 1);
+	return nErr;
+}
+
+int CRTIDome::setDoubleShutterEnabled(bool bEnable)
+{
+	int nErr = PLUGIN_OK;
+	std::stringstream ssCmd;
+	std::string sResp;
+
+	if(!m_bIsConnected)
+		return NOT_CONNECTED;
+
+	ssCmd << DOUBLE_SHUTTER << (bEnable?1:0) << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, DOUBLE_SHUTTER);
+	return nErr;
+}
+
+int CRTIDome::getDoubleShutterOrder(bool &bTopFirst)
+{
+	int nErr = PLUGIN_OK;
+	std::stringstream ssCmd;
+	std::string sResp;
+
+	bTopFirst = false;
+
+	if(!m_bIsConnected)
+		return NOT_CONNECTED;
+	ssCmd << DOUBLE_SHUTTER << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, DOUBLE_SHUTTER);
+	if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
+		m_sLogFile.flush();
+#endif
+		return nErr;
+	}
+	bTopFirst = (std::stoi(sResp) == 0);
+	return nErr;
+
+}
+
+int CRTIDome::setDoubleShutterOrder(bool bTopFirst)
+{
+	int nErr = PLUGIN_OK;
+	std::stringstream ssCmd;
+	std::string sResp;
+
+	if(!m_bIsConnected)
+		return NOT_CONNECTED;
+
+	ssCmd << DOUBLE_SHUTTER << (bTopFirst?0:1) << "#"; // top first = 0, bottom first = 1
+	nErr = deviceCommand(ssCmd.str(), sResp, DOUBLE_SHUTTER);
+	return nErr;
+}
 
 int CRTIDome::getDefaultDir(bool &bNormal)
 {

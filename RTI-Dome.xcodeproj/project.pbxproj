@@ -16,7 +16,6 @@
 		938EAFE11D0C858700ED2086 /* RTI-Dome.h in Headers */ = {isa = PBXBuildFile; fileRef = 938EAFDF1D0C858700ED2086 /* RTI-Dome.h */; };
 		938EAFE31D0C988800ED2086 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938EAFE21D0C988800ED2086 /* IOKit.framework */; };
 		938EAFE51D0C989400ED2086 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 938EAFE41D0C989400ED2086 /* CoreFoundation.framework */; };
-		93B05AB92FBBDBE100EF61E9 /* RTI-Dome 2.h in Headers */ = {isa = PBXBuildFile; fileRef = 93B05AB82FBBDBE100EF61E9 /* RTI-Dome 2.h */; };
 		93C11EC4252BFEEC00077F0C /* StopWatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 93C11EC3252BFEEC00077F0C /* StopWatch.h */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +30,6 @@
 		938EAFDF1D0C858700ED2086 /* RTI-Dome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RTI-Dome.h"; sourceTree = "<group>"; };
 		938EAFE21D0C988800ED2086 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		938EAFE41D0C989400ED2086 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		93B05AB82FBBDBE100EF61E9 /* RTI-Dome 2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RTI-Dome 2.h"; sourceTree = "<group>"; };
 		93C11EC3252BFEEC00077F0C /* StopWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StopWatch.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,7 +79,6 @@
 				93C11EC3252BFEEC00077F0C /* StopWatch.h */,
 				938EAFDE1D0C858700ED2086 /* RTI-Dome.cpp */,
 				938EAFDF1D0C858700ED2086 /* RTI-Dome.h */,
-				93B05AB82FBBDBE100EF61E9 /* RTI-Dome 2.h */,
 				938EAFD61D0C84F700ED2086 /* main.cpp */,
 				938EAFD71D0C84F700ED2086 /* main.h */,
 				938EAFD81D0C84F700ED2086 /* x2dome.cpp */,
@@ -100,7 +97,6 @@
 				938EAFE11D0C858700ED2086 /* RTI-Dome.h in Headers */,
 				938EAFDB1D0C84F700ED2086 /* main.h in Headers */,
 				9344FEE22AD89E43000E9ED4 /* dome_commands.h in Headers */,
-				93B05AB92FBBDBE100EF61E9 /* RTI-Dome 2.h in Headers */,
 				93C11EC4252BFEEC00077F0C /* StopWatch.h in Headers */,
 				938EAFDD1D0C84F700ED2086 /* x2dome.h in Headers */,
 			);

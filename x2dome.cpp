@@ -132,7 +132,7 @@ int X2Dome::execModalSettingsDialog()
 	double dShutterBattery =0 , dShutterCutOff = 0;
 	bool nReverseDir = false;
 	bool bDoubleShutter = false;
-
+	bool bTopShutterFirst = true; // default to top shutter first
 	int n_nbStepPerRev = 0;
 	int nConditionSensorStatus = COND_SAFE;
 	int nRSpeed = 0;
@@ -217,8 +217,11 @@ int X2Dome::execModalSettingsDialog()
 		
 		if(m_bHasShutterControl) {
 			// shutter type, single or double
+			m_RTIDome.getDoubleShutterEnabled(bDoubleShutter);
+			m_RTIDome.getDoubleShutterOrder(bTopShutterFirst);
 			dx->setChecked("checkBox_3", bDoubleShutter?1:0);
 			dx->setEnabled("comboBox_2",bDoubleShutter);
+			dx->setCurrentIndex("comboBox_2", bTopShutterFirst?0:1);
 
 			dx->setEnabled("shutterSpeed",true);
 			nErr = m_RTIDome.getShutterSpeed(nSSpeed);
