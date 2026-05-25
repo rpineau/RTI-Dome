@@ -895,6 +895,19 @@ paths:
       tags:
       - Advanced
 
+  /setup/abort:
+    put:
+      summary: Abort all motion
+      description: 'Abort all motion.'
+      operationId: Abort
+      responses:
+        '200':
+          description: All motion aborted
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Dome Control
+
 components:
   schemas:
     Position:

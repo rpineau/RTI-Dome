@@ -27,7 +27,6 @@
 
 enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
 enum AlpacaShutterStates { A_OPEN=0, A_CLOSED, A_OPENING, A_CLOSING,  A_ERROR};
-enum shutterOrder {BOTTOM_FIRST, TOP_FIRST};
 enum domeState {MOVING, HOMING, PARKING, IDLE};
 uint32_t nTransactionID;
 UUID uuid;
@@ -2457,7 +2456,15 @@ void gotoAzimuth(Request &req, Response &res)
 	}
 	else {
 		if(FormData["value"].is<float>()) {
-			Rotator->GoToAzimuth(FormData["value"]);
+			float fTmp;
+			fTmp = FormData["value"];
+			while(fTmp < 0.0f) {
+				fTmp += 360.0f;
+			}
+			while(fTmp > 360.0f) {
+				fTmp -= 360.0f;
+			}
+			Rotator->GoToAzimuth(fTmp);
 		}
 	}
 	controllerResp["value"] = MOVING;
@@ -2569,6 +2576,19 @@ void resetToFactory(Request &req, Response &res)
 	Rotator->resetAlltoDefault();
 }
 
+void uiAbort(Request &req, Response &res)
+{
+	JsonDocument controllerResp;
+	String sResp;
+	float fParkAz;
+
+	controllerResp["value"] = "Aborting all motion";
+	serializeJson(controllerResp, sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+	Abort();
+}
 //
 // Alpaca server class
 //
@@ -2712,6 +2732,8 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("/setup/getShutterState", &getShutterState);
 
 	m_AlpacaRestServer->put("/setup/resetToFactory", &resetToFactory);
+
+	m_AlpacaRestServer->put("/setup/abort", &uiAbort);
 
 	DBPrintln("m_AlpacaRestServer started");
 }
