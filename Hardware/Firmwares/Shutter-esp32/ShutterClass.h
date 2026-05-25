@@ -316,7 +316,6 @@ void ShutterClass::resetAlltoDefault()
 {
 	DBPrintln("Resetting do factory defaults");
 	DBPrintln("Initializing NVS");
-	m_preferences.end();
 	nvs_flash_erase();
 	nvs_flash_init();
 	m_preferences.begin("RTI_Shutter", false);
@@ -705,4 +704,3 @@ void ShutterClass::getOpenOrder(bool &bBottomfirst)
 {
 	bBottomfirst = m_Config.bTopShutterOpenFirst;
 }
-
