@@ -225,7 +225,7 @@ void  getQueryGetVariables(String sQueryString, std::vector<std::vector<String>>
 	return;
 }
 
-bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
+bool getIDs(Request &req, JsonDocument &jsonResp, JsonDocument &FormData)
 {
 	char ClientID[64];
 	char ClientTransactionID[64];
@@ -237,7 +237,7 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 
 	DBPrintln("getIDs");
 
-	AlpacaResp["ServerTransactionID"] = nTransactionID;
+	jsonResp["ServerTransactionID"] = nTransactionID;
 
 	if(req.method() == Request::GET) {
 		// the req.query being case sensitive will not work here.
@@ -251,9 +251,9 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 		}
 
 		if(sClientId.length())
-			AlpacaResp["ClientID"] = sClientId.toInt()<0?0:sClientId.toInt();
+			jsonResp["ClientID"] = sClientId.toInt()<0?0:sClientId.toInt();
 		if(sClientTransactionId.length())
-			AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?0:sClientTransactionId.toInt();
+			jsonResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?0:sClientTransactionId.toInt();
 	}
 	else { // this is a PUT, therefore there should be some form data
 		formDataToJson(req, FormData);
@@ -264,13 +264,13 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 			if(FormData["clientid"].is<unsigned long>()) {
 				serializeJson(FormData["clientid"], sClientId);
 				sClientId.trim();
-				AlpacaResp["ClientID"] = sClientId.toInt()<0?0:sClientId.toInt();
+				jsonResp["ClientID"] = sClientId.toInt()<0?0:sClientId.toInt();
 
 			}
 			if(FormData["clienttransactionid"].is<unsigned long>()) {
 				serializeJson(FormData["clienttransactionid"], sClientTransactionId);
 				sClientTransactionId.trim();
-				AlpacaResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?0:sClientTransactionId.toInt();
+				jsonResp["ClientTransactionID"] = sClientTransactionId.toInt()<0?0:sClientTransactionId.toInt();
 			}
 		}
 #ifdef DEBUG
@@ -288,6 +288,41 @@ bool getIDs(Request &req, JsonDocument &AlpacaResp, JsonDocument &FormData)
 	return bParamOk;
 }
 
+void AlpacaError_x400(JsonDocument jsonResp, Response &res, String errMsg="Not Implemented")
+{
+	String sResp;
+	jsonResp["ErrorNumber"] = 0x400;
+	jsonResp["ErrorMessage"] = errMsg;
+	jsonResp["Value"] = false;
+	serializeJson(jsonResp, sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+void AlpacaError_x401(JsonDocument &jsonResp, Response &res, String errMsg="Invalid parameters")
+{
+	String sResp;
+	jsonResp["ErrorNumber"] = 0x401;
+	jsonResp["ErrorMessage"] = errMsg;
+	serializeJson(jsonResp, sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
+
+void AlpacaError_x408(JsonDocument &jsonResp, Response &res, String errMsg="")
+{
+	String sResp;
+	jsonResp["ErrorNumber"] = 0x408;
+	jsonResp["ErrorMessage"] = errMsg;
+	serializeJson(jsonResp, sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
 void redirectToSetup(Request &req, Response &res)
 {
 	res.set("Location", sRedirectURL.c_str());
@@ -296,72 +331,72 @@ void redirectToSetup(Request &req, Response &res)
 
 void getApiVersion(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getApiVersion ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
 
-	AlpacaResp["Value"][0] = 1;
+	jsonResp["Value"][0] = 1;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getDescription(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getDescription ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["Value"]["ServerName"]= "RTIDome Alpaca";
-	AlpacaResp["Value"]["Manufacturer"]= "RTI-Zone";
-	AlpacaResp["Value"]["ManufacturerVersion"]= VERSION;
-	AlpacaResp["Value"]["Location"]= "Earth";
+	jsonResp["Value"]["ServerName"]= "RTIDome Alpaca";
+	jsonResp["Value"]["Manufacturer"]= "RTI-Zone";
+	jsonResp["Value"]["ManufacturerVersion"]= VERSION;
+	jsonResp["Value"]["Location"]= "Earth";
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getConfiguredDevice(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getConfiguredDevice ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["Value"][0] ["DeviceName"]= "RTIDome";
-	AlpacaResp["Value"][0] ["DeviceType"]= "dome";
-	AlpacaResp["Value"][0] ["DeviceNumber"]= 0;
-	AlpacaResp["Value"][0] ["UniqueID"]= uuid;
+	jsonResp["Value"][0] ["DeviceName"]= "RTIDome";
+	jsonResp["Value"][0] ["DeviceType"]= "dome";
+	jsonResp["Value"][0] ["DeviceNumber"]= 0;
+	jsonResp["Value"][0] ["UniqueID"]= uuid;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doAction(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -369,15 +404,10 @@ void doAction(Request &req, Response &res)
 	String sParameters;
 
 	DBPrintln("[ ********** doAction ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
+		AlpacaError_x401(jsonResp, res);
 		return;
 	}
 
@@ -388,18 +418,19 @@ void doAction(Request &req, Response &res)
 	DBPrintln("sParameters : " + sParameters);
 #endif
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"] = "Ok";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"] = "Ok";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doCommandBlind(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -407,29 +438,25 @@ void doCommandBlind(Request &req, Response &res)
 	String sClientTransactionId;
 
 	DBPrintln("[ ********** doCommandBlind ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doCommandBool(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -437,30 +464,27 @@ void doCommandBool(Request &req, Response &res)
 	String sClientTransactionId;
 
 	DBPrintln("[ ********** doCommandBool ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"] = true;
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"] = true;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doCommandString(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -468,50 +492,47 @@ void doCommandString(Request &req, Response &res)
 	String sClientTransactionId;
 
 	DBPrintln("[ ********** doCommandString ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"] = "Ok";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"] = "Ok";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getConnected(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getConected ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"] = bAlpacaConnected;
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"] = bAlpacaConnected;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void setConnected(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -521,39 +542,33 @@ void setConnected(Request &req, Response &res)
 	String sTmp;
 
 	DBPrintln("[ ********** setConected ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	if(!FormData["connected"].is<bool>()) {
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters, missing 'Connected'";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	bAlpacaConnected = FormData["connected"];
 	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void domeConnect(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -563,31 +578,28 @@ void domeConnect(Request &req, Response &res)
 	String sTmp;
 
 	DBPrintln("[ ********** setConected ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	bAlpacaConnected = true;
 	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void domeConnecting(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -597,23 +609,20 @@ void domeConnecting(Request &req, Response &res)
 	String sTmp;
 
 	DBPrintln("[ ********** setConected ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"] = false; // it's already connected
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"] = false; // it's already connected
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
@@ -621,7 +630,7 @@ void domeConnecting(Request &req, Response &res)
 
 void getDomeState(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument jsTmp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
@@ -631,11 +640,10 @@ void getDomeState(Request &req, Response &res)
 	bool bParked = false;
 
 	DBPrintln("[ ********** getDomeState ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
 #ifdef USE_WIFI
 	// add states to response
@@ -652,13 +660,13 @@ void getDomeState(Request &req, Response &res)
 	}
 	jsTmp["Name"] = "Altitude";
 	jsTmp["Value"] = Alt;
-	AlpacaResp["Value"].add(jsTmp);
+	jsonResp["Value"].add(jsTmp);
 	jsTmp.clear();
 #endif
 
 	jsTmp["Name"] = "AtHome";
 	jsTmp["Value"] = (Rotator->GetHomeStatus() == ATHOME);
-	AlpacaResp["Value"].add(jsTmp);
+	jsonResp["Value"].add(jsTmp);
 	jsTmp.clear();
 
 	dParkPos = Rotator->GetParkAzimuth();
@@ -668,17 +676,17 @@ void getDomeState(Request &req, Response &res)
 	}
 	jsTmp["Name"] = "AtPark";
 	jsTmp["Value"] = bParked;
-	AlpacaResp["Value"].add(jsTmp);
+	jsonResp["Value"].add(jsTmp);
 	jsTmp.clear();
 
 	jsTmp["Name"] = "Azimuth";
 	jsTmp["Value"] = Rotator->GetAzimuth();
-	AlpacaResp["Value"].add(jsTmp);
+	jsonResp["Value"].add(jsTmp);
 	jsTmp.clear();
 
 	jsTmp["Name"] = "ShutterStatus";
 	jsTmp["Value"] = getAlpacaShutterState();
-	AlpacaResp["Value"].add(jsTmp);
+	jsonResp["Value"].add(jsTmp);
 	jsTmp.clear();
 
 
@@ -689,17 +697,18 @@ void getDomeState(Request &req, Response &res)
 	else {
 		jsTmp["Value"] = false;
 	}
-	AlpacaResp["Value"].add(jsTmp);
+	jsonResp["Value"].add(jsTmp);
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void domeDisconnect(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -709,153 +718,150 @@ void domeDisconnect(Request &req, Response &res)
 	String sTmp;
 
 	DBPrintln("[ ********** setConected ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	bAlpacaConnected = false;
 	DBPrintln("bAlpacaConnected : " + (bAlpacaConnected?String("true"):String("false")));
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getDeviceDescription(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getDeviceDescription ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"]= "RTI-Zone dome controller";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"]= "RTI-Zone dome controller";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getDriverInfo(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getDriverInfo ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"]= "RTI-Zone Dome controller";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"]= "RTI-Zone Dome controller";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getDriverVersion(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getDriverVersion ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"]= String(VERSION);
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"]= String(VERSION);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getInterfaceVersion(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getInterfaceVersion ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"]= DOME_INTERFACE_VERSION;
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"]= DOME_INTERFACE_VERSION;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getName(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getName ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	AlpacaResp["Value"]= "RTI-Zone Dome controller";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	jsonResp["Value"]= "RTI-Zone Dome controller";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getSupportedActions(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getSupportedActions ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
 
-	AlpacaResp["Value"] = "[]";
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["Value"] = "[]";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getAltitude(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -863,297 +869,295 @@ void getAltitude(Request &req, Response &res)
 	String sTmpString = String(STATE_SHUTTER);
 
 	DBPrintln("[ ********** getAltitude ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
 #ifdef USE_WIFI
 	shutterClient.print(sTmpString + "#");
 	ReceiveWiFi(shutterClient);
 	switch (RemoteShutter.state ) {
 		case OPEN:
-			AlpacaResp["Value"] = 90.0f;
+			jsonResp["Value"] = 90.0f;
 			break;
 		case CLOSED:
-			AlpacaResp["Value"] = 0.0f;
+			jsonResp["Value"] = 0.0f;
 			break;
 		default:
-			AlpacaResp["Value"] = 0.0f;
+			jsonResp["Value"] = 0.0f;
 			break;
 	}
 #else
-	AlpacaResp["Value"] = 0.0f;
+	jsonResp["Value"] = 0.0f;
 #endif
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 
 }
 
 void geAtHome(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** geAtHome ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
 	if(String(Rotator->GetHomeStatus() == ATHOME)) {
-		AlpacaResp["Value"] = true;
+		jsonResp["Value"] = true;
 	}
 	else {
-		AlpacaResp["Value"] = false;
+		jsonResp["Value"] = false;
 	}
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 
 }
 
 void geAtPark(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** geAtPark ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(bParked) {
-		AlpacaResp["Value"] = true;
+		jsonResp["Value"] = true;
 	}
 	else {
-		AlpacaResp["Value"] = false;
+		jsonResp["Value"] = false;
 	}
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-
 }
 
 void getAzimuth(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getAzimuth ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = Rotator->GetAzimuth();
+	jsonResp["Value"] = Rotator->GetAzimuth();
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canfindhome(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canfindhome ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = true;
+	jsonResp["Value"] = true;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canPark(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canPark ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = true;
+	jsonResp["Value"] = true;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canSetAltitude(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canSetAltitude ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = false;
+	jsonResp["Value"] = false;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canSetAzimuth(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canSetAzimuth ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = true;
+	jsonResp["Value"] = true;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canSetPark(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canSetPark ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = true;
+	jsonResp["Value"] = true;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canSetShutter(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canSetShutter ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
 #ifndef USE_WIFI
-	AlpacaResp["Value"] = false;
+	jsonResp["Value"] = false;
 #else
 	if(!nbWiFiClient) {
-		AlpacaResp["Value"] = true;
+		jsonResp["Value"] = true;
 	}
 	else {
-		AlpacaResp["Value"] = true;
+		jsonResp["Value"] = true;
 	}
 #endif
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canSlave(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canSlave ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = false;
+	jsonResp["Value"] = false;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void canSyncAzimuth(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canSyncAzimuth ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = true;
+	jsonResp["Value"] = true;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void getShutterStatus(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -1161,134 +1165,124 @@ void getShutterStatus(Request &req, Response &res)
 	String sTmpString = String(STATE_SHUTTER);
 
 	DBPrintln("[ ********** getShutterStatus ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 #ifndef USE_WIFI
-	AlpacaResp["ErrorNumber"] = 0x400;
-	AlpacaResp["ErrorMessage"] = "Not implemented";
+	AlpacaError_x400(jsonResp, res);
+	return;
 #else
 	if(!nbWiFiClient) {
-		AlpacaResp["ErrorNumber"] = 0x40B;
-		AlpacaResp["ErrorMessage"] = "Shutter not connected";
-	} else {
-		AlpacaResp["ErrorNumber"] = 0;
-		AlpacaResp["ErrorMessage"] = "";
+		AlpacaError_x400(jsonResp, res, "Shutter not connected");
+		return;
+	}
+	else {
+		jsonResp["ErrorNumber"] = 0;
+		jsonResp["ErrorMessage"] = "";
 		shutterClient.print(sTmpString + "#");
 		ReceiveWiFi(shutterClient);
-		AlpacaResp["Value"] = getAlpacaShutterState();
+		jsonResp["Value"] = getAlpacaShutterState();
 	}
 #endif
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
+
 void getSlaved(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** canSlave ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
-	AlpacaResp["Value"] = false;
+	jsonResp["Value"] = false;
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void setSlaved(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** Slaved ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-	res.set("Content-Type", "application/json");
-
-	AlpacaResp["ErrorNumber"] = 0x400;
-	AlpacaResp["ErrorMessage"] = "Invalid parameters, missing 'Connected'";
-	AlpacaResp["Value"] = false;
-
-	serializeJson(AlpacaResp, sResp);
-	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+	bParamsOk = getIDs(req, jsonResp, FormData);
+	AlpacaError_x400(jsonResp, res, "Invalid parameters, missing 'Connected'");
 }
 
 void getSlewing(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** getSlewing ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
 	DBPrintln("Seekmode : " + String(Rotator->GetSeekMode()));
 
 	if(Rotator->GetSeekMode() != NOT_MOVING) {
-		AlpacaResp["Value"] = true;
+		jsonResp["Value"] = true;
 	}
 	else {
-		AlpacaResp["Value"] = false;
+		jsonResp["Value"] = false;
 	}
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doAbort(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** doAbort ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
 	Abort(); // this is in the RotatorEth-esp32.ino
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doCloseShutter(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -1296,80 +1290,70 @@ void doCloseShutter(Request &req, Response &res)
 	String sTmpString = String(CLOSE_SHUTTER);
 
 	DBPrintln("[ ********** doCloseShutter ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 #ifndef USE_WIFI
-	AlpacaResp["ErrorNumber"] = 0x400;
-	AlpacaResp["ErrorMessage"] = "Not implemented";
+	AlpacaError_x400(jsonResp, res);
+	return;
 #else
 	if(!nbWiFiClient) {
-		AlpacaResp["ErrorNumber"] = 0x40B;
-		AlpacaResp["ErrorMessage"] = "Shutter not connected";
+		AlpacaError_x400(jsonResp, res, "Shutter not connected");
+		return;
 	} else {
-		AlpacaResp["ErrorNumber"] = 0;
-		AlpacaResp["ErrorMessage"] = "";
+		jsonResp["ErrorNumber"] = 0;
+		jsonResp["ErrorMessage"] = "";
 		shutterClient.print(sTmpString+ "#");
 		ReceiveWiFi(shutterClient);
 	}
 #endif
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doFindHome(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** doFindHome ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	res.set("Content-Type", "application/json");
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	if(bLowShutterVoltage) {
-		AlpacaResp["ErrorNumber"] = 0x408;
-		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x408(jsonResp, res);
+		return;
 	}
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
 
 	Rotator->StartHoming();
 
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doOpenShutter(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -1377,106 +1361,92 @@ void doOpenShutter(Request &req, Response &res)
 	String sTmpString = String(OPEN_SHUTTER);
 
 	DBPrintln("[ ********** doOpenShutter ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 #ifndef USE_WIFI
-	AlpacaResp["ErrorNumber"] = 0x400;
-	AlpacaResp["ErrorMessage"] = "Not implemented";
+	AlpacaError_x400(jsonResp, res);
+	return;
 #else
 	if(!nbWiFiClient) {
-		AlpacaResp["ErrorNumber"] = 0x40B;
-		AlpacaResp["ErrorMessage"] = "Shutter not connected";
+		AlpacaError_x400(jsonResp, res, "Shutter not connected");
+		return;
 	}
 	else if(bLowShutterVoltage) {
-		AlpacaResp["ErrorNumber"] = 0x408;
-		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
+		AlpacaError_x408(jsonResp, res);
+		return;
 		}
 	else {
-		AlpacaResp["ErrorNumber"] = 0;
-		AlpacaResp["ErrorMessage"] = "";
+		jsonResp["ErrorNumber"] = 0;
+		jsonResp["ErrorMessage"] = "";
 
 		shutterClient.print(sTmpString+ "#");
 		ReceiveWiFi(shutterClient);
 	}
 #endif
-	serializeJson(AlpacaResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doPark(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 	float fParkPos;
 
 	DBPrintln("[ ********** doPark ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	fParkPos = Rotator->GetParkAzimuth();
 	Rotator->GoToAzimuth(fParkPos);
 	bParked = true;
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void setPark(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 	float fParkPos;
 
 	DBPrintln("[ ********** setPark ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 	fParkPos = Rotator->GetAzimuth();
 	Rotator->SetParkAzimuth(fParkPos);
@@ -1484,155 +1454,122 @@ void setPark(Request &req, Response &res)
 
 void doAltitudeSlew(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 
 	DBPrintln("[ ********** doAltitudeSlew ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 #ifndef USE_WIFI
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	if(!FormData["altitude"].is<float>()) {
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid value";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 	// in case we implement this one day.
-	AlpacaResp["ErrorNumber"] = 0x400;
-	AlpacaResp["ErrorMessage"] = "Not implemented";
-	serializeJson(AlpacaResp, sResp);
-	DBPrintln(String(__func__) + " : sResp : " + sResp);
+	AlpacaError_x400(jsonResp, res);
+	return;
 #else
-	AlpacaResp["ErrorNumber"] = 0x400;
-	AlpacaResp["ErrorMessage"] = "Invalid method";
-	serializeJson(AlpacaResp, sResp);
+	AlpacaError_x401(jsonResp, res);
+	return;
 #endif
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 
 }
 
 void doGoTo(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 	float dNewPos;
 
 	DBPrintln("[ ********** doGoTo ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	if(bLowShutterVoltage) {
-		AlpacaResp["ErrorNumber"] = 0x408;
-		AlpacaResp["ErrorMessage"] = "Low shutter voltage, staying at park position";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x408(jsonResp, res);
+		return;
 	}
 
 	if(!FormData["azimuth"].is<float>()) {
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	dNewPos = FormData["azimuth"];
 	if(dNewPos < 0.0f || dNewPos > 360.0f) {
-		AlpacaResp["ErrorNumber"] = 1025;
-		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res, "Invalid azimuth");
+		return;
 	}
 
 	Rotator->GoToAzimuth(dNewPos);
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 void doSyncAzimuth(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
 	float dNewPos;
 
 	DBPrintln("[ ********** doSyncAzimuth ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
-
-	res.set("Content-Type", "application/json");
+	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	if(!FormData["azimuth"].is<float>()) {
-		AlpacaResp["ErrorNumber"] = 1025;
-		AlpacaResp["ErrorMessage"] = "Invalid azimuth";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res, "Invalid azimuth");
+		return;
 	}
 
 	dNewPos = FormData["azimuth"];
 	if(dNewPos < 0.0f || dNewPos > 360.0f) {
-		AlpacaResp["ErrorNumber"] = 0x401;
-		AlpacaResp["ErrorMessage"] = "Invalid Azimuth";
-		serializeJson(AlpacaResp, sResp);
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
-			return;
+		AlpacaError_x401(jsonResp, res);
+		return;
 	}
 
 	Rotator->SyncPosition(dNewPos);
 
-	AlpacaResp["ErrorNumber"] = 0;
-	AlpacaResp["ErrorMessage"] = "";
-	serializeJson(AlpacaResp, sResp);
+	jsonResp["ErrorNumber"] = 0;
+	jsonResp["ErrorMessage"] = "";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
+	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
 
 void doSetup(Request &req, Response &res)
 {
-	JsonDocument AlpacaResp;
+	JsonDocument jsonResp;
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
@@ -1641,7 +1578,7 @@ void doSetup(Request &req, Response &res)
 	res.set("Content-Type", "text/html");
 
 	DBPrintln("[ ********** doSetup ********** ]");
-	bParamsOk = getIDs(req, AlpacaResp, FormData);
+	bParamsOk = getIDs(req, jsonResp, FormData);
 	res.print(DOME_CONTROLLER_HTML);
 	res.print(sHTML);
 }
@@ -1651,7 +1588,7 @@ void doSetup(Request &req, Response &res)
 //
 void homePosition(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	float dPosition = 0.0f;
 
@@ -1659,11 +1596,7 @@ void homePosition(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1674,8 +1607,8 @@ void homePosition(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetHomeAzimuth();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->GetHomeAzimuth();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1684,7 +1617,7 @@ void homePosition(Request &req, Response &res)
 
 void parkPosition(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	float dPosition = 0.0f;
 
@@ -1692,11 +1625,7 @@ void parkPosition(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1707,8 +1636,8 @@ void parkPosition(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetParkAzimuth();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->GetParkAzimuth();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1717,18 +1646,14 @@ void parkPosition(Request &req, Response &res)
 
 void reverseDirectionState(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	bool bReversed = false;
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1739,8 +1664,8 @@ void reverseDirectionState(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetReversed();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->GetReversed();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1750,7 +1675,7 @@ void reverseDirectionState(Request &req, Response &res)
 
 void shutterOpenOrderValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	bool bBottomfirst = false;
 
@@ -1758,11 +1683,7 @@ void shutterOpenOrderValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1774,9 +1695,9 @@ void shutterOpenOrderValue(Request &req, Response &res)
 		}
 	}
 	// need implementation
-	// controllerResp["value"] = Rotator->GetOpenOrder();
-	controllerResp["value"] = TOP_FIRST; // for now
-	serializeJson(controllerResp, sResp);
+	// jsonResp["value"] = Rotator->GetOpenOrder();
+	jsonResp["value"] = TOP_FIRST; // for now
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1787,7 +1708,7 @@ void shutterOpenOrderValue(Request &req, Response &res)
 
 void wifiSSIDValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	WIFIConfig l_WifiConfig;
 	bool bReversed = false;
@@ -1799,11 +1720,7 @@ void wifiSSIDValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1817,8 +1734,8 @@ void wifiSSIDValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = l_WifiConfig.sSSID;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = l_WifiConfig.sSSID;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1828,13 +1745,13 @@ void wifiSSIDValue(Request &req, Response &res)
 
 void isShutterPresentState(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	bool bReversed = false;
 
 
-	controllerResp["value"] = bool(bShutterPresent);
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = bool(bShutterPresent);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1844,7 +1761,7 @@ void isShutterPresentState(Request &req, Response &res)
 
 void useDHCPState(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	bool bUseDhcp = false;
 
@@ -1852,11 +1769,7 @@ void useDHCPState(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1867,8 +1780,8 @@ void useDHCPState(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = Rotator->getDHCPFlag();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->getDHCPFlag();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1877,17 +1790,17 @@ void useDHCPState(Request &req, Response &res)
 
 void macAddressValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
-	controllerResp["value"] = String(MAC_Address[0], HEX) + String(":") +
+	jsonResp["value"] = String(MAC_Address[0], HEX) + String(":") +
 					String(MAC_Address[1], HEX) + String(":") +
 					String(MAC_Address[2], HEX) + String(":") +
 					String(MAC_Address[3], HEX) + String(":") +
 					String(MAC_Address[4], HEX) + String(":") +
 					String(MAC_Address[5], HEX);
 
-	serializeJson(controllerResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1897,18 +1810,14 @@ void macAddressValue(Request &req, Response &res)
 
 void ipAddressValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1919,12 +1828,12 @@ void ipAddressValue(Request &req, Response &res)
 	}
 
 	if(Rotator->getDHCPFlag()) {
-		controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.localIP()));
-	} 
-	else {
-		controllerResp["value"] = Rotator->getIPAddress();
+		jsonResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.localIP()));
 	}
-	serializeJson(controllerResp, sResp);
+	else {
+		jsonResp["value"] = Rotator->getIPAddress();
+	}
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1933,18 +1842,14 @@ void ipAddressValue(Request &req, Response &res)
 
 void subnetMaskValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1955,13 +1860,13 @@ void subnetMaskValue(Request &req, Response &res)
 	}
 
 	if(Rotator->getDHCPFlag()) {
-		controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
-	} 
+		jsonResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.subnetMask()));
+	}
 	else {
-		controllerResp["value"] = Rotator->getIPSubnetMask();
+		jsonResp["value"] = Rotator->getIPSubnetMask();
 	}
 
-	serializeJson(controllerResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -1970,18 +1875,14 @@ void subnetMaskValue(Request &req, Response &res)
 
 void ipGatewayValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -1992,13 +1893,13 @@ void ipGatewayValue(Request &req, Response &res)
 	}
 
 	if(Rotator->getDHCPFlag()) {
-		controllerResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
-	} 
+		jsonResp["value"] = String(RotatorClass::IpAddress2String(domeEthernet.gatewayIP()));
+	}
 	else {
-		controllerResp["value"] = Rotator->getIPGateway();
+		jsonResp["value"] = Rotator->getIPGateway();
 	}
 
-	serializeJson(controllerResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2008,15 +1909,15 @@ void ipGatewayValue(Request &req, Response &res)
 
 void restoreNetworkDefaults(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		Rotator->resetNetworkToDefaults();
 	}
 
-	controllerResp["value"] = "Restored";
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = "Restored";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2026,18 +1927,14 @@ void restoreNetworkDefaults(Request &req, Response &res)
 
 void domeCalibrateAction(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2054,16 +1951,16 @@ void domeCalibrateAction(Request &req, Response &res)
 	switch(Rotator->GetCalibrationState()) {
 		case CALIBRATION_MOVE_OFF:
 		case CALIBRATION_STEP1:
-			controllerResp["value"] = CALIBRATION_STEP1;
+			jsonResp["value"] = CALIBRATION_STEP1;
 			break;
 		case CALIBRATION_MOVE_OFF2:
 		case CALIBRATION_MEASURE:
-			controllerResp["value"] = CALIBRATION_MEASURE;
+			jsonResp["value"] = CALIBRATION_MEASURE;
 			break;
 		default:
-			controllerResp["value"] = NOT_MOVING;
+			jsonResp["value"] = NOT_MOVING;
 	}
-	serializeJson(controllerResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2072,18 +1969,14 @@ void domeCalibrateAction(Request &req, Response &res)
 
 void stepPerRevolutionValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2093,8 +1986,8 @@ void stepPerRevolutionValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetStepsPerRotation();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->GetStepsPerRotation();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2103,18 +1996,14 @@ void stepPerRevolutionValue(Request &req, Response &res)
 
 void rotationSpeedValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2124,8 +2013,8 @@ void rotationSpeedValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetMaxSpeed();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->GetMaxSpeed();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2134,18 +2023,14 @@ void rotationSpeedValue(Request &req, Response &res)
 
 void rotationAccelerationValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2155,8 +2040,8 @@ void rotationAccelerationValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = Rotator->GetAcceleration();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->GetAcceleration();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2166,12 +2051,12 @@ void rotationAccelerationValue(Request &req, Response &res)
 
 void restoreRotationMotorValues(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	Rotator->restoreDefaultMotorSettings();
-	controllerResp["value"] = "Restored";
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = "Restored";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2181,18 +2066,14 @@ void restoreRotationMotorValues(Request &req, Response &res)
 #ifdef USE_WIFI
 void shutterSpeedValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2207,8 +2088,8 @@ void shutterSpeedValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = RemoteShutter.speed;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = RemoteShutter.speed;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2217,18 +2098,14 @@ void shutterSpeedValue(Request &req, Response &res)
 
 void shutterAccelerationValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2243,8 +2120,8 @@ void shutterAccelerationValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = RemoteShutter.acceleration;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = RemoteShutter.acceleration;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2253,7 +2130,7 @@ void shutterAccelerationValue(Request &req, Response &res)
 
 void restoreShutterMotorValues(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
@@ -2272,8 +2149,8 @@ void restoreShutterMotorValues(Request &req, Response &res)
 		ReceiveWiFi(shutterClient);
 	}
 
-	controllerResp["value"] = "Restored";
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = "Restored";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2282,18 +2159,14 @@ void restoreShutterMotorValues(Request &req, Response &res)
 
 void shutterWatchdogTimerValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2308,8 +2181,8 @@ void shutterWatchdogTimerValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = RemoteShutter.watchdogInterval;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = RemoteShutter.watchdogInterval;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2318,18 +2191,14 @@ void shutterWatchdogTimerValue(Request &req, Response &res)
 
 void shutterVoltageCutoffValue(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2344,8 +2213,8 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 		}
 	}
 
-	controllerResp["value"] = RemoteShutter.voltsCutOff;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = RemoteShutter.voltsCutOff;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2356,18 +2225,14 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 
 void unsafeDomeAction(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		if(FormData.size()==0){
-			controllerResp["ErrorNumber"] = 0x401;
-			controllerResp["ErrorMessage"] = "Invalid parameters";
-			serializeJson(controllerResp, sResp);
-			res.set("Content-Type", "application/json");
-			res.write((uint8_t*)(sResp.c_str()),sResp.length());
+			AlpacaError_x401(jsonResp, res);
 			return;
 		}
 		else {
@@ -2378,16 +2243,16 @@ void unsafeDomeAction(Request &req, Response &res)
 	}
 	switch(Rotator->GetConditionsAction()) {
 		case DO_NOTHING:
-			controllerResp["value"] = DO_NOTHING;
+			jsonResp["value"] = DO_NOTHING;
 			break;
 		case HOME:
-			controllerResp["value"] = HOME;
+			jsonResp["value"] = HOME;
 			break;
 		case PARK:
-			controllerResp["value"] = PARK;
+			jsonResp["value"] = PARK;
 			break;
 	}
-	serializeJson(controllerResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2397,11 +2262,11 @@ void unsafeDomeAction(Request &req, Response &res)
 
 void envConditionState(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
-	controllerResp["value"] = bool(bIsSafe);
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = bool(bIsSafe);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2410,12 +2275,12 @@ void envConditionState(Request &req, Response &res)
 
 void homeDome(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	Rotator->StartHoming();
-	controllerResp["value"] = HOMING;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = HOMING;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2424,14 +2289,14 @@ void homeDome(Request &req, Response &res)
 
 void parkDome(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	float fParkAz;
 
 	fParkAz = Rotator->GetParkAzimuth();
 	Rotator->GoToAzimuth(fParkAz);
-	controllerResp["value"] = PARKING;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = PARKING;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2441,17 +2306,13 @@ void parkDome(Request &req, Response &res)
 
 void gotoAzimuth(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	JsonDocument FormData;
 	formDataToJson(req, FormData);
 	if(FormData.size()==0){
-		controllerResp["ErrorNumber"] = 0x401;
-		controllerResp["ErrorMessage"] = "Invalid parameters";
-		serializeJson(controllerResp, sResp);
-		res.set("Content-Type", "application/json");
-		res.write((uint8_t*)(sResp.c_str()),sResp.length());
+		AlpacaError_x401(jsonResp, res);
 		return;
 	}
 	else {
@@ -2467,8 +2328,8 @@ void gotoAzimuth(Request &req, Response &res)
 			Rotator->GoToAzimuth(fTmp);
 		}
 	}
-	controllerResp["value"] = MOVING;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = MOVING;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2477,11 +2338,11 @@ void gotoAzimuth(Request &req, Response &res)
 
 void getDomeAzimuth(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
-	controllerResp["value"] = Rotator->GetAzimuth();
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = Rotator->GetAzimuth();
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2491,12 +2352,12 @@ void getDomeAzimuth(Request &req, Response &res)
 
 void openShutter(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	bOpenShutterButtonPressed = true;
-	controllerResp["value"] = A_OPENING;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = A_OPENING;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2505,13 +2366,13 @@ void openShutter(Request &req, Response &res)
 
 void closeShutter(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	float fParkAz;
 
 	bCloseShutterButtonPressed = true;
-	controllerResp["value"] = A_CLOSING;
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = A_CLOSING;
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2520,7 +2381,7 @@ void closeShutter(Request &req, Response &res)
 
 void getShutterState(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 
 	String sTmpString = String(STATE_SHUTTER);
@@ -2533,29 +2394,29 @@ void getShutterState(Request &req, Response &res)
 
 	switch(RemoteShutter.state){
 		case OPEN :
-			controllerResp["value"] = A_OPEN;
+			jsonResp["value"] = A_OPEN;
 			break;
-		case CLOSED : 
-			controllerResp["value"] = A_CLOSED;
+		case CLOSED :
+			jsonResp["value"] = A_CLOSED;
 			break;
 		case OPENING :
 		case FINISHING_OPEN :
 		case BOTTOM_OPENING :
-			controllerResp["value"] = A_OPENING;
+			jsonResp["value"] = A_OPENING;
 			break;
 		case CLOSING :
 		case FINISHING_CLOSE :
 		case BOTTOM_CLOSING :
-			controllerResp["value"] = A_CLOSING;
+			jsonResp["value"] = A_CLOSING;
 			break;
-		case ERROR : 
-			controllerResp["value"] = A_ERROR;
+		case ERROR :
+			jsonResp["value"] = A_ERROR;
 			break;
 		default:
-			controllerResp["value"] = A_ERROR;
+			jsonResp["value"] = A_ERROR;
 			break;
 	}
-	serializeJson(controllerResp, sResp);
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
 
 	res.set("Content-Type", "application/json");
@@ -2564,13 +2425,14 @@ void getShutterState(Request &req, Response &res)
 
 void resetToFactory(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	float fParkAz;
 
-	controllerResp["value"] = "Resetting to factory";
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = "Resetting to factory";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
+
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 	Rotator->resetAlltoDefault();
@@ -2578,13 +2440,14 @@ void resetToFactory(Request &req, Response &res)
 
 void uiAbort(Request &req, Response &res)
 {
-	JsonDocument controllerResp;
+	JsonDocument jsonResp;
 	String sResp;
 	float fParkAz;
 
-	controllerResp["value"] = "Aborting all motion";
-	serializeJson(controllerResp, sResp);
+	jsonResp["value"] = "Aborting all motion";
+	serializeJson(jsonResp, sResp);
 	DBPrintln(String(__func__) + " : sResp : " + sResp);
+
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 	Abort();
