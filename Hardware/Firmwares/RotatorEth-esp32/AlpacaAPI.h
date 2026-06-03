@@ -2273,7 +2273,9 @@ void envConditionState(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void homeDome(Request &req, Response &res)
+// endpoint to control the dome directly, used by thew web interface
+
+void uiHomeDome(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2287,7 +2289,7 @@ void homeDome(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void parkDome(Request &req, Response &res)
+void uiParkDome(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2304,7 +2306,7 @@ void parkDome(Request &req, Response &res)
 }
 
 
-void gotoAzimuth(Request &req, Response &res)
+void uiGotoAzimuth(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2336,7 +2338,7 @@ void gotoAzimuth(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void getDomeAzimuth(Request &req, Response &res)
+void uiGetDomeAzimuth(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2350,7 +2352,7 @@ void getDomeAzimuth(Request &req, Response &res)
 }
 
 
-void openShutter(Request &req, Response &res)
+void uiOpenShutter(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2364,7 +2366,7 @@ void openShutter(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void closeShutter(Request &req, Response &res)
+void uiCloseShutter(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2379,7 +2381,7 @@ void closeShutter(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void getShutterState(Request &req, Response &res)
+void uiGetShutterState(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2423,7 +2425,7 @@ void getShutterState(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
-void resetToFactory(Request &req, Response &res)
+void uiResetToFactory(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
@@ -2585,16 +2587,16 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageCutoffValue);
 #endif
 
-	// special endpoint to control the dome directly
-	m_AlpacaRestServer->put("/setup/homeDome", &homeDome);
-	m_AlpacaRestServer->put("/setup/parkDome", &parkDome);
-	m_AlpacaRestServer->put("/setup/gotoAzimuth", &gotoAzimuth);
-	m_AlpacaRestServer->get("/setup/getAzimuth", &getDomeAzimuth);
-	m_AlpacaRestServer->put("/setup/openShutter", &openShutter);
-	m_AlpacaRestServer->put("/setup/closeShutter", &closeShutter);
-	m_AlpacaRestServer->get("/setup/getShutterState", &getShutterState);
+	// endpoint to control the dome directly, used by thew web interface
+	m_AlpacaRestServer->put("/setup/homeDome", &uiHomeDome);
+	m_AlpacaRestServer->put("/setup/parkDome", &uiParkDome);
+	m_AlpacaRestServer->put("/setup/gotoAzimuth", &uiGotoAzimuth);
+	m_AlpacaRestServer->get("/setup/getAzimuth", &uiGetDomeAzimuth);
+	m_AlpacaRestServer->put("/setup/openShutter", &uiOpenShutter);
+	m_AlpacaRestServer->put("/setup/closeShutter", &uiCloseShutter);
+	m_AlpacaRestServer->get("/setup/getShutterState", &uiGetShutterState);
 
-	m_AlpacaRestServer->put("/setup/resetToFactory", &resetToFactory);
+	m_AlpacaRestServer->put("/setup/resetToFactory", &uiResetToFactory);
 
 	m_AlpacaRestServer->put("/setup/abort", &uiAbort);
 
