@@ -171,8 +171,8 @@ void MotorTask(void *)
 	attachInterrupt(OPEN_PIN, handleOpenInterrupt, FALLING);
 	attachInterrupt(CLOSED_PIN, handleClosedInterrupt, FALLING);
 
-	attachInterrupt(LOWER_OPEN_PIN, handleLowerOpenInterrupt, FALLING);
-	attachInterrupt(LOWER_CLOSE_PIN, handleLowerClosedInterrupt, FALLING);
+	attachInterrupt(LOWER_OPENED_PIN, handleLowerOpenInterrupt, FALLING);
+	attachInterrupt(LOWER_CLOSED_PIN, handleLowerClosedInterrupt, FALLING);
 
 	attachInterrupt(BUTTON_OPEN, handleButtons, FALLING);
 	attachInterrupt(BUTTON_CLOSE, handleButtons, FALLING);
