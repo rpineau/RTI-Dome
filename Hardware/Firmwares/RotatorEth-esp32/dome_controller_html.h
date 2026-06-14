@@ -504,7 +504,7 @@ const char DOME_CONTROLLER_HTML[] =
   "              <option value=\"start\">Start calibration</option>\n"
   "              <option value=\"stop\">Stop calibration</option>\n"
   "            </select>\n"
-  "            <button class=\"btn btn-put\" onclick=\"putVal('/setup/domeCalibrate','in-calib','val-calib',v=>(v?.value??v))\">SET</button>\n"
+  "            <button class=\"btn btn-put\" onclick=\"putVal('/setup/domeCalibrate','in-calib','val-calib',v=>{const s=parseInt(v?.value??v,10);const m={6:'Controller is doing a rotation for step calibration',8:'Controller is measuring number of steps per rotation.',0:'Controller is idle.'};return m[s]??('Unknown state: '+s);})\">SET</button>\n"
   "          </div>\n"
   "        </div>\n"
   "      </div>\n"
