@@ -192,8 +192,8 @@ void IRAM_ATTR ShutterClass::ClosedInterrupt()
 	DBPrintln("[ClosedInterrupt] Shutter state : " + String(shutterState));
 	if(shutterState == CLOSING) {
 		DBPrintln("Closed Int stopping motor");
-		shutterState = FINISHING_CLOSE;
 		motorStop();
+		shutterState = FINISHING_CLOSE;
 	}
 }
 
@@ -212,8 +212,8 @@ void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 	DBPrintln("[LowerClosedInterrupt] Shutter state : " + String(shutterState));
 	if(shutterState == BOTTOM_CLOSING) {
 		DBPrintln("Closed Int stopping motor");
-		shutterState = BOTTOM_CLOSED;
 		motorStop();
+		shutterState = BOTTOM_CLOSED;
 	}
 }
 
@@ -532,8 +532,8 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	// shutter is between open and close and we want to open
 	if(sw1 == LOW  && sw3 == HIGH && sw4 == HIGH ) {
 		motorStop();
-		shutterState = OPENING;
 		MoveRelative(1073741823L );
+		shutterState = OPENING;
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
@@ -549,16 +549,16 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	}
 	// button open pressed and we're closed
 	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) {
-		shutterState = OPENING;
 		MoveRelative(1073741823L );
+		shutterState = OPENING;
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
 	}
 	// button close pressed and we're open
 	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) {
-		shutterState = CLOSING;
 		MoveRelative(-1073741823L );
+		shutterState = CLOSING;
 		m_bButtonUsed = true;
 		m_bUserButtonStop = false;
 		buttonStopTimer.reset();
@@ -584,9 +584,9 @@ void ShutterClass::Open()
 		return;
 	}
 
-	shutterState = OPENING;
 	DBPrintln("[Open()] shutterState = OPENING");
 	MoveRelative(1073741823L );
+	shutterState = OPENING;
 }
 
 void ShutterClass::Close()
@@ -596,9 +596,9 @@ void ShutterClass::Close()
 		shutterState = CLOSED;
 		return;
 	}
-	shutterState = CLOSING;
 	DBPrintln("[Close()]  shutterState = CLOSING");
 	MoveRelative(-1073741823L );
+	shutterState = CLOSING;
 }
 
 
@@ -635,8 +635,8 @@ void ShutterClass::Run()
 		DBPrintln("m_bWasRunning 1 SHutterState : " + String(shutterState));
 
 		if (digitalRead(CLOSED_PIN) == 0) {
-			shutterState = CLOSED;
 			stepper->setCurrentPosition(0);
+			shutterState = CLOSED;
 			DBPrintln("Stopped at closed position");
 			DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
 		}
