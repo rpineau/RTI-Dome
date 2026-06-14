@@ -171,6 +171,8 @@ private:
 	// Utility
 	void 			LoadConfig();
 	volatile bool	m_bIsSafe = true;
+
+	SemaphoreHandle_t m_mutex;
 };
 
 
@@ -185,6 +187,8 @@ RotatorClass::RotatorClass()
 	m_bSetToHomeAzimuth = false;
 	m_bDoStepsPerRotation = false;
 	m_nMoveDirection = MOVE_NONE;
+
+	m_mutex = xSemaphoreCreateMutex();
 
 	// input
 	pinMode(HOME_PIN,               INPUT_PULLUP);
@@ -600,13 +604,15 @@ void RotatorClass::GoToAzimuth(const float newHeading)
 	// Goto new target
 	float currentHeading;
 	float delta;
-
-	currentHeading = GetAzimuth();
-	SyncPosition(currentHeading); // to make sure the internal FastStepper counter is at this position.
-	delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
-	DBPrintln("Moving to " + String(newHeading) + " , steps : " + String(long(delta)));
-	m_seekMode = MOVING_GOTO;
-	MoveRelative(long(delta));
+	if(xSemaphoreTake(m_mutex, portMAX_DELAY) == pdTRUE) {
+		currentHeading = GetAzimuth();
+		// SyncPosition(currentHeading); // to make sure the internal FastStepper counter is at this position.
+		delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
+		DBPrintln("Moving to " + String(newHeading) + " , steps : " + String(lround(delta)));
+		MoveRelative(lround(delta));
+		m_seekMode = MOVING_GOTO;
+		xSemaphoreGive(m_mutex);
+	}
 }
 
 bool RotatorClass::GetReversed()
@@ -731,16 +737,18 @@ void RotatorClass::StartHoming()
 		DBPrintln("Already at home");
 		return;
 	}
-
-	m_bisAtHome = false;
-	m_HomeFound = false;
-	// Always home in the same direction as we don't
-	// know the width of the home magnet in steps.
-	// We use edge interrupt to detect the left edge of the magnet as home.
-	m_nMoveDirection = MOVE_POSITIVE;
-	distance = (1073741823L   * m_nMoveDirection);
-	m_seekMode = HOMING_HOME;
-	MoveRelative(distance);
+	if(xSemaphoreTake(m_mutex, portMAX_DELAY) == pdTRUE) {
+		m_bisAtHome = false;
+		m_HomeFound = false;
+		// Always home in the same direction as we don't
+		// know the width of the home magnet in steps.
+		// We use edge interrupt to detect the left edge of the magnet as home.
+		m_nMoveDirection = MOVE_POSITIVE;
+		distance = (1073741823L   * m_nMoveDirection);
+		MoveRelative(distance);
+		m_seekMode = HOMING_HOME;
+		xSemaphoreGive(m_mutex);
+	}
 }
 
 void RotatorClass::StartCalibrating()
@@ -750,14 +758,17 @@ void RotatorClass::StartCalibrating()
 	m_nHomePosEdgePass1 = 0;
 	m_nHomePosEdgePass2 = 0;
 
-	if(m_bisAtHome) {
-		m_MoveOffUntilTimer.reset();
-		MoveRelative(-5000);
-		m_seekMode = CALIBRATION_MOVE_OFF;
-	}
-	else {
-		m_seekMode = CALIBRATION_STEP1;
-		MoveRelative(1073741823L );
+	if(xSemaphoreTake(m_mutex, portMAX_DELAY) == pdTRUE) {
+		if(m_bisAtHome) {
+			m_MoveOffUntilTimer.reset();
+			MoveRelative(-5000);
+			m_seekMode = CALIBRATION_MOVE_OFF;
+		}
+		else {
+			MoveRelative(1073741823L );
+			m_seekMode = CALIBRATION_STEP1;
+		}
+		xSemaphoreGive(m_mutex);
 	}
 }
 
@@ -769,9 +780,9 @@ void RotatorClass::Calibrate()
 				if(m_MoveOffUntilTimer.elapsed() <= m_nMOVE_OFFUntilLapse)
 					break;
 				if (!stepper->isRunning()) {
-					m_seekMode = CALIBRATION_STEP1;
 					stepper->setCurrentPosition(0);
 					MoveRelative(1073741823L );
+					m_seekMode = CALIBRATION_STEP1;
 				}
 				break;
 
@@ -879,69 +890,41 @@ void RotatorClass::Run()
 		position = stepper->getCurrentPosition();
 		azimuthDelta = (float)(position - m_nStepsAtHome) / m_fStepsPerDegree;
 		SyncPosition(azimuthDelta + m_Config.homeAzimuth);
-		position = stepper->getCurrentPosition();
 		GoToAzimuth(m_Config.homeAzimuth); // moving to home now that we know where we are
 		m_seekMode = HOMING_BACK_HOME;
 	}
 
 	if (m_bWasRunning) {
-		stepsFromZero = GetPosition();
-		if (stepsFromZero < 0) {
-			while (stepsFromZero < 0)
-				stepsFromZero += m_Config.stepsPerRotation;
+		if(xSemaphoreTake(m_mutex, 0) == pdTRUE) {
+			// Always normalize stepper position
+			position = stepper->getCurrentPosition();
+			while (position >= m_Config.stepsPerRotation)
+				position -= m_Config.stepsPerRotation;
+			while (position < 0)
+				position += m_Config.stepsPerRotation;
+			stepper->setCurrentPosition(position);
 
-			stepper->setCurrentPosition(stepsFromZero);
-		}
-
-		if (stepsFromZero > m_Config.stepsPerRotation) {
-			while (stepsFromZero > m_Config.stepsPerRotation)
-				stepsFromZero -= m_Config.stepsPerRotation;
-
-			stepper->setCurrentPosition(stepsFromZero);
-		}
-
-		if( m_seekMode == NOT_MOVING) {
-			// not moving anymore ..
-			m_nMoveDirection = MOVE_NONE;
-			m_bWasRunning = false;
-			// check if we stopped on the home sensor
-			if(digitalRead(HOME_PIN) == LOW) {
-				// we're at the home position
-				m_bisAtHome = true;
+			if(m_seekMode == NOT_MOVING) {
+				m_nMoveDirection = MOVE_NONE;
+				m_bWasRunning = false;
+				if(digitalRead(HOME_PIN) == LOW)
+					m_bisAtHome = true;
 			}
-			position = stepper->getCurrentPosition();
-			while (position >= m_Config.stepsPerRotation)
-				position -= m_Config.stepsPerRotation;
 
-			while (position < 0)
-				position += m_Config.stepsPerRotation;
-
-			if(position == (m_Config.stepsPerRotation -1))
-				position = 0;
-			stepper->setCurrentPosition(position);
-		}
-
-		if(m_seekMode == MOVING_GOTO) {
-			m_nMoveDirection = MOVE_NONE;
-			m_seekMode = NOT_MOVING;
-			position = stepper->getCurrentPosition();
-			while (position >= m_Config.stepsPerRotation)
-				position -= m_Config.stepsPerRotation;
-
-			while (position < 0)
-				position += m_Config.stepsPerRotation;
-
-			if(position == (m_Config.stepsPerRotation -1))
-				position = 0;
-			stepper->setCurrentPosition(position);
+			if(m_seekMode == MOVING_GOTO) {
+				m_nMoveDirection = MOVE_NONE;
+				m_seekMode = NOT_MOVING;
+				m_bWasRunning = false;
+			}
+			xSemaphoreGive(m_mutex);
 		}
 	} // end if (m_bWasRunning)
 }
 
 void RotatorClass::Stop()
 {
-	m_seekMode = NOT_MOVING;
 	stepper->forceStop();
+	m_seekMode = NOT_MOVING;
 }
 
 void RotatorClass::motorStop()
