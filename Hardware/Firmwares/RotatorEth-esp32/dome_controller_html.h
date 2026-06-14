@@ -1192,7 +1192,7 @@ const char DOME_CONTROLLER_HTML[] =
   "loadAll();\n"
   "// Poll azimuth every 5 seconds\n"
   "pollAzimuth();\n"
-  "setInterval(pollAzimuth, 5000);\n"
+  "setInterval(pollAzimuth, 1000);\n"
   "</script>\n"
   "</body>\n"
   "</html>\n";
