@@ -606,6 +606,10 @@ void RotatorClass::GoToAzimuth(const float newHeading)
 	float delta;
 	if(xSemaphoreTake(m_mutex, portMAX_DELAY) == pdTRUE) {
 		stepper->forceStop();  // cancel any in-progress move first
+        // Wait until stepper has fully stopped
+        while(stepper->isRunning()) {
+            vTaskDelay(1 / portTICK_PERIOD_MS);
+        }
 		currentHeading = GetAzimuth();
 		// SyncPosition(currentHeading); // to make sure the internal FastStepper counter is at this position.
 		delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
