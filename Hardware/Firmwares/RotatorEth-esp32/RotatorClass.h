@@ -611,7 +611,6 @@ void RotatorClass::GoToAzimuth(const float newHeading)
             vTaskDelay(1 / portTICK_PERIOD_MS);
         }
 		currentHeading = GetAzimuth();
-		// SyncPosition(currentHeading); // to make sure the internal FastStepper counter is at this position.
 		delta = GetAngularDistance(currentHeading, newHeading) *  m_fStepsPerDegree;
 		DBPrintln("Moving to " + String(newHeading) + " , steps : " + String(lround(delta)));
 		MoveRelative(lround(delta));
