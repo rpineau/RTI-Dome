@@ -521,6 +521,41 @@ paths:
       tags:
       - Rotation Controller
 
+  /setup/dualShutterEnabled:
+    get:
+      summary: Get wether the dual shutter mode is enabled
+      description: 'Retrieve the controller  dual shutter mode .'
+      operationId: getDualShutterEnabled
+      responses:
+        '200':
+          description: Dual Shutter mode successfully retrieved
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+    put:
+      summary: Set the controller shutter mode, bottom first or top first
+      description: 'Set the controller shutter mode, bottom first or top first.'
+      operationId: setDualShutterEnabled
+      responses:
+        '200':
+          description: Dual shutter mode successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: boolean
+              required:
+              - value
+
   /setup/shutterOpenOrder:
     get:
       summary: Get the shutter controller open order if a drop off shutter is present
