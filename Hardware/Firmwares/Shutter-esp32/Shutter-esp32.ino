@@ -34,8 +34,8 @@ String IpAddress2String(const IPAddress& ipAddress)
 {
   return String(ipAddress[0]) + String(".") +
   		String(ipAddress[1]) + String(".") +
-		String(ipAddress[2]) + String(".") +
-		String(ipAddress[3]);
+			String(ipAddress[2]) + String(".") +
+			String(ipAddress[3]);
 }
 
 #include "dome_commands.h"
@@ -171,8 +171,10 @@ void MotorTask(void *)
 	attachInterrupt(OPEN_PIN, handleOpenInterrupt, FALLING);
 	attachInterrupt(CLOSED_PIN, handleClosedInterrupt, FALLING);
 
-	attachInterrupt(LOWER_OPENED_PIN, handleLowerOpenInterrupt, FALLING);
-	attachInterrupt(LOWER_CLOSED_PIN, handleLowerClosedInterrupt, FALLING);
+	if(Shutter && Shutter->getDoubleShutterEnable()) {
+		attachInterrupt(LOWER_OPENED_PIN, handleLowerOpenInterrupt, FALLING);
+		attachInterrupt(LOWER_CLOSED_PIN, handleLowerClosedInterrupt, FALLING);
+	}
 
 	attachInterrupt(BUTTON_OPEN, handleButtons, FALLING);
 	attachInterrupt(BUTTON_CLOSE, handleButtons, FALLING);
@@ -212,10 +214,10 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	DBPrintln("WiFi IP = " + IpAddress2String(ip));
 	DBPrintln("WiFi gateway = " + IpAddress2String(gwIp));
 	shutterWiFi.config(ip,  gwIp, IPAddress(255,255,255,0));
-	
+
 	DBPrintln("========== setHostname ==========");
 	shutterWiFi.setHostname("RTI-Shutter");
-	
+
 	DBPrintln("========== begin ==========");
 	DBPrintln("WiFi SSID = " + sSSID);
 	DBPrintln("WiFi Password = " + sPassword);
@@ -526,6 +528,24 @@ void ProcessWifi()
 
 		case RESET_ALL:
 			Shutter->resetAlltoDefault(); // this reboots the ESP.
+			break;
+
+		case SHUTTER_ORDER:
+			if (hasValue) {
+				sRotatorMessage = String(SHUTTER_ORDER);
+				Shutter->setOpenOrder(value.toInt()==1?true:false);
+			}
+			sRotatorMessage = String(SHUTTER_ORDER) + Shutter->getOpenOrder();
+			DBPrintln("SHUTTER_ORDER '" + String(Shutter->getOpenOrder()==TOP_FIRST?"Top first":"Bottom First") + "'");
+			break;
+
+		case DOUBLE_SHUTTER:
+			if (hasValue) {
+				sRotatorMessage = String(DOUBLE_SHUTTER);
+				Shutter->setDoubleShutterEnable(value.toInt()==1?true:false);
+			}
+			sRotatorMessage = String(DOUBLE_SHUTTER) + Shutter->getDoubleShutterEnable();
+			DBPrintln("DOUBLE_SHUTTER '" + String(Shutter->getDoubleShutterEnable()?:"True":"False") + "'");
 			break;
 
 		default:

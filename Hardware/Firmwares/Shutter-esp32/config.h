@@ -46,11 +46,9 @@
 #define SPARE_OUT1			 	 0
 #define SPARE_OUT2				12
 
-#define SPARE_OUT1			 	 0
-#define SPARE_OUT2				12
 // For ease of coding
 #define LOWER_DIR			 	 0
-#define LOWER_ON				12
+#define LOWER_ENABLE		 12
 
 // analog
 #define VOLTAGE_MONITOR_PIN A0  // GPIO36 / SENSOR_VP
@@ -99,5 +97,25 @@ Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
 #ifdef USE_OTA_UPDATE
 #define OTA_PORT	8080
 #endif
+
+
+typedef struct WIFICONFIG {
+	IPAddress       ip;
+	String 			sSSID;
+	String			sPassword;
+} WIFIConfig;
+
+
+typedef struct ShutterConfiguration {
+	unsigned long   stepsPerStroke;
+	int             acceleration;
+	int             maxSpeed;
+	bool            reversed;
+	int             cutoffVolts;
+	unsigned long   watchdogInterval;
+	bool            bHasDropShutter;
+	bool            bBottomShutterOpenFirst;
+	WIFIConfig		wifiIpConfig;
+} Configuration;
 
 #endif

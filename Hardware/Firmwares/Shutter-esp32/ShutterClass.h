@@ -11,33 +11,20 @@
 #include "config.h"
 #include "StopWatch.h"
 
-typedef struct WIFICONFIG {
-	IPAddress       ip;
-	String 			sSSID;
-	String			sPassword;
-} WIFIConfig;
-
-
-typedef struct ShutterConfiguration {
-	unsigned long   stepsPerStroke;
-	int             acceleration;
-	int             maxSpeed;
-	bool            reversed;
-	int             cutoffVolts;
-	unsigned long   watchdogInterval;
-	bool            bHasDropShutter;
-	bool            bTopShutterOpenFirst;
-	WIFIConfig		wifiIpConfig;
-} Configuration;
 
 
 FastAccelStepperEngine engine = FastAccelStepperEngine();
 FastAccelStepper *stepper = NULL;
 
 // All possible Shutter state, including option for a dropout
-enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
-volatile ShutterStates shutterState;
+enum ShutterStates { OPEN, CLOSED, OPENING, CLOSING, TOP_OPEN, TOP_CLOSED, TOP_OPENING, TOP_CLOSING, BOTTOM_OPEN, BOTTOM_CLOSED, BOTTOM_OPENING, BOTTOM_CLOSING, ERROR, FINISHING_OPEN, FINISHING_CLOSE };
+enum LowerShutterDir { ACTUATOR_CLOSE, ACTUATOR_OPEN };
+enum LowerShutterAction { ACTUATOR_OFF, ACTUATOR_ON };
+enum shutterOrder {BOTTOM_FIRST = 0, TOP_FIRST};
 
+volatile ShutterStates shutterState;
+volatile ShutterStates topShutterState;
+volatile ShutterStates bottomShutterState;
 StopWatch buttonStopTimer;
 
 
@@ -90,9 +77,10 @@ public:
 	void		motorMoveTo(const long newPosition);
 	void		motorMoveRelative(const long amount);
 	// double shutter methods
-	void		enableDoubleShutter(bool bEnable);
+	void		setDoubleShutterEnable(bool bEnable);
+	bool		getDoubleShutterEnable();
 	void		setOpenOrder(bool bBottomfirst);
-	void		getOpenOrder(bool &bBottomfirst);
+	int			getOpenOrder();
 
 	// persistent data
 	void		restoreDefaultMotorSettings();
@@ -111,7 +99,7 @@ public:
 	void        setSSID(String sSSID);
 	void		getWiFiConfig(WIFIConfig &config);
 
-	private:
+private:
 
 	Configuration   m_Config;
 	Preferences 	m_preferences;
@@ -123,7 +111,10 @@ public:
 	bool            m_bUserButtonStop;
 
 	int             MeasureVoltage();
-
+	void			openTop();
+	void			closeTop();
+	void			openBottom();
+	void			closeBottom();
 	void 			LoadConfig();
 };
 
@@ -145,8 +136,8 @@ ShutterClass::ShutterClass()
 	pinMode(BUTTON_CLOSE,			INPUT_PULLUP);
 	pinMode(VOLTAGE_MONITOR_PIN,	INPUT);
 
-	pinMode(LOWER_CLOSE_PIN,		INPUT_PULLUP);
-	pinMode(LOWER_OPEN_PIN,			INPUT_PULLUP);
+	pinMode(LOWER_CLOSED_PIN,		INPUT_PULLUP);
+	pinMode(LOWER_OPENED_PIN,			INPUT_PULLUP);
 
 	// Ouput pins
 	pinMode(STEP_PIN,       		OUTPUT);
@@ -190,12 +181,28 @@ ShutterClass::ShutterClass()
 void IRAM_ATTR ShutterClass::ClosedInterrupt()
 {
 	DBPrintln("[ClosedInterrupt] Shutter state : " + String(shutterState));
-	if(shutterState == CLOSING) {
-		DBPrintln("Closed Int stopping motor");
-		motorStop();
-		shutterState = FINISHING_CLOSE;
+	if(m_Config.bHasDropShutter) {
+		if(shutterState == TOP_CLOSING) {
+			DBPrintln("Closed Int stopping motor");
+			motorStop();
+			if(m_Config.bBottomShutterOpenFirst) { // open first, close last
+				closeBottom();
+			}
+			else {
+					shutterState = FINISHING_CLOSE;
+			}
+		}
+	}
+	else {
+		if(shutterState == TOP_CLOSING) {
+			DBPrintln("Close Int stopping motor");
+			motorStop();
+			shutterState = FINISHING_CLOSE;
+		}
 	}
 }
+
+
 
 void IRAM_ATTR ShutterClass::OpenInterrupt()
 {
@@ -209,21 +216,31 @@ void IRAM_ATTR ShutterClass::OpenInterrupt()
 
 void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 {
-	DBPrintln("[LowerClosedInterrupt] Shutter state : " + String(shutterState));
+
+	DBPrintln("[ClosedInterrupt] Drop Shutter state : " + String(shutterState));
 	if(shutterState == BOTTOM_CLOSING) {
-		DBPrintln("Closed Int stopping motor");
-		motorStop();
-		shutterState = BOTTOM_CLOSED;
+		DBPrintln("Closed Int stopping actuator");
+		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
+		if(!m_Config.bBottomShutterOpenFirst) { // open last, close first
+			closeTop();
+		}
+		else
+			shutterState = BOTTOM_CLOSED;
 	}
 }
 
 void IRAM_ATTR ShutterClass::LowerOpenInterrupt()
 {
-	DBPrintln("[LowerOpenInterrupt] Shutter state : " + String(shutterState));
+
+	DBPrintln("[LowerOpenInterrupt] Drop Shutter state : " + String(shutterState));
 	if(shutterState == BOTTOM_OPENING) {
-		DBPrintln("Open Int stopping motor");
-		motorStop();
-		shutterState = BOTTOM_OPEN;
+		DBPrintln("Open Int stopping actuator");
+		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
+		if(m_Config.bBottomShutterOpenFirst) { // open first, close last
+			openTop();
+		}
+		else
+			shutterState = BOTTOM_OPEN;
 	}
 }
 
@@ -253,7 +270,7 @@ void ShutterClass::LoadConfig()
 	m_Config.cutoffVolts = m_preferences.getInt("cutoffVolts",DEFAULT_CUT_OFF_VOLTS);
 	m_Config.watchdogInterval = m_preferences.getULong("watchdogInterval",DEFAULT_WATCHDOG_INTERVAL);
 	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
-	m_Config.bTopShutterOpenFirst = m_preferences.getBool("topShutterOpenFirst", true); // this generaly the case.
+	m_Config.bBottomShutterOpenFirst = m_preferences.getBool("bottomShutterOpenFirst", true); // this generaly the case.
 	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.2"));
 	m_Config.wifiIpConfig.sSSID = m_preferences.getString("wifiSSID", "RTIShutter");
 	if(m_Config.wifiIpConfig.sSSID.length()<8) {
@@ -270,7 +287,7 @@ void ShutterClass::LoadConfig()
 	DBPrintln("m_Config.cutoffVolts          : " + String(m_Config.cutoffVolts));
 	DBPrintln("m_Config.watchdogInterval     : " + String(m_Config.watchdogInterval));
 	DBPrintln("m_Config.bHasDropShutter      : " + String(m_Config.bHasDropShutter?"Yes":"No"));
-	DBPrintln("m_Config.bTopShutterOpenFirst : " + String(m_Config.bTopShutterOpenFirst?"Yes":"No"));
+	DBPrintln("m_Config.bBottomShutterOpenFirst : " + String(m_Config.bBottomShutterOpenFirst?"Yes":"No"));
 	DBPrintln("wifiIpConfig.ip               : " + IpAddress2String(m_Config.wifiIpConfig.ip));
 	DBPrintln("wifiIpConfig.sSSID            : " + String(m_Config.wifiIpConfig.sSSID));
 	DBPrintln("wifiIpConfig.sPassword        : " + String(m_Config.wifiIpConfig.sPassword));
@@ -572,33 +589,99 @@ void IRAM_ATTR ShutterClass::DoButtons()
 }
 
 // Movers
+void ShutterClass::openTop()
+{
+	DBPrintln("[openTop()] Top shutterState = OPENING");
+	if (digitalRead(OPEN_PIN) == 0) {
+		DBPrintln("[openTop()] shutterState = OPEN");
+		if(m_Config.bHasDropShutter) {
+			topShutterState = TOP_OPEN;
+		}
+		else {
+			shutterState = OPEN;
+		}
+		return;
+	}
+
+	if(m_Config.bHasDropShutter) {
+		topShutterState = TOP_OPENING;
+	}
+	else {
+		shutterState = OPENING;
+	}
+	MoveRelative(1073741823L );
+}
+
+void ShutterClass::closeTop()
+{
+	DBPrintln("[closeTop()] Top shutterState = OPENING");
+	if (digitalRead(CLOSED_PIN) == 0) {
+		DBPrintln("[closeTop()] shutterState = OPEN");
+		if(m_Config.bHasDropShutter) {
+			topShutterState = TOP_CLOSED;
+		}
+		else {
+			shutterState = CLOSED;
+		}
+		return;
+	}
+
+	if(m_Config.bHasDropShutter) {
+		topShutterState = TOP_CLOSING;
+	}
+	else {
+		shutterState = CLOSING;
+	}
+	MoveRelative(-1073741823L );
+}
+
+void ShutterClass::openBottom()
+{
+	bottomShutterState = BOTTOM_OPENING;
+	digitalWrite(LOWER_DIR,ACTUATOR_OPEN);
+	digitalWrite(LOWER_ENABLE,ACTUATOR_ON);
+}
+
+void ShutterClass::closeBottom()
+{
+	bottomShutterState = BOTTOM_CLOSING;
+	digitalWrite(LOWER_DIR,ACTUATOR_CLOSE);
+	digitalWrite(LOWER_ENABLE,ACTUATOR_ON);
+}
+
 void ShutterClass::Open()
 {
 	m_nVolts = MeasureVoltage();
 	if(GetVoltsAreLow()) // do not try to open if we're already at low voltage
 		return;
 
-	if (digitalRead(OPEN_PIN) == 0) {
-		DBPrintln("[Open()] shutterState = OPEN");
-		shutterState = OPEN;
-		return;
+	if(m_Config.bHasDropShutter) {
+		if(m_Config.bBottomShutterOpenFirst ) {
+			openBottom();
+		}
+		else {
+			openTop();
+		}
+	} else {
+		// single shutter mode
+		openTop();
 	}
-
-	DBPrintln("[Open()] shutterState = OPENING");
-	MoveRelative(1073741823L );
-	shutterState = OPENING;
 }
+
 
 void ShutterClass::Close()
 {
-	if (digitalRead(CLOSED_PIN) == 0) {
-		DBPrintln("[Close()] shutterState = CLOSE");
-		shutterState = CLOSED;
-		return;
+	if(m_Config.bHasDropShutter ) {
+			if(m_Config.bBottomShutterOpenFirst) { // open bottom first = close bottom last
+				closeTop();
+			}
+			else {
+				closeBottom();
+			}
+	} else {
+		// single shutter mode
+		closeTop();
 	}
-	DBPrintln("[Close()]  shutterState = CLOSING");
-	MoveRelative(-1073741823L );
-	shutterState = CLOSING;
 }
 
 
@@ -683,7 +766,7 @@ void ShutterClass::motorMoveRelative(const long amount)
 }
 
 // double shutter methods
-void ShutterClass::enableDoubleShutter(bool bEnable)
+void ShutterClass::setDoubleShutterEnable(bool bEnable)
 {
 	m_Config.bHasDropShutter = bEnable;
 	m_preferences.begin("RTI_Shutter", false);
@@ -691,16 +774,21 @@ void ShutterClass::enableDoubleShutter(bool bEnable)
 	m_preferences.end();
 }
 
+bool ShutterClass::getDoubleShutterEnable()
+{
+	return m_Config.bHasDropShutter;
+}
+
 void ShutterClass::setOpenOrder(bool bBottomfirst)
 {
-	m_Config.bTopShutterOpenFirst = bBottomfirst;
+	m_Config.bBottomShutterOpenFirst = bBottomfirst;
 	m_preferences.begin("RTI_Shutter", false);
-	m_preferences.putInt("topShutterOpenFirst", m_Config.bTopShutterOpenFirst);
+	m_preferences.putInt("bottomShutterOpenFirst", m_Config.bBottomShutterOpenFirst);
 	m_preferences.end();
 
 }
 
-void ShutterClass::getOpenOrder(bool &bBottomfirst)
+int ShutterClass::getOpenOrder()
 {
-	bBottomfirst = m_Config.bTopShutterOpenFirst;
+	return m_Config.bBottomShutterOpenFirst?1:0;
 }

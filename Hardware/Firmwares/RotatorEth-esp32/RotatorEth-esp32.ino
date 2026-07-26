@@ -658,6 +658,16 @@ void requestWiFiShutterData()
 		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 		ReceiveWiFi(shutterClient);
+
+		shutterMessage = String(DOUBLE_SHUTTER) + "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+		ReceiveWiFi(shutterClient);
+
+		shutterMessage = String(SHUTTER_ORDER) + "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+		ReceiveWiFi(shutterClient);
 	}
 }
 #endif
@@ -967,8 +977,8 @@ void ProcessCommand(int nSource)
 
 		case REVERSED_ROTATOR:
 			if (hasValue)
-				Rotator->SetReversed(value.toInt());
-			serialMessage = String(REVERSED_ROTATOR) + String(Rotator->GetReversed());
+				Rotator->SetReversed(value.toInt()==0?false:true);
+			serialMessage = String(REVERSED_ROTATOR) + String(Rotator->GetReversed()?"1":"0");
 			break;
 
 		case RESTORE_MOTOR_DEFAULT:
@@ -1094,6 +1104,42 @@ void ProcessCommand(int nSource)
 			break;
 
 #ifdef USE_WIFI
+		case DOUBLE_SHUTTER:
+			sTmpString = String(DOUBLE_SHUTTER);
+			if (hasValue) {
+				RemoteShutter.bDualShutterEnabled = (value.toInt()==0?false:true);
+				shutterMessage = sTmpString + value;
+			}
+			else {
+				shutterMessage = sTmpString;
+			}
+			if(nbWiFiClient && shutterClient.connected()) {
+				shutterMessage += "#";
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+				ReceiveWiFi(shutterClient);
+			}
+			serialMessage = sTmpString + (RemoteShutter.bDualShutterEnabled?"1":"0");
+			break;
+
+		case SHUTTER_ORDER:
+			sTmpString = String(SHUTTER_ORDER);
+			if (hasValue) {
+				RemoteShutter.nShutterOrder = value.toInt();
+				shutterMessage = sTmpString + value;
+			}
+			else {
+				shutterMessage = sTmpString;
+			}
+			if(nbWiFiClient && shutterClient.connected()) {
+				shutterMessage += "#";
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+				ReceiveWiFi(shutterClient);
+			}
+			serialMessage = sTmpString + String(RemoteShutter.nShutterOrder);
+			break;
+
 		case SSID:
 			if (hasValue) {
 				Rotator->setSSID(value);
@@ -1436,6 +1482,16 @@ void ProcessWifi()
 		case SHUTTER_SSID:
 			if (hasValue)
 				 RemoteShutter.ssid = value;
+			break;
+
+		case DOUBLE_SHUTTER:
+			if (hasValue)
+				RemoteShutter.bDualShutterEnabled = bool(value.toInt()==0?false:true);
+			break;
+		
+		case SHUTTER_ORDER:
+			if (hasValue)
+				RemoteShutter.nShutterOrder = value.toInt();
 			break;
 
 		default:

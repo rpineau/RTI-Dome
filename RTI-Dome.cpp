@@ -1871,8 +1871,8 @@ int CRTIDome::getDoubleShutterOrder(bool &bTopFirst)
 
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
-	ssCmd << DOUBLE_SHUTTER << "#";
-	nErr = deviceCommand(ssCmd.str(), sResp, DOUBLE_SHUTTER);
+	ssCmd << SHUTTER_ORDER << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, SHUTTER_ORDER);
 	if(nErr) {
 #if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
 		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " <<nErr << std::endl;
@@ -1880,7 +1880,7 @@ int CRTIDome::getDoubleShutterOrder(bool &bTopFirst)
 #endif
 		return nErr;
 	}
-	bTopFirst = (std::stoi(sResp) == 0);
+	bTopFirst = (std::stoi(sResp) == TOP_FIRST);
 	return nErr;
 
 }
@@ -1894,8 +1894,8 @@ int CRTIDome::setDoubleShutterOrder(bool bTopFirst)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-	ssCmd << DOUBLE_SHUTTER << (bTopFirst?0:1) << "#"; // top first = 0, bottom first = 1
-	nErr = deviceCommand(ssCmd.str(), sResp, DOUBLE_SHUTTER);
+	ssCmd << SHUTTER_ORDER << (bTopFirst?TOP_FIRST:BOTTOM_FIRST) << "#"; // top first = 0, bottom first = 1
+	nErr = deviceCommand(ssCmd.str(), sResp, SHUTTER_ORDER);
 	return nErr;
 }
 

@@ -26,12 +26,12 @@ const char STEPSPER_ROTATOR             = 't'; // Get/Set Steps per rotation
 const char IP_GATEWAY                   = 'u'; // Get/Set default gateway IP
 const char VERSION_ROTATOR              = 'v'; // Get Firmware Version
 const char IP_DHCP                      = 'w'; // Get/Set DHCP mode
-const char RESTORE_NET_DEFAULT			= 'x'; //
+const char RESTORE_NET_DEFAULT          = 'x'; //
 const char REVERSED_ROTATOR             = 'y'; // Get/Set stepper reversed status
 const char HOMESTATUS_ROTATOR           = 'z'; // Get homed status
 const char CONDITION_SHUTTER            = 'F'; // Get conditions status (from client) or tell shutter if conditions are bad (from Rotator)
-const char RESET_ALL					= 'A'; // resets all setting to factory default
-const char DOUBLE_SHUTTER				= 'B'; // Get/Set double shuttter mode
+const char RESET_ALL                    = 'A'; // resets all setting to factory default
+const char DOUBLE_SHUTTER               = 'B'; // Get/Set double shuttter mode
 
 // available N S U W X Z
 // Shutter commands
@@ -42,7 +42,7 @@ const char ACCELERATION_SHUTTER             = 'E'; // Get/Set stepper accelerati
 //const char ELEVATION_SHUTTER              = 'G'; // Get/Set altitude TBD
 const char HELLO                            = 'H'; // Let shutter know we're here
 const char WATCHDOG_INTERVAL                = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
-const char SHUTTER_ORDER					= 'J'; // Get/Set shutter opening order for dual shuuter. 0 = top first, 1 = bottom first
+const char SHUTTER_ORDER                    = 'J'; // Get/Set shutter opening order for dual shutter. 0 = top first, 1 = bottom first
 const char VOLTS_SHUTTER                    = 'K'; // Get volts and set cutoff voltage (close if bellow)
 const char SHUTTER_PING                     = 'L'; // Shutter ping, uses to reset watchdog timer.
 const char STATE_SHUTTER                    = 'M'; // Get shutter state

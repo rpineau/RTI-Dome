@@ -1673,37 +1673,6 @@ void reverseDirectionState(Request &req, Response &res)
 }
 
 
-void shutterOpenOrderValue(Request &req, Response &res)
-{
-	JsonDocument jsonResp;
-	String sResp;
-	bool bBottomfirst = false;
-
-	if(req.method() == Request::PUT) {
-		JsonDocument FormData;
-		formDataToJson(req, FormData);
-		if(FormData.size()==0){
-			AlpacaError_x401(jsonResp, res);
-			return;
-		}
-		else {
-			if(FormData["value"].is<int>()) {
-				bBottomfirst = FormData["value"];
-				// need implementation
-				// Rotator->GetOpenOrder(bBottomfirst);
-			}
-		}
-	}
-	// need implementation
-	// jsonResp["value"] = Rotator->GetOpenOrder();
-	jsonResp["value"] = TOP_FIRST; // for now
-	serializeJson(jsonResp, sResp);
-	DBPrintln(String(__func__) + " : sResp : " + sResp);
-
-	res.set("Content-Type", "application/json");
-	res.write((uint8_t*)(sResp.c_str()),sResp.length());
-}
-
 #ifdef USE_WIFI
 
 void wifiSSIDValue(Request &req, Response &res)
@@ -2221,6 +2190,73 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+void dualShutterEnabled(Request &req, Response &res)
+{
+	JsonDocument jsonResp;
+	String sResp;
+	bool bDualShutter = false;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+			AlpacaError_x401(jsonResp, res);
+			return;
+		}
+		else {
+			if(FormData["value"].is<bool>()) {
+				bDualShutter = FormData["value"];
+				String shutterMessage;
+				String sTmpString = String(DOUBLE_SHUTTER);
+				RemoteShutter.bDualShutterEnabled = bDualShutter;
+				shutterMessage = sTmpString + String(RemoteShutter.bDualShutterEnabled?1:0);
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
+				ReceiveWiFi(shutterClient);
+			}
+		}
+	}
+	// need implementation
+	jsonResp["value"] = RemoteShutter.bDualShutterEnabled;
+	serializeJson(jsonResp, sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+
+}
+
+void shutterOpenOrder(Request &req, Response &res)
+{
+	JsonDocument jsonResp;
+	String sResp;
+	int nOrder = RemoteShutterClass::TOP_FIRST;
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+			AlpacaError_x401(jsonResp, res);
+			return;
+		}
+		else {
+			if(FormData["value"].is<int>()) {
+				nOrder = FormData["value"];
+				String shutterMessage;
+				String sTmpString = String(SHUTTER_ORDER);
+				RemoteShutter.nShutterOrder = nOrder;
+				shutterMessage = sTmpString + String(RemoteShutter.nShutterOrder);
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
+				ReceiveWiFi(shutterClient);
+			}
+		}
+	}
+
+	jsonResp["value"] = RemoteShutter.nShutterOrder;
+	serializeJson(jsonResp, sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
 #endif
 
 void unsafeDomeAction(Request &req, Response &res)
@@ -2576,7 +2612,8 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("/setup/envCondition", &envConditionState);
 
 #ifdef USE_WIFI
-	m_AlpacaRestServer->use("/setup/shutterOpenOrder", &shutterOpenOrderValue);
+	m_AlpacaRestServer->use("/setup/dualShutterEnabled", &dualShutterEnabled);
+	m_AlpacaRestServer->use("/setup/shutterOpenOrder", &shutterOpenOrder);
 	m_AlpacaRestServer->use("/setup/wifiSSID", &wifiSSIDValue);
 	m_AlpacaRestServer->get("/setup/shutterPresentState", &isShutterPresentState);
 	m_AlpacaRestServer->use("/setup/shutterSpeed", &shutterSpeedValue);
