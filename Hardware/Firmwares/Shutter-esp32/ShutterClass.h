@@ -182,19 +182,19 @@ void IRAM_ATTR ShutterClass::ClosedInterrupt()
 {
 	DBPrintln("[ClosedInterrupt] Shutter state : " + String(shutterState));
 	if(m_Config.bHasDropShutter) {
-		if(shutterState == TOP_CLOSING) {
+		if(topShutterState == TOP_CLOSING) {
 			DBPrintln("Closed Int stopping motor");
 			motorStop();
 			if(m_Config.bBottomShutterOpenFirst) { // open first, close last
 				closeBottom();
 			}
 			else {
-					shutterState = FINISHING_CLOSE;
+				topShutterState = FINISHING_CLOSE;
 			}
 		}
 	}
 	else {
-		if(shutterState == TOP_CLOSING) {
+		if(shutterState == CLOSING) {
 			DBPrintln("Close Int stopping motor");
 			motorStop();
 			shutterState = FINISHING_CLOSE;
@@ -207,10 +207,24 @@ void IRAM_ATTR ShutterClass::ClosedInterrupt()
 void IRAM_ATTR ShutterClass::OpenInterrupt()
 {
 	DBPrintln("[OpenInterrupt] Shutter state : " + String(shutterState));
-	if(shutterState == OPENING) {
-		DBPrintln("Open Int stopping motor");
-		motorStop();
-		shutterState = FINISHING_OPEN;
+	if(m_Config.bHasDropShutter) {
+		if(topShutterState == TOP_OPENING) {
+			DBPrintln("Open Int stopping motor");
+			motorStop();
+			if(m_Config.bBottomShutterOpenFirst) { // open first, close last
+				openBottom();
+			}
+			else {
+				topShutterState = FINISHING_OPEN;
+			}
+		}
+	}
+	else {
+		if(shutterState == OPENING) {
+			DBPrintln("Open Int stopping motor");
+			motorStop();
+			shutterState = FINISHING_OPEN;
+		}
 	}
 }
 
@@ -218,14 +232,14 @@ void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 {
 
 	DBPrintln("[ClosedInterrupt] Drop Shutter state : " + String(shutterState));
-	if(shutterState == BOTTOM_CLOSING) {
+	if(bottomShutterState == BOTTOM_CLOSING) {
 		DBPrintln("Closed Int stopping actuator");
 		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
 		if(!m_Config.bBottomShutterOpenFirst) { // open last, close first
 			closeTop();
 		}
 		else
-			shutterState = BOTTOM_CLOSED;
+			bottomShutterState = BOTTOM_CLOSED;
 	}
 }
 
@@ -233,14 +247,14 @@ void IRAM_ATTR ShutterClass::LowerOpenInterrupt()
 {
 
 	DBPrintln("[LowerOpenInterrupt] Drop Shutter state : " + String(shutterState));
-	if(shutterState == BOTTOM_OPENING) {
+	if(bottomShutterState == BOTTOM_OPENING) {
 		DBPrintln("Open Int stopping actuator");
 		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
 		if(m_Config.bBottomShutterOpenFirst) { // open first, close last
 			openTop();
 		}
 		else
-			shutterState = BOTTOM_OPEN;
+			bottomShutterState = BOTTOM_OPEN;
 	}
 }
 
@@ -614,7 +628,7 @@ void ShutterClass::openTop()
 
 void ShutterClass::closeTop()
 {
-	DBPrintln("[closeTop()] Top shutterState = OPENING");
+	DBPrintln("[closeTop()] Top shutterState = CLOSING");
 	if (digitalRead(CLOSED_PIN) == 0) {
 		DBPrintln("[closeTop()] shutterState = OPEN");
 		if(m_Config.bHasDropShutter) {
@@ -709,41 +723,103 @@ void ShutterClass::Run()
 	}
 
 
-	if (stepper->isRunning()) {
-		m_bWasRunning = true;
-		return;
+
+	// single shutter
+	if(!m_Config.bHasDropShutter ) {
+		if (stepper->isRunning()) {
+			m_bWasRunning = true;
+			return;
+		}
+		if (m_bWasRunning) { // This only runs once after stopping.
+			DBPrintln("m_bWasRunning 1 SHutterState : " + String(shutterState));
+
+			if (digitalRead(CLOSED_PIN) == 0) {
+				stepper->setCurrentPosition(0);
+				shutterState = CLOSED;
+				DBPrintln("Stopped at closed position");
+				DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
+			}
+			else if (digitalRead(OPEN_PIN) == 0) {
+				shutterState = OPEN;
+				DBPrintln("Stopped at open position");
+				DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));
+			}
+			else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bUserButtonStop) {
+				//motor stopped for some reason
+				DBPrintln("motor stopped for some reason but we're not closed... closing");
+				Close();
+				DBPrintln("m_bWasRunning 4 SHutterState : " + String(shutterState));
+				return;
+			}
+			else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bUserButtonStop) {
+				//motor stopped for some reason
+				DBPrintln("motor stopped for some reason but we're not open... opening");
+				Open();
+				DBPrintln("m_bWasRunning 5 SHutterState : " + String(shutterState));
+				return;
+			}
+			m_bWasRunning = false;
+			DBPrintln("m_bWasRunning final SHutterState : " + String(shutterState));
+		}
 	}
 
-	if (m_bWasRunning) { // This only runs once after stopping.
-		DBPrintln("m_bWasRunning 1 SHutterState : " + String(shutterState));
+	else { // dual shutter.
+		if(shutterState==CLOSING) {
+			if(topShutterState == TOP_CLOSED && bottomShutterState == BOTTOM_CLOSED) {
+				shutterState = CLOSED;
+				return; // closed, we're done
+			}
 
-		if (digitalRead(CLOSED_PIN) == 0) {
-			stepper->setCurrentPosition(0);
-			shutterState = CLOSED;
-			DBPrintln("Stopped at closed position");
-			DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
+			// check if top shutter is noving
+			if (stepper->isRunning()) {
+				m_bWasRunning = true;
+				return; // still closing the top
+			}
+
+			if(m_bWasRunning) {
+				if (digitalRead(CLOSED_PIN) == 0) {
+					topShutterState = TOP_CLOSED;
+					stepper->setCurrentPosition(0);
+				}
+				else if((topShutterState == FINISHING_CLOSE || topShutterState==TOP_CLOSING) && !m_bUserButtonStop) {
+					//motor stopped for some reason
+					DBPrintln("Top motor stopped for some reason but we're not closed... closing");
+					closeTop();
+					DBPrintln("m_bWasRunning topShutterState : " + String(topShutterState));
+					return;
+				}
+
+			}
+			m_bWasRunning = false;
+
 		}
-		else if (digitalRead(OPEN_PIN) == 0) {
-			shutterState = OPEN;
-			DBPrintln("Stopped at open position");
-			DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));
+		else if(shutterState==OPENING) {
+			if(topShutterState == TOP_OPEN && bottomShutterState == BOTTOM_OPEN) {
+				shutterState = OPEN;
+				return; // open, we're done
+			}
+
+			// check if top shutter is noving
+			if (stepper->isRunning()) {
+				m_bWasRunning = true;
+				return; // still closing the top
+			}
+
+			if(m_bWasRunning) {
+				if (digitalRead(OPEN_PIN) == 0) {
+					topShutterState = TOP_OPEN;
+				}
+				else if((topShutterState == FINISHING_OPEN || topShutterState==TOP_OPENING) && !m_bUserButtonStop) {
+					//motor stopped for some reason
+					DBPrintln("Top motor stopped for some reason but we're not closed... closing");
+					openTop();
+					DBPrintln("m_bWasRunning topShutterState : " + String(topShutterState));
+					return;
+				}
+
+			}
+			m_bWasRunning = false;
 		}
-		else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bUserButtonStop) {
-			//motor stopped for some reason
-			DBPrintln("motor stopped for some reason but we're not closed... closing");
-			Close();
-			DBPrintln("m_bWasRunning 4 SHutterState : " + String(shutterState));
-			return;
-		}
-		else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bUserButtonStop) {
-			//motor stopped for some reason
-			DBPrintln("motor stopped for some reason but we're not open... opening");
-			Open();
-			DBPrintln("m_bWasRunning 5 SHutterState : " + String(shutterState));
-			return;
-		}
-		m_bWasRunning = false;
-		DBPrintln("m_bWasRunning final SHutterState : " + String(shutterState));
 	}
 }
 
