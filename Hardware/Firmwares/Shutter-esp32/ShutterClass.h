@@ -770,7 +770,7 @@ void ShutterClass::Run()
 				return; // closed, we're done
 			}
 
-			// check if top shutter is noving
+			// check if top shutter is moving
 			if (stepper->isRunning()) {
 				m_bWasRunning = true;
 				return; // still closing the top
@@ -788,7 +788,6 @@ void ShutterClass::Run()
 					DBPrintln("m_bWasRunning topShutterState : " + String(topShutterState));
 					return;
 				}
-
 			}
 			m_bWasRunning = false;
 
@@ -799,10 +798,10 @@ void ShutterClass::Run()
 				return; // open, we're done
 			}
 
-			// check if top shutter is noving
+			// check if top shutter is moving
 			if (stepper->isRunning()) {
 				m_bWasRunning = true;
-				return; // still closing the top
+				return; // still opening the top
 			}
 
 			if(m_bWasRunning) {
@@ -816,7 +815,6 @@ void ShutterClass::Run()
 					DBPrintln("m_bWasRunning topShutterState : " + String(topShutterState));
 					return;
 				}
-
 			}
 			m_bWasRunning = false;
 		}
