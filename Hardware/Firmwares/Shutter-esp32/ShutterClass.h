@@ -108,7 +108,7 @@ private:
 	int             m_nVolts;
 	StopWatch       m_batteryCheckTimer;
 	unsigned long   m_nBatteryCheckInterval;
-	bool            m_bUserButtonStop;
+	bool            m_bAborted;
 
 	int             MeasureVoltage();
 	void			openTop();
@@ -173,7 +173,7 @@ ShutterClass::ShutterClass()
 	else if (sw1 == HIGH && sw2 == LOW)
 		shutterState = OPEN;
 
-	m_bUserButtonStop=false;
+	m_bAborted=false;
 	m_bButtonUsed = false;
 	m_nVolts = MeasureVoltage();
 }
@@ -566,7 +566,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 		MoveRelative(1073741823L );
 		shutterState = OPENING;
 		m_bButtonUsed = true;
-		m_bUserButtonStop = false;
+		m_bAborted = false;
 		buttonStopTimer.reset();
 	}
 	// shutter is between open and close and we want to close
@@ -575,7 +575,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 		shutterState = CLOSING;
 		MoveRelative(-1073741823L );
 		m_bButtonUsed = true;
-		m_bUserButtonStop = false;
+		m_bAborted = false;
 		buttonStopTimer.reset();
 	}
 	// button open pressed and we're closed
@@ -583,7 +583,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 		MoveRelative(1073741823L );
 		shutterState = OPENING;
 		m_bButtonUsed = true;
-		m_bUserButtonStop = false;
+		m_bAborted = false;
 		buttonStopTimer.reset();
 	}
 	// button close pressed and we're open
@@ -591,14 +591,14 @@ void IRAM_ATTR ShutterClass::DoButtons()
 		MoveRelative(-1073741823L );
 		shutterState = CLOSING;
 		m_bButtonUsed = true;
-		m_bUserButtonStop = false;
+		m_bAborted = false;
 		buttonStopTimer.reset();
 	}
 	else {
 		buttonStopTimer.reset();
 		motorStop();
 		m_bButtonUsed = false;
-		m_bUserButtonStop = false;
+		m_bAborted = false;
 	}
 }
 
@@ -702,7 +702,7 @@ void ShutterClass::Close()
 void ShutterClass::Abort()
 {
 	m_bButtonUsed = true;
-	m_bUserButtonStop = true; //don't try to continue open/close
+	m_bAborted = true; //don't try to continue open/close
 	stepper->stopMove();
 }
 
@@ -744,14 +744,14 @@ void ShutterClass::Run()
 				DBPrintln("Stopped at open position");
 				DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));
 			}
-			else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bUserButtonStop) {
+			else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bAborted) {
 				//motor stopped for some reason
 				DBPrintln("motor stopped for some reason but we're not closed... closing");
 				Close();
 				DBPrintln("m_bWasRunning 4 SHutterState : " + String(shutterState));
 				return;
 			}
-			else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bUserButtonStop) {
+			else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bAborted) {
 				//motor stopped for some reason
 				DBPrintln("motor stopped for some reason but we're not open... opening");
 				Open();
@@ -781,7 +781,7 @@ void ShutterClass::Run()
 					topShutterState = TOP_CLOSED;
 					stepper->setCurrentPosition(0);
 				}
-				else if((topShutterState == FINISHING_CLOSE || topShutterState==TOP_CLOSING) && !m_bUserButtonStop) {
+				else if((topShutterState == FINISHING_CLOSE || topShutterState==TOP_CLOSING) && !m_bAborted) {
 					//motor stopped for some reason
 					DBPrintln("Top motor stopped for some reason but we're not closed... closing");
 					closeTop();
@@ -808,7 +808,7 @@ void ShutterClass::Run()
 				if (digitalRead(OPEN_PIN) == 0) {
 					topShutterState = TOP_OPEN;
 				}
-				else if((topShutterState == FINISHING_OPEN || topShutterState==TOP_OPENING) && !m_bUserButtonStop) {
+				else if((topShutterState == FINISHING_OPEN || topShutterState==TOP_OPENING) && !m_bAborted) {
 					//motor stopped for some reason
 					DBPrintln("Top motor stopped for some reason but we're not closed... closing");
 					openTop();
