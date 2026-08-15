@@ -43,6 +43,7 @@
 #define STEPPER_ENABLE_PIN		13  // Digital Output
 #define DIRECTION_PIN	 		2  // Digital Output
 #define STEP_PIN				32  // Digital Output
+// 100k to ground on GPIO 12, and 100k to 3.3V on GPIO 0
 #define SPARE_OUT1			 	 0
 #define SPARE_OUT2				12
 

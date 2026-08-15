@@ -2053,8 +2053,8 @@ void shutterSpeedValue(Request &req, Response &res)
 				String shutterMessage;
 				String sTmpString = String(SPEED_SHUTTER);
 				RemoteShutter.speed = FormData["value"];
-				shutterMessage = sTmpString + String(RemoteShutter.speed);
-				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
+				shutterMessage = sTmpString + String(RemoteShutter.speed) + "#";
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length()) ;
 				ReceiveWiFi(shutterClient);
 			}
 		}
@@ -2085,7 +2085,7 @@ void shutterAccelerationValue(Request &req, Response &res)
 				String shutterMessage;
 				String sTmpString = String(ACCELERATION_SHUTTER);
 				RemoteShutter.acceleration = FormData["value"];
-				shutterMessage = sTmpString + String(RemoteShutter.acceleration);
+				shutterMessage = sTmpString + String(RemoteShutter.acceleration) + "#";
 				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
@@ -2146,7 +2146,7 @@ void shutterWatchdogTimerValue(Request &req, Response &res)
 				String shutterMessage;
 				String sTmpString = String(WATCHDOG_INTERVAL);
 				RemoteShutter.watchdogInterval = FormData["value"];
-				shutterMessage = sTmpString + String(RemoteShutter.watchdogInterval);
+				shutterMessage = sTmpString + String(RemoteShutter.watchdogInterval) + "#";
 				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
@@ -2178,7 +2178,7 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 				String shutterMessage;
 				String sTmpString = String(VOLTS_SHUTTER);
 				RemoteShutter.voltsCutOff = FormData["value"];
-				shutterMessage = sTmpString + String(RemoteShutter.voltsCutOff);
+				shutterMessage = sTmpString + String(RemoteShutter.voltsCutOff) + "#";
 				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
@@ -2212,7 +2212,7 @@ void dualShutterEnabled(Request &req, Response &res)
 				String shutterMessage;
 				String sTmpString = String(DOUBLE_SHUTTER);
 				RemoteShutter.bDualShutterEnabled = bDualShutter;
-				shutterMessage = sTmpString + String(RemoteShutter.bDualShutterEnabled?1:0);
+				shutterMessage = sTmpString + String(RemoteShutter.bDualShutterEnabled?1:0) + "#";
 				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}
@@ -2246,7 +2246,7 @@ void shutterOpenOrder(Request &req, Response &res)
 				String shutterMessage;
 				String sTmpString = String(SHUTTER_ORDER);
 				RemoteShutter.nShutterOrder = nOrder;
-				shutterMessage = sTmpString + String(RemoteShutter.nShutterOrder);
+				shutterMessage = sTmpString + String(RemoteShutter.nShutterOrder) + "#";
 				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
 				ReceiveWiFi(shutterClient);
 			}

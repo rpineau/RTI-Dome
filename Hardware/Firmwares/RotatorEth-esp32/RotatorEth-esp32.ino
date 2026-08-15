@@ -1247,6 +1247,7 @@ void ProcessCommand(int nSource)
 //          }
 //			shutterMessage += "#";
 //			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+//			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 //          ReceiveWiFi(shutterClient);
 //          serialMessage = sTmpString + RemoteShutter.position;
 //          break;

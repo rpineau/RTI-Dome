@@ -33,8 +33,6 @@
 #define DBPrintHex(x)
 #endif // DEBUG
 
-#define VERSION "2.645"
-
 #define ERR_NO_DATA	-1
 
 enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
@@ -554,9 +552,18 @@ void ProcessWifi()
 			if (hasValue) {
 				sRotatorMessage = String(DOUBLE_SHUTTER);
 				Shutter->setDoubleShutterEnable(value.toInt()==1?true:false);
+
+				if(value.toInt()==1) {
+					attachInterrupt(LOWER_OPENED_PIN, handleLowerOpenInterrupt, FALLING);
+					attachInterrupt(LOWER_CLOSED_PIN, handleLowerClosedInterrupt, FALLING);
+				} else {
+					detachInterrupt(LOWER_OPENED_PIN);
+					detachInterrupt(LOWER_CLOSED_PIN);
+				}
+
 			}
 			sRotatorMessage = String(DOUBLE_SHUTTER) + Shutter->getDoubleShutterEnable();
-			DBPrintln("DOUBLE_SHUTTER '" + String(Shutter->getDoubleShutterEnable()?:"True":"False") + "'");
+			DBPrintln("DOUBLE_SHUTTER '" + String(Shutter->getDoubleShutterEnable()?"True":"False") + "'");
 			break;
 
 		default:

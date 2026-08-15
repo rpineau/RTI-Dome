@@ -73,7 +73,8 @@ public:
 	void		Open();
 	void		Close();
 	void		Run();
-	static void	motorStop();
+	void		motorStop();
+	void 		Stop();
 	void		motorMoveTo(const long newPosition);
 	void		motorMoveRelative(const long amount);
 	// double shutter methods
@@ -110,6 +111,12 @@ private:
 	unsigned long   m_nBatteryCheckInterval;
 	bool            m_bAborted;
 
+	void			clearPendingActions();
+	volatile bool m_bPendingOpenBottom  = false;
+	volatile bool m_bPendingCloseBottom = false;
+	volatile bool m_bPendingOpenTop     = false;
+	volatile bool m_bPendingCloseTop    = false;
+
 	int             MeasureVoltage();
 	void			openTop();
 	void			closeTop();
@@ -144,6 +151,10 @@ ShutterClass::ShutterClass()
 	pinMode(DIRECTION_PIN,  		OUTPUT);
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
+	pinMode(LOWER_DIR,    OUTPUT);
+	pinMode(LOWER_ENABLE, OUTPUT);
+	digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);   // don't drive on boot
+	
 	DBPrintln("Loading config");
 
 	LoadConfig();
@@ -173,29 +184,49 @@ ShutterClass::ShutterClass()
 	else if (sw1 == HIGH && sw2 == LOW)
 		shutterState = OPEN;
 
+	if(m_Config.bHasDropShutter) {
+    	topShutterState    = (digitalRead(CLOSED_PIN)       == LOW) ? TOP_CLOSED
+                       : (digitalRead(OPEN_PIN)         == LOW) ? TOP_OPEN    : ERROR;
+    	bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED
+                       : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
+	}
 	m_bAborted=false;
 	m_bButtonUsed = false;
 	m_nVolts = MeasureVoltage();
 }
 
+void IRAM_ATTR ShutterClass::OpenInterrupt()
+{
+    if(m_Config.bHasDropShutter) {
+        if(topShutterState == TOP_OPENING) {
+            motorStop();
+            if(!m_Config.bBottomShutterOpenFirst)
+                m_bPendingOpenBottom = true;
+            else
+                topShutterState = FINISHING_OPEN;
+        }
+    }
+    else if(shutterState == OPENING) {
+        motorStop();
+        shutterState = FINISHING_OPEN;
+    }
+}
+
 void IRAM_ATTR ShutterClass::ClosedInterrupt()
 {
-	DBPrintln("[ClosedInterrupt] Shutter state : " + String(shutterState));
 	if(m_Config.bHasDropShutter) {
 		if(topShutterState == TOP_CLOSING) {
-			DBPrintln("Closed Int stopping motor");
 			motorStop();
-			if(m_Config.bBottomShutterOpenFirst) { // open first, close last
-				closeBottom();
+			if(m_Config.bBottomShutterOpenFirst) {  // bottom opens first -> bottom closes last
+				m_bPendingCloseBottom = true;
 			}
-			else {
+			else {                                  // top closes last -> we're done
 				topShutterState = FINISHING_CLOSE;
 			}
 		}
 	}
 	else {
 		if(shutterState == CLOSING) {
-			DBPrintln("Close Int stopping motor");
 			motorStop();
 			shutterState = FINISHING_CLOSE;
 		}
@@ -203,61 +234,40 @@ void IRAM_ATTR ShutterClass::ClosedInterrupt()
 }
 
 
-
-void IRAM_ATTR ShutterClass::OpenInterrupt()
-{
-	DBPrintln("[OpenInterrupt] Shutter state : " + String(shutterState));
-	if(m_Config.bHasDropShutter) {
-		if(topShutterState == TOP_OPENING) {
-			DBPrintln("Open Int stopping motor");
-			motorStop();
-			if(m_Config.bBottomShutterOpenFirst) { // open first, close last
-				openBottom();
-			}
-			else {
-				topShutterState = FINISHING_OPEN;
-			}
-		}
-	}
-	else {
-		if(shutterState == OPENING) {
-			DBPrintln("Open Int stopping motor");
-			motorStop();
-			shutterState = FINISHING_OPEN;
-		}
-	}
-}
-
 void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 {
-
-	DBPrintln("[ClosedInterrupt] Drop Shutter state : " + String(shutterState));
 	if(bottomShutterState == BOTTOM_CLOSING) {
-		DBPrintln("Closed Int stopping actuator");
 		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
-		if(!m_Config.bBottomShutterOpenFirst) { // open last, close first
-			closeTop();
+		if(!m_Config.bBottomShutterOpenFirst) {  // top opens first -> top closes last
+			m_bPendingCloseTop = true;
 		}
-		else
+		else {                                   // bottom closes last -> we're done
 			bottomShutterState = BOTTOM_CLOSED;
+		}
 	}
 }
+
 
 void IRAM_ATTR ShutterClass::LowerOpenInterrupt()
 {
-
-	DBPrintln("[LowerOpenInterrupt] Drop Shutter state : " + String(shutterState));
 	if(bottomShutterState == BOTTOM_OPENING) {
-		DBPrintln("Open Int stopping actuator");
 		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
-		if(m_Config.bBottomShutterOpenFirst) { // open first, close last
-			openTop();
+		if(m_Config.bBottomShutterOpenFirst) {   // bottom opened first -> top is next
+			m_bPendingOpenTop = true;
 		}
-		else
+		else {                                   // bottom opened last -> we're done
 			bottomShutterState = BOTTOM_OPEN;
+		}
 	}
 }
 
+void ShutterClass::clearPendingActions()
+{
+	m_bPendingOpenBottom  = false;
+	m_bPendingCloseBottom = false;
+	m_bPendingOpenTop     = false;
+	m_bPendingCloseTop    = false;	
+}
 
 void ShutterClass::LoadConfig()
 {
@@ -282,9 +292,9 @@ void ShutterClass::LoadConfig()
 	m_Config.maxSpeed = m_preferences.getInt("maxSpeed",MAX_SPEED);
 	m_Config.reversed = m_preferences.getBool("reversed", false);
 	m_Config.cutoffVolts = m_preferences.getInt("cutoffVolts",DEFAULT_CUT_OFF_VOLTS);
-	m_Config.watchdogInterval = m_preferences.getULong("watchdogInterval",DEFAULT_WATCHDOG_INTERVAL);
+	m_Config.watchdogInterval = m_preferences.getULong("wdInterval",DEFAULT_WATCHDOG_INTERVAL);
 	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
-	m_Config.bBottomShutterOpenFirst = m_preferences.getBool("bottomShutterOpenFirst", true); // this generaly the case.
+	m_Config.bBottomShutterOpenFirst = m_preferences.getBool("botShutFirst", true); // this generaly the case.
 	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.2"));
 	m_Config.wifiIpConfig.sSSID = m_preferences.getString("wifiSSID", "RTIShutter");
 	if(m_Config.wifiIpConfig.sSSID.length()<8) {
@@ -308,11 +318,11 @@ void ShutterClass::LoadConfig()
 
 	if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL) {
 		m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
-		m_preferences.putULong("watchdogInterval", m_Config.watchdogInterval);
+		m_preferences.putULong("wdInterval", m_Config.watchdogInterval);
 	}
 	if(m_Config.watchdogInterval < MIN_WATCHDOG_INTERVAL) {
 		m_Config.watchdogInterval = MIN_WATCHDOG_INTERVAL;
-		m_preferences.putULong("watchdogInterval", m_Config.watchdogInterval);
+		m_preferences.putULong("wdInterval", m_Config.watchdogInterval);
 	}
 	m_preferences.end();
 }
@@ -545,7 +555,7 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 		m_Config.watchdogInterval = newInterval;
 
 	m_preferences.begin("RTI_Shutter", false);
-	m_preferences.putULong("watchdogInterval", m_Config.watchdogInterval);
+	m_preferences.putULong("wdInterval", m_Config.watchdogInterval);
 	m_preferences.end();
 }
 
@@ -665,11 +675,14 @@ void ShutterClass::closeBottom()
 
 void ShutterClass::Open()
 {
+	m_bAborted = false;
+	clearPendingActions();
 	m_nVolts = MeasureVoltage();
 	if(GetVoltsAreLow()) // do not try to open if we're already at low voltage
 		return;
 
 	if(m_Config.bHasDropShutter) {
+		shutterState = OPENING;
 		if(m_Config.bBottomShutterOpenFirst ) {
 			openBottom();
 		}
@@ -685,7 +698,11 @@ void ShutterClass::Open()
 
 void ShutterClass::Close()
 {
+	m_bAborted = false;
+	clearPendingActions();
+
 	if(m_Config.bHasDropShutter ) {
+			shutterState = CLOSING;
 			if(m_Config.bBottomShutterOpenFirst) { // open bottom first = close bottom last
 				closeTop();
 			}
@@ -701,14 +718,33 @@ void ShutterClass::Close()
 
 void ShutterClass::Abort()
 {
+	clearPendingActions();
 	m_bButtonUsed = true;
 	m_bAborted = true; //don't try to continue open/close
-	stepper->stopMove();
+	Stop();
+	digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
+
+	if(m_Config.bHasDropShutter) {
+		topShutterState    = (digitalRead(CLOSED_PIN)       == LOW) ? TOP_CLOSED
+		                   : (digitalRead(OPEN_PIN)         == LOW) ? TOP_OPEN    : ERROR;
+		bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED
+		                   : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
+	}
+	shutterState = (digitalRead(CLOSED_PIN) == LOW) ? CLOSED
+	             : (digitalRead(OPEN_PIN)   == LOW) ? OPEN : ERROR;
 }
+
 
 void ShutterClass::Run()
 {
 	int sw1,sw2;
+
+	// deferred actions from ISRs
+	if(m_bPendingOpenBottom)  { m_bPendingOpenBottom  = false; openBottom();  }
+	if(m_bPendingCloseBottom) { m_bPendingCloseBottom = false; closeBottom(); }
+	if(m_bPendingOpenTop)     { m_bPendingOpenTop     = false; openTop();     }
+	if(m_bPendingCloseTop)    { m_bPendingCloseTop    = false; closeTop();    }
+
 
 	if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
 		DBPrintln("Measuring Battery");
@@ -828,6 +864,11 @@ void ShutterClass::motorStop()
 
 }
 
+void ShutterClass::Stop()
+{
+	stepper->forceStop();
+
+}
 
 void ShutterClass::motorMoveTo(const long newPosition)
 {
@@ -844,8 +885,9 @@ void ShutterClass::setDoubleShutterEnable(bool bEnable)
 {
 	m_Config.bHasDropShutter = bEnable;
 	m_preferences.begin("RTI_Shutter", false);
-	m_preferences.putInt("hasDropShutter", m_Config.bHasDropShutter);
+	m_preferences.putBool("hasDropShutter", m_Config.bHasDropShutter);
 	m_preferences.end();
+	
 }
 
 bool ShutterClass::getDoubleShutterEnable()
@@ -857,7 +899,7 @@ void ShutterClass::setOpenOrder(bool bBottomfirst)
 {
 	m_Config.bBottomShutterOpenFirst = bBottomfirst;
 	m_preferences.begin("RTI_Shutter", false);
-	m_preferences.putInt("bottomShutterOpenFirst", m_Config.bBottomShutterOpenFirst);
+	m_preferences.putBool("botShutFirst", m_Config.bBottomShutterOpenFirst);
 	m_preferences.end();
 
 }
