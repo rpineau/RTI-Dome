@@ -2,8 +2,18 @@
 // RTI-Zone Dome Shutter firmware.
 // for ESP32
 //
+//  Copyright © 2024 Rodolphe Pineau. All rights reserved.
+//
 
-// Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
+//
+// Board Settings (Tools menu):
+// --------------------------------
+// Board:            ESP32 Dev Module
+// Flash Size:       4MB
+// Partition Scheme: Minimal SPIFFS (1.9MB APP with OTA / 128KB SPIFFS)
+// --------------------------------
+
+// Uncomment #define DEBUG in config.h to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
 #include <rtc_wdt.h>

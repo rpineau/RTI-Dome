@@ -135,7 +135,7 @@ ShutterClass::ShutterClass()
 	pinMode(BUTTON_OPEN,			INPUT_PULLUP);
 	pinMode(BUTTON_CLOSE,			INPUT_PULLUP);
 	pinMode(VOLTAGE_MONITOR_PIN,	INPUT);
-
+	// dual shutter mode
 	pinMode(LOWER_CLOSED_PIN,		INPUT_PULLUP);
 	pinMode(LOWER_OPENED_PIN,			INPUT_PULLUP);
 

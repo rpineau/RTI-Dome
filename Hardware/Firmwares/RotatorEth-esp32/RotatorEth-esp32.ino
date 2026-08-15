@@ -14,7 +14,7 @@
 // --------------------------------
 //
 
-// Uncomment #define DEBUG to enable printing debug messages on serial port defined as DebugPort
+// Uncomment #define DEBUG in config.h to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
 #include <rtc_wdt.h>
