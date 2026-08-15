@@ -64,7 +64,7 @@ FastAccelStepper *stepper = NULL;
 #ifdef MOTION_LOG
 const char *resetReasonName(esp_reset_reason_t r) {
 	switch (r) {
-		case ESP_RST_UNKNOWN:   return "Unknown";
+		case ESP_RST_UNKNOWN:   return "ESP Reset Unknown";
 		case ESP_RST_POWERON:   return "PowerOn";    //Power on or RST pin toggled
 		case ESP_RST_EXT:       return "ExtPin";     //External pin - not applicable for ESP32
 		case ESP_RST_SW:        return "Reboot";     //esp_restart()
@@ -75,7 +75,7 @@ const char *resetReasonName(esp_reset_reason_t r) {
 		case ESP_RST_DEEPSLEEP: return "Sleep";      //Reset after exiting deep sleep mode
 		case ESP_RST_BROWNOUT:  return "BrownOut";   //Brownout reset (software or hardware)
 		case ESP_RST_SDIO:      return "SDIO";       //Reset over SDIO
-		default:                return "";
+		default:                return "Reset:Unknown";
 	}
 }
 
