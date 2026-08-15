@@ -525,13 +525,13 @@ void ProcessWifi()
 			break;
 
 		case SHUTTER_SSID:
+			sRotatorMessage = String(SHUTTER_SSID);
 			if (hasValue) {
-				sRotatorMessage = String(SHUTTER_SSID);
 				Shutter->setSSID(value);
 				if(!configureWiFi())
 					return; // this will be picked by the wtachdog timer
 			}
-			sRotatorMessage = String(SHUTTER_SSID) + Shutter->getSSID();
+			sRotatorMessage += Shutter->getSSID();
 			DBPrintln("SSID '" + String(Shutter->getSSID()) + "'");
 			break;
 
@@ -540,17 +540,17 @@ void ProcessWifi()
 			break;
 
 		case SHUTTER_ORDER:
+			sRotatorMessage = String(SHUTTER_ORDER);
 			if (hasValue) {
-				sRotatorMessage = String(SHUTTER_ORDER);
 				Shutter->setOpenOrder(value.toInt()==1?true:false);
 			}
-			sRotatorMessage = String(SHUTTER_ORDER) + Shutter->getOpenOrder();
+			sRotatorMessage += Shutter->getOpenOrder();
 			DBPrintln("SHUTTER_ORDER '" + String(Shutter->getOpenOrder()==TOP_FIRST?"Top first":"Bottom First") + "'");
 			break;
 
 		case DOUBLE_SHUTTER:
+			sRotatorMessage = String(DOUBLE_SHUTTER);
 			if (hasValue) {
-				sRotatorMessage = String(DOUBLE_SHUTTER);
 				Shutter->setDoubleShutterEnable(value.toInt()==1?true:false);
 
 				if(value.toInt()==1) {
@@ -562,7 +562,7 @@ void ProcessWifi()
 				}
 
 			}
-			sRotatorMessage = String(DOUBLE_SHUTTER) + Shutter->getDoubleShutterEnable();
+			sRotatorMessage += Shutter->getDoubleShutterEnable();
 			DBPrintln("DOUBLE_SHUTTER '" + String(Shutter->getDoubleShutterEnable()?"True":"False") + "'");
 			break;
 
@@ -572,7 +572,7 @@ void ProcessWifi()
 	}
 
 	if (sRotatorMessage.length() > 0 && shutterClient.connected()) {
-		sRotatorMessage+="#";
+		sRotatorMessage += "#";
 		DBPrintln(">>> Sending " + sRotatorMessage);
 		shutterClient.write(sRotatorMessage.c_str());
 	}

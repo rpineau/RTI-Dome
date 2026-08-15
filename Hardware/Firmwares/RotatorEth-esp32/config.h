@@ -71,7 +71,6 @@
 #define MAX_SPEED           8000
 #define ACCELERATION        7000
 
-#define DEBOUNCE_TIME		50
 #define DELAY_WIFI			10
 
 /*

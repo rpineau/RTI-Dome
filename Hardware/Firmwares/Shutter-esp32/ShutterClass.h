@@ -144,15 +144,16 @@ ShutterClass::ShutterClass()
 	pinMode(VOLTAGE_MONITOR_PIN,	INPUT);
 	// dual shutter mode
 	pinMode(LOWER_CLOSED_PIN,		INPUT_PULLUP);
-	pinMode(LOWER_OPENED_PIN,			INPUT_PULLUP);
+	pinMode(LOWER_OPENED_PIN,		INPUT_PULLUP);
 
 	// Ouput pins
 	pinMode(STEP_PIN,       		OUTPUT);
 	pinMode(DIRECTION_PIN,  		OUTPUT);
 	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
 
-	pinMode(LOWER_DIR,    OUTPUT);
-	pinMode(LOWER_ENABLE, OUTPUT);
+	pinMode(LOWER_DIR,				OUTPUT);
+	pinMode(LOWER_ENABLE,			OUTPUT);
+
 	digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);   // don't drive on boot
 	
 	DBPrintln("Loading config");
@@ -185,10 +186,8 @@ ShutterClass::ShutterClass()
 		shutterState = OPEN;
 
 	if(m_Config.bHasDropShutter) {
-    	topShutterState    = (digitalRead(CLOSED_PIN)       == LOW) ? TOP_CLOSED
-                       : (digitalRead(OPEN_PIN)         == LOW) ? TOP_OPEN    : ERROR;
-    	bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED
-                       : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
+		topShutterState    = (digitalRead(CLOSED_PIN) == LOW) ? TOP_CLOSED : (digitalRead(OPEN_PIN) == LOW) ? TOP_OPEN    : ERROR;
+		bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
 	}
 	m_bAborted=false;
 	m_bButtonUsed = false;

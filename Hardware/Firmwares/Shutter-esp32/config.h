@@ -73,13 +73,6 @@
 #define MAX_SPEED		6400
 #define ACCELERATION	7000
 
-#define DEBOUNCE_TIME	50
-/*
-Micro-steps per rotation with a 200 step per rotation stepper and 15.3:1 gearbox
-	NexDome 2m      : 440640
-	Explora-Dome 8' : 479800
-*/
-
 #define STEPS_DEFAULT	885000
 
 
