@@ -1621,6 +1621,11 @@ void parkPosition(Request &req, Response &res)
 	String sResp;
 	float dPosition = 0.0f;
 
+	if(bLowShutterVoltage) {
+		AlpacaError_x408(jsonResp, res);
+		return;
+	}
+
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
@@ -2347,6 +2352,7 @@ void uiGotoAzimuth(Request &req, Response &res)
 	JsonDocument jsonResp;
 	String sResp;
 
+	
 	JsonDocument FormData;
 	formDataToJson(req, FormData);
 	if(FormData.size()==0){

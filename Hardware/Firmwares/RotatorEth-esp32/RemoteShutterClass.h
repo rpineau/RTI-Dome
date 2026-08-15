@@ -24,7 +24,7 @@ public:
 	int	voltsCutOff = 0;
 	unsigned int watchdogInterval = 90; // set proper default.. just in case.
 	String  ssid = "RTIShutter";
-	String  lowVoltStateOrBadConditions = "";
+	String  lowVoltState = "";
 	bool	bDualShutterEnabled = false;
 	int		nShutterOrder = TOP_FIRST;
 	RemoteShutterClass();

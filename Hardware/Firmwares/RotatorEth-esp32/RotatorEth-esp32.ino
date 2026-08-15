@@ -689,7 +689,8 @@ void CheckForConditions()
 	String shutterMessage;
 	bool bCurrentCondition = Rotator->GetConditionsStatus();
 
-	int nPosition, nParkPos;
+	// float nPosition;
+	float dParkPos;
 	if(bIsSafe != bCurrentCondition) { // was there a state change ?
 		bIsSafe = bCurrentCondition;
 #ifdef USE_WIFI
@@ -708,9 +709,9 @@ void CheckForConditions()
 		}
 
 		if (Rotator->GetConditionsAction() == PARK && !bParked) {
-			nParkPos = Rotator->GetParkAzimuth();
+			dParkPos = Rotator->GetParkAzimuth();
 			DBPrintln("Bad Conditions -> Parking");
-			Rotator->GoToAzimuth(nParkPos);
+			Rotator->GoToAzimuth(dParkPos);
 			bParked = true;
 		}
 	// keep telling the shutter about the Conditions status
@@ -727,7 +728,7 @@ void CheckForConditions()
 
 void checkShuterLowVoltage()
 {
-	bLowShutterVoltage = (RemoteShutter.lowVoltStateOrBadConditions.equals("L"));
+	bLowShutterVoltage = (RemoteShutter.lowVoltState.equals("L"));
 	if(bLowShutterVoltage && !bParked) {
 		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge the shutter battery
 		 bParked = true;
@@ -1244,7 +1245,7 @@ void ProcessCommand(int nSource)
 				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 				ReceiveWiFi(shutterClient);
 				}
-			serialMessage = sTmpString + RemoteShutter.lowVoltStateOrBadConditions;
+			serialMessage = sTmpString + RemoteShutter.lowVoltState;
 			break;
 
 		case REVERSED_SHUTTER:
@@ -1437,9 +1438,9 @@ void ProcessWifi()
 
 		case OPEN_SHUTTER:
 			if (hasValue)
-				RemoteShutter.lowVoltStateOrBadConditions = value;
+				RemoteShutter.lowVoltState = value;
 			else
-				RemoteShutter.lowVoltStateOrBadConditions = "";
+				RemoteShutter.lowVoltState = "";
 			break;
 
 		case STEPSPER_SHUTTER:
@@ -1470,9 +1471,9 @@ void ProcessWifi()
 		case SHUTTER_PING:
 			bShutterPresent = true;
 			if (hasValue)
-				RemoteShutter.lowVoltStateOrBadConditions = value;
+				RemoteShutter.lowVoltState = value;
 			else
-				RemoteShutter.lowVoltStateOrBadConditions = "";
+				RemoteShutter.lowVoltState = "";
 
 			break;
 

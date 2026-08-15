@@ -289,11 +289,12 @@ void IRAM_ATTR handleButtons()
 void PingRotator()
 {
 	String wirelessMessage="";
-	wirelessMessage = String(SHUTTER_PING) + "#";
+	wirelessMessage = String(SHUTTER_PING);
 	// make sure the rotator knows as soon as possible
 	if (Shutter->GetVoltsAreLow()) {
 		wirelessMessage += "L"; // low voltage detected
 	}
+	wirelessMessage+= "#";
 
 	shutterClient.write(wirelessMessage.c_str());
 
