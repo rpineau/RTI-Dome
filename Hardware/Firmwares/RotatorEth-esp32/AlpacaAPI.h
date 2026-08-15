@@ -936,7 +936,7 @@ void geAtPark(Request &req, Response &res)
 	DBPrintln("[ ********** geAtPark ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
-	if(bParked) {
+	if(bGlobalParked) {
 		jsonResp["Value"] = true;
 	}
 	else {
@@ -1413,7 +1413,7 @@ void doPark(Request &req, Response &res)
 
 	fParkPos = Rotator->GetParkAzimuth();
 	Rotator->GoToAzimuth(fParkPos);
-	bParked = true;
+	bGlobalParked = true;
 
 	jsonResp["ErrorNumber"] = 0;
 	jsonResp["ErrorMessage"] = "";

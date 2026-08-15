@@ -71,7 +71,7 @@ RemoteShutterClass RemoteShutter;
 
 String computerBuffer = "";
 
-bool bParked = false; // use to the run check doesn't continuously try to park
+bool bGlobalParked = false; // use to the run check doesn't continuously try to park
 
 RotatorClass *Rotator = NULL;
 
@@ -708,11 +708,11 @@ void CheckForConditions()
 			Rotator->StartHoming();
 		}
 
-		if (Rotator->GetConditionsAction() == PARK && !bParked) {
+		if (Rotator->GetConditionsAction() == PARK && !bGlobalParked) {
 			dParkPos = Rotator->GetParkAzimuth();
 			DBPrintln("Bad Conditions -> Parking");
 			Rotator->GoToAzimuth(dParkPos);
-			bParked = true;
+			bGlobalParked = true;
 		}
 	// keep telling the shutter about the Conditions status
 #ifdef USE_WIFI
@@ -729,9 +729,9 @@ void CheckForConditions()
 void checkShuterLowVoltage()
 {
 	bLowShutterVoltage = (RemoteShutter.lowVoltState.equals("L"));
-	if(bLowShutterVoltage && !bParked) {
+	if(bLowShutterVoltage && !bGlobalParked) {
 		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge the shutter battery
-		 bParked = true;
+		 bGlobalParked = true;
 	}
 }
 
@@ -917,7 +917,7 @@ void ProcessCommand(int nSource)
 					fTmp -= 360.0f;
 				}
 				Rotator->GoToAzimuth(fTmp);
-				bParked = false;
+				bGlobalParked = false;
 			}
 			DBPrintln("Azimuth : " + String(Rotator->GetAzimuth()));
 			serialMessage = String(GOTO_ROTATOR) + String(Rotator->GetAzimuth());
