@@ -728,7 +728,7 @@ void CheckForConditions()
 void checkShuterLowVoltage()
 {
 	bLowShutterVoltage = (RemoteShutter.lowVoltStateOrBadConditions.equals("L"));
-	if(bLowShutterVoltage) {
+	if(bLowShutterVoltage && !bParked) {
 		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge the shutter battery
 		 bParked = true;
 	}
