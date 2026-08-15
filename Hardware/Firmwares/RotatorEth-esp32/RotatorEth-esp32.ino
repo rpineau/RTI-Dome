@@ -691,10 +691,6 @@ void CheckForCommands()
 void CheckForConditions()
 {
 	String shutterMessage;
-#ifdef MOTION_LOG
-	logMotion(__func__);
-#endif
-
 	bool bCurrentCondition = Rotator->GetConditionsStatus();
 
 	// float nPosition;
@@ -711,13 +707,19 @@ void CheckForConditions()
 #endif // USE_WIFI
 	}
 	if (!bIsSafe) {
-		if (Rotator->GetConditionsAction() == HOME && Rotator->GetHomeStatus() != ATHOME) {
+		if (Rotator->GetConditionsAction() == HOME  && Rotator->GetHomeStatus() != ATHOME  && Rotator->GetSeekMode() == NOT_MOVING) {			
 			DBPrintln("Bad Conditions- > Homing");
+#ifdef MOTION_LOG
+			logMotion("Conditions:Home", Rotator->GetHomeAzimuth());
+#endif
 			Rotator->StartHoming();
 		}
 
 		if (Rotator->GetConditionsAction() == PARK && !bGlobalParked) {
 			dParkPos = Rotator->GetParkAzimuth();
+#ifdef MOTION_LOG
+			logMotion("Conditions:Park", dParkPos);
+#endif
 			DBPrintln("Bad Conditions -> Parking");
 			Rotator->GoToAzimuth(dParkPos);
 			bGlobalParked = true;
@@ -736,12 +738,12 @@ void CheckForConditions()
 
 void checkShuterLowVoltage()
 {
-#ifdef MOTION_LOG
-	logMotion(__func__);
-#endif
 
 	bLowShutterVoltage = (RemoteShutter.lowVoltState.equals("L"));
 	if(bLowShutterVoltage && !bGlobalParked) {
+#ifdef MOTION_LOG
+		logMotion(__func__, Rotator->GetParkAzimuth());
+#endif
 		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge the shutter battery
 		 bGlobalParked = true;
 	}

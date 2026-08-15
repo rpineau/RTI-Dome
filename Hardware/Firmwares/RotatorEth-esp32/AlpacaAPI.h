@@ -2498,29 +2498,40 @@ void uiAbort(Request &req, Response &res)
 #ifdef MOTION_LOG
 void sendMotionLog(Request &req, Response &res)
 {
-	JsonDocument jsonResp;
-	JsonDocument FormData;
-	bool bParamsOk = false;
-	String sResp;
-	int nIdx;
-	int n=0;
-	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
-	bParamsOk = getIDs(req, jsonResp, FormData);
+    JsonDocument jsonResp;
+    JsonDocument FormData;
+    String sResp;
 
+    DBPrintln("[ ********** " + String(__func__) + " ********** ]");
+    if(!getIDs(req, jsonResp, FormData)) {
+        AlpacaError_x401(jsonResp, res);
+        return;
+    }
 
-	for(nIdx = motionLogIdx; nIdx--; nIdx>=0) {
-		jsonResp["Value"][n]["Time"] = motionLog[nIdx].ms;
-		jsonResp["Value"][n]["What"] = motionLog[nIdx].what;
-		jsonResp["Value"][n]["Target"] = motionLog[nIdx].target;
-		n++;
-	}
+    uint32_t total = motionLogIdx;
+    uint32_t count = total < MOTION_LOG_SIZE ? total : MOTION_LOG_SIZE;
 
-	serializeJson(jsonResp, sResp);
+    MotionEvent snap[MOTION_LOG_SIZE];
+    for(uint32_t i = 0; i < count; i++)
+        snap[i] = motionLog[(total - 1 - i) % MOTION_LOG_SIZE];
 
-	DBPrintln(String(__func__) + " : sResp : " + sResp);
+    if(motionLogIdx - total >= MOTION_LOG_SIZE) {
+        jsonResp["Value"].to<JsonArray>();
+        jsonResp["Overrun"] = true;
+    } else {
+        JsonArray arr = jsonResp["Value"].to<JsonArray>();
+        for(uint32_t i = 0; i < count; i++) {
+            JsonObject o = arr.add<JsonObject>();
+            o["Time"]   = snap[i].ms;
+            o["What"]   = snap[i].what;
+            o["Target"] = snap[i].target;
+        }
+    }
 
-	res.set("Content-Type", "application/json");
-	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+    serializeJson(jsonResp, sResp);
+    DBPrintln(String(__func__) + " : sResp : " + sResp);
+    res.set("Content-Type", "application/json");
+    res.write((uint8_t*)(sResp.c_str()), sResp.length());
 }
 #endif
 //
