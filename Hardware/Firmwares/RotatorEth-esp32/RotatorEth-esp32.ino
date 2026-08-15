@@ -154,6 +154,10 @@ esp_task_wdt_config_t twdt_config = {
 //
 void setup()
 {
+#ifdef MOTION_LOG
+	logMotion(resetReasonName(esp_reset_reason()));
+#endif
+
 #ifdef USE_WIFI
 	nbWiFiClient = 0;
 #endif
@@ -687,6 +691,10 @@ void CheckForCommands()
 void CheckForConditions()
 {
 	String shutterMessage;
+#ifdef MOTION_LOG
+	logMotion(__func__);
+#endif
+
 	bool bCurrentCondition = Rotator->GetConditionsStatus();
 
 	// float nPosition;
@@ -728,6 +736,10 @@ void CheckForConditions()
 
 void checkShuterLowVoltage()
 {
+#ifdef MOTION_LOG
+	logMotion(__func__);
+#endif
+
 	bLowShutterVoltage = (RemoteShutter.lowVoltState.equals("L"));
 	if(bLowShutterVoltage && !bGlobalParked) {
 		 Rotator->GoToAzimuth(Rotator->GetParkAzimuth()); // we need to park so we can recharge the shutter battery

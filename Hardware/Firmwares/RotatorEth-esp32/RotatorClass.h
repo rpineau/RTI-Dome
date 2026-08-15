@@ -61,6 +61,40 @@ enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
 FastAccelStepperEngine engine = FastAccelStepperEngine();
 FastAccelStepper *stepper = NULL;
 
+#ifdef MOTION_LOG
+const char *resetReasonName(esp_reset_reason_t r) {
+	switch (r) {
+		case ESP_RST_UNKNOWN:   return "Unknown";
+		case ESP_RST_POWERON:   return "PowerOn";    //Power on or RST pin toggled
+		case ESP_RST_EXT:       return "ExtPin";     //External pin - not applicable for ESP32
+		case ESP_RST_SW:        return "Reboot";     //esp_restart()
+		case ESP_RST_PANIC:     return "Crash";      //Exception/panic
+		case ESP_RST_INT_WDT:   return "WDT_Int";    //Interrupt watchdog (software or hardware)
+		case ESP_RST_TASK_WDT:  return "WDT_Task";   //Task watchdog
+		case ESP_RST_WDT:       return "WDT_Other";  //Other watchdog
+		case ESP_RST_DEEPSLEEP: return "Sleep";      //Reset after exiting deep sleep mode
+		case ESP_RST_BROWNOUT:  return "BrownOut";   //Brownout reset (software or hardware)
+		case ESP_RST_SDIO:      return "SDIO";       //Reset over SDIO
+		default:                return "";
+	}
+}
+
+struct MotionEvent {
+    unsigned long ms;
+    const char*   what;     // string literal, no allocation
+    float         target;
+};
+#define MOTION_LOG_SIZE 16
+MotionEvent motionLog[MOTION_LOG_SIZE];
+volatile uint8_t motionLogIdx = 0;
+
+void logMotion(const char* what, float target = 0.0f) {
+    uint8_t i = motionLogIdx % MOTION_LOG_SIZE;
+    motionLog[i] = { millis(), what, target };
+    motionLogIdx++;
+}
+#endif
+
 class RotatorClass
 {
 
@@ -603,6 +637,9 @@ void RotatorClass::GoToAzimuth(const float newHeading)
 	// Goto new target
 	float currentHeading;
 	float delta;
+#ifdef MOTION_LOG
+	logMotion(__func__,newHeading);
+#endif
 	if(xSemaphoreTake(m_mutex, portMAX_DELAY) == pdTRUE) {
 		stepper->forceStop();  // cancel any in-progress move first
         // Wait until stepper has fully stopped
@@ -732,6 +769,10 @@ int RotatorClass::GetSeekMode()
 void RotatorClass::StartHoming()
 {
 	long distance;
+
+#ifdef MOTION_LOG
+	logMotion(__func__);
+#endif
 
 	if(digitalRead(HOME_PIN) == LOW) {
 		// we're at the home position
@@ -926,6 +967,10 @@ void RotatorClass::Run()
 
 void RotatorClass::Stop()
 {
+#ifdef MOTION_LOG
+	logMotion(__func__);
+#endif
+
 	stepper->forceStop();
 	m_seekMode = NOT_MOVING;
 }

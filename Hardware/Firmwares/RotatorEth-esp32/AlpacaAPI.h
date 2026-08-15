@@ -14,8 +14,6 @@
 #include <aWOT.h>
 
 #include "dome_controller_html.h"
-// test
-// #include <LittleFS.h>
 
 #define ALPACA_DISCOVERY_PORT 32227
 #define ALPACA_SERVER_PORT 80
@@ -199,7 +197,7 @@ void  getQueryGetVariables(String sQueryString, std::vector<std::vector<String>>
 	std::vector<String> svKV;
 	std::vector<String> svFields;
 
-	DBPrintln("getQueryGetVariables");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 
 	// url parameters are separate by '&'
 	while(true) {
@@ -235,7 +233,7 @@ bool getIDs(Request &req, JsonDocument &jsonResp, JsonDocument &FormData)
 
 	bool bParamOk = true;
 
-	DBPrintln("getIDs");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 
 	jsonResp["ServerTransactionID"] = nTransactionID;
 
@@ -336,7 +334,7 @@ void getApiVersion(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getApiVersion ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 
@@ -357,7 +355,7 @@ void getDescription(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getDescription ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["Value"]["ServerName"]= "RTIDome Alpaca";
@@ -379,7 +377,7 @@ void getConfiguredDevice(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getConfiguredDevice ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["Value"][0] ["DeviceName"]= "RTIDome";
@@ -403,7 +401,7 @@ void doAction(Request &req, Response &res)
 	String sAction;
 	String sParameters;
 
-	DBPrintln("[ ********** doAction ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -437,7 +435,7 @@ void doCommandBlind(Request &req, Response &res)
 	String sClientId;
 	String sClientTransactionId;
 
-	DBPrintln("[ ********** doCommandBlind ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -463,7 +461,7 @@ void doCommandBool(Request &req, Response &res)
 	String sClientId;
 	String sClientTransactionId;
 
-	DBPrintln("[ ********** doCommandBool ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 
@@ -491,7 +489,7 @@ void doCommandString(Request &req, Response &res)
 	String sClientId;
 	String sClientTransactionId;
 
-	DBPrintln("[ ********** doCommandString ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 
@@ -517,7 +515,7 @@ void getConnected(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getConected ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -541,7 +539,7 @@ void setConnected(Request &req, Response &res)
 	String sParameter;
 	String sTmp;
 
-	DBPrintln("[ ********** setConected ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -577,7 +575,7 @@ void domeConnect(Request &req, Response &res)
 	String sParameter;
 	String sTmp;
 
-	DBPrintln("[ ********** setConected ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -608,7 +606,7 @@ void domeConnecting(Request &req, Response &res)
 	String sParameter;
 	String sTmp;
 
-	DBPrintln("[ ********** setConected ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -639,7 +637,7 @@ void getDomeState(Request &req, Response &res)
 	float dParkPos, dCurrentAz;
 	bool bParked = false;
 
-	DBPrintln("[ ********** getDomeState ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -717,7 +715,7 @@ void domeDisconnect(Request &req, Response &res)
 	String sParameter;
 	String sTmp;
 
-	DBPrintln("[ ********** setConected ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -744,7 +742,7 @@ void getDeviceDescription(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getDeviceDescription ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -764,7 +762,7 @@ void getDriverInfo(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getDriverInfo ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -784,7 +782,7 @@ void getDriverVersion(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getDriverVersion ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 
@@ -805,7 +803,7 @@ void getInterfaceVersion(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getInterfaceVersion ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -825,7 +823,7 @@ void getName(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getName ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -845,7 +843,7 @@ void getSupportedActions(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getSupportedActions ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 
@@ -868,7 +866,7 @@ void getAltitude(Request &req, Response &res)
 
 	String sTmpString = String(STATE_SHUTTER);
 
-	DBPrintln("[ ********** getAltitude ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -906,7 +904,7 @@ void geAtHome(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** geAtHome ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -933,7 +931,7 @@ void geAtPark(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** geAtPark ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(bGlobalParked) {
@@ -956,7 +954,7 @@ void getAzimuth(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getAzimuth ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -978,7 +976,7 @@ void canfindhome(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canfindhome ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1000,7 +998,7 @@ void canPark(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canPark ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1022,7 +1020,7 @@ void canSetAltitude(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canSetAltitude ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1044,7 +1042,7 @@ void canSetAzimuth(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canSetAzimuth ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1066,7 +1064,7 @@ void canSetPark(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canSetPark ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1088,7 +1086,7 @@ void canSetShutter(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canSetShutter ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1118,7 +1116,7 @@ void canSlave(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canSlave ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1140,7 +1138,7 @@ void canSyncAzimuth(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canSyncAzimuth ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1164,7 +1162,7 @@ void getShutterStatus(Request &req, Response &res)
 
 	String sTmpString = String(STATE_SHUTTER);
 
-	DBPrintln("[ ********** getShutterStatus ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 #ifndef USE_WIFI
@@ -1197,7 +1195,7 @@ void getSlaved(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** canSlave ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1219,7 +1217,7 @@ void setSlaved(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** Slaved ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 	AlpacaError_x400(jsonResp, res, "Invalid parameters, missing 'Connected'");
 }
@@ -1231,7 +1229,7 @@ void getSlewing(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** getSlewing ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	jsonResp["ErrorNumber"] = 0;
@@ -1260,7 +1258,7 @@ void doAbort(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** doAbort ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -1289,7 +1287,7 @@ void doCloseShutter(Request &req, Response &res)
 
 	String sTmpString = String(CLOSE_SHUTTER);
 
-	DBPrintln("[ ********** doCloseShutter ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -1325,7 +1323,7 @@ void doFindHome(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** doFindHome ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 
@@ -1360,7 +1358,7 @@ void doOpenShutter(Request &req, Response &res)
 
 	String sTmpString = String(OPEN_SHUTTER);
 
-	DBPrintln("[ ********** doOpenShutter ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -1403,7 +1401,7 @@ void doPark(Request &req, Response &res)
 	String sResp;
 	float fParkPos;
 
-	DBPrintln("[ ********** doPark ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -1432,7 +1430,7 @@ void setPark(Request &req, Response &res)
 	String sResp;
 	float fParkPos;
 
-	DBPrintln("[ ********** setPark ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -1459,7 +1457,7 @@ void doAltitudeSlew(Request &req, Response &res)
 	bool bParamsOk = false;
 	String sResp;
 
-	DBPrintln("[ ********** doAltitudeSlew ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 #ifndef USE_WIFI
@@ -1493,7 +1491,7 @@ void doGoTo(Request &req, Response &res)
 	String sResp;
 	float dNewPos;
 
-	DBPrintln("[ ********** doGoTo ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -1536,7 +1534,7 @@ void doSyncAzimuth(Request &req, Response &res)
 	String sResp;
 	float dNewPos;
 
-	DBPrintln("[ ********** doSyncAzimuth ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 
 	if(!bParamsOk){
@@ -1577,7 +1575,7 @@ void doSetup(Request &req, Response &res)
 
 	res.set("Content-Type", "text/html");
 
-	DBPrintln("[ ********** doSetup ********** ]");
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 	res.print(DOME_CONTROLLER_HTML);
 	res.print(sHTML);
@@ -2496,6 +2494,35 @@ void uiAbort(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 	Abort();
 }
+
+#ifdef MOTION_LOG
+void sendMotionLog(Request &req, Response &res)
+{
+	JsonDocument jsonResp;
+	JsonDocument FormData;
+	bool bParamsOk = false;
+	String sResp;
+	int nIdx;
+	int n=0;
+	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
+	bParamsOk = getIDs(req, jsonResp, FormData);
+
+
+	for(nIdx = motionLogIdx; nIdx--; nIdx>=0) {
+		jsonResp["Value"][n]["Time"] = motionLog[nIdx].ms;
+		jsonResp["Value"][n]["What"] = motionLog[nIdx].what;
+		jsonResp["Value"][n]["Target"] = motionLog[nIdx].target;
+		n++;
+	}
+
+	serializeJson(jsonResp, sResp);
+
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+#endif
 //
 // Alpaca server class
 //
@@ -2643,6 +2670,9 @@ void DomeAlpacaServer::startServer()
 
 	m_AlpacaRestServer->put("/setup/abort", &uiAbort);
 
+#ifdef MOTION_LOG
+	m_AlpacaRestServer->get("/setup/motionLog", &sendMotionLog);
+#endif
 	DBPrintln("m_AlpacaRestServer started");
 }
 

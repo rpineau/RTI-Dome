@@ -6,6 +6,7 @@
 #define __R_CONFIG__
 // #define DEBUG   // enable debug to serial port defined as DebugPort
 // #define DEBUG_TO_COMPUTER // send all debug to usb serial instead of 3 pin serial debug.
+#define MOTION_LOG	// log all call to a motion function
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
 #ifndef DEBUG_TO_COMPUTER
