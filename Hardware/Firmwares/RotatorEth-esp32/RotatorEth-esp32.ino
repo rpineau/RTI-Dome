@@ -36,9 +36,7 @@ bool firstLoop = true;
 #include <HTTPUpdateServer.h>
 #endif
 
-#include "EtherMac.h"
 byte MAC_Address[6];
-byte fuseMAC[6];    // Mac address, uses part of the unique ID
 
 IPConfig ServerConfig;
 volatile bool ethernetPresent = false;

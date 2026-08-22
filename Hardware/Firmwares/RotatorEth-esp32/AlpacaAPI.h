@@ -13,6 +13,7 @@
 #include <UUID.h>
 #include <aWOT.h>
 
+#include "EtherMac.h"
 #include "dome_controller_html.h"
 
 #define ALPACA_DISCOVERY_PORT 32227
