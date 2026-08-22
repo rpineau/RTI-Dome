@@ -2192,7 +2192,22 @@ void shutterVoltageCutoffValue(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+
 }
+
+void shutterVoltageValue(Request &req, Response &res)
+{
+	JsonDocument jsonResp;
+	String sResp;
+
+	jsonResp["value"] = RemoteShutter.volts;
+	serializeJson(jsonResp, sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
+
 
 void dualShutterEnabled(Request &req, Response &res)
 {
@@ -2666,7 +2681,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->put("/setup/restoreShutterMotorSettings", &restoreShutterMotorValues);
 	m_AlpacaRestServer->use("/setup/shutterWatchdogTimerValue", &shutterWatchdogTimerValue);
 	m_AlpacaRestServer->use("/setup/shutterVoltageCutoff", &shutterVoltageCutoffValue);
-	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageCutoffValue);
+	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageValue);
 #endif
 
 	// endpoint to control the dome directly, used by thew web interface
