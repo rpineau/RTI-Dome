@@ -1572,14 +1572,12 @@ void doSetup(Request &req, Response &res)
 	JsonDocument FormData;
 	bool bParamsOk = false;
 	String sResp;
-	String sHTML;
 
 	res.set("Content-Type", "text/html");
 
 	DBPrintln("[ ********** " + String(__func__) + " ********** ]");
 	bParamsOk = getIDs(req, jsonResp, FormData);
 	res.print(DOME_CONTROLLER_HTML);
-	res.print(sHTML);
 }
 
 //
