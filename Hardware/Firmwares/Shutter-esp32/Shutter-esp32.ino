@@ -20,19 +20,6 @@
 #include <esp_task_wdt.h>
 #include "config.h"
 
-#ifdef DEBUG
-#pragma message "Debug messages enabled"
-#define DebugPort Serial    //  Rx2,Tx2 =  Serial1
-#define DBPrint(x) if(DebugPort) DebugPort.print(x)
-#define DBPrintln(x) if(DebugPort) DebugPort.println(x)
-#define DBPrintHex(x) if(DebugPort) DebugPort.print(x, HEX)
-#else
-#pragma message "Debug messages disabled"
-#define DBPrint(x)
-#define DBPrintln(x)
-#define DBPrintHex(x)
-#endif // DEBUG
-
 #define ERR_NO_DATA	-1
 
 enum ConditionSensorStates {UNSAFE= 0, COND_SAFE, COND_UNKNOWN};
