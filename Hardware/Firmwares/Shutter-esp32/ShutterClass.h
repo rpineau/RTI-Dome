@@ -528,14 +528,16 @@ void ShutterClass::SetVoltsFromString(const String value)
 
 int ShutterClass::MeasureVoltage()
 {
-	int adc;
-	float calc;
+	uint32_t sum = 0;
+	const int nSamples = 32;
 
-	adc = analogRead(VOLTAGE_MONITOR_PIN);
-	calc = adc * m_fAdcConvert;
-	if(calc - int(calc) >= 0.5)
-		return int(ceil(calc));
-	return int(calc);
+	for(int i = 0; i < nSamples; i++) {
+		sum += analogRead(VOLTAGE_MONITOR_PIN);
+		delayMicroseconds(50);        // let the sampling cap settle
+	}
+
+	float calc = (float(sum) / nSamples) * m_fAdcConvert;
+	return int(calc + 0.5f);
 }
 
 
