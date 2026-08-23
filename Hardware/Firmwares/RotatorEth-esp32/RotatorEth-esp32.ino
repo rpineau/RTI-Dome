@@ -759,6 +759,12 @@ void PingWiFiShutter()
 			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 			ReceiveWiFi(shutterClient);
 			PingTimer.reset();
+			//ask for shutter voltages
+			shutterMessage = String(VOLTS_SHUTTER) + "#";
+			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+			ReceiveWiFi(shutterClient);
+
 		}
 		else if(nbWiFiClient && !shutterClient.connected()) {
 			DBPrintln("shutterClient is gone");

@@ -45,7 +45,7 @@
 #define BUTTON_CCW          27 // Digital Input
 #define BUTTON_CW           14 // Digital Input
 #define CONDITION_SENSOR_PIN     25  // Digital Input from RG11 and other similar devices
-#define SPARE1				34
+#define SPARE1				34	 // no pull-up on this input pin
 #define SPARE2				26
 // ouput
 #define STEPPER_ENABLE_PIN  13  // Digital Output

@@ -228,7 +228,7 @@ RotatorClass::RotatorClass()
 	pinMode(BUTTON_CCW,             INPUT_PULLUP);
 	pinMode(BUTTON_CW,              INPUT_PULLUP);
 	pinMode(CONDITION_SENSOR_PIN,	INPUT_PULLUP);
-	pinMode(SPARE1,    				INPUT_PULLUP);
+	pinMode(SPARE1,    				INPUT);  // no pull-up on this input pin
 	pinMode(SPARE2,    				INPUT_PULLUP);
 
 	// output
