@@ -224,19 +224,19 @@ RotatorClass::RotatorClass()
 	m_mutex = xSemaphoreCreateMutex();
 
 	// input
-	pinMode(HOME_PIN,               INPUT_PULLUP);
-	pinMode(BUTTON_CCW,             INPUT_PULLUP);
-	pinMode(BUTTON_CW,              INPUT_PULLUP);
-	pinMode(CONDITION_SENSOR_PIN,	INPUT_PULLUP);
-	pinMode(SPARE1,    				INPUT);  // no pull-up on this input pin
-	pinMode(SPARE2,    				INPUT_PULLUP);
+	pinMode(HOME_PIN,							INPUT);
+	pinMode(BUTTON_CCW,						INPUT);
+	pinMode(BUTTON_CW,						INPUT);
+	pinMode(CONDITION_SENSOR_PIN,	INPUT);
+	pinMode(SPARE1,								INPUT);
+	pinMode(SPARE2,								INPUT);
 
 	// output
-	pinMode(STEP_PIN,               OUTPUT);
-	pinMode(DIRECTION_PIN,          OUTPUT);
-	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
-	pinMode(SPARE_OUT1,     		OUTPUT);
-	pinMode(SPARE_OUT2,     		OUTPUT);
+	pinMode(STEP_PIN,						OUTPUT);
+	pinMode(DIRECTION_PIN,			OUTPUT);
+	pinMode(STEPPER_ENABLE_PIN,	OUTPUT);
+	pinMode(SPARE_OUT1,					OUTPUT);
+	pinMode(SPARE_OUT2,					OUTPUT);
 
 	LoadConfig();
 
