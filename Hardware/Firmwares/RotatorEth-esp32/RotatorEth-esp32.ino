@@ -1472,6 +1472,11 @@ void ProcessWifi()
 				String sVoltsCutOff = value.substring(value.indexOf(",")+1);
 				RemoteShutter.volts = sVolts.toInt();
 				RemoteShutter.voltsCutOff = sVoltsCutOff.toInt();
+#ifdef MOTION_LOG
+				if(RemoteShutter.volts < RemoteShutter.voltsCutOff) {
+					logMotion("VOLTS_SHUTTER Low voltage", RemoteShutter.volts);
+				}
+#endif
 			}
 			break;
 
@@ -1483,8 +1488,13 @@ void ProcessWifi()
 
 		case SHUTTER_PING:
 			bShutterPresent = true;
-			if (hasValue)
+			if (hasValue) {
 				RemoteShutter.lowVoltState = value;
+#ifdef MOTION_LOG
+				if(value.equals("L"))
+					logMotion("PING set lowVoltState=L", RemoteShutter.volts);
+#endif
+			}
 			else
 				RemoteShutter.lowVoltState = "";
 
