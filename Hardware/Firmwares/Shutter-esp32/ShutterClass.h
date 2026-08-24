@@ -100,7 +100,14 @@ public:
 	void        setSSID(String sSSID);
 	void		getWiFiConfig(WIFIConfig &config);
 
+	int             MeasureVoltage();
+	int             GetVolts();            // cached reading, no ADC access
+
 private:
+
+	void            UpdateVoltageState();  // call after every MeasureVoltage()
+	int             m_nLowVoltCount = 0;   // consecutive low readings
+	bool            m_bVoltsAreLow = false;// debounced state
 
 	Configuration   m_Config;
 	Preferences 	m_preferences;
@@ -117,7 +124,6 @@ private:
 	volatile bool m_bPendingOpenTop     = false;
 	volatile bool m_bPendingCloseTop    = false;
 
-	int             MeasureVoltage();
 	void			openTop();
 	void			closeTop();
 	void			openBottom();
@@ -137,22 +143,22 @@ ShutterClass::ShutterClass()
 	DBPrintln("configuring pins");
 
 	// Input pins
-	pinMode(CLOSED_PIN,				INPUT_PULLUP);
-	pinMode(OPEN_PIN,				INPUT_PULLUP);
-	pinMode(BUTTON_OPEN,			INPUT_PULLUP);
-	pinMode(BUTTON_CLOSE,			INPUT_PULLUP);
+	pinMode(CLOSED_PIN,						INPUT);
+	pinMode(OPEN_PIN,							INPUT);
+	pinMode(BUTTON_OPEN,					INPUT);
+	pinMode(BUTTON_CLOSE,					INPUT);
 	pinMode(VOLTAGE_MONITOR_PIN,	INPUT);
 	// dual shutter mode
-	pinMode(LOWER_CLOSED_PIN,		INPUT_PULLUP);
-	pinMode(LOWER_OPENED_PIN,		INPUT_PULLUP);
+	pinMode(LOWER_CLOSED_PIN,			INPUT);
+	pinMode(LOWER_OPENED_PIN,			INPUT); 
 
 	// Ouput pins
-	pinMode(STEP_PIN,       		OUTPUT);
-	pinMode(DIRECTION_PIN,  		OUTPUT);
-	pinMode(STEPPER_ENABLE_PIN,     OUTPUT);
+	pinMode(STEP_PIN,							OUTPUT);
+	pinMode(DIRECTION_PIN,				OUTPUT);
+	pinMode(STEPPER_ENABLE_PIN,		OUTPUT);
 
-	pinMode(LOWER_DIR,				OUTPUT);
-	pinMode(LOWER_ENABLE,			OUTPUT);
+	pinMode(LOWER_DIR,						OUTPUT);
+	pinMode(LOWER_ENABLE,					OUTPUT);
 
 	digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);   // don't drive on boot
 	
@@ -192,6 +198,7 @@ ShutterClass::ShutterClass()
 	m_bAborted=false;
 	m_bButtonUsed = false;
 	m_nVolts = MeasureVoltage();
+	UpdateVoltageState();
 }
 
 void IRAM_ATTR ShutterClass::OpenInterrupt()
@@ -504,17 +511,37 @@ void ShutterClass::restoreDefaultMotorSettings()
 }
 
 
+// Pure readers: these must NOT touch the ADC.
+// They are called from the WiFi task on every ping, and sampling GPIO36 while
+// the radio is active produces spurious low readings. m_nVolts is refreshed by
+// Run()'s battery check and by Open(), each followed by UpdateVoltageState().
 inline bool ShutterClass::GetVoltsAreLow()
 {
-	m_nVolts = MeasureVoltage();  // make sure we're using the current value
-	bool low = (m_nVolts <= m_Config.cutoffVolts);
-	return low;
+	return m_bVoltsAreLow;
+}
+
+int ShutterClass::GetVolts()
+{
+	return m_nVolts;
 }
 
 String ShutterClass::GetVoltString()
 {
-	m_nVolts = MeasureVoltage();  // make sure we're reporting the current value
 	return String(m_nVolts) + "," + String(m_Config.cutoffVolts);
+}
+
+// Debounce: three consecutive low readings before we believe it. A single
+// anomalous sample must never close the shutter or tell the rotator to park.
+void ShutterClass::UpdateVoltageState()
+{
+	if(m_nVolts <= m_Config.cutoffVolts) {
+		if(m_nLowVoltCount < 3)
+			m_nLowVoltCount++;
+	}
+	else {
+		m_nLowVoltCount = 0;
+	}
+	m_bVoltsAreLow = (m_nLowVoltCount >= 3);
 }
 
 
@@ -528,16 +555,30 @@ void ShutterClass::SetVoltsFromString(const String value)
 
 int ShutterClass::MeasureVoltage()
 {
-	uint32_t sum = 0;
-	const int nSamples = 32;
+	const int nSamples = 15;
+	uint16_t s[nSamples];
 
+	// GPIO36 (SENSOR_VP) is subject to an ESP32 erratum: powering certain RTC
+	// peripherals - including SAR ADC2, which the WiFi stack uses for RF
+	// calibration - pulls this input low for ~80ns. A mean folds those glitches
+	// into the result, so take the median instead: up to 7 of the 15 samples
+	// can be corrupted and the answer is still correct.
 	for(int i = 0; i < nSamples; i++) {
-		sum += analogRead(VOLTAGE_MONITOR_PIN);
+		s[i] = analogRead(VOLTAGE_MONITOR_PIN);
 		delayMicroseconds(50);        // let the sampling cap settle
 	}
 
-	float calc = (float(sum) / nSamples) * m_fAdcConvert;
-	return int(calc + 0.5f);
+	for(int i = 1; i < nSamples; i++) {   // insertion sort
+		uint16_t k = s[i];
+		int j = i - 1;
+		while(j >= 0 && s[j] > k) {
+			s[j+1] = s[j];
+			j--;
+		}
+		s[j+1] = k;
+	}
+
+	return int(s[nSamples/2] * m_fAdcConvert + 0.5f);
 }
 
 
@@ -678,7 +719,8 @@ void ShutterClass::Open()
 {
 	m_bAborted = false;
 	clearPendingActions();
-	m_nVolts = MeasureVoltage();
+	m_nVolts = MeasureVoltage();   // fresh reading before committing to open
+	UpdateVoltageState();
 	if(GetVoltsAreLow()) // do not try to open if we're already at low voltage
 		return;
 
@@ -748,12 +790,10 @@ void ShutterClass::Run()
 
 
 	if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
-		DBPrintln("Measuring Battery");
 		m_nVolts = MeasureVoltage();
-		DBPrintln("Voltage : " + String(m_nVolts));
+		UpdateVoltageState();
 
 		if(GetVoltsAreLow() && shutterState!=CLOSED) {
-			DBPrintln("Voltage is low, closing");
 			Close();
 		}
 		m_batteryCheckTimer.reset();

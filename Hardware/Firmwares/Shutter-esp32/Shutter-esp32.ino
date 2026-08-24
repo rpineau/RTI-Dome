@@ -309,6 +309,10 @@ void PingRotator()
 	wirelessMessage =  String(SHUTTER_SSID) + Shutter->getSSID() + "#";
 	shutterClient.write(wirelessMessage.c_str());
 
+	// report voltages
+	wirelessMessage =  String(VOLTS_SHUTTER) + Shutter->GetVoltString() + "#";
+	shutterClient.write(wirelessMessage.c_str());
+
 	needFirstPing = false;
 }
 
@@ -352,15 +356,16 @@ void ProcessWifi()
 	bool hasValue = false;
 	String value;
 	String sRotatorMessage;
-
+#ifdef DEBUG
 	DBPrintln("<<< Received: '" + wifiBuffer + "'");
+#endif
 	command = wifiBuffer.charAt(0);
 	value = wifiBuffer.substring(1);
 	if (value.length() > 0)
 		hasValue = true;
-
+#ifdef DEBUG
 	DBPrintln("<<< Command:" + String(command) + " Value:" + value);
-
+#endif
 	switch (command) {
 		case ACCELERATION_SHUTTER:
 			if (hasValue) {
@@ -406,7 +411,6 @@ void ProcessWifi()
 				if (Shutter->GetState() != OPEN)
 					Shutter->Open();
 			}
-
 			break;
 
 		case POSITION_SHUTTER:
@@ -500,8 +504,9 @@ void ProcessWifi()
 			else if(isBadCondition) {
 				sRotatorMessage += "R"; // bad condition
 			}
-
+#ifdef DEBUG
 			DBPrintln("Got Ping");
+#endif
 			watchdogTimer.reset();
 			break;
 
@@ -560,7 +565,9 @@ void ProcessWifi()
 
 	if (sRotatorMessage.length() > 0 && shutterClient.connected()) {
 		sRotatorMessage += "#";
+#ifdef DEBUG
 		DBPrintln(">>> Sending " + sRotatorMessage);
+#endif
 		shutterClient.write(sRotatorMessage.c_str());
 	}
 }

@@ -6,6 +6,7 @@
 #define __R_CONFIG__
 // #define DEBUG   // enable debug to serial port defined as DebugPort
 
+
 #ifdef DEBUG
 #pragma message "Debug messages enabled"
 #define DebugPort Serial    //  USB = Serial, Rx2,Tx2 =  Serial1
@@ -33,10 +34,10 @@
 #define BUTTON_OPEN				27	// Digital Input
 #define CONDITION_SENSOR_PIN	25  // Digital Input from RG11 ands other similar device. Might be use as a spare input on shutter board.
 
-#define SPARE_IN1					34	// SPARE_IN1 or lower shutter closed
+#define SPARE_IN1					34	// SPARE_IN1 or lower shutter closed , no pullup on this pin
 #define SPARE_IN2					26	// SPARE_IN2 or lower shutter opened
 // For ease of coding
-#define LOWER_CLOSED_PIN			34	// lower shutter closed
+#define LOWER_CLOSED_PIN			34	// lower shutter closed, no pullup on this pin
 #define LOWER_OPENED_PIN			26	// lower shutter open
 
 // output
