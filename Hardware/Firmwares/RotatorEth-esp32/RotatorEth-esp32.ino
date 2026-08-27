@@ -268,6 +268,7 @@ void loop()
 		if(shutterClient.connected()) {
 			if(RemoteShutter.state == OPENING) {
 				sTmpString = String(ABORT); // we're stopping in the middle.
+				RemoteShutter.state = ERROR;
 			}
 			else {
 				sTmpString = String(OPEN_SHUTTER);
@@ -284,6 +285,7 @@ void loop()
 		if(shutterClient.connected()) {
 			if(RemoteShutter.state == CLOSING) {
 				sTmpString = String(ABORT); // we're stopping in the middle.
+				RemoteShutter.state = ERROR;
 			}
 			else {
 				sTmpString = String(CLOSE_SHUTTER);
@@ -764,7 +766,11 @@ void PingWiFiShutter()
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
 			ReceiveWiFi(shutterClient);
-
+			// get current shutter state
+			shutterMessage = String(STATE_SHUTTER) + "#";
+			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+			vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+			ReceiveWiFi(shutterClient);
 		}
 		else if(nbWiFiClient && !shutterClient.connected()) {
 			DBPrintln("shutterClient is gone");

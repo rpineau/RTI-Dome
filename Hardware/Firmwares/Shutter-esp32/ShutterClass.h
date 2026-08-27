@@ -772,9 +772,13 @@ void ShutterClass::Abort()
 		                   : (digitalRead(OPEN_PIN)         == LOW) ? TOP_OPEN    : ERROR;
 		bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED
 		                   : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
+		
+		shutterState = ERROR;
 	}
-	shutterState = (digitalRead(CLOSED_PIN) == LOW) ? CLOSED
+	else {
+		shutterState = (digitalRead(CLOSED_PIN) == LOW) ? CLOSED
 	             : (digitalRead(OPEN_PIN)   == LOW) ? OPEN : ERROR;
+	}
 }
 
 
