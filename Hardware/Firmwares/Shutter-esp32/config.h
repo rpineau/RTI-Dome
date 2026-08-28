@@ -75,7 +75,8 @@
 #define ACCELERATION	7000
 
 #define STEPS_DEFAULT	885000
-
+#define MOVE_DISTANCE_IN_STEPS	1073741823L
+//								2147483647L
 
 // DM556T stepper controller min pulse width  = 2.5uS
 // ISD02/04/08 stepper controller min pulse width = 5uS at 1600rev/s (8 microsteps).

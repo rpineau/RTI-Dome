@@ -615,7 +615,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	// shutter is between open and close and we want to open
 	if(sw1 == LOW  && sw3 == HIGH && sw4 == HIGH ) {
 		motorStop();
-		MoveRelative(1073741823L );
+		MoveRelative(MOVE_DISTANCE_IN_STEPS );
 		shutterState = OPENING;
 		m_bButtonUsed = true;
 		m_bAborted = false;
@@ -625,14 +625,14 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	else if(sw2 == LOW && sw3 == HIGH && sw4 == HIGH ) {
 		motorStop();
 		shutterState = CLOSING;
-		MoveRelative(-1073741823L );
+		MoveRelative(-MOVE_DISTANCE_IN_STEPS );
 		m_bButtonUsed = true;
 		m_bAborted = false;
 		buttonStopTimer.reset();
 	}
 	// button open pressed and we're closed
 	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) {
-		MoveRelative(1073741823L );
+		MoveRelative(MOVE_DISTANCE_IN_STEPS );
 		shutterState = OPENING;
 		m_bButtonUsed = true;
 		m_bAborted = false;
@@ -640,7 +640,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	}
 	// button close pressed and we're open
 	else if (sw2 == LOW && sw3 == HIGH && sw4 == LOW) {
-		MoveRelative(-1073741823L );
+		MoveRelative(-MOVE_DISTANCE_IN_STEPS );
 		shutterState = CLOSING;
 		m_bButtonUsed = true;
 		m_bAborted = false;
@@ -675,7 +675,7 @@ void ShutterClass::openTop()
 	else {
 		shutterState = OPENING;
 	}
-	MoveRelative(1073741823L );
+	MoveRelative(MOVE_DISTANCE_IN_STEPS );
 }
 
 void ShutterClass::closeTop()
@@ -698,7 +698,7 @@ void ShutterClass::closeTop()
 	else {
 		shutterState = CLOSING;
 	}
-	MoveRelative(-1073741823L );
+	MoveRelative(-MOVE_DISTANCE_IN_STEPS );
 }
 
 void ShutterClass::openBottom()
@@ -721,8 +721,8 @@ void ShutterClass::Open()
 	clearPendingActions();
 	m_nVolts = MeasureVoltage();   // fresh reading before committing to open
 	UpdateVoltageState();
-	if(GetVoltsAreLow()) // do not try to open if we're already at low voltage
-		return;
+    if(m_nVolts <= m_Config.cutoffVolts)   // raw: don't open on a low reading
+        return;
 
 	if(m_Config.bHasDropShutter) {
 		shutterState = OPENING;
