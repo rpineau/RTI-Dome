@@ -721,7 +721,10 @@ void ShutterClass::Open()
 	clearPendingActions();
 	m_nVolts = MeasureVoltage();   // fresh reading before committing to open
 	UpdateVoltageState();
-    if(m_nVolts <= m_Config.cutoffVolts)   // raw: don't open on a low reading
+	// Make sure we never open if a low voltage is detected
+	// This bypass the other low voltage debouncing
+	// Worst case scenario we prevent an open and the user/script can retry.
+	if(m_nVolts <= m_Config.cutoffVolts)
         return;
 
 	if(m_Config.bHasDropShutter) {
