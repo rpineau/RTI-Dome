@@ -163,7 +163,7 @@ void MotorTask(void *)
 	DBPrintln("========== Motor task starting ==========");
 	DBPrintln("========== Motor task Attaching interrupt handler ==========");
 
-	attachInterrupt(OPEN_PIN, handleOpenInterrupt, FALLING);
+	attachInterrupt(OPENED_PIN, handleOpenInterrupt, FALLING);
 	attachInterrupt(CLOSED_PIN, handleClosedInterrupt, FALLING);
 
 	if(Shutter && Shutter->getDoubleShutterEnable()) {
@@ -399,15 +399,15 @@ void ProcessWifi()
 		case OPEN_SHUTTER:
 			DBPrintln("Received Open Shutter Command");
 			if (isBadCondition) {
-				sRotatorMessage = "OR"; // (O)pen command (R)ain cancel
+				sRotatorMessage = String(OPEN_SHUTTER)+"R"; // (O)pen command (R)ain cancel
 				DBPrintln("Bad conditions");
 			}
 			else if (Shutter->GetVoltsAreLow()) {
-				sRotatorMessage = "OL"; // (O)pen command (L)ow voltage cancel
+				sRotatorMessage = String(OPEN_SHUTTER)+"L"; // (O)pen command (L)ow voltage cancel
 				DBPrintln("Voltage Low");
 			}
 			else {
-				sRotatorMessage = "O"; // (O)pen command
+				sRotatorMessage = String(OPEN_SHUTTER); // (O)pen command
 				if (Shutter->GetState() != OPEN)
 					Shutter->Open();
 			}

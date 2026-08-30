@@ -29,7 +29,7 @@
 //
 // input
 #define CLOSED_PIN				15 	// Digital Input
-#define OPEN_PIN 				33	// Digital Input
+#define OPENED_PIN 				33	// Digital Input
 #define BUTTON_CLOSE			14	// Digital Input
 #define BUTTON_OPEN				27	// Digital Input
 #define CONDITION_SENSOR_PIN	25  // Digital Input from RG11 ands other similar device. Might be use as a spare input on shutter board.

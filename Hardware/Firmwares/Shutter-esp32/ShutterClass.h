@@ -144,7 +144,7 @@ ShutterClass::ShutterClass()
 
 	// Input pins
 	pinMode(CLOSED_PIN,						INPUT);
-	pinMode(OPEN_PIN,							INPUT);
+	pinMode(OPENED_PIN,							INPUT);
 	pinMode(BUTTON_OPEN,					INPUT);
 	pinMode(BUTTON_CLOSE,					INPUT);
 	pinMode(VOLTAGE_MONITOR_PIN,	INPUT);
@@ -183,7 +183,7 @@ ShutterClass::ShutterClass()
 
 	// read initial shutter state
 	sw1 = digitalRead(CLOSED_PIN);
-	sw2 = digitalRead(OPEN_PIN);
+	sw2 = digitalRead(OPENED_PIN);
 
 	shutterState = ERROR;
 	if (sw1 == LOW && sw2 == HIGH)
@@ -192,7 +192,7 @@ ShutterClass::ShutterClass()
 		shutterState = OPEN;
 
 	if(m_Config.bHasDropShutter) {
-		topShutterState    = (digitalRead(CLOSED_PIN) == LOW) ? TOP_CLOSED : (digitalRead(OPEN_PIN) == LOW) ? TOP_OPEN    : ERROR;
+		topShutterState    = (digitalRead(CLOSED_PIN) == LOW) ? TOP_CLOSED : (digitalRead(OPENED_PIN) == LOW) ? TOP_OPEN    : ERROR;
 		bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
 	}
 	m_bAborted=false;
@@ -278,14 +278,13 @@ void ShutterClass::clearPendingActions()
 void ShutterClass::LoadConfig()
 {
 	bool nvsInitDone = false;
-
-	DBPrintln("LoadConfig");
+	DBPrintln("["+String(__func__)+"] LoadConfig");
 	//  zero the structure so currently unused parts
 	//  dont end up loaded with random garbage
 	m_preferences.begin("RTI_Shutter", false);
 	nvsInitDone = m_preferences.isKey("nvsInit");
 	if(!nvsInitDone) {
-		DBPrintln("Initializing NVS");
+		DBPrintln("["+String(__func__)+"] Initializing NVS");
 		m_preferences.end();
 		nvs_flash_erase();
 		nvs_flash_init();
@@ -310,17 +309,17 @@ void ShutterClass::LoadConfig()
 
 	m_Config.wifiIpConfig.sPassword = m_preferences.getString("wifiPassword", "RTIShutter");
 
-	DBPrintln("m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
-	DBPrintln("m_Config.acceleration         : " + String(m_Config.acceleration));
-	DBPrintln("m_Config.maxSpeed             : " + String(m_Config.maxSpeed));
-	DBPrintln("m_Config.reversed             : " + String(m_Config.reversed?"Yes":"No"));
-	DBPrintln("m_Config.cutoffVolts          : " + String(m_Config.cutoffVolts));
-	DBPrintln("m_Config.watchdogInterval     : " + String(m_Config.watchdogInterval));
-	DBPrintln("m_Config.bHasDropShutter      : " + String(m_Config.bHasDropShutter?"Yes":"No"));
-	DBPrintln("m_Config.bBottomShutterOpenFirst : " + String(m_Config.bBottomShutterOpenFirst?"Yes":"No"));
-	DBPrintln("wifiIpConfig.ip               : " + IpAddress2String(m_Config.wifiIpConfig.ip));
-	DBPrintln("wifiIpConfig.sSSID            : " + String(m_Config.wifiIpConfig.sSSID));
-	DBPrintln("wifiIpConfig.sPassword        : " + String(m_Config.wifiIpConfig.sPassword));
+	DBPrintln("["+String(__func__)+"] m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
+	DBPrintln("["+String(__func__)+"] m_Config.acceleration         : " + String(m_Config.acceleration));
+	DBPrintln("["+String(__func__)+"] m_Config.maxSpeed             : " + String(m_Config.maxSpeed));
+	DBPrintln("["+String(__func__)+"] m_Config.reversed             : " + String(m_Config.reversed?"Yes":"No"));
+	DBPrintln("["+String(__func__)+"] m_Config.cutoffVolts          : " + String(m_Config.cutoffVolts));
+	DBPrintln("["+String(__func__)+"] m_Config.watchdogInterval     : " + String(m_Config.watchdogInterval));
+	DBPrintln("["+String(__func__)+"] m_Config.bHasDropShutter      : " + String(m_Config.bHasDropShutter?"Yes":"No"));
+	DBPrintln("["+String(__func__)+"] m_Config.bBottomShutterOpenFirst : " + String(m_Config.bBottomShutterOpenFirst?"Yes":"No"));
+	DBPrintln("["+String(__func__)+"] wifiIpConfig.ip               : " + IpAddress2String(m_Config.wifiIpConfig.ip));
+	DBPrintln("["+String(__func__)+"] wifiIpConfig.sSSID            : " + String(m_Config.wifiIpConfig.sSSID));
+	DBPrintln("["+String(__func__)+"] wifiIpConfig.sPassword        : " + String(m_Config.wifiIpConfig.sPassword));
 
 	if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL) {
 		m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
@@ -361,8 +360,8 @@ void ShutterClass::getWiFiConfig(WIFIConfig &config)
 
 void ShutterClass::resetAlltoDefault()
 {
-	DBPrintln("Resetting do factory defaults");
-	DBPrintln("Initializing NVS");
+	DBPrintln("["+String(__func__)+"] Resetting do factory defaults");
+	DBPrintln("["+String(__func__)+"] Initializing NVS");
 	nvs_flash_erase();
 	nvs_flash_init();
 	m_preferences.begin("RTI_Shutter", false);
@@ -427,12 +426,12 @@ void ShutterClass::GotoPosition(const unsigned long newPos)
 
 	// Check if this actually changes position, then move if necessary.
 	if (newPos > currentPos) {
-		DBPrintln("shutterState = OPENING");
+		DBPrintln("["+String(__func__)+"] shutterState = OPENING");
 		shutterState = OPENING;
 		doMove = true;
 	}
 	else if (newPos < currentPos) {
-		DBPrintln("shutterState = CLOSING");
+		DBPrintln("["+String(__func__)+"] shutterState = CLOSING");
 		shutterState = CLOSING;
 		doMove = true;
 	}
@@ -478,7 +477,7 @@ int ShutterClass::GetEndSwitchStatus()
 	if (digitalRead(CLOSED_PIN) == LOW)
 		result = CLOSED;
 
-	if (digitalRead(OPEN_PIN) == LOW)
+	if (digitalRead(OPENED_PIN) == LOW)
 		result = OPEN;
 	return result;
 }
@@ -610,7 +609,7 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	sw2 = digitalRead(BUTTON_CLOSE);
 
 	sw3 = digitalRead(CLOSED_PIN);
-	sw4 = digitalRead(OPEN_PIN);
+	sw4 = digitalRead(OPENED_PIN);
 
 	// shutter is between open and close and we want to open
 	if(sw1 == LOW  && sw3 == HIGH && sw4 == HIGH ) {
@@ -657,22 +656,25 @@ void IRAM_ATTR ShutterClass::DoButtons()
 // Movers
 void ShutterClass::openTop()
 {
-	DBPrintln("[openTop()] Top shutterState = OPENING");
-	if (digitalRead(OPEN_PIN) == 0) {
-		DBPrintln("[openTop()] shutterState = OPEN");
+	DBPrintln("["+String(__func__)+"] Top shutterState = Opening");
+	if (digitalRead(OPENED_PIN) == 0) {
 		if(m_Config.bHasDropShutter) {
+			DBPrintln("["+String(__func__)+"] topShutterState = TOP_OPEN");
 			topShutterState = TOP_OPEN;
 		}
 		else {
+			DBPrintln("["+String(__func__)+"] shutterState = OPEN");
 			shutterState = OPEN;
 		}
 		return;
 	}
 
 	if(m_Config.bHasDropShutter) {
+		DBPrintln("["+String(__func__)+"] topShutterState = TOP_OPENING");
 		topShutterState = TOP_OPENING;
 	}
 	else {
+		DBPrintln("["+String(__func__)+"] shutterStatee = OPENING");
 		shutterState = OPENING;
 	}
 	MoveRelative(MOVE_DISTANCE_IN_STEPS );
@@ -680,22 +682,25 @@ void ShutterClass::openTop()
 
 void ShutterClass::closeTop()
 {
-	DBPrintln("[closeTop()] Top shutterState = CLOSING");
+	DBPrintln("["+String(__func__)+"] Top shutterState = CLOSING");
 	if (digitalRead(CLOSED_PIN) == 0) {
-		DBPrintln("[closeTop()] shutterState = OPEN");
 		if(m_Config.bHasDropShutter) {
+			DBPrintln("["+String(__func__)+"] topShutterState = TOP_CLOSED");
 			topShutterState = TOP_CLOSED;
 		}
 		else {
+			DBPrintln("["+String(__func__)+"] shutterState = CLOSED");
 			shutterState = CLOSED;
 		}
 		return;
 	}
 
 	if(m_Config.bHasDropShutter) {
+		DBPrintln("["+String(__func__)+"] topShutterState = TOP_CLOSING");
 		topShutterState = TOP_CLOSING;
 	}
 	else {
+		DBPrintln("["+String(__func__)+"] shutterState = CLOSING");
 		shutterState = CLOSING;
 	}
 	MoveRelative(-MOVE_DISTANCE_IN_STEPS );
@@ -703,6 +708,7 @@ void ShutterClass::closeTop()
 
 void ShutterClass::openBottom()
 {
+	DBPrintln("["+String(__func__)+"] bottomShutterState = BOTTOM_OPENING");
 	bottomShutterState = BOTTOM_OPENING;
 	digitalWrite(LOWER_DIR,ACTUATOR_OPEN);
 	digitalWrite(LOWER_ENABLE,ACTUATOR_ON);
@@ -710,6 +716,7 @@ void ShutterClass::openBottom()
 
 void ShutterClass::closeBottom()
 {
+	DBPrintln("["+String(__func__)+"] bottomShutterState = BOTTOM_CLOSING");
 	bottomShutterState = BOTTOM_CLOSING;
 	digitalWrite(LOWER_DIR,ACTUATOR_CLOSE);
 	digitalWrite(LOWER_ENABLE,ACTUATOR_ON);
@@ -772,7 +779,7 @@ void ShutterClass::Abort()
 
 	if(m_Config.bHasDropShutter) {
 		topShutterState    = (digitalRead(CLOSED_PIN)       == LOW) ? TOP_CLOSED
-		                   : (digitalRead(OPEN_PIN)         == LOW) ? TOP_OPEN    : ERROR;
+		                   : (digitalRead(OPENED_PIN)         == LOW) ? TOP_OPEN    : ERROR;
 		bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED
 		                   : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
 		
@@ -780,7 +787,7 @@ void ShutterClass::Abort()
 	}
 	else {
 		shutterState = (digitalRead(CLOSED_PIN) == LOW) ? CLOSED
-	             : (digitalRead(OPEN_PIN)   == LOW) ? OPEN : ERROR;
+	             : (digitalRead(OPENED_PIN)   == LOW) ? OPEN : ERROR;
 	}
 }
 
@@ -815,35 +822,35 @@ void ShutterClass::Run()
 			return;
 		}
 		if (m_bWasRunning) { // This only runs once after stopping.
-			DBPrintln("m_bWasRunning 1 SHutterState : " + String(shutterState));
+			DBPrintln("["+String(__func__)+"] m_bWasRunning 1 SHutterState : " + String(shutterState));
 
 			if (digitalRead(CLOSED_PIN) == 0) {
 				stepper->setCurrentPosition(0);
 				shutterState = CLOSED;
-				DBPrintln("Stopped at closed position");
-				DBPrintln("m_bWasRunning 2 SHutterState : " + String(shutterState));
+				DBPrintln("["+String(__func__)+"] Stopped at closed position");
+				DBPrintln("["+String(__func__)+"] m_bWasRunning 2 SHutterState : " + String(shutterState));
 			}
-			else if (digitalRead(OPEN_PIN) == 0) {
+			else if (digitalRead(OPENED_PIN) == 0) {
 				shutterState = OPEN;
-				DBPrintln("Stopped at open position");
-				DBPrintln("m_bWasRunning 3 SHutterState : " + String(shutterState));
+				DBPrintln("["+String(__func__)+"] Stopped at open position");
+				DBPrintln("["+String(__func__)+"] m_bWasRunning 3 SHutterState : " + String(shutterState));
 			}
 			else if((shutterState == FINISHING_CLOSE || shutterState==CLOSING) && !m_bAborted) {
 				//motor stopped for some reason
-				DBPrintln("motor stopped for some reason but we're not closed... closing");
+				DBPrintln("["+String(__func__)+"] motor stopped for some reason but we're not closed... closing");
 				Close();
-				DBPrintln("m_bWasRunning 4 SHutterState : " + String(shutterState));
+				DBPrintln("["+String(__func__)+"] m_bWasRunning 4 SHutterState : " + String(shutterState));
 				return;
 			}
 			else if((shutterState == FINISHING_OPEN || shutterState==OPENING) && !m_bAborted) {
 				//motor stopped for some reason
-				DBPrintln("motor stopped for some reason but we're not open... opening");
+				DBPrintln("["+String(__func__)+"] motor stopped for some reason but we're not open... opening");
 				Open();
-				DBPrintln("m_bWasRunning 5 SHutterState : " + String(shutterState));
+				DBPrintln("["+String(__func__)+"] m_bWasRunning 5 SHutterState : " + String(shutterState));
 				return;
 			}
 			m_bWasRunning = false;
-			DBPrintln("m_bWasRunning final SHutterState : " + String(shutterState));
+			DBPrintln("["+String(__func__)+"] m_bWasRunning final SHutterState : " + String(shutterState));
 		}
 	}
 
@@ -851,6 +858,7 @@ void ShutterClass::Run()
 		if(shutterState==CLOSING) {
 			if(topShutterState == TOP_CLOSED && bottomShutterState == BOTTOM_CLOSED) {
 				shutterState = CLOSED;
+				DBPrintln("["+String(__func__)+"] shutterState CLOSED");
 				return; // closed, we're done
 			}
 
@@ -862,14 +870,15 @@ void ShutterClass::Run()
 
 			if(m_bWasRunning) {
 				if (digitalRead(CLOSED_PIN) == 0) {
+					DBPrintln("["+String(__func__)+"] topShutterState TOP_CLOSED");
 					topShutterState = TOP_CLOSED;
 					stepper->setCurrentPosition(0);
 				}
 				else if((topShutterState == FINISHING_CLOSE || topShutterState==TOP_CLOSING) && !m_bAborted) {
 					//motor stopped for some reason
-					DBPrintln("Top motor stopped for some reason but we're not closed... closing");
+					DBPrintln("["+String(__func__)+"] tTop motor stopped for some reason but we're not closed... closing");
 					closeTop();
-					DBPrintln("m_bWasRunning topShutterState : " + String(topShutterState));
+					DBPrintln("["+String(__func__)+"] tm_bWasRunning topShutterState : " + String(topShutterState));
 					return;
 				}
 			}
@@ -878,6 +887,7 @@ void ShutterClass::Run()
 		}
 		else if(shutterState==OPENING) {
 			if(topShutterState == TOP_OPEN && bottomShutterState == BOTTOM_OPEN) {
+				DBPrintln("["+String(__func__)+"] shutterState OPEN");
 				shutterState = OPEN;
 				return; // open, we're done
 			}
@@ -889,14 +899,15 @@ void ShutterClass::Run()
 			}
 
 			if(m_bWasRunning) {
-				if (digitalRead(OPEN_PIN) == 0) {
+				if (digitalRead(OPENED_PIN) == 0) {
+					DBPrintln("["+String(__func__)+"] topShutterState TOP_OPEN");
 					topShutterState = TOP_OPEN;
 				}
-				else if((topShutterState == FINISHING_OPEN || topShutterState==TOP_OPENING) && !m_bAborted) {
+				else if((topShutterState == FINISHING_OPEN || topShutterState == TOP_OPENING) && !m_bAborted) {
 					//motor stopped for some reason
-					DBPrintln("Top motor stopped for some reason but we're not closed... closing");
+					DBPrintln("["+String(__func__)+"] Top motor stopped for some reason but we're not open... opening");
 					openTop();
-					DBPrintln("m_bWasRunning topShutterState : " + String(topShutterState));
+					DBPrintln("["+String(__func__)+"] m_bWasRunning topShutterState : " + String(topShutterState));
 					return;
 				}
 			}
