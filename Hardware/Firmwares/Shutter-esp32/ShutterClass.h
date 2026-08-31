@@ -206,10 +206,11 @@ void IRAM_ATTR ShutterClass::OpenInterrupt()
     if(m_Config.bHasDropShutter) {
         if(topShutterState == TOP_OPENING) {
             motorStop();
+            // Always record that the top reached its limit. Run() resolves
+            // FINISHING_OPEN to TOP_OPEN from OPENED_PIN.
+            topShutterState = FINISHING_OPEN;
             if(!m_Config.bBottomShutterOpenFirst)
-                m_bPendingOpenBottom = true;
-            else
-                topShutterState = FINISHING_OPEN;
+                m_bPendingOpenBottom = true;   // top went first -> bottom next
         }
     }
     else if(shutterState == OPENING) {
@@ -223,11 +224,11 @@ void IRAM_ATTR ShutterClass::ClosedInterrupt()
 	if(m_Config.bHasDropShutter) {
 		if(topShutterState == TOP_CLOSING) {
 			motorStop();
-			if(m_Config.bBottomShutterOpenFirst) {  // bottom opens first -> bottom closes last
+			// Always record that the top reached its limit. Run() resolves
+			// FINISHING_CLOSE to TOP_CLOSED from CLOSED_PIN.
+			topShutterState = FINISHING_CLOSE;
+			if(m_Config.bBottomShutterOpenFirst) {  // top closes first -> bottom next
 				m_bPendingCloseBottom = true;
-			}
-			else {                                  // top closes last -> we're done
-				topShutterState = FINISHING_CLOSE;
 			}
 		}
 	}
@@ -244,11 +245,12 @@ void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 {
 	if(bottomShutterState == BOTTOM_CLOSING) {
 		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
-		if(!m_Config.bBottomShutterOpenFirst) {  // top opens first -> top closes last
+		// Always record it: Run() never reads the lower limit switches, so if
+		// this is not set here the bottom state is stuck at BOTTOM_CLOSING and
+		// the pair never reaches CLOSED.
+		bottomShutterState = BOTTOM_CLOSED;
+		if(!m_Config.bBottomShutterOpenFirst) {  // bottom closed first -> top next
 			m_bPendingCloseTop = true;
-		}
-		else {                                   // bottom closes last -> we're done
-			bottomShutterState = BOTTOM_CLOSED;
 		}
 	}
 }
@@ -258,11 +260,12 @@ void IRAM_ATTR ShutterClass::LowerOpenInterrupt()
 {
 	if(bottomShutterState == BOTTOM_OPENING) {
 		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
-		if(m_Config.bBottomShutterOpenFirst) {   // bottom opened first -> top is next
+		// Always record it: Run() never reads the lower limit switches, so if
+		// this is not set here the bottom state is stuck at BOTTOM_OPENING and
+		// the pair never reaches OPEN.
+		bottomShutterState = BOTTOM_OPEN;
+		if(m_Config.bBottomShutterOpenFirst) {   // bottom opened first -> top next
 			m_bPendingOpenTop = true;
-		}
-		else {                                   // bottom opened last -> we're done
-			bottomShutterState = BOTTOM_OPEN;
 		}
 	}
 }
@@ -661,6 +664,9 @@ void ShutterClass::openTop()
 		if(m_Config.bHasDropShutter) {
 			DBPrintln("["+String(__func__)+"] topShutterState = TOP_OPEN");
 			topShutterState = TOP_OPEN;
+			// Already there, but the sequence must still continue.
+			if(!m_Config.bBottomShutterOpenFirst)
+				m_bPendingOpenBottom = true;
 		}
 		else {
 			DBPrintln("["+String(__func__)+"] shutterState = OPEN");
@@ -687,6 +693,9 @@ void ShutterClass::closeTop()
 		if(m_Config.bHasDropShutter) {
 			DBPrintln("["+String(__func__)+"] topShutterState = TOP_CLOSED");
 			topShutterState = TOP_CLOSED;
+			// Already there, but the sequence must still continue.
+			if(m_Config.bBottomShutterOpenFirst)
+				m_bPendingCloseBottom = true;
 		}
 		else {
 			DBPrintln("["+String(__func__)+"] shutterState = CLOSED");
@@ -708,6 +717,15 @@ void ShutterClass::closeTop()
 
 void ShutterClass::openBottom()
 {
+	// If it is already open there will be no edge on LOWER_OPENED_PIN, so the
+	// interrupt would never fire and the actuator would run forever.
+	if (digitalRead(LOWER_OPENED_PIN) == 0) {
+		DBPrintln("["+String(__func__)+"] already open, bottomShutterState = BOTTOM_OPEN");
+		bottomShutterState = BOTTOM_OPEN;
+		if(m_Config.bBottomShutterOpenFirst)
+			m_bPendingOpenTop = true;
+		return;
+	}
 	DBPrintln("["+String(__func__)+"] bottomShutterState = BOTTOM_OPENING");
 	bottomShutterState = BOTTOM_OPENING;
 	digitalWrite(LOWER_DIR,ACTUATOR_OPEN);
@@ -716,6 +734,15 @@ void ShutterClass::openBottom()
 
 void ShutterClass::closeBottom()
 {
+	// If it is already closed there will be no edge on LOWER_CLOSED_PIN, so the
+	// interrupt would never fire and the actuator would run forever.
+	if (digitalRead(LOWER_CLOSED_PIN) == 0) {
+		DBPrintln("["+String(__func__)+"] already closed, bottomShutterState = BOTTOM_CLOSED");
+		bottomShutterState = BOTTOM_CLOSED;
+		if(!m_Config.bBottomShutterOpenFirst)
+			m_bPendingCloseTop = true;
+		return;
+	}
 	DBPrintln("["+String(__func__)+"] bottomShutterState = BOTTOM_CLOSING");
 	bottomShutterState = BOTTOM_CLOSING;
 	digitalWrite(LOWER_DIR,ACTUATOR_CLOSE);
