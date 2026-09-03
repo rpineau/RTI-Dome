@@ -534,7 +534,7 @@ void ProcessWifi()
 		case SHUTTER_ORDER:
 			sRotatorMessage = String(SHUTTER_ORDER);
 			if (hasValue) {
-				Shutter->setOpenOrder(value.toInt()==1?true:false);
+				Shutter->setOpenOrder(value.toInt() == BOTTOM_FIRST);
 			}
 			sRotatorMessage += Shutter->getOpenOrder();
 			DBPrintln("SHUTTER_ORDER '" + String(Shutter->getOpenOrder()==TOP_FIRST?"Top first":"Bottom First") + "'");

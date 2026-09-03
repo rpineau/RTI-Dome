@@ -992,5 +992,5 @@ void ShutterClass::setOpenOrder(bool bBottomfirst)
 
 int ShutterClass::getOpenOrder()
 {
-	return m_Config.bBottomShutterOpenFirst?1:0;
+	return m_Config.bBottomShutterOpenFirst ? BOTTOM_FIRST : TOP_FIRST;
 }

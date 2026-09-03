@@ -448,7 +448,7 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 	
 	if(!m_bLinked)
 		return;
-	
+
 	if (!strcmp(pszEvent, "on_pushButtonCancel_clicked") && m_bCalibratingDome)
 		m_RTIDome.abortCurrentCommand();
 	
