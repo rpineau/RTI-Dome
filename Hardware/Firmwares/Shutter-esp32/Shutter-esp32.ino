@@ -495,6 +495,17 @@ void ProcessWifi()
 			DBPrintln(sRotatorMessage);
 			break;
 
+		case ACTUATOR_DELAY:
+			if (hasValue) {
+				Shutter->setActuatorDelay((unsigned long)value.toInt());
+				DBPrintln("Actuator delay set to " + value + " s");
+			}
+			else {
+				DBPrintln("Actuator delay interval " + String(Shutter->getActuatorDelay()) + " s");
+			}
+			sRotatorMessage = String(ACTUATOR_DELAY) + String(Shutter->getActuatorDelay());
+			break;
+
 		case SHUTTER_PING:
 			sRotatorMessage = String(SHUTTER_PING);
 			// make sure the rotator knows as soon as possible

@@ -82,6 +82,8 @@ public:
 	bool		getDoubleShutterEnable();
 	void		setOpenOrder(bool bBottomfirst);
 	int			getOpenOrder();
+	unsigned long   getActuatorDelay();
+	void            setActuatorDelay(const unsigned long);
 
 	// persistent data
 	void		restoreDefaultMotorSettings();
@@ -129,6 +131,11 @@ private:
 	void			openBottom();
 	void			closeBottom();
 	void 			LoadConfig();
+
+	// Actuator methods and variables
+	StopWatch		m_ActuatorPowerOffTimer;
+	bool			m_bActuatorNeedPowerOff = false;
+
 };
 
 
@@ -150,7 +157,7 @@ ShutterClass::ShutterClass()
 	pinMode(VOLTAGE_MONITOR_PIN,	INPUT);
 	// dual shutter mode
 	pinMode(LOWER_CLOSED_PIN,			INPUT);
-	pinMode(LOWER_OPENED_PIN,			INPUT); 
+	pinMode(LOWER_OPENED_PIN,			INPUT);
 
 	// Ouput pins
 	pinMode(STEP_PIN,							OUTPUT);
@@ -161,7 +168,7 @@ ShutterClass::ShutterClass()
 	pinMode(LOWER_ENABLE,					OUTPUT);
 
 	digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);   // don't drive on boot
-	
+
 	DBPrintln("Loading config");
 
 	LoadConfig();
@@ -244,7 +251,13 @@ void IRAM_ATTR ShutterClass::ClosedInterrupt()
 void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 {
 	if(bottomShutterState == BOTTOM_CLOSING) {
-		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
+		// check for linear actuator power off delay
+		if( m_Config.actuatorDelay>0 ) {
+			m_bActuatorNeedPowerOff = true;
+			m_ActuatorPowerOffTimer.reset();
+		}
+		else
+			digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
 		// Always record it: Run() never reads the lower limit switches, so if
 		// this is not set here the bottom state is stuck at BOTTOM_CLOSING and
 		// the pair never reaches CLOSED.
@@ -259,7 +272,12 @@ void IRAM_ATTR ShutterClass::LowerClosedInterrupt()
 void IRAM_ATTR ShutterClass::LowerOpenInterrupt()
 {
 	if(bottomShutterState == BOTTOM_OPENING) {
-		digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
+		if(m_Config.actuatorDelay > 0 ) {
+			m_bActuatorNeedPowerOff = true;
+			m_ActuatorPowerOffTimer.reset();
+		}
+		else
+			digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
 		// Always record it: Run() never reads the lower limit switches, so if
 		// this is not set here the bottom state is stuck at BOTTOM_OPENING and
 		// the pair never reaches OPEN.
@@ -275,7 +293,7 @@ void ShutterClass::clearPendingActions()
 	m_bPendingOpenBottom  = false;
 	m_bPendingCloseBottom = false;
 	m_bPendingOpenTop     = false;
-	m_bPendingCloseTop    = false;	
+	m_bPendingCloseTop    = false;
 }
 
 void ShutterClass::LoadConfig()
@@ -302,7 +320,8 @@ void ShutterClass::LoadConfig()
 	m_Config.cutoffVolts = m_preferences.getInt("cutoffVolts",DEFAULT_CUT_OFF_VOLTS);
 	m_Config.watchdogInterval = m_preferences.getULong("wdInterval",DEFAULT_WATCHDOG_INTERVAL);
 	m_Config.bHasDropShutter = m_preferences.getBool("hasDropShutter", false);
-	m_Config.bBottomShutterOpenFirst = m_preferences.getBool("botShutFirst", true); // this generaly the case.
+	m_Config.bBottomShutterOpenFirst = m_preferences.getBool("botShutFirst", true); // this generally the case.
+	m_Config.actuatorDelay = m_preferences.getInt("actuatorDelay",0);
 	m_Config.wifiIpConfig.ip.fromString(m_preferences.getString("wifi_ip","172.31.255.2"));
 	m_Config.wifiIpConfig.sSSID = m_preferences.getString("wifiSSID", "RTIShutter");
 	if(m_Config.wifiIpConfig.sSSID.length()<8) {
@@ -312,17 +331,18 @@ void ShutterClass::LoadConfig()
 
 	m_Config.wifiIpConfig.sPassword = m_preferences.getString("wifiPassword", "RTIShutter");
 
-	DBPrintln("["+String(__func__)+"] m_Config.stepsPerStroke       : " + String(m_Config.stepsPerStroke));
-	DBPrintln("["+String(__func__)+"] m_Config.acceleration         : " + String(m_Config.acceleration));
-	DBPrintln("["+String(__func__)+"] m_Config.maxSpeed             : " + String(m_Config.maxSpeed));
-	DBPrintln("["+String(__func__)+"] m_Config.reversed             : " + String(m_Config.reversed?"Yes":"No"));
-	DBPrintln("["+String(__func__)+"] m_Config.cutoffVolts          : " + String(m_Config.cutoffVolts));
-	DBPrintln("["+String(__func__)+"] m_Config.watchdogInterval     : " + String(m_Config.watchdogInterval));
-	DBPrintln("["+String(__func__)+"] m_Config.bHasDropShutter      : " + String(m_Config.bHasDropShutter?"Yes":"No"));
+	DBPrintln("["+String(__func__)+"] m_Config.stepsPerStroke          : " + String(m_Config.stepsPerStroke));
+	DBPrintln("["+String(__func__)+"] m_Config.acceleration            : " + String(m_Config.acceleration));
+	DBPrintln("["+String(__func__)+"] m_Config.maxSpeed                : " + String(m_Config.maxSpeed));
+	DBPrintln("["+String(__func__)+"] m_Config.reversed                : " + String(m_Config.reversed?"Yes":"No"));
+	DBPrintln("["+String(__func__)+"] m_Config.cutoffVolts             : " + String(m_Config.cutoffVolts));
+	DBPrintln("["+String(__func__)+"] m_Config.watchdogInterval        : " + String(m_Config.watchdogInterval));
+	DBPrintln("["+String(__func__)+"] m_Config.bHasDropShutter         : " + String(m_Config.bHasDropShutter?"Yes":"No"));
 	DBPrintln("["+String(__func__)+"] m_Config.bBottomShutterOpenFirst : " + String(m_Config.bBottomShutterOpenFirst?"Yes":"No"));
-	DBPrintln("["+String(__func__)+"] wifiIpConfig.ip               : " + IpAddress2String(m_Config.wifiIpConfig.ip));
-	DBPrintln("["+String(__func__)+"] wifiIpConfig.sSSID            : " + String(m_Config.wifiIpConfig.sSSID));
-	DBPrintln("["+String(__func__)+"] wifiIpConfig.sPassword        : " + String(m_Config.wifiIpConfig.sPassword));
+	DBPrintln("["+String(__func__)+"] m_Config.actuatorDelay           : " + String(m_Config.actuatorDelay));
+	DBPrintln("["+String(__func__)+"] wifiIpConfig.ip                  : " + IpAddress2String(m_Config.wifiIpConfig.ip));
+	DBPrintln("["+String(__func__)+"] wifiIpConfig.sSSID               : " + String(m_Config.wifiIpConfig.sSSID));
+	DBPrintln("["+String(__func__)+"] wifiIpConfig.sPassword           : " + String(m_Config.wifiIpConfig.sPassword));
 
 	if(m_Config.watchdogInterval > MAX_WATCHDOG_INTERVAL) {
 		m_Config.watchdogInterval = MAX_WATCHDOG_INTERVAL;
@@ -603,6 +623,20 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 	m_preferences.end();
 }
 
+unsigned long ShutterClass::getActuatorDelay()
+{
+	return m_Config.actuatorDelay;
+}
+
+inline void ShutterClass::setActuatorDelay(const unsigned long newDelay)
+{
+	m_Config.watchdogInterval = newDelay;
+
+	m_preferences.begin("RTI_Shutter", false);
+	m_preferences.putULong("actuatorDelay", m_Config.actuatorDelay);
+	m_preferences.end();
+}
+
 // INPUTS
 void IRAM_ATTR ShutterClass::DoButtons()
 {
@@ -809,7 +843,7 @@ void ShutterClass::Abort()
 		                   : (digitalRead(OPENED_PIN)         == LOW) ? TOP_OPEN    : ERROR;
 		bottomShutterState = (digitalRead(LOWER_CLOSED_PIN) == LOW) ? BOTTOM_CLOSED
 		                   : (digitalRead(LOWER_OPENED_PIN) == LOW) ? BOTTOM_OPEN : ERROR;
-		
+
 		shutterState = ERROR;
 	}
 	else {
@@ -828,7 +862,12 @@ void ShutterClass::Run()
 	if(m_bPendingCloseBottom) { m_bPendingCloseBottom = false; closeBottom(); }
 	if(m_bPendingOpenTop)     { m_bPendingOpenTop     = false; openTop();     }
 	if(m_bPendingCloseTop)    { m_bPendingCloseTop    = false; closeTop();    }
-
+	if(m_bActuatorNeedPowerOff) {
+		if(m_ActuatorPowerOffTimer.elapsed() > m_Config.actuatorDelay ) {
+			digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
+			m_bActuatorNeedPowerOff = false;
+		}
+	}
 
 	if (m_batteryCheckTimer.elapsed() >= m_nBatteryCheckInterval) {
 		m_nVolts = MeasureVoltage();
@@ -973,7 +1012,7 @@ void ShutterClass::setDoubleShutterEnable(bool bEnable)
 	m_preferences.begin("RTI_Shutter", false);
 	m_preferences.putBool("hasDropShutter", m_Config.bHasDropShutter);
 	m_preferences.end();
-	
+
 }
 
 bool ShutterClass::getDoubleShutterEnable()

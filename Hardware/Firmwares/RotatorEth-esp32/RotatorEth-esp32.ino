@@ -707,7 +707,7 @@ void CheckForConditions()
 #endif // USE_WIFI
 	}
 	if (!bIsSafe) {
-		if (Rotator->GetConditionsAction() == HOME  && Rotator->GetHomeStatus() != ATHOME  && Rotator->GetSeekMode() == NOT_MOVING) {			
+		if (Rotator->GetConditionsAction() == HOME  && Rotator->GetHomeStatus() != ATHOME  && Rotator->GetSeekMode() == NOT_MOVING) {
 			DBPrintln("Bad Conditions- > Homing");
 #ifdef MOTION_LOG
 			logMotion("Conditions:Home", Rotator->GetHomeAzimuth());
@@ -1381,6 +1381,24 @@ void ProcessCommand(int nSource)
 			}
 			serialMessage = sTmpString + RemoteShutter.watchdogInterval;
 			break;
+
+		case ACTUATOR_DELAY:
+			sTmpString = String(ACTUATOR_DELAY);
+			if (value.length() > 0) {
+				shutterMessage = sTmpString + value;
+			}
+			else {
+				shutterMessage = sTmpString;
+			}
+			if(nbWiFiClient && shutterClient.connected()) {
+				shutterMessage += "#";
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+				ReceiveWiFi(shutterClient);
+			}
+			serialMessage = sTmpString + RemoteShutter.nActuatorDelay;
+			break;
+
 #endif // USE_WIFI
 
 		default:
@@ -1492,10 +1510,14 @@ void ProcessWifi()
 			}
 			break;
 
-
 		case WATCHDOG_INTERVAL:
 			if (hasValue)
 				RemoteShutter.watchdogInterval = value.toInt();
+			break;
+
+		case ACTUATOR_DELAY:
+			if (hasValue)
+				RemoteShutter.nActuatorDelay = (unsigned long)value.toInt();
 			break;
 
 		case SHUTTER_PING:
@@ -1524,7 +1546,7 @@ void ProcessWifi()
 			if (hasValue)
 				RemoteShutter.bDualShutterEnabled = bool(value.toInt()==0?false:true);
 			break;
-		
+
 		case SHUTTER_ORDER:
 			if (hasValue)
 				RemoteShutter.nShutterOrder = value.toInt();

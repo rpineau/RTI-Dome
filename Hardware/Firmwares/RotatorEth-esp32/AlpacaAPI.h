@@ -2274,6 +2274,37 @@ void shutterOpenOrder(Request &req, Response &res)
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
 }
 
+void shutterActuatorDelay(Request &req, Response &res)
+{
+	JsonDocument jsonResp;
+	String sResp;
+
+	if(req.method() == Request::PUT) {
+		JsonDocument FormData;
+		formDataToJson(req, FormData);
+		if(FormData.size()==0){
+			AlpacaError_x401(jsonResp, res);
+			return;
+		}
+		else {
+			if(FormData["value"].is<long>()) {
+				String shutterMessage;
+				String sTmpString = String(ACTUATOR_DELAY);
+				RemoteShutter.nActuatorDelay = (unsigned long)FormData["value"];
+				shutterMessage = sTmpString + String(RemoteShutter.nActuatorDelay) + "#";
+				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
+				ReceiveWiFi(shutterClient);
+			}
+		}
+	}
+
+	jsonResp["value"] = RemoteShutter.nActuatorDelay;
+	serializeJson(jsonResp, sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+}
 #endif
 
 void unsafeDomeAction(Request &req, Response &res)
@@ -2364,7 +2395,7 @@ void uiGotoAzimuth(Request &req, Response &res)
 	JsonDocument jsonResp;
 	String sResp;
 
-	
+
 	JsonDocument FormData;
 	formDataToJson(req, FormData);
 	if(FormData.size()==0){
@@ -2680,6 +2711,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->use("/setup/shutterWatchdogTimerValue", &shutterWatchdogTimerValue);
 	m_AlpacaRestServer->use("/setup/shutterVoltageCutoff", &shutterVoltageCutoffValue);
 	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageValue);
+	m_AlpacaRestServer->get("/setup/shutterActuatorDelay", &shutterActuatorDelay);
 #endif
 
 	// endpoint to control the dome directly, used by thew web interface

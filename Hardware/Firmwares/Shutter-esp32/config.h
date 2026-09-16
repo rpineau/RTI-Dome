@@ -103,6 +103,7 @@ typedef struct ShutterConfiguration {
 	unsigned long   watchdogInterval;
 	bool            bHasDropShutter;
 	bool            bBottomShutterOpenFirst;
+	int				actuatorDelay;
 	WIFIConfig		wifiIpConfig;
 } Configuration;
 

@@ -786,6 +786,41 @@ paths:
       tags:
       - Shutter Controller
 
+  /setup/shutterActuatorDelay:
+    get:
+      summary: Get the shutter actuator delay in seconds for dual shutter systems
+      description: 'Retrieve the shutter actuator delay in seconds for dual shutter systems.'
+      operationId: getShutterActuatorDelay
+      responses:
+        '200':
+          description: Shutter actuator delay in seconds for dual shutter systems
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+    put:
+      summary: set the shutter actuator delay in seconds for dual shutter systems
+      description: 'Set the shutter actuator delay in seconds for dual shutter systems.'
+      operationId: setShutterActuatorDelay
+      responses:
+        '200':
+          description: Shutter controller actuator delay successfully set
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Shutter Controller
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: integer
+              required:
+              - value
+
   /setup/homeDome:
     put:
       summary: Home the dome

@@ -46,6 +46,7 @@ const char SHUTTER_ORDER					= 'J'; // Get/Set shutter opening order for dual sh
 const char VOLTS_SHUTTER                    = 'K'; // Get volts and set cutoff voltage (close if bellow)
 const char SHUTTER_PING                     = 'L'; // Shutter ping, uses to reset watchdog timer.
 const char STATE_SHUTTER                    = 'M'; // Get shutter state
+const char ACTUATOR_DELAY                   = 'N'; // Get shutter state
 const char OPEN_SHUTTER                     = 'O'; // Open the shutter
 const char POSITION_SHUTTER                 = 'P'; // Get step position
 const char SHUTTER_SSID                     = 'Q'; // Get/Set the Shutter SSID

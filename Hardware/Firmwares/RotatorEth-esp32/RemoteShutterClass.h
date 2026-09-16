@@ -27,6 +27,7 @@ public:
 	String  lowVoltState = "";
 	bool	bDualShutterEnabled = false;
 	int		nShutterOrder = TOP_FIRST;
+	unsigned long nActuatorDelay;
 	RemoteShutterClass();
 };
 
