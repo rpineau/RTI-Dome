@@ -42,7 +42,7 @@ const char ACCELERATION_SHUTTER             = 'E'; // Get/Set stepper accelerati
 //const char ELEVATION_SHUTTER              = 'G'; // Get/Set altitude TBD
 const char HELLO                            = 'H'; // Let shutter know we're here
 const char WATCHDOG_INTERVAL                = 'I'; // Tell shutter when to trigger the watchdog for communication loss with rotator
-const char SHUTTER_ORDER                    = 'J'; // Get/Set shutter opening order for dual shutter. 0 = top first, 1 = bottom first
+const char SHUTTER_ORDER					= 'J'; // Get/Set shutter opening order for dual shuuter. 0 = bottom first, 1 = top first
 const char VOLTS_SHUTTER                    = 'K'; // Get volts and set cutoff voltage (close if bellow)
 const char SHUTTER_PING                     = 'L'; // Shutter ping, uses to reset watchdog timer.
 const char STATE_SHUTTER                    = 'M'; // Get shutter state

@@ -1861,13 +1861,13 @@ int CRTIDome::setDoubleShutterEnabled(bool bEnable)
 	return nErr;
 }
 
-int CRTIDome::getDoubleShutterOrder(bool &bTopFirst)
+int CRTIDome::getDoubleShutterOrder(bool &bBottomFirst)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
 	std::string sResp;
 
-	bTopFirst = false;
+	bBottomFirst = false;
 
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
@@ -1880,12 +1880,12 @@ int CRTIDome::getDoubleShutterOrder(bool &bTopFirst)
 #endif
 		return nErr;
 	}
-	bTopFirst = (std::stoi(sResp) == TOP_FIRST);
+	bBottomFirst = (std::stoi(sResp) == BOTTOM_FIRST);
 	return nErr;
 
 }
 
-int CRTIDome::setDoubleShutterOrder(bool bTopFirst)
+int CRTIDome::setDoubleShutterOrder(bool bBottomFirst)
 {
 	int nErr = PLUGIN_OK;
 	std::stringstream ssCmd;
@@ -1894,7 +1894,7 @@ int CRTIDome::setDoubleShutterOrder(bool bTopFirst)
 	if(!m_bIsConnected)
 		return NOT_CONNECTED;
 
-	ssCmd << SHUTTER_ORDER << (bTopFirst?TOP_FIRST:BOTTOM_FIRST) << "#"; // top first = 0, bottom first = 1
+	ssCmd << SHUTTER_ORDER << (bBottomFirst?BOTTOM_FIRST:TOP_FIRST) << "#";
 	nErr = deviceCommand(ssCmd.str(), sResp, SHUTTER_ORDER);
 	return nErr;
 }

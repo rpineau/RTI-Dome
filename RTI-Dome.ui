@@ -191,12 +191,12 @@
        </property>
        <item>
         <property name="text">
-         <string>Top shutter first</string>
+         <string>Bottom first</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Drop out first</string>
+         <string>Top first</string>
         </property>
        </item>
       </widget>

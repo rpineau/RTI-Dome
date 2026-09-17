@@ -121,8 +121,8 @@ public:
 	int getDoubleShutterEnabled(bool &bEnable);
 	int setDoubleShutterEnabled(bool bEnable);
 
-	int getDoubleShutterOrder(bool &bTopFirst);
-	int setDoubleShutterOrder(bool bTopFirst);
+	int getDoubleShutterOrder(bool &bBottomFirst);
+	int setDoubleShutterOrder(bool bBottomFirst);
 
 	int getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &dShutterVolts, double &dShutterCutOff);
 	int setBatteryCutOff(double dDomeCutOff, double dShutterCutOff);
