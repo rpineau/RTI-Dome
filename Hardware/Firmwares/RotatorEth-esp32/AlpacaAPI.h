@@ -1698,7 +1698,7 @@ void wifiSSIDValue(Request &req, Response &res)
 			if(FormData["value"].is<String>()) {
 				l_WifiConfig.sSSID = FormData["value"].as<String>();
 				// need implementation
-				// Rotator->setWiFiConfig(l_WifiConfig);
+				Rotator->setSSID(l_WifiConfig.sSSID);
 				configureWiFi();
 
 			}
