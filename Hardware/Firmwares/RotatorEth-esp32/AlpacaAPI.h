@@ -2286,6 +2286,8 @@ void shutterActuatorDelay(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
+	String shutterMessage;
+	String sTmpString = String(ACTUATOR_DELAY);
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
@@ -2296,14 +2298,21 @@ void shutterActuatorDelay(Request &req, Response &res)
 		}
 		else {
 			if(FormData["value"].is<long>()) {
-				String shutterMessage;
-				String sTmpString = String(ACTUATOR_DELAY);
 				RemoteShutter.nActuatorDelay = (unsigned long)FormData["value"];
-				shutterMessage = sTmpString + String(RemoteShutter.nActuatorDelay) + "#";
-				shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
-				ReceiveWiFi(shutterClient);
+				if(nbWiFiClient && shutterClient.connected()) {
+					shutterMessage = sTmpString + String(RemoteShutter.nActuatorDelay) + "#";
+					shutterClient.write(shutterMessage.c_str(), shutterMessage.length());
+					ReceiveWiFi(shutterClient);
+				}
 			}
 		}
+	}
+
+	if(nbWiFiClient && shutterClient.connected()) {
+		shutterMessage += "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+		ReceiveWiFi(shutterClient);
 	}
 
 	jsonResp["value"] = RemoteShutter.nActuatorDelay;
