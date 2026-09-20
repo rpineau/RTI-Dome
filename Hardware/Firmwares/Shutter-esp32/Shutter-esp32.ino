@@ -98,9 +98,9 @@ void setup()
 	DBPrintln("========== Watchdog disabled ==========");
 
 	watchdogTimer.reset();
-	if(configureWiFi())
+	if(configureWiFi()) {
 		needFirstPing = true;
-
+	}
 	DBPrintln("========== Creating motor task ==========");
 	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 16, &MotorTaskHanle,  0);
 
@@ -313,6 +313,10 @@ void PingRotator()
 	wirelessMessage =  String(VOLTS_SHUTTER) + Shutter->GetVoltString() + "#";
 	shutterClient.write(wirelessMessage.c_str());
 
+	// report actuator delay
+	wirelessMessage =  String(ACTUATOR_DELAY) + Shutter->getActuatorDelay() + "#";
+	shutterClient.write(wirelessMessage.c_str());
+
 	needFirstPing = false;
 }
 
@@ -497,7 +501,7 @@ void ProcessWifi()
 
 		case ACTUATOR_DELAY:
 			if (hasValue) {
-				Shutter->setActuatorDelay((unsigned long)value.toInt());
+				Shutter->setActuatorDelay((unsigned int)value.toInt());
 				DBPrintln("Actuator delay set to " + value + " s");
 			}
 			else {

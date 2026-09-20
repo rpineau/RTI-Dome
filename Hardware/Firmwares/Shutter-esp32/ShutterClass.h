@@ -82,8 +82,8 @@ public:
 	bool		getDoubleShutterEnable();
 	void		setOpenOrder(bool bBottomfirst);
 	int			getOpenOrder();
-	unsigned long   getActuatorDelay();
-	void            setActuatorDelay(const unsigned long);
+	unsigned int		getActuatorDelay();
+	void            setActuatorDelay(const unsigned int);
 
 	// persistent data
 	void		restoreDefaultMotorSettings();
@@ -623,17 +623,17 @@ inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 	m_preferences.end();
 }
 
-unsigned long ShutterClass::getActuatorDelay()
+unsigned int ShutterClass::getActuatorDelay()
 {
 	return m_Config.actuatorDelay;
 }
 
-inline void ShutterClass::setActuatorDelay(const unsigned long newDelay)
+inline void ShutterClass::setActuatorDelay(const unsigned int newDelay)
 {
-	m_Config.watchdogInterval = newDelay;
+	m_Config.actuatorDelay = newDelay;
 
 	m_preferences.begin("RTI_Shutter", false);
-	m_preferences.putULong("actuatorDelay", m_Config.actuatorDelay);
+	m_preferences.putInt("actuatorDelay", m_Config.actuatorDelay);
 	m_preferences.end();
 }
 
@@ -863,7 +863,7 @@ void ShutterClass::Run()
 	if(m_bPendingOpenTop)     { m_bPendingOpenTop     = false; openTop();     }
 	if(m_bPendingCloseTop)    { m_bPendingCloseTop    = false; closeTop();    }
 	if(m_bActuatorNeedPowerOff) {
-		if(m_ActuatorPowerOffTimer.elapsed() > m_Config.actuatorDelay ) {
+		if(m_ActuatorPowerOffTimer.elapsed() > m_Config.actuatorDelay * 1000 ) { // timer are in ms, actuatorDelay is in seconds
 			digitalWrite(LOWER_ENABLE, ACTUATOR_OFF);
 			m_bActuatorNeedPowerOff = false;
 		}
