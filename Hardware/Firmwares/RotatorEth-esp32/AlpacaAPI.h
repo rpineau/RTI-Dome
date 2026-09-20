@@ -153,7 +153,7 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 		sValue = String(value);
 		sValue.toLowerCase();
 
-		DBPrintln(String(__func__) + " : name :'" + String(sName) + "' with value : '" + String(sValue) + "'");
+		DBPrintln(String(__func__) + " : name :'" + String(sName) + "' with value : '" + String(value) + "'");
 
 		if(isDigit(value[0])) {
 			if(sValue.indexOf('.') == -1) {
@@ -182,7 +182,7 @@ void formDataToJson(Request &req, JsonDocument &FormData)
 				FormData[sName]=false;
 			}
 			else {
-				FormData[sName]=sValue;
+				FormData[sName]=String(value);
 			}
 		}
 	}
@@ -1684,12 +1684,15 @@ void wifiSSIDValue(Request &req, Response &res)
 	WIFIConfig l_WifiConfig;
 	bool bReversed = false;
 	String SSID;
+	String shutterMessage;
 
 	Rotator->getWiFiConfig(l_WifiConfig);
 
 	if(req.method() == Request::PUT) {
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
+		DBPrintln(String(__func__) + " : FormData[\"value\"].as<String>() : " + FormData["value"].as<String>());
+		
 		if(FormData.size()==0){
 			AlpacaError_x401(jsonResp, res);
 			return;
@@ -1697,10 +1700,15 @@ void wifiSSIDValue(Request &req, Response &res)
 		else {
 			if(FormData["value"].is<String>()) {
 				l_WifiConfig.sSSID = FormData["value"].as<String>();
-				// need implementation
-				Rotator->setSSID(l_WifiConfig.sSSID);
-				configureWiFi();
+				DBPrintln(String(__func__) + " : l_WifiConfig.sSSID : " + l_WifiConfig.sSSID);
 
+				Rotator->setSSID(l_WifiConfig.sSSID);
+				// send new SSID to shutter
+				shutterMessage = String(SHUTTER_SSID) + l_WifiConfig.sSSID + "#";
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+				vTaskDelay(250 / portTICK_PERIOD_MS);
+				// reconfigure wifi
+				configureWiFi();
 			}
 		}
 	}
@@ -2711,7 +2719,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->use("/setup/shutterWatchdogTimerValue", &shutterWatchdogTimerValue);
 	m_AlpacaRestServer->use("/setup/shutterVoltageCutoff", &shutterVoltageCutoffValue);
 	m_AlpacaRestServer->get("/setup/shutterVoltage", &shutterVoltageValue);
-	m_AlpacaRestServer->get("/setup/shutterActuatorDelay", &shutterActuatorDelay);
+	m_AlpacaRestServer->use("/setup/shutterActuatorDelay", &shutterActuatorDelay);
 #endif
 
 	// endpoint to control the dome directly, used by thew web interface
