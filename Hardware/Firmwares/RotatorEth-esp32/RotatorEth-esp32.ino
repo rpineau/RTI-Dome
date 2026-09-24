@@ -29,6 +29,7 @@ bool firstLoop = true;
 // #include <SPI.h>    // ESP32 :  SCK: GPIO18, SDO/TX: GPIO23, SDI: GPIO19, CS: GPIO5, Reset : GPIO29, Int : GPIO0
 // #include <Ethernet.h>
 #include <Network.h>
+#include <ESPmDNS.h>
 
 #ifdef USE_OTA_UPDATE
 #pragma message "OTA Update enable"

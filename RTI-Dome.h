@@ -180,6 +180,10 @@ public:
 
 	int getIPGateway(std::string &IpAddress);
 	int setIPGateway(std::string IpAddress);
+
+	int	getActuatorDelay(int &nDelaySeconds);
+	int	setActuatorDelay(int nDelaySeconds);
+
 #ifdef PLUGIN_DEBUG
 	void log(std::string sLogString);
 #endif
@@ -252,7 +256,8 @@ protected:
 	std::string     m_SubnetMask;
 	std::string     m_GatewayIP;
 	bool            m_bUseDHCP;
-
+	int				m_nActuatorDelay;
+	
 #ifdef PLUGIN_DEBUG
 	// timestamp for logs
 	const std::string getTimeStamp();

@@ -626,7 +626,6 @@ int CRTIDome::setDomeStepPerRev(int nStepPerRev)
 	ssCmd << STEPSPER_ROTATOR << nStepPerRev  << "#";
 	nErr = deviceCommand(ssCmd.str(), sResp, STEPSPER_ROTATOR);
 	return nErr;
-
 }
 
 int CRTIDome::getBatteryLevels(double &domeVolts, double &dDomeCutOff, double &dShutterVolts, double &dShutterCutOff)
@@ -2686,6 +2685,57 @@ int CRTIDome::setIPGateway(std::string IpAddress)
 	return nErr;
 }
 
+
+int	CRTIDome::getActuatorDelay(int &nDelaySeconds)
+{
+
+	int nErr = PLUGIN_OK;
+	std::stringstream ssCmd;
+	std::string sResp;
+
+	if(!m_bIsConnected)
+		return NOT_CONNECTED;
+
+	ssCmd << ACTUATOR_DELAY << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, ACTUATOR_DELAY);
+	if(nErr) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] ERROR = " << sResp << std::endl;
+		m_sLogFile.flush();
+#endif
+		return nErr;
+	}
+
+	try {
+		nDelaySeconds = std::stoi(sResp);
+	}
+	catch(const std::exception& e) {
+#if defined PLUGIN_DEBUG && PLUGIN_DEBUG >= 2
+		m_sLogFile << "["<<getTimeStamp()<<"]"<< " [" << __func__ << "] conversion exception = " << e.what() << std::endl;
+		m_sLogFile.flush();
+#endif
+		nDelaySeconds = 0;
+	}
+	m_nActuatorDelay = nDelaySeconds;
+	return nErr;
+}
+
+int	CRTIDome::setActuatorDelay(int nDelaySeconds)
+{
+	int nErr = PLUGIN_OK;
+	std::stringstream ssCmd;
+	std::string sResp;
+
+	m_nActuatorDelay = nDelaySeconds;
+
+	if(!m_bIsConnected)
+		return NOT_CONNECTED;
+
+	ssCmd << ACTUATOR_DELAY << nDelaySeconds  << "#";
+	nErr = deviceCommand(ssCmd.str(), sResp, ACTUATOR_DELAY);
+	return nErr;
+
+}
 
 int CRTIDome::parseFields(const std::string sResp, std::vector<std::string> &svFields, char cSeparator)
 {

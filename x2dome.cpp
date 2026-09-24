@@ -148,7 +148,8 @@ int X2Dome::execModalSettingsDialog()
 	std::string sIpAddress;
 	std::string sSubnetMask;
 	std::string sGatewayIP;
-	
+	int nActuatorDelay = 0;
+
 	if (NULL == ui)
 		return ERR_POINTER;
 	
@@ -220,8 +221,13 @@ int X2Dome::execModalSettingsDialog()
 			m_RTIDome.getDoubleShutterEnabled(bDoubleShutter);
 			m_RTIDome.getDoubleShutterOrder(bBottomShutterFirst);
 			dx->setChecked("checkBox_3", bDoubleShutter?1:0);
-			dx->setEnabled("comboBox_2",bDoubleShutter);
-			dx->setCurrentIndex("comboBox_2", bBottomShutterFirst?BOTTOM_FIRST:TOP_FIRST);
+			dx->setEnabled("shuttersOrder",bDoubleShutter);
+			dx->setEnabled("actuatorDelay", bDoubleShutter);
+			if(bDoubleShutter) {
+				dx->setCurrentIndex("shuttersOrder", bBottomShutterFirst?BOTTOM_FIRST:TOP_FIRST);
+				m_RTIDome.getActuatorDelay(nActuatorDelay);
+				dx->setPropertyInt("actuatorDelay","value", nActuatorDelay);
+			}
 
 			dx->setEnabled("shutterSpeed",true);
 			nErr = m_RTIDome.getShutterSpeed(nSSpeed);
@@ -251,7 +257,7 @@ int X2Dome::execModalSettingsDialog()
 			dx->setEnabled("lowShutBatCutOff",false);
 			dx->setText("shutterPresent", "<html><head/><body><p><span style=\" color:#FF0000;\">No Shutter detected</span></p></body></html>");
 			dx->setEnabled("checkBox_3",false);
-			dx->setEnabled("comboBox_2",false);
+			dx->setEnabled("shuttersOrder",false);
 
 		}
 		
@@ -363,6 +369,11 @@ int X2Dome::execModalSettingsDialog()
 		dx->setEnabled("GatewayIP", false);
 		dx->setPropertyString("GatewayIP", "text", "");
 		dx->setEnabled("pushButton_5", false);
+
+		dx->setEnabled("checkBox_3",false);
+		dx->setEnabled("shuttersOrder", false);
+		dx->setEnabled("actuatorDelay", false);
+
 	}
 	dx->setPropertyDouble("homePosition","value", m_RTIDome.getHomeAz());
 	dx->setPropertyDouble("parkPosition","value", m_RTIDome.getParkAz());
@@ -391,6 +402,10 @@ int X2Dome::execModalSettingsDialog()
 		nReverseDir = dx->isChecked("needReverse");
 		m_bLogConditionStatus = dx->isChecked("checkBox");
 		m_RTIDome.enableConditionStatusFile(m_bLogConditionStatus);
+		bBottomShutterFirst = (dx->currentIndex("shuttersOrder") == 0);
+		bDoubleShutter = dx->isChecked("checkBox_3");
+		dx->propertyInt("actuatorDelay", "avlue", nActuatorDelay);
+
 #ifdef PLUGIN_DEBUG
 		std::stringstream().swap(sTmpBuf);
 		sTmpBuf << "lowRotBatCutOff = " << std::fixed << std::setprecision(2) << batRotCutOff;
@@ -415,7 +430,10 @@ int X2Dome::execModalSettingsDialog()
 				m_RTIDome.setSutterWatchdogTimerValue(nWatchdog);
 				m_RTIDome.sendShutterHello();
 				// set dual shutter mode and shutter order.
-				// setDoubleShutterOrder
+				if(bDoubleShutter) {
+					m_RTIDome.setDoubleShutterOrder(bBottomShutterFirst);
+					m_RTIDome.setActuatorDelay(nActuatorDelay);
+				}
 			}
 		}
 		
@@ -711,11 +729,11 @@ void X2Dome::uiEvent(X2GUIExchangeInterface* uiex, const char* pszEvent)
 		}
 	}
 	else if (!strcmp(pszEvent, "on_checkBox_3_stateChanged")) {
-		if(uiex->isChecked("checkBox_2")) {
-			uiex->setEnabled("comboBox_2", true);
+		if(uiex->isChecked("checkBox_3")) {
+			uiex->setEnabled("shuttersOrder", true);
 		}
 		else {
-			uiex->setEnabled("comboBox_2", false);
+			uiex->setEnabled("shuttersOrder", false);
 		}
 	}
 
