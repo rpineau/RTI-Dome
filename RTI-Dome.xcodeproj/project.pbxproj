@@ -129,7 +129,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 2700;
 				ORGANIZATIONNAME = "RTI-Zone";
 				TargetAttributes = {
 					938EAFCC1D0C83E900ED2086 = {

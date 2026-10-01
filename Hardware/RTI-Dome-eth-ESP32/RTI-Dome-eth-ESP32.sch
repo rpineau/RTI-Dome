@@ -3,11 +3,11 @@
 <eagle version="9.7.0">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="1.27" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.127" altunitdist="mm" altunit="mm"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="16" fill="1" visible="no" active="no"/>
@@ -222,7 +222,7 @@
 </deviceset>
 </devicesets>
 </library>
-<library name="rti" urn="urn:adsk.eagle:library:37256580">
+<library name="rti" urn="urn:adsk.wipprod:fs.file:vf.WG0uDfgwQYuGLbbVTPUCew">
 <description>RTI</description>
 <packages>
 <package name="LOGO_BIG" urn="urn:adsk.eagle:footprint:37318352/1" library_version="2" library_locally_modified="yes">
@@ -2708,7 +2708,7 @@
 <rectangle x1="1.1925" y1="6.0525" x2="1.4625" y2="6.0675" layer="21"/>
 <text x="3.81" y="3.81" size="1.27" layer="21">Rodolphe Pineau</text>
 </package>
-<package name="TSSOP20" urn="urn:adsk.eagle:footprint:37318305/2" library_version="39">
+<package name="TSSOP20" urn="urn:adsk.eagle:footprint:37318305/2" library_version="4" library_locally_modified="yes">
 <wire x1="3.29" y1="-2.29" x2="-3.21" y2="-2.29" width="0.127" layer="21"/>
 <wire x1="-3.21" y1="-2.29" x2="-3.21" y2="2.26" width="0.127" layer="21"/>
 <wire x1="-3.21" y1="2.26" x2="3.29" y2="2.26" width="0.127" layer="21"/>
@@ -2785,7 +2785,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <hole x="5.715" y="-6.35" drill="3.3"/>
 <hole x="-5.715" y="-6.35" drill="3.3"/>
 </package>
-<package name="SMD-7050_4P" urn="urn:adsk.eagle:footprint:37318326/2" library_version="38">
+<package name="SMD-7050_4P" urn="urn:adsk.eagle:footprint:37318326/2" library_version="6" library_locally_modified="yes">
 <smd name="1" x="-2.54" y="-1.905" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="2" x="2.54" y="-1.905" dx="1.397" dy="1.1938" layer="1"/>
 <smd name="3" x="2.54" y="1.905" dx="1.397" dy="1.1938" layer="1"/>
@@ -9140,7 +9140,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <rectangle x1="4.1951" y1="-5.0749" x2="4.6949" y2="-3.745" layer="51"/>
 <rectangle x1="5.4651" y1="-5.0749" x2="5.9649" y2="-3.745" layer="51"/>
 </package>
-<package name="JP2" urn="urn:adsk.eagle:footprint:37318300/1" library_version="37">
+<package name="JP2" urn="urn:adsk.eagle:footprint:37318300/1" library_version="5" library_locally_modified="yes">
 <description>&lt;b&gt;JUMPER&lt;/b&gt;</description>
 <wire x1="-3.81" y1="-1.016" x2="-3.81" y2="1.016" width="0.1524" layer="21"/>
 <wire x1="3.556" y1="1.27" x2="1.524" y2="1.27" width="0.1524" layer="21"/>
@@ -9174,64 +9174,6 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <rectangle x1="-0.3048" y1="-0.3048" x2="0.3048" y2="0.3048" layer="51"/>
 <rectangle x1="2.2352" y1="-0.3048" x2="2.8448" y2="0.3048" layer="51"/>
 </package>
-<package name="SOIC127P600X175-8N" urn="urn:adsk.eagle:footprint:41513622/2" library_version="40">
-<smd name="1" x="-1.905" y="-2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<smd name="2" x="-0.635" y="-2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<smd name="3" x="0.635" y="-2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<smd name="4" x="1.905" y="-2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<smd name="5" x="1.905" y="2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<smd name="6" x="0.635" y="2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<smd name="7" x="-0.635" y="2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<smd name="8" x="-1.905" y="2.3622" dx="1.9812" dy="0.5588" layer="1" rot="R90"/>
-<wire x1="-1.651" y1="-1.9558" x2="-2.159" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="-2.159" y1="-1.9558" x2="-2.159" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="-2.159" y1="-2.9972" x2="-1.651" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="-1.651" y1="-2.9972" x2="-1.651" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="-0.381" y1="-1.9558" x2="-0.889" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="-0.889" y1="-1.9558" x2="-0.889" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="-0.889" y1="-2.9972" x2="-0.381" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="-0.381" y1="-2.9972" x2="-0.381" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="0.889" y1="-1.9558" x2="0.381" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="0.381" y1="-1.9558" x2="0.381" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="0.381" y1="-2.9972" x2="0.889" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="0.889" y1="-2.9972" x2="0.889" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="2.159" y1="-1.9558" x2="1.651" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="1.651" y1="-1.9558" x2="1.651" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="1.651" y1="-2.9972" x2="2.159" y2="-2.9972" width="0.1524" layer="51"/>
-<wire x1="2.159" y1="-2.9972" x2="2.159" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="1.651" y1="1.9558" x2="2.159" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="2.159" y1="1.9558" x2="2.159" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="2.159" y1="2.9972" x2="1.651" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="1.651" y1="2.9972" x2="1.651" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="0.381" y1="1.9558" x2="0.889" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="0.889" y1="1.9558" x2="0.889" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="0.889" y1="2.9972" x2="0.381" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="0.381" y1="2.9972" x2="0.381" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="-0.889" y1="1.9558" x2="-0.381" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="-0.381" y1="1.9558" x2="-0.381" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="-0.381" y1="2.9972" x2="-0.889" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="-0.889" y1="2.9972" x2="-0.889" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="-2.159" y1="1.9558" x2="-1.651" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="-1.651" y1="1.9558" x2="-1.651" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="-1.651" y1="2.9972" x2="-2.159" y2="2.9972" width="0.1524" layer="51"/>
-<wire x1="-2.159" y1="2.9972" x2="-2.159" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="2.4384" y1="-1.9558" x2="2.4384" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="2.4384" y1="1.9558" x2="-2.4384" y2="1.9558" width="0.1524" layer="51"/>
-<wire x1="-2.4384" y1="1.9558" x2="-2.4384" y2="0.3048" width="0.1524" layer="51"/>
-<wire x1="-2.4384" y1="0.3048" x2="-2.4384" y2="-0.3048" width="0.1524" layer="51"/>
-<wire x1="-2.4384" y1="-0.3048" x2="-2.4384" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="-2.4384" y1="-1.9558" x2="2.4384" y2="-1.9558" width="0.1524" layer="51"/>
-<wire x1="-2.4384" y1="0.3048" x2="-2.4384" y2="-0.3048" width="0" layer="51" curve="-180"/>
-<wire x1="2.4384" y1="-1.1684" x2="2.4384" y2="1.1684" width="0.1524" layer="21"/>
-<wire x1="-2.4384" y1="1.1684" x2="-2.4384" y2="0.3048" width="0.1524" layer="21"/>
-<wire x1="-2.4384" y1="0.3048" x2="-2.4384" y2="-0.3048" width="0.1524" layer="21"/>
-<wire x1="-2.4384" y1="-0.3048" x2="-2.4384" y2="-1.1684" width="0.1524" layer="21"/>
-<wire x1="-2.4384" y1="0.3048" x2="-2.4384" y2="-0.3048" width="0" layer="21" curve="-180"/>
-<text x="-2.3368" y="-3.2004" size="1.27" layer="51" ratio="6" rot="SR90">*</text>
-<text x="-2.3368" y="-3.2004" size="1.27" layer="21" ratio="6" rot="SR90">*</text>
-<text x="-2.8956" y="-4.5212" size="2.0828" layer="25" ratio="10" rot="SR90">&gt;NAME</text>
-<text x="4.9022" y="-5.5626" size="2.0828" layer="27" ratio="10" rot="SR90">&gt;VALUE</text>
-</package>
 </packages>
 <packages3d>
 <package3d name="LOGO_BIG" urn="urn:adsk.eagle:package:37318421/1" type="empty" library_version="2" library_locally_modified="yes">
@@ -9244,7 +9186,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <packageinstance name="LOGO"/>
 </packageinstances>
 </package3d>
-<package3d name="TSSOP20" urn="urn:adsk.eagle:package:37318379/4" type="model" library_version="41">
+<package3d name="TSSOP20" urn="urn:adsk.eagle:package:37318379/4" type="model">
 <packageinstances>
 <packageinstance name="TSSOP20"/>
 </packageinstances>
@@ -9258,25 +9200,9 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <packageinstance name="J1011F01PNL"/>
 </packageinstances>
 </package3d>
-<package3d name="SMD-7050_4P" urn="urn:adsk.eagle:package:37318400/3" type="model" library_version="38">
-<packageinstances>
-<packageinstance name="SMD-7050_4P"/>
-</packageinstances>
-</package3d>
 <package3d name="SOIC20" urn="urn:adsk.eagle:package:37318369/1" type="box" library_version="25">
 <packageinstances>
 <packageinstance name="SOIC20"/>
-</packageinstances>
-</package3d>
-<package3d name="JP2" urn="urn:adsk.eagle:package:37318384/2" type="model" library_version="55">
-<description>&lt;b&gt;JUMPER&lt;/b&gt;</description>
-<packageinstances>
-<packageinstance name="JP2"/>
-</packageinstances>
-</package3d>
-<package3d name="SOIC127P600X175-8N" urn="urn:adsk.eagle:package:37894665/6" type="model" library_version="41">
-<packageinstances>
-<packageinstance name="SOIC127P600X175-8N"/>
 </packageinstances>
 </package3d>
 </packages3d>
@@ -12088,25 +12014,9 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <pin name="2" x="0" y="-2.54" visible="pad" length="short" direction="pas" rot="R90"/>
 <pin name="3" x="2.54" y="-2.54" visible="pad" length="short" direction="pas" rot="R90"/>
 </symbol>
-<symbol name="24LC64T-I/SN" urn="urn:adsk.eagle:symbol:41513621/1" library_version="39">
-<pin name="VCC" x="-17.78" y="7.62" length="middle" direction="pwr"/>
-<pin name="A0" x="-17.78" y="2.54" length="middle" direction="in"/>
-<pin name="A1" x="-17.78" y="0" length="middle" direction="in"/>
-<pin name="A2" x="-17.78" y="-2.54" length="middle" direction="in"/>
-<pin name="SCL" x="-17.78" y="-7.62" length="middle" direction="in"/>
-<pin name="WP" x="-17.78" y="-10.16" length="middle" direction="in"/>
-<pin name="VSS" x="-17.78" y="-15.24" length="middle" direction="pas"/>
-<pin name="SDA" x="17.78" y="7.62" length="middle" rot="R180"/>
-<wire x1="-12.7" y1="12.7" x2="-12.7" y2="-20.32" width="0.4064" layer="94"/>
-<wire x1="-12.7" y1="-20.32" x2="12.7" y2="-20.32" width="0.4064" layer="94"/>
-<wire x1="12.7" y1="-20.32" x2="12.7" y2="12.7" width="0.4064" layer="94"/>
-<wire x1="12.7" y1="12.7" x2="-12.7" y2="12.7" width="0.4064" layer="94"/>
-<text x="-4.953" y="14.8844" size="2.0828" layer="95" ratio="10" rot="SR0">&gt;NAME</text>
-<text x="-5.715" y="-23.3172" size="2.0828" layer="96" ratio="10" rot="SR0">&gt;VALUE</text>
-</symbol>
 </symbols>
 <devicesets>
-<deviceset name="RTI-LOGO" urn="urn:adsk.eagle:component:37318498/1" library_version="58" library_locally_modified="yes">
+<deviceset name="RTI-LOGO" urn="urn:adsk.eagle:component:37318498/1" library_version="6" library_locally_modified="yes">
 <gates>
 <gate name="G$1" symbol="LOGO" x="0" y="0"/>
 </gates>
@@ -12129,7 +12039,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="J1011F01PNL" urn="urn:adsk.eagle:component:43182970/2" prefix="X" library_version="58">
+<deviceset name="J1011F01PNL" urn="urn:adsk.eagle:component:43182970/2" prefix="X" library_version="6">
 <description>&lt;b&gt;PULSEJACK (TM) 1x1 Tab-UP RJ45&lt;/b&gt;&lt;p&gt;
 10/100 Base-TX RJ45 1x1 Tab-UP with LEDs 8-pin (J1 series) and 6-pin (JP series) integrated magnetics connector,&lt;br&gt;
 designed to support applications, such as ADSL modems, LAN-on-Motherboard, and Hub and Switches.&lt;br&gt;
@@ -12164,7 +12074,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="CB3LV-OSCILATOR" urn="urn:adsk.eagle:component:37318468/3" library_version="58">
+<deviceset name="CB3LV-OSCILATOR" urn="urn:adsk.eagle:component:37318468/3" locally_modified="yes" library_version="6" library_locally_modified="yes">
 <gates>
 <gate name="G$1" symbol="QG1LV" x="0" y="0"/>
 </gates>
@@ -12176,16 +12086,13 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="G$1" pin="OE" pad="1"/>
 <connect gate="G$1" pin="VDD" pad="4"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37318400/3"/>
-</package3dinstances>
 <technologies>
 <technology name=""/>
 </technologies>
 </device>
 </devices>
 </deviceset>
-<deviceset name="74*541" urn="urn:adsk.eagle:component:37318443/4" library_version="58">
+<deviceset name="74*541" urn="urn:adsk.eagle:component:37318443/4" library_version="6" library_locally_modified="yes">
 <description>Octal non inverting buffer</description>
 <gates>
 <gate name="G$1" symbol="74*541" x="0" y="0"/>
@@ -12254,7 +12161,7 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="JP2E" urn="urn:adsk.eagle:component:37318441/2" prefix="JP" uservalue="yes" library_version="58">
+<deviceset name="JP2E" urn="urn:adsk.eagle:component:37318441/2" locally_modified="yes" prefix="JP" uservalue="yes" library_version="6" library_locally_modified="yes">
 <description>&lt;b&gt;JUMPER&lt;/b&gt;</description>
 <gates>
 <gate name="1" symbol="JP3E" x="0" y="0"/>
@@ -12266,43 +12173,8 @@ Source: www.pulseeng.com .. PulseJack-J402.pdf</description>
 <connect gate="1" pin="2" pad="2"/>
 <connect gate="1" pin="3" pad="3"/>
 </connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37318384/2"/>
-</package3dinstances>
 <technologies>
 <technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="24LC64T-I/SN" urn="urn:adsk.eagle:component:41513623/3" library_version="58">
-<description>64K I2C Serial EEPROM</description>
-<gates>
-<gate name="A" symbol="24LC64T-I/SN" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="SOIC127P600X175-8N">
-<connects>
-<connect gate="A" pin="A0" pad="1"/>
-<connect gate="A" pin="A1" pad="2"/>
-<connect gate="A" pin="A2" pad="3"/>
-<connect gate="A" pin="SCL" pad="6"/>
-<connect gate="A" pin="SDA" pad="5"/>
-<connect gate="A" pin="VCC" pad="8"/>
-<connect gate="A" pin="VSS" pad="4"/>
-<connect gate="A" pin="WP" pad="7"/>
-</connects>
-<package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37894665/6"/>
-</package3dinstances>
-<technologies>
-<technology name="">
-<attribute name="MPN" value="24LC64T-I/SN" constant="no"/>
-<attribute name="OC_FARNELL" value="1296583" constant="no"/>
-<attribute name="OC_NEWARK" value="12C2021" constant="no"/>
-<attribute name="PACKAGE" value="SOIC-8" constant="no"/>
-<attribute name="SUPPLIER" value="MICROCHIP" constant="no"/>
-</technology>
 </technologies>
 </device>
 </devices>
@@ -12365,9 +12237,9 @@ DIN A3, landscape with extra doc field</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="W5500" urn="urn:adsk.eagle:library:37501005">
+<library name="W5500" urn="urn:adsk.wipprod:fs.file:vf.EuVGQfRmSzuqaSMtILE9nA">
 <packages>
-<package name="LQFP48" urn="urn:adsk.eagle:footprint:37501006/2" library_version="4">
+<package name="LQFP48" urn="urn:adsk.eagle:footprint:37501006/2" library_version="2">
 <description>&lt;b&gt;48-pin plastic LQFP (FPT-48P-M26)&lt;/b&gt;&lt;p&gt;
 www.fma.fujitsu.com/pdf/e713717.pdf</description>
 <wire x1="-3.375" y1="3.1" x2="-3.1" y2="3.375" width="0.254" layer="21"/>
@@ -12480,7 +12352,7 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 </package>
 </packages>
 <packages3d>
-<package3d name="LQFP48" urn="urn:adsk.eagle:package:37501008/4" type="model" library_version="5">
+<package3d name="LQFP48" urn="urn:adsk.eagle:package:37501008/4" type="model">
 <description>&lt;b&gt;48-pin plastic LQFP (FPT-48P-M26)&lt;/b&gt;&lt;p&gt;
 www.fma.fujitsu.com/pdf/e713717.pdf</description>
 <packageinstances>
@@ -12547,7 +12419,7 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="W5500" urn="urn:adsk.eagle:component:37501009/4" prefix="U" library_version="5">
+<deviceset name="W5500" urn="urn:adsk.eagle:component:37501009/4" prefix="U" library_version="2">
 <gates>
 <gate name="G$1" symbol="W5500" x="-22.86" y="12.7"/>
 </gates>
@@ -12614,7 +12486,7 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="BLM21AG121SN1D" urn="urn:adsk.eagle:library:37504929">
+<library name="BLM21AG121SN1D" urn="urn:adsk.wipprod:fs.file:vf.O0_p0Y11Su6wIge-cWxI5Q">
 <description>&lt;BLM21_N1D Series EMI Suppression Filter 120+/-25% at 100MHz 1A @85&lt;/b&gt;&lt;p&gt;
 &lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
 <packages>
@@ -12656,7 +12528,7 @@ www.fma.fujitsu.com/pdf/e713717.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="BLM21AG121SN1D" urn="urn:adsk.eagle:component:37504933/2" prefix="FL" library_version="3">
+<deviceset name="BLM21AG121SN1D" urn="urn:adsk.eagle:component:37504933/2" prefix="FL" library_version="1">
 <description>&lt;b&gt;BLM21_N1D Series EMI Suppression Filter 120+/-25% at 100MHz 1A @85&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.murata.com/en-us/products/productdetail?partno=BLM21AG121SN1#"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20520,7 +20392,7 @@ Source: AVX .. aphvc.pdf</description>
 </deviceset>
 </devicesets>
 </library>
-<library name="samacsys" urn="urn:adsk.eagle:library:37256869">
+<library name="samacsys" urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg">
 <description>&lt;b&gt;https://eagle.componentsearchengine.com&lt;/b&gt;&lt;p&gt;&lt;author&gt;Created by SamacSys&lt;/author&gt;</description>
 <packages>
 <package name="XT60PWM" urn="urn:adsk.eagle:footprint:37256916/5" library_version="119">
@@ -20775,7 +20647,7 @@ Source: AVX .. aphvc.pdf</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/9" prefix="J" library_version="241">
+<deviceset name="XT60PW-M" urn="urn:adsk.eagle:component:37256959/9" prefix="J" library_version="13">
 <description>&lt;b&gt;Socket; DC supply; XT60; male; PIN: 2; on PCBs; THT; Colour: yellow&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade/XT60PW SPEC.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20811,7 +20683,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 </device>
 </devices>
 </deviceset>
-<deviceset name="MMBT3904LT1" urn="urn:adsk.eagle:component:43140559/4" prefix="T" library_version="241">
+<deviceset name="MMBT3904LT1" urn="urn:adsk.eagle:component:43140559/4" prefix="T" library_version="13">
 <description>&lt;b&gt;NPN TRANSISTOR&lt;/b&gt;</description>
 <gates>
 <gate name="G$1" symbol="NPN" x="0" y="0"/>
@@ -20834,7 +20706,7 @@ Source: &lt;a href="https://www.tme.eu/Document/9b8d0c5eb7094295f3d3112c214d3ade
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="241">
+<deviceset name="691313510003" urn="urn:adsk.eagle:component:45454766/2" prefix="J" library_version="13">
 <description>&lt;b&gt;Wurth Elektronik 313 Series 5.08mm Pitch Straight Pluggable Terminal Block, PCB Header, Through Hole, 3 Way&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20865,7 +20737,7 @@ Source: &lt;a href="https://katalog.we-online.de/em/datasheet/6913135100xx.pdf"&
 </device>
 </devices>
 </deviceset>
-<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/5" prefix="J" library_version="241">
+<deviceset name="691313510002" urn="urn:adsk.eagle:component:45454774/5" prefix="J" library_version="13">
 <description>&lt;b&gt;2 Position Terminal Block Header, Male Pins, Shrouded (4 Side) 0.200" (5.08mm) 90, Right Angle  Through Hole&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20895,7 +20767,7 @@ Source: &lt;a href="https://www.we-online.de/katalog/datasheet/6913135100xx.pdf"
 </device>
 </devices>
 </deviceset>
-<deviceset name="TPS62133RGTR" urn="urn:adsk.eagle:component:45879355/4" prefix="PS" library_version="241">
+<deviceset name="TPS62133RGTR" urn="urn:adsk.eagle:component:45879355/4" prefix="PS" library_version="13">
 <description>&lt;b&gt;3-17V 3A Step-Down Converter in 3x3 QFN Package&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="http://www.ti.com/lit/gpn/tps62133"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20941,7 +20813,7 @@ Source: &lt;a href="http://www.ti.com/lit/gpn/tps62133"&gt; Datasheet &lt;/a&gt;
 </device>
 </devices>
 </deviceset>
-<deviceset name="IHLP1212BZER2R2M11" urn="urn:adsk.eagle:component:45879409/3" prefix="L" library_version="241">
+<deviceset name="IHLP1212BZER2R2M11" urn="urn:adsk.eagle:component:45879409/3" prefix="L" library_version="13">
 <description>&lt;b&gt;Vishay IHLP1212BZ-11 Series Shielded Wire-wound SMD Inductor with a Metal Composite Core, 2.2 uH +/-20% Wire-Wound 3A Idc&lt;/b&gt;&lt;p&gt;
 Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datasheet &lt;/a&gt;</description>
 <gates>
@@ -20974,26 +20846,26 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </deviceset>
 </devicesets>
 </library>
-<library name="burr-brown" urn="urn:adsk.eagle:library:37504555">
+<library name="burr-brown" urn="urn:adsk.wipprod:fs.file:vf.RrKM8VvuTCOsalSH00xlfg">
 <description>&lt;b&gt;Burr-Brown Components&lt;/b&gt;&lt;p&gt;
 &lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
 <packages>
-<package name="SOT223" urn="urn:adsk.eagle:footprint:45550805/1" library_version="3">
+<package name="SOT223" urn="urn:adsk.eagle:footprint:4834/1" library_version="1">
 <description>&lt;b&gt;Smal Outline Transistor&lt;/b&gt;</description>
-<wire x1="-1.731" y1="-3.124" x2="1.729" y2="-3.124" width="0.1524" layer="21"/>
-<wire x1="1.729" y1="3.124" x2="-1.731" y2="3.124" width="0.1524" layer="21"/>
-<wire x1="-1.731" y1="-3.124" x2="-1.731" y2="3.124" width="0.1524" layer="21"/>
-<wire x1="1.729" y1="3.124" x2="1.729" y2="-3.124" width="0.1524" layer="21"/>
-<smd name="1" x="3.1496" y="-2.2606" dx="1.4986" dy="2.0066" layer="1" rot="R90"/>
-<smd name="2" x="3.1496" y="0.0254" dx="1.4986" dy="2.0066" layer="1" rot="R90"/>
-<smd name="3" x="3.1496" y="2.3114" dx="1.4986" dy="2.0066" layer="1" rot="R90"/>
-<smd name="4" x="-3.1496" y="0" dx="3.81" dy="2.0066" layer="1" rot="R90"/>
-<text x="-4.318" y="-2.54" size="1.27" layer="25" ratio="10" rot="R90">&gt;NAME</text>
-<text x="5.842" y="-2.794" size="1.27" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<rectangle x1="-4.064" y1="-0.762" x2="-1.016" y2="0.762" layer="51" rot="R90"/>
-<rectangle x1="2.159" y1="-3.048" x2="2.921" y2="-1.524" layer="51" rot="R90"/>
-<rectangle x1="2.159" y1="1.524" x2="2.921" y2="3.048" layer="51" rot="R90"/>
-<rectangle x1="2.159" y1="-0.762" x2="2.921" y2="0.762" layer="51" rot="R90"/>
+<wire x1="-3.124" y1="1.731" x2="-3.124" y2="-1.729" width="0.1524" layer="21"/>
+<wire x1="3.124" y1="-1.729" x2="3.124" y2="1.731" width="0.1524" layer="21"/>
+<wire x1="-3.124" y1="1.731" x2="3.124" y2="1.731" width="0.1524" layer="21"/>
+<wire x1="3.124" y1="-1.729" x2="-3.124" y2="-1.729" width="0.1524" layer="21"/>
+<smd name="1" x="-2.2606" y="-3.1496" dx="1.4986" dy="2.0066" layer="1"/>
+<smd name="2" x="0.0254" y="-3.1496" dx="1.4986" dy="2.0066" layer="1"/>
+<smd name="3" x="2.3114" y="-3.1496" dx="1.4986" dy="2.0066" layer="1"/>
+<smd name="4" x="0" y="3.1496" dx="3.81" dy="2.0066" layer="1"/>
+<text x="-2.54" y="4.318" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-2.794" y="-5.842" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<rectangle x1="-1.524" y1="1.778" x2="1.524" y2="3.302" layer="51"/>
+<rectangle x1="-2.667" y1="-3.302" x2="-1.905" y2="-1.778" layer="51"/>
+<rectangle x1="1.905" y1="-3.302" x2="2.667" y2="-1.778" layer="51"/>
+<rectangle x1="-0.381" y1="-3.302" x2="0.381" y2="-1.778" layer="51"/>
 </package>
 <package name="DD-3" urn="urn:adsk.eagle:footprint:4839/1" library_version="2">
 <description>&lt;b&gt;DPAC&lt;/b&gt;</description>
@@ -21024,8 +20896,8 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </package>
 </packages>
 <packages3d>
-<package3d name="SOT223" urn="urn:adsk.eagle:package:37504714/3" type="model" library_version="4">
-<description>&lt;b&gt;Smal Outline Transistor&lt;/b&gt;</description>
+<package3d name="SOT223" urn="urn:adsk.eagle:package:37504714/1" type="model">
+<description>Smal Outline Transistor</description>
 <packageinstances>
 <packageinstance name="SOT223"/>
 </packageinstances>
@@ -21051,7 +20923,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="REG1117" urn="urn:adsk.eagle:component:37504893/3" prefix="IC" library_version="4">
+<deviceset name="REG1117" urn="urn:adsk.eagle:component:37504893/1" prefix="IC" library_version="1">
 <description>&lt;b&gt;800mA and 1A Low Dropout (LDO) Positive Regulator&lt;/b&gt;&lt;p&gt;
 1.8V, 2.5V, 2.85V, 3.3V, 5V, and Adj</description>
 <gates>
@@ -21065,7 +20937,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <connect gate="G$1" pin="VOUT" pad="2"/>
 </connects>
 <package3dinstances>
-<package3dinstance package3d_urn="urn:adsk.eagle:package:37504714/3"/>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37504714/1"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -21100,9 +20972,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </deviceset>
 </devicesets>
 </library>
-<library name="ESP32-DEVKITC-32D" urn="urn:adsk.eagle:library:44270575">
+<library name="ESP32-DEVKITC-32D" urn="urn:adsk.wipprod:fs.file:vf.eXwx6OB3SJSZNus2gexyWw">
 <packages>
-<package name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:footprint:44294360/5" library_version="12">
+<package name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:footprint:44294360/5" library_version="4">
 <wire x1="-13.97" y1="21.59" x2="13.97" y2="21.59" width="0.127" layer="51"/>
 <wire x1="13.97" y1="21.59" x2="13.97" y2="-26.67" width="0.127" layer="51"/>
 <wire x1="13.97" y1="-26.67" x2="3.81" y2="-26.67" width="0.127" layer="51"/>
@@ -21234,12 +21106,12 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </package>
 </packages>
 <packages3d>
-<package3d name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:package:44294361/7" type="model" library_version="12">
+<package3d name="MODULE_ESP32-DEVKITC-32U" urn="urn:adsk.eagle:package:44294361/7" locally_modified="yes" type="model">
 <packageinstances>
 <packageinstance name="MODULE_ESP32-DEVKITC-32U"/>
 </packageinstances>
 </package3d>
-<package3d name="MODULE_ESP32-DEVKITC-32D" urn="urn:adsk.eagle:package:44270578/6" type="model" library_version="12">
+<package3d name="MODULE_ESP32-DEVKITC-32D" urn="urn:adsk.eagle:package:44270578/6" locally_modified="yes" type="model">
 <packageinstances>
 <packageinstance name="MODULE_ESP32-DEVKITC-32D"/>
 </packageinstances>
@@ -21294,7 +21166,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="ESP32-DEVKITC-32" urn="urn:adsk.eagle:component:44270579/12" prefix="U" library_version="12">
+<deviceset name="ESP32-DEVKITC-32" urn="urn:adsk.eagle:component:44270579/12" prefix="U" library_version="4" library_locally_modified="yes">
 <description> &lt;a href="https://pricing.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif%20Systems/view-part?ref=eda"&gt;Check availability&lt;/a&gt;</description>
 <gates>
 <gate name="G$1" symbol="ESP32-DEVKITC-32" x="0" y="0"/>
@@ -21409,6 +21281,144 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </deviceset>
 </devicesets>
 </library>
+<library name="rti" urn="urn:adsk.eagle:library:37256580">
+<description>RTI</description>
+<packages>
+<package name="R1206" urn="urn:adsk.eagle:footprint:8118366/1" library_version="27">
+<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
+chip</description>
+<wire x1="0.9525" y1="-0.8128" x2="-0.9652" y2="-0.8128" width="0.1524" layer="51"/>
+<wire x1="0.9525" y1="0.8128" x2="-0.9652" y2="0.8128" width="0.1524" layer="51"/>
+<wire x1="-2.473" y1="0.983" x2="2.473" y2="0.983" width="0.0508" layer="39"/>
+<wire x1="2.473" y1="0.983" x2="2.473" y2="-0.983" width="0.0508" layer="39"/>
+<wire x1="2.473" y1="-0.983" x2="-2.473" y2="-0.983" width="0.0508" layer="39"/>
+<wire x1="-2.473" y1="-0.983" x2="-2.473" y2="0.983" width="0.0508" layer="39"/>
+<rectangle x1="-1.6891" y1="-0.8763" x2="-0.9525" y2="0.8763" layer="51"/>
+<rectangle x1="0.9525" y1="-0.8763" x2="1.6891" y2="0.8763" layer="51"/>
+<rectangle x1="-0.3" y1="-0.7" x2="0.3" y2="0.7" layer="35"/>
+<smd name="1" x="-1.422" y="0" dx="1.6" dy="1.803" layer="1"/>
+<smd name="2" x="1.422" y="0" dx="1.6" dy="1.803" layer="1"/>
+<text x="-1.397" y="1.143" size="1.27" layer="25">&gt;NAME</text>
+<text x="-1.397" y="-2.413" size="1.27" layer="27">&gt;VALUE</text>
+</package>
+<package name="R0805" urn="urn:adsk.eagle:footprint:5829373/1" library_version="27">
+<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
+chip</description>
+<wire x1="-0.41" y1="0.635" x2="0.41" y2="0.635" width="0.1524" layer="51"/>
+<wire x1="-0.41" y1="-0.635" x2="0.41" y2="-0.635" width="0.1524" layer="51"/>
+<wire x1="-1.973" y1="0.983" x2="1.973" y2="0.983" width="0.0508" layer="39"/>
+<wire x1="1.973" y1="0.983" x2="1.973" y2="-0.983" width="0.0508" layer="39"/>
+<wire x1="1.973" y1="-0.983" x2="-1.973" y2="-0.983" width="0.0508" layer="39"/>
+<wire x1="-1.973" y1="-0.983" x2="-1.973" y2="0.983" width="0.0508" layer="39"/>
+<rectangle x1="0.4064" y1="-0.6985" x2="1.0564" y2="0.7015" layer="51"/>
+<rectangle x1="-1.0668" y1="-0.6985" x2="-0.4168" y2="0.7015" layer="51"/>
+<rectangle x1="-0.1999" y1="-0.5001" x2="0.1999" y2="0.5001" layer="35"/>
+<smd name="1" x="-0.85" y="0" dx="1.3" dy="1.5" layer="1"/>
+<smd name="2" x="0.85" y="0" dx="1.3" dy="1.5" layer="1"/>
+<text x="-0.762" y="1.016" size="1.27" layer="25">&gt;NAME</text>
+<text x="-0.762" y="-2.286" size="1.27" layer="27">&gt;VALUE</text>
+</package>
+<package name="R0603" urn="urn:adsk.eagle:footprint:41513586/1" library_version="27">
+<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
+chip</description>
+<wire x1="-0.432" y1="-0.356" x2="0.432" y2="-0.356" width="0.1524" layer="51"/>
+<wire x1="0.432" y1="0.356" x2="-0.432" y2="0.356" width="0.1524" layer="51"/>
+<wire x1="-1.473" y1="0.729" x2="1.473" y2="0.729" width="0.0508" layer="39"/>
+<wire x1="1.473" y1="0.729" x2="1.473" y2="-0.729" width="0.0508" layer="39"/>
+<wire x1="1.473" y1="-0.729" x2="-1.473" y2="-0.729" width="0.0508" layer="39"/>
+<wire x1="-1.473" y1="-0.729" x2="-1.473" y2="0.729" width="0.0508" layer="39"/>
+<wire x1="0" y1="0.508" x2="0" y2="-0.508" width="0.127" layer="21"/>
+<rectangle x1="0.4318" y1="-0.4318" x2="0.8382" y2="0.4318" layer="51"/>
+<rectangle x1="-0.8382" y1="-0.4318" x2="-0.4318" y2="0.4318" layer="51"/>
+<rectangle x1="-0.1999" y1="-0.4001" x2="0.1999" y2="0.4001" layer="35"/>
+<smd name="1" x="-0.85" y="0" dx="1" dy="1.1" layer="1"/>
+<smd name="2" x="0.85" y="0" dx="1" dy="1.1" layer="1"/>
+<text x="-0.889" y="0.889" size="1.27" layer="25">&gt;NAME</text>
+<text x="-0.889" y="-2.032" size="1.27" layer="27">&gt;VALUE</text>
+</package>
+</packages>
+<packages3d>
+<package3d name="R1206" urn="urn:adsk.eagle:package:37318392/3" type="model">
+<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
+chip</description>
+<packageinstances>
+<packageinstance name="R1206"/>
+</packageinstances>
+</package3d>
+<package3d name="R0805" urn="urn:adsk.eagle:package:37318414/4" type="model">
+<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
+chip</description>
+<packageinstances>
+<packageinstance name="R0805"/>
+</packageinstances>
+</package3d>
+<package3d name="R0603" urn="urn:adsk.eagle:package:37318391/6" type="model">
+<description>&lt;b&gt;RESISTOR&lt;/b&gt;&lt;p&gt;
+chip</description>
+<packageinstances>
+<packageinstance name="R0603"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="R-EU" urn="urn:adsk.eagle:symbol:37318275/1" library_version="27">
+<description>Value</description>
+<wire x1="-2.54" y1="-0.889" x2="2.54" y2="-0.889" width="0.254" layer="94"/>
+<wire x1="2.54" y1="0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
+<wire x1="2.54" y1="-0.889" x2="2.54" y2="0.889" width="0.254" layer="94"/>
+<wire x1="-2.54" y1="-0.889" x2="-2.54" y2="0.889" width="0.254" layer="94"/>
+<text x="-3.81" y="1.4986" size="1.778" layer="95">&gt;NAME</text>
+<text x="-3.81" y="-3.302" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="R-EU" urn="urn:adsk.eagle:component:37318484/4" prefix="R" uservalue="yes" library_version="58">
+<gates>
+<gate name="G$1" symbol="R-EU" x="0" y="0"/>
+</gates>
+<devices>
+<device name="'1206'" package="R1206">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37318392/3"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="'0805'" package="R0805">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37318414/4"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="'0603'" package="R0603">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:37318391/6"/>
+</package3dinstances>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -21455,7 +21465,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </spice>
 <attribute name="MPN" value="RT0805FRD07100RL"/>
 </part>
-<part name="U$4" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="RTI-LOGO" device="_BIG" package3d_urn="urn:adsk.eagle:package:37318421/1" value="RTI-LOGO_BIG"/>
+<part name="U$4" library="rti" library_urn="urn:adsk.wipprod:fs.file:vf.WG0uDfgwQYuGLbbVTPUCew" deviceset="RTI-LOGO" device="_BIG" package3d_urn="urn:adsk.eagle:package:37318421/1" value="RTI-LOGO_BIG"/>
 <part name="P+4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="R15" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="4.7K">
 <spice>
@@ -21503,33 +21513,6 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <attribute name="MPN" value="0805YD104KAT2A"/>
 </part>
 <part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1K">
-<spice>
-<pinmapping spiceprefix="R">
-<pinmap gate="G$1" pin="1" pinorder="1"/>
-<pinmap gate="G$1" pin="2" pinorder="2"/>
-</pinmapping>
-</spice>
-<attribute name="MPN" value="RT0805FRE071KL"/>
-</part>
-<part name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1K">
-<spice>
-<pinmapping spiceprefix="R">
-<pinmap gate="G$1" pin="1" pinorder="1"/>
-<pinmap gate="G$1" pin="2" pinorder="2"/>
-</pinmapping>
-</spice>
-<attribute name="MPN" value="RT0805FRE071KL"/>
-</part>
-<part name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="100nF">
-<spice>
-<pinmapping spiceprefix="C">
-<pinmap gate="G$1" pin="1" pinorder="1"/>
-<pinmap gate="G$1" pin="2" pinorder="2"/>
-</pinmapping>
-</spice>
-<attribute name="MPN" value="0805YD104KAT2A"/>
-</part>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="100nF">
@@ -21561,7 +21544,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </part>
 <part name="FRAME1" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA3_L" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U1" library="W5500" library_urn="urn:adsk.eagle:library:37501005" deviceset="W5500" device="" package3d_urn="urn:adsk.eagle:package:37501008/4" value="W5500">
+<part name="U1" library="W5500" library_urn="urn:adsk.wipprod:fs.file:vf.EuVGQfRmSzuqaSMtILE9nA" deviceset="W5500" device="" package3d_urn="urn:adsk.eagle:package:37501008/4" value="W5500">
 <attribute name="MPN" value="W5500"/>
 </part>
 <part name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="22nF">
@@ -21619,7 +21602,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </spice>
 <attribute name="MPN" value="RC0805FR-0749R9L"/>
 </part>
-<part name="X9" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="J1011F01PNL" device="" package3d_urn="urn:adsk.eagle:package:43182963/4" value="J1011F01PNL"/>
+<part name="X9" library="rti" library_urn="urn:adsk.wipprod:fs.file:vf.WG0uDfgwQYuGLbbVTPUCew" deviceset="J1011F01PNL" device="" package3d_urn="urn:adsk.eagle:package:43182963/4" value="J1011F01PNL"/>
 <part name="R31" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="4.7K">
 <spice>
 <pinmapping spiceprefix="R">
@@ -21793,7 +21776,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <attribute name="MPN" value="RT0805FRE074K7L"/>
 </part>
 <part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="25MHZ" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="CB3LV-OSCILATOR" device="" package3d_urn="urn:adsk.eagle:package:37318400/3">
+<part name="25MHZ" library="rti" library_urn="urn:adsk.wipprod:fs.file:vf.WG0uDfgwQYuGLbbVTPUCew" deviceset="CB3LV-OSCILATOR" device="">
 <attribute name="MPN" value="CB3LV-3I-25M0000"/>
 </part>
 <part name="C20" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="100nF">
@@ -21824,7 +21807,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </spice>
 <attribute name="MPN" value=" CC0805KRX7R9BB103"/>
 </part>
-<part name="FL1" library="BLM21AG121SN1D" library_urn="urn:adsk.eagle:library:37504929" deviceset="BLM21AG121SN1D" device="" package3d_urn="urn:adsk.eagle:package:37504932/2">
+<part name="FL1" library="BLM21AG121SN1D" library_urn="urn:adsk.wipprod:fs.file:vf.O0_p0Y11Su6wIge-cWxI5Q" deviceset="BLM21AG121SN1D" device="" package3d_urn="urn:adsk.eagle:package:37504932/2">
 <attribute name="MPN" value="BLM21AG121SN1D"/>
 </part>
 <part name="C15" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="6.8nF">
@@ -21857,10 +21840,8 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <part name="GND19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="FRAME2" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA3_L" device=""/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="J2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/7"/>
-<part name="IC2" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="24LC64T-I/SN" device="" package3d_urn="urn:adsk.eagle:package:37894665/6"/>
-<part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="IC8" library="burr-brown" library_urn="urn:adsk.eagle:library:37504555" deviceset="REG1117" device="" package3d_urn="urn:adsk.eagle:package:37504714/3" value="REG1117-3.3V">
+<part name="J2" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="XT60PW-M" device="" package3d_urn="urn:adsk.eagle:package:37256940/7"/>
+<part name="IC8" library="burr-brown" library_urn="urn:adsk.wipprod:fs.file:vf.RrKM8VvuTCOsalSH00xlfg" deviceset="REG1117" device="" package3d_urn="urn:adsk.eagle:package:37504714/1" value="REG1117-3.3V">
 <attribute name="MPN" value="REG1117-3.3/2K5"/>
 </part>
 <part name="C23" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="10uF">
@@ -22024,11 +22005,15 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <attribute name="MPN" value="CC0805KKX5R8BB106"/>
 </part>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U$1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/4" value="74HCT541PWR"/>
-<part name="U$3" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/4" value="74LVC541APWR"/>
-<part name="T1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
-<part name="T2" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
-<part name="T3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
+<part name="U$1" library="rti" library_urn="urn:adsk.wipprod:fs.file:vf.WG0uDfgwQYuGLbbVTPUCew" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/4" value="74HCT541PWR">
+<attribute name="LCSC_PART" value="C131314"/>
+</part>
+<part name="U$3" library="rti" library_urn="urn:adsk.wipprod:fs.file:vf.WG0uDfgwQYuGLbbVTPUCew" deviceset="74*541" device="B" package3d_urn="urn:adsk.eagle:package:37318379/4" value="74LVC541APWR">
+<attribute name="LCSC_PART" value="C6093"/>
+</part>
+<part name="T1" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
+<part name="T2" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
+<part name="T3" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="MMBT3904LT1" device="" package3d_urn="urn:adsk.eagle:package:45494141/3"/>
 <part name="R12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1K">
 <spice>
 <pinmapping spiceprefix="R">
@@ -22056,27 +22041,27 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </spice>
 <attribute name="MPN" value="RT0805FRE074K7L"/>
 </part>
-<part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.eagle:library:44270575" deviceset="ESP32-DEVKITC-32" device="U" package3d_urn="urn:adsk.eagle:package:44294361/7" value="ESP32-DevKitC-32UE"/>
-<part name="JP1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:37318384/2" value="3PIN_Header">
+<part name="U2" library="ESP32-DEVKITC-32D" library_urn="urn:adsk.wipprod:fs.file:vf.eXwx6OB3SJSZNus2gexyWw" deviceset="ESP32-DEVKITC-32" device="U" package3d_urn="urn:adsk.eagle:package:44294361/7" value="ESP32-DevKitC-32UE"/>
+<part name="JP1" library="rti" library_urn="urn:adsk.wipprod:fs.file:vf.WG0uDfgwQYuGLbbVTPUCew" deviceset="JP2E" device="" value="3PIN_Header">
 <attribute name="LCSC_PART" value="C19190477"/>
 </part>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="J1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
-<part name="J3" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
-<part name="J4" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
-<part name="J6" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
-<part name="J7" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
-<part name="J8" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
-<part name="J9" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
-<part name="J10" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
-<part name="J11" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
-<part name="J12" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
-<part name="PS1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="TPS62133RGTR" device="" package3d_urn="urn:adsk.eagle:package:45879354/2"/>
+<part name="J1" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
+<part name="J3" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
+<part name="J4" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
+<part name="J6" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
+<part name="J7" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510003" device="" package3d_urn="urn:adsk.eagle:package:45454765/2"/>
+<part name="J8" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J9" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J10" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J11" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="J12" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="691313510002" device="" package3d_urn="urn:adsk.eagle:package:45454773/6"/>
+<part name="PS1" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="TPS62133RGTR" device="" package3d_urn="urn:adsk.eagle:package:45879354/2"/>
 <part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="3.3nF"/>
 <part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="100K"/>
-<part name="L1" library="samacsys" library_urn="urn:adsk.eagle:library:37256869" deviceset="IHLP1212BZER2R2M11" device="" package3d_urn="urn:adsk.eagle:package:45879408/2"/>
+<part name="L1" library="samacsys" library_urn="urn:adsk.wipprod:fs.file:vf.5j0c5ETCT9mXPjOXnrU5wg" deviceset="IHLP1212BZER2R2M11" device="" package3d_urn="urn:adsk.eagle:package:45879408/2"/>
 <part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="10uF"/>
 <part name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="0.1uF"/>
 <part name="C25" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="10uF"/>
@@ -22085,6 +22070,12 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <part name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V"/>
 <part name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V"/>
 <part name="C27" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C1206" package3d_urn="urn:adsk.eagle:package:23618/2" value="22uF 35V"/>
+<part name="R1" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="R-EU" device="'0603'" package3d_urn="urn:adsk.eagle:package:37318391/6" value="100K">
+<attribute name="MPN" value="RT0805FRD07100RL"/>
+</part>
+<part name="R3" library="rti" library_urn="urn:adsk.eagle:library:37256580" deviceset="R-EU" device="'0603'" package3d_urn="urn:adsk.eagle:package:37318391/6" value="100K">
+<attribute name="MPN" value="RT0805FRD07100RL"/>
+</part>
 </parts>
 <sheets>
 <sheet>
@@ -22143,21 +22134,6 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <instance part="GND1" gate="1" x="121.92" y="185.42" smashed="yes">
 <attribute name="VALUE" x="119.38" y="182.88" size="1.778" layer="96"/>
 </instance>
-<instance part="R1" gate="G$1" x="33.02" y="205.74" smashed="yes" rot="R90">
-<attribute name="MPN" x="33.02" y="205.74" size="1.778" layer="96" rot="R90" display="off"/>
-<attribute name="NAME" x="31.5214" y="201.93" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="36.322" y="201.93" size="1.778" layer="96" rot="R90"/>
-</instance>
-<instance part="R3" gate="G$1" x="81.28" y="218.44" smashed="yes" rot="R90">
-<attribute name="MPN" x="81.28" y="218.44" size="1.778" layer="96" rot="R90" display="off"/>
-<attribute name="NAME" x="79.7814" y="214.63" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="84.582" y="214.63" size="1.778" layer="96" rot="R90"/>
-</instance>
-<instance part="C5" gate="G$1" x="109.22" y="200.66" smashed="yes">
-<attribute name="MPN" x="109.22" y="200.66" size="1.778" layer="96" display="off"/>
-<attribute name="NAME" x="110.744" y="201.041" size="1.778" layer="95"/>
-<attribute name="VALUE" x="110.744" y="195.961" size="1.778" layer="96"/>
-</instance>
 <instance part="GND12" gate="1" x="182.88" y="185.42" smashed="yes">
 <attribute name="VALUE" x="180.34" y="182.88" size="1.778" layer="96"/>
 </instance>
@@ -22193,13 +22169,6 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </instance>
 <instance part="J2" gate="G$1" x="36.83" y="20.32" smashed="yes">
 <attribute name="VALUE" x="34.29" y="12.7" size="1.778" layer="96" align="center-left"/>
-</instance>
-<instance part="IC2" gate="A" x="60.96" y="205.74" smashed="yes">
-<attribute name="NAME" x="55.88" y="213.36" size="1.778" layer="95" align="center-left"/>
-<attribute name="VALUE" x="56.515" y="196.85" size="1.778" layer="96" align="center-left"/>
-</instance>
-<instance part="GND21" gate="1" x="38.1" y="180.34" smashed="yes">
-<attribute name="VALUE" x="35.56" y="177.8" size="1.778" layer="96"/>
 </instance>
 <instance part="IC8" gate="G$1" x="30.48" y="114.3" smashed="yes">
 <attribute name="NAME" x="22.86" y="120.015" size="1.778" layer="95" ratio="10"/>
@@ -22317,6 +22286,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <instance part="U$1" gate="G$1" x="203.2" y="243.84" smashed="yes">
 <attribute name="NAME" x="198.12" y="261.62" size="1.27" layer="95"/>
 <attribute name="VALUE" x="198.12" y="226.06" size="1.27" layer="96"/>
+<attribute name="LCSC_PART" x="203.2" y="243.84" size="1.016" layer="96" display="off"/>
 </instance>
 <instance part="U$1" gate="G$2" x="182.88" y="200.66" smashed="yes" rot="R270">
 <attribute name="NAME" x="184.15" y="200.66" size="1.778" layer="95"/>
@@ -22324,6 +22294,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <instance part="U$3" gate="G$1" x="132.08" y="241.3" smashed="yes">
 <attribute name="NAME" x="127" y="259.08" size="1.27" layer="95"/>
 <attribute name="VALUE" x="127" y="223.52" size="1.27" layer="96"/>
+<attribute name="LCSC_PART" x="132.08" y="241.3" size="1.016" layer="96" display="off"/>
 </instance>
 <instance part="U$3" gate="G$2" x="129.54" y="200.66" smashed="yes" rot="R270">
 <attribute name="NAME" x="132.08" y="200.66" size="1.778" layer="95"/>
@@ -22449,17 +22420,27 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <attribute name="NAME" x="136.906" y="51.689" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="136.906" y="56.769" size="1.778" layer="96" rot="R180"/>
 </instance>
-<instance part="C2" gate="G$1" x="168.91" y="22.86" smashed="yes">
-<attribute name="NAME" x="170.434" y="23.241" size="1.778" layer="95"/>
-<attribute name="VALUE" x="170.434" y="18.161" size="1.778" layer="96"/>
+<instance part="C2" gate="G$1" x="160.02" y="22.86" smashed="yes">
+<attribute name="NAME" x="161.544" y="23.241" size="1.778" layer="95"/>
+<attribute name="VALUE" x="161.544" y="18.161" size="1.778" layer="96"/>
 </instance>
 <instance part="C3" gate="G$1" x="176.53" y="22.86" smashed="yes">
 <attribute name="NAME" x="178.054" y="23.241" size="1.778" layer="95"/>
 <attribute name="VALUE" x="178.054" y="18.161" size="1.778" layer="96"/>
 </instance>
-<instance part="C27" gate="G$1" x="184.15" y="22.86" smashed="yes">
-<attribute name="NAME" x="185.674" y="23.241" size="1.778" layer="95"/>
-<attribute name="VALUE" x="185.674" y="18.161" size="1.778" layer="96"/>
+<instance part="C27" gate="G$1" x="194.31" y="22.86" smashed="yes">
+<attribute name="NAME" x="195.834" y="23.241" size="1.778" layer="95"/>
+<attribute name="VALUE" x="195.834" y="18.161" size="1.778" layer="96"/>
+</instance>
+<instance part="R1" gate="G$1" x="208.28" y="88.9" smashed="yes" rot="R180">
+<attribute name="MPN" x="208.28" y="88.9" size="1.778" layer="96" rot="R180" display="off"/>
+<attribute name="NAME" x="212.09" y="87.4014" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="212.09" y="92.202" size="1.778" layer="96" rot="R180"/>
+</instance>
+<instance part="R3" gate="G$1" x="208.28" y="95.25" smashed="yes" rot="R180">
+<attribute name="MPN" x="208.28" y="95.25" size="1.778" layer="96" rot="R180" display="off"/>
+<attribute name="NAME" x="212.09" y="93.7514" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="212.09" y="98.552" size="1.778" layer="96" rot="R180"/>
 </instance>
 </instances>
 <busses>
@@ -22523,10 +22504,6 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <wire x1="121.92" y1="190.5" x2="121.92" y2="187.96" width="0.1524" layer="91"/>
 <junction x="121.92" y="190.5"/>
 <pinref part="GND1" gate="1" pin="GND"/>
-<pinref part="C5" gate="G$1" pin="2"/>
-<wire x1="116.84" y1="190.5" x2="109.22" y2="190.5" width="0.1524" layer="91"/>
-<wire x1="109.22" y1="190.5" x2="109.22" y2="195.58" width="0.1524" layer="91"/>
-<junction x="116.84" y="190.5"/>
 <pinref part="U$3" gate="G$2" pin="GND"/>
 </segment>
 <segment>
@@ -22535,9 +22512,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <wire x1="182.88" y1="190.5" x2="182.88" y2="187.96" width="0.1524" layer="91"/>
 <wire x1="182.88" y1="190.5" x2="170.18" y2="190.5" width="0.1524" layer="91"/>
 <wire x1="170.18" y1="190.5" x2="170.18" y2="198.12" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$2" pin="GND"/>
 <wire x1="182.88" y1="190.5" x2="182.88" y2="193.04" width="0.1524" layer="91"/>
 <junction x="182.88" y="190.5"/>
+<pinref part="U$1" gate="G$2" pin="GND"/>
 </segment>
 <segment>
 <wire x1="187.96" y1="243.84" x2="190.5" y2="243.84" width="0.1524" layer="91"/>
@@ -22558,21 +22535,21 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <wire x1="190.5" y1="231.14" x2="187.96" y2="231.14" width="0.1524" layer="91"/>
 <wire x1="187.96" y1="231.14" x2="187.96" y2="228.6" width="0.1524" layer="91"/>
 <pinref part="GND7" gate="1" pin="GND"/>
-<pinref part="U$1" gate="G$1" pin="/OE2"/>
-<pinref part="U$1" gate="G$1" pin="/OE1"/>
 <wire x1="190.5" y1="233.68" x2="187.96" y2="233.68" width="0.1524" layer="91"/>
 <wire x1="187.96" y1="233.68" x2="187.96" y2="231.14" width="0.1524" layer="91"/>
 <junction x="187.96" y="231.14"/>
+<pinref part="U$1" gate="G$1" pin="/OE1"/>
+<pinref part="U$1" gate="G$1" pin="/OE2"/>
 </segment>
 <segment>
 <wire x1="119.38" y1="228.6" x2="116.84" y2="228.6" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="228.6" x2="116.84" y2="226.06" width="0.1524" layer="91"/>
 <pinref part="GND16" gate="1" pin="GND"/>
-<pinref part="U$3" gate="G$1" pin="/OE2"/>
-<pinref part="U$3" gate="G$1" pin="/OE1"/>
 <wire x1="119.38" y1="231.14" x2="116.84" y2="231.14" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="231.14" x2="116.84" y2="228.6" width="0.1524" layer="91"/>
 <junction x="116.84" y="228.6"/>
+<pinref part="U$3" gate="G$1" pin="/OE1"/>
+<pinref part="U$3" gate="G$1" pin="/OE2"/>
 </segment>
 <segment>
 <pinref part="J2" gate="G$1" pin="1"/>
@@ -22580,25 +22557,6 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <label x="26.67" y="20.32" size="0.8128" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="IC2" gate="A" pin="A0"/>
-<wire x1="43.18" y1="208.28" x2="38.1" y2="208.28" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="208.28" x2="38.1" y2="205.74" width="0.1524" layer="91"/>
-<pinref part="IC2" gate="A" pin="A1"/>
-<wire x1="38.1" y1="205.74" x2="38.1" y2="203.2" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="203.2" x2="38.1" y2="190.5" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="190.5" x2="38.1" y2="182.88" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="205.74" x2="38.1" y2="205.74" width="0.1524" layer="91"/>
-<junction x="38.1" y="205.74"/>
-<pinref part="IC2" gate="A" pin="A2"/>
-<wire x1="43.18" y1="203.2" x2="38.1" y2="203.2" width="0.1524" layer="91"/>
-<junction x="38.1" y="203.2"/>
-<pinref part="IC2" gate="A" pin="VSS"/>
-<wire x1="43.18" y1="190.5" x2="38.1" y2="190.5" width="0.1524" layer="91"/>
-<junction x="38.1" y="190.5"/>
-<pinref part="GND21" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="IC8" gate="G$1" pin="GND"/>
 <wire x1="30.48" y1="99.06" x2="30.48" y2="101.6" width="0.1524" layer="91"/>
 <pinref part="C24" gate="G$1" pin="2"/>
 <wire x1="45.72" y1="101.6" x2="45.72" y2="99.06" width="0.1524" layer="91"/>
@@ -22608,6 +22566,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <wire x1="15.24" y1="101.6" x2="15.24" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="15.24" y1="99.06" x2="30.48" y2="99.06" width="0.1524" layer="91"/>
 <pinref part="GND22" gate="1" pin="GND"/>
+<pinref part="IC8" gate="G$1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="GND32" gate="1" pin="GND"/>
@@ -22658,9 +22617,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="U2" gate="G$1" pin="GND3"/>
 </segment>
 <segment>
-<pinref part="JP1" gate="1" pin="3"/>
 <wire x1="166.37" y1="173.99" x2="166.37" y2="167.64" width="0.1524" layer="91"/>
 <pinref part="GND6" gate="1" pin="GND"/>
+<pinref part="JP1" gate="1" pin="3"/>
 </segment>
 <segment>
 <pinref part="J1" gate="G$1" pin="1"/>
@@ -22765,17 +22724,22 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </segment>
 <segment>
 <pinref part="C2" gate="G$1" pin="2"/>
-<wire x1="168.91" y1="17.78" x2="168.91" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="168.91" y1="15.24" x2="176.53" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="17.78" x2="160.02" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="15.24" x2="176.53" y2="15.24" width="0.1524" layer="91"/>
 <pinref part="C27" gate="G$1" pin="2"/>
-<wire x1="176.53" y1="15.24" x2="184.15" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="184.15" y1="15.24" x2="184.15" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="194.31" y1="15.24" x2="194.31" y2="17.78" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="2"/>
 <wire x1="176.53" y1="15.24" x2="176.53" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="15.24" x2="194.31" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="194.31" y1="15.24" x2="176.53" y2="15.24" width="0.1524" layer="91"/>
+<label x="203.2" y="15.24" size="1.016" layer="95" xref="yes"/>
 <junction x="176.53" y="15.24"/>
-<wire x1="187.96" y1="15.24" x2="184.15" y2="15.24" width="0.1524" layer="91"/>
-<junction x="184.15" y="15.24"/>
-<label x="187.96" y="15.24" size="1.016" layer="95" xref="yes"/>
+<junction x="194.31" y="15.24"/>
+</segment>
+<segment>
+<wire x1="215.9" y1="88.9" x2="213.36" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="R1" gate="G$1" pin="1"/>
+<label x="215.9" y="88.9" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="+12V" class="1">
@@ -22821,20 +22785,20 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </segment>
 <segment>
 <pinref part="C2" gate="G$1" pin="1"/>
-<wire x1="168.91" y1="25.4" x2="168.91" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="25.4" x2="160.02" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="C27" gate="G$1" pin="1"/>
-<wire x1="168.91" y1="27.94" x2="176.53" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="176.53" y1="27.94" x2="184.15" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="184.15" y1="27.94" x2="184.15" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="27.94" x2="176.53" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="194.31" y1="27.94" x2="194.31" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="1"/>
 <wire x1="176.53" y1="25.4" x2="176.53" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="203.2" y1="27.94" x2="194.31" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="194.31" y1="27.94" x2="176.53" y2="27.94" width="0.1524" layer="91"/>
+<label x="203.2" y="27.94" size="1.016" layer="95" xref="yes"/>
 <junction x="176.53" y="27.94"/>
-<wire x1="187.96" y1="27.94" x2="184.15" y2="27.94" width="0.1524" layer="91"/>
-<junction x="184.15" y="27.94"/>
-<label x="187.96" y="27.94" size="1.016" layer="95" xref="yes"/>
+<junction x="194.31" y="27.94"/>
 </segment>
 </net>
-<net name="SHUTTER_OPENED" class="0">
+<net name="ROR_OPENED" class="0">
 <segment>
 <wire x1="147.32" y1="238.76" x2="144.78" y2="238.76" width="0.1524" layer="91"/>
 <label x="147.32" y="238.76" size="1.016" layer="95" xref="yes"/>
@@ -22846,7 +22810,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="U2" gate="G$1" pin="IO33"/>
 </segment>
 </net>
-<net name="HOME_SHUTTER_CLOSED" class="0">
+<net name="HOME_ROR_CLOSED" class="0">
 <segment>
 <wire x1="147.32" y1="251.46" x2="144.78" y2="251.46" width="0.1524" layer="91"/>
 <label x="147.32" y="251.46" size="1.016" layer="95" xref="yes"/>
@@ -22890,7 +22854,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </segment>
 <segment>
 <wire x1="140.97" y1="127" x2="143.51" y2="127" width="0.1524" layer="91"/>
-<label x="140.97" y="127" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+<label x="140.97" y="127" size="1.016" layer="95" rot="R180" xref="yes"/>
 <pinref part="U2" gate="G$1" pin="IO25"/>
 </segment>
 </net>
@@ -22904,36 +22868,21 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <wire x1="121.92" y1="210.82" x2="121.92" y2="213.36" width="0.1524" layer="91"/>
 <junction x="121.92" y="210.82"/>
 <label x="121.92" y="213.36" size="0.8128" layer="95" rot="R90" xref="yes"/>
-<pinref part="C5" gate="G$1" pin="1"/>
-<wire x1="116.84" y1="210.82" x2="109.22" y2="210.82" width="0.1524" layer="91"/>
-<wire x1="109.22" y1="210.82" x2="109.22" y2="203.2" width="0.1524" layer="91"/>
-<junction x="116.84" y="210.82"/>
 <pinref part="U$3" gate="G$2" pin="VCC"/>
 </segment>
 <segment>
-<pinref part="R3" gate="G$1" pin="2"/>
-<wire x1="81.28" y1="226.06" x2="81.28" y2="223.52" width="0.1524" layer="91"/>
-<label x="81.28" y="226.06" size="1.016" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
-<pinref part="R1" gate="G$1" pin="2"/>
-<wire x1="33.02" y1="213.36" x2="33.02" y2="210.82" width="0.1524" layer="91"/>
-<label x="33.02" y="213.36" size="1.016" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
-<pinref part="IC2" gate="A" pin="VCC"/>
-<wire x1="40.64" y1="215.9" x2="40.64" y2="213.36" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="213.36" x2="43.18" y2="213.36" width="0.1524" layer="91"/>
-<label x="40.64" y="215.9" size="1.016" layer="95" ratio="3" rot="R90" xref="yes"/>
-</segment>
-<segment>
-<pinref part="IC8" gate="G$1" pin="VOUT"/>
 <pinref part="C24" gate="G$1" pin="1"/>
 <wire x1="43.18" y1="114.3" x2="45.72" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="114.3" x2="45.72" y2="109.22" width="0.1524" layer="91"/>
 <wire x1="48.26" y1="114.3" x2="45.72" y2="114.3" width="0.1524" layer="91"/>
 <junction x="45.72" y="114.3"/>
 <label x="48.26" y="114.3" size="1.016" layer="95" ratio="4" xref="yes"/>
+<pinref part="IC8" gate="G$1" pin="VOUT"/>
+</segment>
+<segment>
+<wire x1="215.9" y1="95.25" x2="213.36" y2="95.25" width="0.1524" layer="91"/>
+<pinref part="R3" gate="G$1" pin="1"/>
+<label x="215.9" y="95.25" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="RG-11-IN_5V" class="0">
@@ -22957,7 +22906,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <label x="335.28" y="233.68" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
-<net name="SHUTTER_OPENED_IN_5V" class="0">
+<net name="ROR_OPENED_IN_5V" class="0">
 <segment>
 <wire x1="116.84" y1="238.76" x2="119.38" y2="238.76" width="0.1524" layer="91"/>
 <label x="116.84" y="238.76" size="1.016" layer="95" rot="R180" xref="yes"/>
@@ -23100,18 +23049,18 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="C6" gate="G$1" pin="1"/>
 <wire x1="182.88" y1="210.82" x2="170.18" y2="210.82" width="0.1524" layer="91"/>
 <wire x1="170.18" y1="210.82" x2="170.18" y2="205.74" width="0.1524" layer="91"/>
-<pinref part="U$1" gate="G$2" pin="VCC"/>
 <wire x1="182.88" y1="210.82" x2="182.88" y2="208.28" width="0.1524" layer="91"/>
 <junction x="182.88" y="210.82"/>
+<pinref part="U$1" gate="G$2" pin="VCC"/>
 </segment>
 <segment>
 <pinref part="C23" gate="G$1" pin="1"/>
-<pinref part="IC8" gate="G$1" pin="VIN"/>
 <wire x1="15.24" y1="109.22" x2="15.24" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="15.24" y1="114.3" x2="17.78" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="15.24" y1="116.84" x2="15.24" y2="114.3" width="0.1524" layer="91"/>
 <junction x="15.24" y="114.3"/>
 <label x="15.24" y="116.84" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="IC8" gate="G$1" pin="VIN"/>
 </segment>
 <segment>
 <pinref part="T1" gate="G$1" pin="C"/>
@@ -23190,29 +23139,12 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </net>
 <net name="SDA" class="0">
 <segment>
-<pinref part="IC2" gate="A" pin="SDA"/>
-<wire x1="78.74" y1="213.36" x2="81.28" y2="213.36" width="0.1524" layer="91"/>
-<label x="83.82" y="213.36" size="1.016" layer="95" ratio="3" xref="yes"/>
-<pinref part="R3" gate="G$1" pin="1"/>
-<wire x1="81.28" y1="213.36" x2="83.82" y2="213.36" width="0.1524" layer="91"/>
-<junction x="81.28" y="213.36"/>
-</segment>
-<segment>
 <wire x1="186.69" y1="134.62" x2="184.15" y2="134.62" width="0.1524" layer="91"/>
 <label x="186.69" y="134.62" size="1.016" layer="95" xref="yes"/>
 <pinref part="U2" gate="G$1" pin="IO21"/>
 </segment>
 </net>
 <net name="SCL" class="0">
-<segment>
-<pinref part="IC2" gate="A" pin="SCL"/>
-<wire x1="43.18" y1="198.12" x2="33.02" y2="198.12" width="0.1524" layer="91"/>
-<label x="27.94" y="198.12" size="1.016" layer="95" ratio="3" rot="R180" xref="yes"/>
-<pinref part="R1" gate="G$1" pin="1"/>
-<wire x1="33.02" y1="198.12" x2="27.94" y2="198.12" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="200.66" x2="33.02" y2="198.12" width="0.1524" layer="91"/>
-<junction x="33.02" y="198.12"/>
-</segment>
 <segment>
 <wire x1="186.69" y1="142.24" x2="184.15" y2="142.24" width="0.1524" layer="91"/>
 <label x="186.69" y="142.24" size="1.016" layer="95" xref="yes"/>
@@ -23332,7 +23264,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="U2" gate="G$1" pin="IO23"/>
 </segment>
 </net>
-<net name="HOME_SHUTTER_CLOSED_IN_5V" class="0">
+<net name="HOME_ROR_CLOSED_IN_5V" class="0">
 <segment>
 <wire x1="116.84" y1="251.46" x2="119.38" y2="251.46" width="0.1524" layer="91"/>
 <label x="116.84" y="251.46" size="1.016" layer="95" rot="R180" xref="yes"/>
@@ -23373,7 +23305,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <label x="251.46" y="166.37" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="HOME_SHUTTER_CLOSED-IN_EXT" class="0">
+<net name="HOME_ROR_CLOSED-IN_EXT" class="0">
 <segment>
 <pinref part="R50" gate="G$1" pin="2"/>
 <wire x1="233.68" y1="217.17" x2="236.22" y2="217.17" width="0.1524" layer="91"/>
@@ -23385,7 +23317,7 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <label x="360.68" y="200.66" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="SHUTTER_OPENED-IN_EXT" class="0">
+<net name="ROR_OPENED-IN_EXT" class="0">
 <segment>
 <pinref part="R48" gate="G$1" pin="2"/>
 <wire x1="233.68" y1="191.77" x2="236.22" y2="191.77" width="0.1524" layer="91"/>
@@ -23535,10 +23467,10 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="U2" gate="G$1" pin="IO17"/>
 </segment>
 <segment>
-<pinref part="JP1" gate="1" pin="1"/>
 <wire x1="158.75" y1="171.45" x2="161.29" y2="171.45" width="0.1524" layer="91"/>
 <wire x1="161.29" y1="171.45" x2="161.29" y2="173.99" width="0.1524" layer="91"/>
 <label x="158.75" y="171.45" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+<pinref part="JP1" gate="1" pin="1"/>
 </segment>
 </net>
 <net name="RX2" class="0">
@@ -23548,31 +23480,31 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="U2" gate="G$1" pin="IO16"/>
 </segment>
 <segment>
-<pinref part="JP1" gate="1" pin="2"/>
 <wire x1="158.75" y1="168.91" x2="163.83" y2="168.91" width="0.1524" layer="91"/>
 <wire x1="163.83" y1="168.91" x2="163.83" y2="173.99" width="0.1524" layer="91"/>
 <label x="158.75" y="168.91" size="1.016" layer="95" ratio="4" rot="R180" xref="yes"/>
+<pinref part="JP1" gate="1" pin="2"/>
 </segment>
 </net>
 <net name="TXD0" class="0">
 <segment>
 <wire x1="186.69" y1="139.7" x2="184.15" y2="139.7" width="0.1524" layer="91"/>
-<label x="186.69" y="139.7" size="1.016" layer="95" ratio="4" xref="yes"/>
+<label x="186.69" y="139.7" size="1.016" layer="95" xref="yes"/>
 <pinref part="U2" gate="G$1" pin="TXD0"/>
 </segment>
 </net>
 <net name="RXD0" class="0">
 <segment>
 <wire x1="186.69" y1="137.16" x2="184.15" y2="137.16" width="0.1524" layer="91"/>
-<label x="186.69" y="137.16" size="1.016" layer="95" ratio="4" xref="yes"/>
+<label x="186.69" y="137.16" size="1.016" layer="95" xref="yes"/>
 <pinref part="U2" gate="G$1" pin="RXD0"/>
 </segment>
 </net>
 <net name="SPARE_OUT1_5V" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="Y3"/>
 <wire x1="218.44" y1="248.92" x2="215.9" y2="248.92" width="0.1524" layer="91"/>
 <label x="218.44" y="248.92" size="1.016" layer="95" xref="yes"/>
+<pinref part="U$1" gate="G$1" pin="Y3"/>
 </segment>
 <segment>
 <wire x1="303.53" y1="146.05" x2="306.07" y2="146.05" width="0.1524" layer="91"/>
@@ -23591,6 +23523,11 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <label x="186.69" y="114.3" size="1.016" layer="95" xref="yes"/>
 <pinref part="U2" gate="G$1" pin="IO0"/>
 </segment>
+<segment>
+<wire x1="200.66" y1="95.25" x2="203.2" y2="95.25" width="0.1524" layer="91"/>
+<pinref part="R3" gate="G$1" pin="2"/>
+<label x="200.66" y="95.25" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="SPARE_OUT2" class="0">
 <segment>
@@ -23603,12 +23540,17 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <label x="187.96" y="246.38" size="1.016" layer="95" rot="R180" xref="yes"/>
 <pinref part="U$1" gate="G$1" pin="A4"/>
 </segment>
+<segment>
+<wire x1="200.66" y1="88.9" x2="203.2" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="R1" gate="G$1" pin="2"/>
+<label x="200.66" y="88.9" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
 </net>
 <net name="SPARE_OUT2_5V" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="Y4"/>
 <wire x1="218.44" y1="246.38" x2="215.9" y2="246.38" width="0.1524" layer="91"/>
 <label x="218.44" y="246.38" size="1.016" layer="95" xref="yes"/>
+<pinref part="U$1" gate="G$1" pin="Y4"/>
 </segment>
 <segment>
 <wire x1="303.53" y1="148.59" x2="306.07" y2="148.59" width="0.1524" layer="91"/>
@@ -23857,39 +23799,39 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="GND13" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AGND@6"/>
 <wire x1="91.44" y1="139.7" x2="91.44" y2="142.24" width="0.1524" layer="91"/>
 <label x="91.44" y="139.7" size="1.016" layer="95" rot="R270" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AGND@6"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AGND@1"/>
 <wire x1="109.22" y1="162.56" x2="106.68" y2="162.56" width="0.1524" layer="91"/>
 <label x="109.22" y="162.56" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AGND@1"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AGND@2"/>
 <wire x1="109.22" y1="177.8" x2="106.68" y2="177.8" width="0.1524" layer="91"/>
 <label x="109.22" y="177.8" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AGND@2"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AGND@3"/>
 <wire x1="88.9" y1="203.2" x2="88.9" y2="200.66" width="0.1524" layer="91"/>
 <label x="88.9" y="203.2" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AGND@3"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AGND@4"/>
 <wire x1="83.82" y1="203.2" x2="83.82" y2="200.66" width="0.1524" layer="91"/>
 <label x="83.82" y="203.2" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AGND@4"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AGND@5"/>
 <wire x1="76.2" y1="203.2" x2="76.2" y2="200.66" width="0.1524" layer="91"/>
 <label x="76.2" y="203.2" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AGND@5"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="GND"/>
 <wire x1="45.72" y1="175.26" x2="48.26" y2="175.26" width="0.1524" layer="91"/>
 <label x="45.72" y="175.26" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="C11" gate="G$1" pin="2"/>
@@ -24002,30 +23944,30 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </net>
 <net name="SDI" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="MISO"/>
 <wire x1="45.72" y1="162.56" x2="48.26" y2="162.56" width="0.1524" layer="91"/>
 <label x="45.72" y="162.56" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="MISO"/>
 </segment>
 </net>
 <net name="SCLK" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="SCLK"/>
 <wire x1="45.72" y1="165.1" x2="48.26" y2="165.1" width="0.1524" layer="91"/>
 <label x="45.72" y="165.1" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="SCLK"/>
 </segment>
 </net>
 <net name="SDO" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="MOSI"/>
 <wire x1="45.72" y1="160.02" x2="48.26" y2="160.02" width="0.1524" layer="91"/>
 <label x="45.72" y="160.02" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="MOSI"/>
 </segment>
 </net>
 <net name="ETH_CS" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="SCS_N"/>
 <wire x1="45.72" y1="167.64" x2="48.26" y2="167.64" width="0.1524" layer="91"/>
 <label x="45.72" y="167.64" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="SCS_N"/>
 </segment>
 </net>
 <net name="LINK_ACK" class="0">
@@ -24035,9 +23977,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="X9" gate="G$1" pin="C-R"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="LINKLED"/>
 <wire x1="45.72" y1="185.42" x2="48.26" y2="185.42" width="0.1524" layer="91"/>
 <label x="45.72" y="185.42" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="LINKLED"/>
 </segment>
 </net>
 <net name="CR" class="3">
@@ -24087,16 +24029,16 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <pinref part="X9" gate="G$1" pin="TD-"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="TXN"/>
 <wire x1="109.22" y1="157.48" x2="106.68" y2="157.48" width="0.1524" layer="91"/>
 <label x="109.22" y="157.48" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="TXN"/>
 </segment>
 </net>
 <net name="RXP" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RXP"/>
 <wire x1="109.22" y1="170.18" x2="106.68" y2="170.18" width="0.1524" layer="91"/>
 <label x="109.22" y="170.18" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="RXP"/>
 </segment>
 <segment>
 <label x="246.38" y="200.66" size="1.016" layer="95" rot="R180" xref="yes"/>
@@ -24111,9 +24053,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </net>
 <net name="RXN" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RXN"/>
 <wire x1="109.22" y1="167.64" x2="106.68" y2="167.64" width="0.1524" layer="91"/>
 <label x="109.22" y="167.64" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="RXN"/>
 </segment>
 <segment>
 <label x="246.38" y="185.42" size="1.016" layer="95" rot="R180" xref="yes"/>
@@ -24127,9 +24069,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </net>
 <net name="TXP" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="TXP"/>
 <wire x1="109.22" y1="160.02" x2="106.68" y2="160.02" width="0.1524" layer="91"/>
 <label x="109.22" y="160.02" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="TXP"/>
 </segment>
 <segment>
 <wire x1="309.88" y1="220.98" x2="279.4" y2="220.98" width="0.1524" layer="91"/>
@@ -24143,22 +24085,22 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </net>
 <net name="INT_N" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="INT_N"/>
 <wire x1="45.72" y1="157.48" x2="48.26" y2="157.48" width="0.1524" layer="91"/>
 <label x="45.72" y="157.48" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="INT_N"/>
 </segment>
 </net>
 <net name="N$17" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="DUPLED"/>
 <wire x1="45.72" y1="182.88" x2="48.26" y2="182.88" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="DUPLED"/>
 </segment>
 </net>
 <net name="ACT_LED" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="ACTLED"/>
 <wire x1="45.72" y1="180.34" x2="48.26" y2="180.34" width="0.1524" layer="91"/>
 <label x="45.72" y="180.34" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="ACTLED"/>
 </segment>
 <segment>
 <wire x1="307.34" y1="149.86" x2="309.88" y2="149.86" width="0.1524" layer="91"/>
@@ -24168,154 +24110,154 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </net>
 <net name="XI" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="XI/CLKIN"/>
 <wire x1="45.72" y1="172.72" x2="48.26" y2="172.72" width="0.1524" layer="91"/>
 <label x="45.72" y="172.72" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="XI/CLKIN"/>
 </segment>
 <segment>
 <wire x1="190.5" y1="162.56" x2="187.96" y2="162.56" width="0.1524" layer="91"/>
-<pinref part="25MHZ" gate="G$1" pin="FO"/>
 <label x="187.96" y="162.56" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="25MHZ" gate="G$1" pin="FO"/>
 </segment>
 </net>
 <net name="XO" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="XO"/>
 <wire x1="45.72" y1="170.18" x2="48.26" y2="170.18" width="0.1524" layer="91"/>
 <label x="45.72" y="170.18" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="XO"/>
 </segment>
 </net>
 <net name="N$22" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RSVD@2"/>
 <wire x1="66.04" y1="142.24" x2="66.04" y2="139.7" width="0.1524" layer="91"/>
 <pinref part="R31" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="RSVD@2"/>
 </segment>
 </net>
 <net name="N$23" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RSVD@3"/>
 <wire x1="68.58" y1="139.7" x2="68.58" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="R32" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="RSVD@3"/>
 </segment>
 </net>
 <net name="N$24" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RSVD@4"/>
 <wire x1="71.12" y1="139.7" x2="71.12" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="R33" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="RSVD@4"/>
 </segment>
 </net>
 <net name="N$25" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RSVD@5"/>
 <wire x1="73.66" y1="139.7" x2="73.66" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="R34" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="RSVD@5"/>
 </segment>
 </net>
 <net name="N$26" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RSVD@6"/>
 <wire x1="76.2" y1="139.7" x2="76.2" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="R35" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="RSVD@6"/>
 </segment>
 </net>
 <net name="N$27" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PMODE2"/>
 <wire x1="78.74" y1="139.7" x2="78.74" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="R36" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="PMODE2"/>
 </segment>
 </net>
 <net name="N$28" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PMODE1"/>
 <wire x1="81.28" y1="139.7" x2="81.28" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="R37" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="PMODE1"/>
 </segment>
 </net>
 <net name="N$29" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PMODE0"/>
 <wire x1="83.82" y1="139.7" x2="83.82" y2="142.24" width="0.1524" layer="91"/>
 <pinref part="R38" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="PMODE0"/>
 </segment>
 </net>
 <net name="N$31" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="TOCAP"/>
 <wire x1="73.66" y1="223.52" x2="73.66" y2="200.66" width="0.1524" layer="91"/>
 <pinref part="C19" gate="G$1" pin="2"/>
+<pinref part="U1" gate="G$1" pin="TOCAP"/>
 </segment>
 </net>
 <net name="N$32" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="VBG"/>
 <wire x1="78.74" y1="203.2" x2="78.74" y2="200.66" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="VBG"/>
 </segment>
 </net>
 <net name="N$33" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="1V2O"/>
 <wire x1="68.58" y1="215.9" x2="68.58" y2="200.66" width="0.1524" layer="91"/>
 <pinref part="C18" gate="G$1" pin="2"/>
+<pinref part="U1" gate="G$1" pin="1V2O"/>
 </segment>
 </net>
 <net name="N$34" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="EXRES1"/>
 <wire x1="106.68" y1="180.34" x2="119.38" y2="180.34" width="0.1524" layer="91"/>
 <pinref part="R39" gate="G$1" pin="1"/>
+<pinref part="U1" gate="G$1" pin="EXRES1"/>
 </segment>
 </net>
 <net name="N$35" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RSVD@1"/>
 <wire x1="66.04" y1="203.2" x2="66.04" y2="200.66" width="0.1524" layer="91"/>
 <pinref part="R40" gate="G$1" pin="2"/>
+<pinref part="U1" gate="G$1" pin="RSVD@1"/>
 </segment>
 </net>
 <net name="ETH_RESET" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="RST_N"/>
 <pinref part="R30" gate="G$1" pin="1"/>
 <wire x1="63.5" y1="142.24" x2="63.5" y2="139.7" width="0.1524" layer="91"/>
 <wire x1="63.5" y1="139.7" x2="63.5" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="63.5" y1="139.7" x2="60.96" y2="139.7" width="0.1524" layer="91"/>
 <junction x="63.5" y="139.7"/>
 <label x="60.96" y="139.7" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="RST_N"/>
 </segment>
 </net>
 <net name="AVDD" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="AVDD@6"/>
 <wire x1="71.12" y1="203.2" x2="71.12" y2="200.66" width="0.1524" layer="91"/>
 <label x="71.12" y="203.2" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AVDD@6"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AVDD@3"/>
 <wire x1="109.22" y1="182.88" x2="106.68" y2="182.88" width="0.1524" layer="91"/>
 <label x="109.22" y="182.88" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AVDD@3"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AVDD@2"/>
 <wire x1="109.22" y1="175.26" x2="106.68" y2="175.26" width="0.1524" layer="91"/>
 <label x="109.22" y="175.26" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AVDD@2"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AVDD@1"/>
 <wire x1="109.22" y1="165.1" x2="106.68" y2="165.1" width="0.1524" layer="91"/>
 <label x="109.22" y="165.1" size="1.016" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AVDD@1"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AVDD@5"/>
 <wire x1="81.28" y1="203.2" x2="81.28" y2="200.66" width="0.1524" layer="91"/>
 <label x="81.28" y="203.2" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AVDD@5"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="AVDD@4"/>
 <wire x1="86.36" y1="203.2" x2="86.36" y2="200.66" width="0.1524" layer="91"/>
 <label x="86.36" y="203.2" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="AVDD@4"/>
 </segment>
 <segment>
 <pinref part="C11" gate="G$1" pin="1"/>
@@ -24389,12 +24331,10 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </net>
 <net name="3.3V" class="0">
 <segment>
-<pinref part="25MHZ" gate="G$1" pin="OE"/>
 <wire x1="190.5" y1="157.48" x2="187.96" y2="157.48" width="0.1524" layer="91"/>
 <wire x1="187.96" y1="157.48" x2="187.96" y2="149.86" width="0.1524" layer="91"/>
 <wire x1="187.96" y1="149.86" x2="223.52" y2="149.86" width="0.1524" layer="91"/>
 <wire x1="223.52" y1="149.86" x2="223.52" y2="157.48" width="0.1524" layer="91"/>
-<pinref part="25MHZ" gate="G$1" pin="VDD"/>
 <wire x1="223.52" y1="157.48" x2="215.9" y2="157.48" width="0.1524" layer="91"/>
 <pinref part="C20" gate="G$1" pin="1"/>
 <wire x1="223.52" y1="149.86" x2="223.52" y2="147.32" width="0.1524" layer="91"/>
@@ -24402,6 +24342,8 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <wire x1="223.52" y1="157.48" x2="226.06" y2="157.48" width="0.1524" layer="91"/>
 <junction x="223.52" y="157.48"/>
 <label x="226.06" y="157.48" size="1.016" layer="95" xref="yes"/>
+<pinref part="25MHZ" gate="G$1" pin="VDD"/>
+<pinref part="25MHZ" gate="G$1" pin="OE"/>
 </segment>
 <segment>
 <pinref part="R30" gate="G$1" pin="2"/>
@@ -24414,9 +24356,9 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 <label x="152.4" y="134.62" size="1.016" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="VDD"/>
 <wire x1="45.72" y1="177.8" x2="48.26" y2="177.8" width="0.1524" layer="91"/>
 <label x="45.72" y="177.8" size="1.016" layer="95" rot="R180" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="VDD"/>
 </segment>
 <segment>
 <pinref part="R38" gate="G$1" pin="2"/>
@@ -24456,112 +24398,6 @@ Source: &lt;a href="https://www.vishay.com/docs/34289/lp12bz11.pdf"&gt; Datashee
 </nets>
 </sheet>
 </sheets>
-<sch_hier_ref_des_map>
-<part_path_ref_des_mapping board_ref_des="25MHZ" logical_identifier="25MHZ"/>
-<part_path_ref_des_mapping board_ref_des="C1" logical_identifier="C1"/>
-<part_path_ref_des_mapping board_ref_des="C10" logical_identifier="C10"/>
-<part_path_ref_des_mapping board_ref_des="C11" logical_identifier="C11"/>
-<part_path_ref_des_mapping board_ref_des="C12" logical_identifier="C12"/>
-<part_path_ref_des_mapping board_ref_des="C13" logical_identifier="C13"/>
-<part_path_ref_des_mapping board_ref_des="C14" logical_identifier="C14"/>
-<part_path_ref_des_mapping board_ref_des="C15" logical_identifier="C15"/>
-<part_path_ref_des_mapping board_ref_des="C16" logical_identifier="C16"/>
-<part_path_ref_des_mapping board_ref_des="C17" logical_identifier="C17"/>
-<part_path_ref_des_mapping board_ref_des="C18" logical_identifier="C18"/>
-<part_path_ref_des_mapping board_ref_des="C19" logical_identifier="C19"/>
-<part_path_ref_des_mapping board_ref_des="C2" logical_identifier="C2"/>
-<part_path_ref_des_mapping board_ref_des="C20" logical_identifier="C20"/>
-<part_path_ref_des_mapping board_ref_des="C21" logical_identifier="C21"/>
-<part_path_ref_des_mapping board_ref_des="C22" logical_identifier="C22"/>
-<part_path_ref_des_mapping board_ref_des="C23" logical_identifier="C23"/>
-<part_path_ref_des_mapping board_ref_des="C24" logical_identifier="C24"/>
-<part_path_ref_des_mapping board_ref_des="C25" logical_identifier="C25"/>
-<part_path_ref_des_mapping board_ref_des="C26" logical_identifier="C26"/>
-<part_path_ref_des_mapping board_ref_des="C27" logical_identifier="C27"/>
-<part_path_ref_des_mapping board_ref_des="C29" logical_identifier="C29"/>
-<part_path_ref_des_mapping board_ref_des="C3" logical_identifier="C3"/>
-<part_path_ref_des_mapping board_ref_des="C4" logical_identifier="C4"/>
-<part_path_ref_des_mapping board_ref_des="C40" logical_identifier="C40"/>
-<part_path_ref_des_mapping board_ref_des="C41" logical_identifier="C41"/>
-<part_path_ref_des_mapping board_ref_des="C42" logical_identifier="C42"/>
-<part_path_ref_des_mapping board_ref_des="C43" logical_identifier="C43"/>
-<part_path_ref_des_mapping board_ref_des="C44" logical_identifier="C44"/>
-<part_path_ref_des_mapping board_ref_des="C45" logical_identifier="C45"/>
-<part_path_ref_des_mapping board_ref_des="C46" logical_identifier="C46"/>
-<part_path_ref_des_mapping board_ref_des="C5" logical_identifier="C5"/>
-<part_path_ref_des_mapping board_ref_des="C6" logical_identifier="C6"/>
-<part_path_ref_des_mapping board_ref_des="C7" logical_identifier="C7"/>
-<part_path_ref_des_mapping board_ref_des="C8" logical_identifier="C8"/>
-<part_path_ref_des_mapping board_ref_des="C9" logical_identifier="C9"/>
-<part_path_ref_des_mapping board_ref_des="FL1" logical_identifier="FL1"/>
-<part_path_ref_des_mapping board_ref_des="FRAME1" logical_identifier="FRAME1"/>
-<part_path_ref_des_mapping board_ref_des="FRAME2" logical_identifier="FRAME2"/>
-<part_path_ref_des_mapping board_ref_des="IC2" logical_identifier="IC2"/>
-<part_path_ref_des_mapping board_ref_des="IC8" logical_identifier="IC8"/>
-<part_path_ref_des_mapping board_ref_des="J1" logical_identifier="J1"/>
-<part_path_ref_des_mapping board_ref_des="J10" logical_identifier="J10"/>
-<part_path_ref_des_mapping board_ref_des="J11" logical_identifier="J11"/>
-<part_path_ref_des_mapping board_ref_des="J12" logical_identifier="J12"/>
-<part_path_ref_des_mapping board_ref_des="J2" logical_identifier="J2"/>
-<part_path_ref_des_mapping board_ref_des="J3" logical_identifier="J3"/>
-<part_path_ref_des_mapping board_ref_des="J4" logical_identifier="J4"/>
-<part_path_ref_des_mapping board_ref_des="J6" logical_identifier="J6"/>
-<part_path_ref_des_mapping board_ref_des="J7" logical_identifier="J7"/>
-<part_path_ref_des_mapping board_ref_des="J8" logical_identifier="J8"/>
-<part_path_ref_des_mapping board_ref_des="J9" logical_identifier="J9"/>
-<part_path_ref_des_mapping board_ref_des="JP1" logical_identifier="JP1"/>
-<part_path_ref_des_mapping board_ref_des="L1" logical_identifier="L1"/>
-<part_path_ref_des_mapping board_ref_des="PS1" logical_identifier="PS1"/>
-<part_path_ref_des_mapping board_ref_des="R1" logical_identifier="R1"/>
-<part_path_ref_des_mapping board_ref_des="R12" logical_identifier="R12"/>
-<part_path_ref_des_mapping board_ref_des="R15" logical_identifier="R15"/>
-<part_path_ref_des_mapping board_ref_des="R16" logical_identifier="R16"/>
-<part_path_ref_des_mapping board_ref_des="R17" logical_identifier="R17"/>
-<part_path_ref_des_mapping board_ref_des="R18" logical_identifier="R18"/>
-<part_path_ref_des_mapping board_ref_des="R20" logical_identifier="R20"/>
-<part_path_ref_des_mapping board_ref_des="R21" logical_identifier="R21"/>
-<part_path_ref_des_mapping board_ref_des="R22" logical_identifier="R22"/>
-<part_path_ref_des_mapping board_ref_des="R23" logical_identifier="R23"/>
-<part_path_ref_des_mapping board_ref_des="R24" logical_identifier="R24"/>
-<part_path_ref_des_mapping board_ref_des="R25" logical_identifier="R25"/>
-<part_path_ref_des_mapping board_ref_des="R26" logical_identifier="R26"/>
-<part_path_ref_des_mapping board_ref_des="R27" logical_identifier="R27"/>
-<part_path_ref_des_mapping board_ref_des="R28" logical_identifier="R28"/>
-<part_path_ref_des_mapping board_ref_des="R29" logical_identifier="R29"/>
-<part_path_ref_des_mapping board_ref_des="R3" logical_identifier="R3"/>
-<part_path_ref_des_mapping board_ref_des="R30" logical_identifier="R30"/>
-<part_path_ref_des_mapping board_ref_des="R31" logical_identifier="R31"/>
-<part_path_ref_des_mapping board_ref_des="R32" logical_identifier="R32"/>
-<part_path_ref_des_mapping board_ref_des="R33" logical_identifier="R33"/>
-<part_path_ref_des_mapping board_ref_des="R34" logical_identifier="R34"/>
-<part_path_ref_des_mapping board_ref_des="R35" logical_identifier="R35"/>
-<part_path_ref_des_mapping board_ref_des="R36" logical_identifier="R36"/>
-<part_path_ref_des_mapping board_ref_des="R37" logical_identifier="R37"/>
-<part_path_ref_des_mapping board_ref_des="R38" logical_identifier="R38"/>
-<part_path_ref_des_mapping board_ref_des="R39" logical_identifier="R39"/>
-<part_path_ref_des_mapping board_ref_des="R4" logical_identifier="R4"/>
-<part_path_ref_des_mapping board_ref_des="R40" logical_identifier="R40"/>
-<part_path_ref_des_mapping board_ref_des="R41" logical_identifier="R41"/>
-<part_path_ref_des_mapping board_ref_des="R44" logical_identifier="R44"/>
-<part_path_ref_des_mapping board_ref_des="R45" logical_identifier="R45"/>
-<part_path_ref_des_mapping board_ref_des="R46" logical_identifier="R46"/>
-<part_path_ref_des_mapping board_ref_des="R47" logical_identifier="R47"/>
-<part_path_ref_des_mapping board_ref_des="R48" logical_identifier="R48"/>
-<part_path_ref_des_mapping board_ref_des="R49" logical_identifier="R49"/>
-<part_path_ref_des_mapping board_ref_des="R5" logical_identifier="R5"/>
-<part_path_ref_des_mapping board_ref_des="R50" logical_identifier="R50"/>
-<part_path_ref_des_mapping board_ref_des="R7" logical_identifier="R7"/>
-<part_path_ref_des_mapping board_ref_des="R9" logical_identifier="R9"/>
-<part_path_ref_des_mapping board_ref_des="T1" logical_identifier="T1"/>
-<part_path_ref_des_mapping board_ref_des="T2" logical_identifier="T2"/>
-<part_path_ref_des_mapping board_ref_des="T3" logical_identifier="T3"/>
-<part_path_ref_des_mapping board_ref_des="U$1" logical_identifier="U$1"/>
-<part_path_ref_des_mapping board_ref_des="U$3" logical_identifier="U$3"/>
-<part_path_ref_des_mapping board_ref_des="U$4" logical_identifier="U$4"/>
-<part_path_ref_des_mapping board_ref_des="U1" logical_identifier="U1"/>
-<part_path_ref_des_mapping board_ref_des="U2" logical_identifier="U2"/>
-<part_path_ref_des_mapping board_ref_des="X9" logical_identifier="X9"/>
-</sch_hier_ref_des_map>
 </schematic>
 </drawing>
 <compatibility>
