@@ -142,11 +142,13 @@ DomeAlpacaDiscoveryServer *AlpacaDiscoveryServer;
 #endif
 
 void MotorTask(void *);
+/*
 esp_task_wdt_config_t twdt_config = {
 	.timeout_ms = 1000000,
 	.idle_core_mask = 0,    // Bitmask of cores
 	.trigger_panic = false,
 };
+*/
 
 //
 // Setup and main loops
@@ -185,12 +187,13 @@ void setup()
 	bGotHelloFromShutter = false;
 	configureWiFi();
 #endif
-
+/*
 	esp_task_wdt_deinit();
 	esp_task_wdt_init(&twdt_config);
 	esp_task_wdt_add(NULL);
 	disableCore0WDT();
 	disableCore1WDT();
+*/
 	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 16, NULL,  0);
 
 	domeServer = new NetworkServer(CMD_SERVER_PORT);
@@ -299,7 +302,7 @@ void loop()
 		}
 	}
 	taskYIELD();
-	esp_task_wdt_reset();
+	// esp_task_wdt_reset();
 }
 
 //
@@ -317,13 +320,13 @@ void MotorTask(void *)
 	attachInterrupt(BUTTON_CW, buttonWestHandler, CHANGE);
 	attachInterrupt(BUTTON_CCW, buttonEastHandler, CHANGE);
 
-	esp_task_wdt_add(NULL);
+	// esp_task_wdt_add(NULL);
 	DBPrintln("========== Motor task ready ==========");
 
 	for(;;) {
 		Rotator->Run();
 		taskYIELD();
-		esp_task_wdt_reset();
+		// esp_task_wdt_reset();
 		vTaskDelay(xDelay);
 	}
 }
