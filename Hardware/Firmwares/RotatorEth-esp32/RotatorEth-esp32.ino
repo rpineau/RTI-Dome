@@ -33,7 +33,7 @@ bool firstLoop = true;
 #endif
 
 byte MAC_Address[6];
-
+String sHostname;
 IPConfig ServerConfig;
 volatile bool ethernetPresent = false;
 NetworkServer *domeServer = nullptr;
@@ -194,6 +194,8 @@ void setup()
 	AlpacaServer = new DomeAlpacaServer();
 	AlpacaServer->startServer();
 #endif
+	// mdns_init();
+	// MDNS.begin(sHostname.c_str());
 	DBPrintln("========== Ready ==========");
 }
 
@@ -380,7 +382,10 @@ bool initEthernet(bool bUseDHCP, IPAddress ip, IPAddress dns, IPAddress gateway,
 	}
 
 	domeEthernet.macAddress(MAC_Address);
-	domeEthernet.setHostname("RTI-Dome");
+	sHostname = "RTI-Dome-" + String(MAC_Address[3], HEX)
+													+ String(MAC_Address[4], HEX)
+													+ String(MAC_Address[5], HEX);
+	domeEthernet.setHostname(sHostname.c_str());
 
 	DBPrintln("========== Setting IP config ==========");
 	// try DHCP if set
@@ -494,7 +499,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 		return false;
 	}
 	shutterWiFi.softAPConfig(ip, ip, IPAddress(255,255,255,0));
-	shutterWiFi.setHostname("RTI-Dome");
+	shutterWiFi.setHostname(sSSID.c_str());
 	DBPrintln("WiFi IP = " + RotatorClass::IpAddress2String(WiFi.softAPIP()));
 
 	if(shutterServer) {

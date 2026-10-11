@@ -16,8 +16,6 @@
 // Uncomment #define DEBUG in config.h to enable printing debug messages on serial port defined as DebugPort
 
 #include "Arduino.h"
-#include <rtc_wdt.h>
-#include <esp_task_wdt.h>
 #include "config.h"
 
 #define ERR_NO_DATA	-1
@@ -58,12 +56,6 @@ volatile bool needFirstPing = true;
 StopWatch watchdogTimer;
 ShutterClass *Shutter = nullptr;
 TaskHandle_t MotorTaskHanle;
-esp_task_wdt_config_t twdt_config =
-    {
-        .timeout_ms = 1000000,
-        .idle_core_mask = 0,    // Bitmask of cores
-        .trigger_panic = false,
-    };
 
 void MotorTask(void *);
 void handleClosedInterrupt();
@@ -89,12 +81,6 @@ void setup()
 	DBPrintln("========== Creating ShutterClass ==========");
 	Shutter = new ShutterClass();
 
-	DBPrintln("========== Disabling watchdog ==========");
-	esp_task_wdt_deinit();
-	esp_task_wdt_init(&twdt_config);
-	esp_task_wdt_add(NULL);
-	disableCore0WDT();
-	disableCore1WDT();
 	DBPrintln("========== Watchdog disabled ==========");
 
 	watchdogTimer.reset();
@@ -120,16 +106,16 @@ void loop()
 
 	// first check if we're connected to the WiFi AP of the rotator
 	if(!bWiFiOk) {
-		DBPrintln("No Wifi, trying to reconfigure");
+		DBPrintln("No Wifi, trying to reconnect");
 		shutterWiFi.disconnect();
 		if(shutterWiFi.reconnect()) {
 			rotatorConnect(wifiConfig.ip);
-			needFirstPing = true;
+			if(rotatorConnect(wifiConfig.ip))
+				needFirstPing = true;
 		}
 		else {
 			DBPrintln("No Wifi, looping");
 			taskYIELD();
-			esp_task_wdt_reset();
 		}
 	}
 
@@ -153,7 +139,6 @@ void loop()
 	CheckForCommands();
 
 	taskYIELD();
-	esp_task_wdt_reset();
 }
 
 void MotorTask(void *)
@@ -173,13 +158,11 @@ void MotorTask(void *)
 
 	attachInterrupt(BUTTON_OPEN, handleButtons, FALLING);
 	attachInterrupt(BUTTON_CLOSE, handleButtons, FALLING);
-	esp_task_wdt_add(NULL);
 
 	DBPrintln("========== Motor task ready ==========");
 	for(;;) {
 		Shutter->Run();
 		taskYIELD();
-		esp_task_wdt_reset();
 		vTaskDelay(xDelay);
 	}
 }
@@ -211,7 +194,7 @@ bool initWiFi(IPAddress ip, String sSSID, String sPassword)
 	shutterWiFi.config(ip,  gwIp, IPAddress(255,255,255,0));
 
 	DBPrintln("========== setHostname ==========");
-	shutterWiFi.setHostname("RTI-Shutter");
+	shutterWiFi.setHostname(sSSID.c_str());
 
 	DBPrintln("========== begin ==========");
 	DBPrintln("WiFi SSID = " + sSSID);
