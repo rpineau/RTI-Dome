@@ -440,11 +440,13 @@ void ProcessWifi()
 						if (Shutter->GetState() != CLOSED && Shutter->GetState() != CLOSING)
 							Shutter->Close();
 						isBadCondition = true;
+						Shutter->setBadCondition(isBadCondition);
 						DBPrintln("Bad conditions! (" + value + ")");
 					}
 				}
 				else {
 					isBadCondition = false;
+					Shutter->setBadCondition(isBadCondition);
 					DBPrintln("Good conditions");
 				}
 			}

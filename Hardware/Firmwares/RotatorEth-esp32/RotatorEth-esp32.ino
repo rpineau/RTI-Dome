@@ -572,7 +572,8 @@ void IRAM_ATTR buttonWestHandler()
 
 void IRAM_ATTR openShutterButtonInt()
 {
-	bOpenShutterButtonPressed = true;
+	if(bIsSafe)
+		bOpenShutterButtonPressed = true;
 }
 
 void IRAM_ATTR closeShutterButtonInt()

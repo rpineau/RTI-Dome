@@ -102,9 +102,10 @@ public:
 	void        setSSID(String sSSID);
 	void		getWiFiConfig(WIFIConfig &config);
 
-	int             MeasureVoltage();
-	int             GetVolts();            // cached reading, no ADC access
+	int			MeasureVoltage();
+	int			GetVolts();            // cached reading, no ADC access
 
+	void		setBadCondition(bool bBadCondition);
 private:
 
 	void            UpdateVoltageState();  // call after every MeasureVoltage()
@@ -118,8 +119,8 @@ private:
 	int             m_nVolts;
 	StopWatch       m_batteryCheckTimer;
 	unsigned long   m_nBatteryCheckInterval;
-	bool            m_bAborted;
-
+	bool            m_bAborted = false;
+	bool			m_bBadCondition = false;
 	void			clearPendingActions();
 	volatile bool m_bPendingOpenBottom  = false;
 	volatile bool m_bPendingCloseBottom = false;
@@ -547,6 +548,7 @@ int ShutterClass::GetVolts()
 	return m_nVolts;
 }
 
+
 String ShutterClass::GetVoltString()
 {
 	return String(m_nVolts) + "," + String(m_Config.cutoffVolts);
@@ -609,6 +611,11 @@ unsigned long ShutterClass::getWatchdogInterval()
 	return m_Config.watchdogInterval;
 }
 
+void ShutterClass::setBadCondition(bool bBadCondition)
+{
+	m_bBadCondition = bBadCondition;
+}
+
 inline void ShutterClass::SetWatchdogInterval(const unsigned long newInterval)
 {
 	if(newInterval > MAX_WATCHDOG_INTERVAL)
@@ -650,6 +657,8 @@ void IRAM_ATTR ShutterClass::DoButtons()
 
 	// shutter is between open and close and we want to open
 	if(sw1 == LOW  && sw3 == HIGH && sw4 == HIGH ) {
+		if(m_bBadCondition)
+			return;
 		motorStop();
 		MoveRelative(MOVE_DISTANCE_IN_STEPS );
 		shutterState = OPENING;
@@ -668,6 +677,8 @@ void IRAM_ATTR ShutterClass::DoButtons()
 	}
 	// button open pressed and we're closed
 	else if (sw1 == LOW && sw3 == LOW && sw4 == HIGH) {
+		if(m_bBadCondition)
+			return;
 		MoveRelative(MOVE_DISTANCE_IN_STEPS );
 		shutterState = OPENING;
 		m_bButtonUsed = true;
@@ -693,6 +704,9 @@ void IRAM_ATTR ShutterClass::DoButtons()
 // Movers
 void ShutterClass::openTop()
 {
+	if(m_bBadCondition)
+		return;
+
 	DBPrintln("["+String(__func__)+"] Top shutterState = Opening");
 	if (digitalRead(OPENED_PIN) == 0) {
 		if(m_Config.bHasDropShutter) {
@@ -751,6 +765,8 @@ void ShutterClass::closeTop()
 
 void ShutterClass::openBottom()
 {
+	if(m_bBadCondition)
+		return;
 	// If it is already open there will be no edge on LOWER_OPENED_PIN, so the
 	// interrupt would never fire and the actuator would run forever.
 	if (digitalRead(LOWER_OPENED_PIN) == 0) {
@@ -785,6 +801,8 @@ void ShutterClass::closeBottom()
 
 void ShutterClass::Open()
 {
+	if(m_bBadCondition)
+		return;
 	m_bAborted = false;
 	clearPendingActions();
 	m_nVolts = MeasureVoltage();   // fresh reading before committing to open
