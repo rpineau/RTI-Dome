@@ -183,19 +183,23 @@ void setup()
 	attachInterrupt(SPARE1, openShutterButtonInt, FALLING);
 	attachInterrupt(SPARE2, closeShutterButtonInt, FALLING);
 
-#ifdef USE_OTA_UPDATE
-	httpUpdater.setup(&httpServer);
-	httpServer.begin();
-#endif
-
 #ifdef USE_ALPACA
 	AlpacaDiscoveryServer = new DomeAlpacaDiscoveryServer();
 	AlpacaDiscoveryServer->startServer();
 	AlpacaServer = new DomeAlpacaServer();
 	AlpacaServer->startServer();
 #endif
-	// mdns_init();
-	// MDNS.begin(sHostname.c_str());
+	// Start mDNS
+	MDNS.begin(sHostname.c_str());
+	MDNS.addService("http", "tcp", 80); // web ui and Alpaca
+#ifdef USE_OTA_UPDATE
+	DBPrintln("OTA Update server started on port " + String(OTA_PORT));
+	httpUpdater.setup(&httpServer);
+	httpServer.begin();
+	MDNS.addService("OTA_update", "tcp", OTA_PORT);
+	MDNS.addServiceTxt("OTA_update", "tcp", "url", "http://" + sHostname + ".local:" + String(OTA_PORT) + "/update");
+#endif
+
 	DBPrintln("========== Ready ==========");
 }
 

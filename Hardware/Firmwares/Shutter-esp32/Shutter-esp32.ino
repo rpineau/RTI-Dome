@@ -39,11 +39,25 @@ String serialBuffer;
 #endif
 
 #include <WiFi.h>
+#include <ESPmDNS.h>
+
+#ifdef USE_OTA_UPDATE
+#pragma message "OTA Update enable"
+#include <WebServer.h>
+#include <HTTPUpdateServer.h>
+#endif
+
 #define SHUTTER_PORT 2424
 #define shutterWiFi WiFi
 WIFIConfig wifiConfig;
 WiFiClient shutterClient;
 IPAddress gwIp;
+// OTA update stuff
+#ifdef USE_OTA_UPDATE
+WebServer httpServer(OTA_PORT);
+HTTPUpdateServer httpUpdater;
+#endif
+
 bool configureWiFi();
 bool initWiFi(IPAddress ip, String sSSID, String sPassword);
 void ReceiveWiFi(WiFiClient client);
@@ -90,6 +104,16 @@ void setup()
 	DBPrintln("========== Creating motor task ==========");
 	xTaskCreatePinnedToCore(MotorTask, "MotorTask", 32768, NULL, 16, &MotorTaskHanle,  0);
 
+
+	#ifdef USE_OTA_UPDATE
+	DBPrintln("OTA Update server started on port " + String(OTA_PORT));
+	httpUpdater.setup(&httpServer);
+	httpServer.begin();
+	MDNS.addService("OTA_update", "tcp", OTA_PORT);
+	MDNS.addServiceTxt("OTA_update", "tcp", "url", "http://" + wifiConfig.sSSID + ".local:" + String(OTA_PORT) + "/update");
+#endif
+
+	wifiConfig.sSSID
 	DBPrintln("========== Ready ==========");
 
 }
@@ -137,6 +161,10 @@ void loop()
 		watchdogTimer.reset();
 
 	CheckForCommands();
+
+#ifdef USE_OTA_UPDATE
+	httpServer.handleClient();
+#endif
 
 	taskYIELD();
 }
