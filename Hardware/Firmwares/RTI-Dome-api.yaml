@@ -965,6 +965,19 @@ paths:
       tags:
       - Advanced
 
+  /setup/reboot:
+    put:
+      summary: Reboot the controller
+      description: 'Reboot the controller.'
+      operationId: rebootController
+      responses:
+        '200':
+          description: controller is rebooting
+        '400':
+          $ref: '#/components/responses/Response400'
+      tags:
+      - Advanced
+
   /setup/abort:
     put:
       summary: Abort all motion
