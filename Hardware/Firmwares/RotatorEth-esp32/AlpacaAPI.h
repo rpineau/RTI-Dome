@@ -1692,7 +1692,7 @@ void wifiSSIDValue(Request &req, Response &res)
 		JsonDocument FormData;
 		formDataToJson(req, FormData);
 		DBPrintln(String(__func__) + " : FormData[\"value\"].as<String>() : " + FormData["value"].as<String>());
-		
+
 		if(FormData.size()==0){
 			AlpacaError_x401(jsonResp, res);
 			return;
@@ -2542,11 +2542,35 @@ void uiResetToFactory(Request &req, Response &res)
 	Rotator->resetAlltoDefault();
 }
 
+
+void RebootTask(void *)
+{
+	const TickType_t xDelay = 100 / portTICK_PERIOD_MS;
+	vTaskDelay(xDelay);
+	ESP.restart();
+}
+
+void uiReboot(Request &req, Response &res)
+{
+	JsonDocument jsonResp;
+	String sResp;
+
+	jsonResp["value"] = "Rebooting";
+	serializeJson(jsonResp, sResp);
+	DBPrintln(String(__func__) + " : sResp : " + sResp);
+
+	res.set("Content-Type", "application/json");
+	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+	Abort();
+	xTaskCreatePinnedToCore(RebootTask, "Reboot", 10000, NULL, 16, NULL,  1);
+}
+
+
+
 void uiAbort(Request &req, Response &res)
 {
 	JsonDocument jsonResp;
 	String sResp;
-	float fParkAz;
 
 	jsonResp["value"] = "Aborting all motion";
 	serializeJson(jsonResp, sResp);
@@ -2741,6 +2765,7 @@ void DomeAlpacaServer::startServer()
 	m_AlpacaRestServer->get("/setup/getShutterState", &uiGetShutterState);
 
 	m_AlpacaRestServer->put("/setup/resetToFactory", &uiResetToFactory);
+	m_AlpacaRestServer->put("/setup/reboot", &uiReboot);
 
 	m_AlpacaRestServer->put("/setup/abort", &uiAbort);
 
