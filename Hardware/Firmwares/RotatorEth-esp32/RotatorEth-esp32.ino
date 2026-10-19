@@ -445,6 +445,14 @@ void checkForNewTCPClient()
 	if(!domeServer)
 		return;
 
+		// RIP connection that were closed
+	if((nbNetworkClient>0) && !domeClient.connected()) {
+		DBPrintln("client disconnected");
+		domeClient.stop();
+		nbNetworkClient--;
+		DBPrintln("nb client = " + String(nbNetworkClient));
+	}
+
 	NetworkClient newClient = domeServer->accept();
 	if(newClient) {
 		DBPrintln("new client");
@@ -461,12 +469,6 @@ void checkForNewTCPClient()
 		}
 	}
 
-	if((nbNetworkClient>0) && !domeClient.connected()) {
-		DBPrintln("client disconnected");
-		domeClient.stop();
-		nbNetworkClient--;
-		DBPrintln("nb client = " + String(nbNetworkClient));
-	}
 }
 
 #ifdef USE_WIFI
