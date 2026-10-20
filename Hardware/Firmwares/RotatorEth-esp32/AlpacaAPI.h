@@ -2540,6 +2540,15 @@ void uiResetToFactory(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+
+	String sTmpString = String(RESET_ALL);
+	if(nbWiFiClient && shutterClient.connected()) {
+		String shutterMessage = sTmpString+ "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+		vTaskDelay(DELAY_WIFI / portTICK_PERIOD_MS);
+		ReceiveWiFi(shutterClient);
+	}
+
 	Rotator->resetAlltoDefault();
 }
 
@@ -2571,6 +2580,13 @@ void uiReboot(Request &req, Response &res)
 
 	res.set("Content-Type", "application/json");
 	res.write((uint8_t*)(sResp.c_str()),sResp.length());
+
+	String sTmpString = String(REBOOT);
+	if(nbWiFiClient && shutterClient.connected()) {
+		String shutterMessage = sTmpString+ "#";
+		shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+	}
+
 	Abort();
 	xTaskCreatePinnedToCore(RebootTask, "Reboot", 10000, NULL, 16, NULL,  1);
 }

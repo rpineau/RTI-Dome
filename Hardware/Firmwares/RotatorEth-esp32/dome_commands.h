@@ -52,5 +52,6 @@ const char POSITION_SHUTTER                 = 'P'; // Get step position
 const char SHUTTER_SSID                     = 'Q'; // Get/Set the Shutter SSID
 const char SPEED_SHUTTER                    = 'R'; // Get/Set step rate (speed)
 const char STEPSPER_SHUTTER                 = 'T'; // Get/Set steps per stroke
+const char REBOOT							= 'U'; // reboot all boards
 const char VERSION_SHUTTER                  = 'V'; // Get version string
 const char REVERSED_SHUTTER                 = 'Y'; // Get/Set stepper reversed status

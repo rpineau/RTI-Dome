@@ -15,7 +15,7 @@
 
 // Uncomment #define DEBUG in config.h to enable printing debug messages on serial port defined as DebugPort
 
-#include "Arduino.h"
+#include <esp_wifi.h>
 #include "config.h"
 
 #define ERR_NO_DATA	-1
@@ -72,6 +72,7 @@ ShutterClass *Shutter = nullptr;
 TaskHandle_t MotorTaskHanle;
 
 void MotorTask(void *);
+void RebootTask(void *);
 void handleClosedInterrupt();
 void handleOpenInterrupt();
 void handleLowerClosedInterrupt();
@@ -193,6 +194,22 @@ void MotorTask(void *)
 		taskYIELD();
 		vTaskDelay(xDelay);
 	}
+}
+
+void RebootTask(void *)
+{
+	const TickType_t xDelay = 150 / portTICK_PERIOD_MS;
+
+	shutterClient.clear();
+	shutterClient.stop();
+
+	esp_wifi_stop();
+	vTaskDelay(xDelay);
+
+	esp_wifi_deinit();
+	vTaskDelay(xDelay);
+
+	ESP.restart();
 }
 
 // WiFi connection to rotator
@@ -557,6 +574,11 @@ void ProcessWifi()
 
 		case RESET_ALL:
 			Shutter->resetAlltoDefault(); // this reboots the ESP.
+			break;
+
+		case REBOOT:
+			Shutter->Abort();
+			xTaskCreatePinnedToCore(RebootTask, "Reboot", 10000, NULL, 16, NULL,  1);
 			break;
 
 		case SHUTTER_ORDER:
