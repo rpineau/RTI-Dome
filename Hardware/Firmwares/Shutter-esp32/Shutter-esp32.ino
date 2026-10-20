@@ -114,7 +114,6 @@ void setup()
 	MDNS.addServiceTxt("OTA_update", "tcp", "url", "http://" + wifiConfig.sSSID + ".local:" + String(OTA_PORT) + "/update");
 #endif
 
-	wifiConfig.sSSID
 	DBPrintln("========== Ready ==========");
 
 }
