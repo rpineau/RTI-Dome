@@ -1050,8 +1050,7 @@ void ProcessCommand(int nSource)
 				nbNetworkClient--;
 			}
 			DBPrintln("Rebooting for Ethernet reconfiguration");
-			vTaskDelay(500 / portTICK_PERIOD_MS);
-			ESP.restart();
+			xTaskCreatePinnedToCore(RebootTask, "Reboot", 10000, NULL, 16, NULL,  1);
 			break;
 
 		case ETH_MAC_ADDRESS:
@@ -1120,6 +1119,15 @@ void ProcessCommand(int nSource)
 			shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
 			vTaskDelay(250 / portTICK_PERIOD_MS);
 			Rotator->resetAlltoDefault(); // this reboots the ESP.
+			break;
+
+		case REBOOT:
+			sTmpString = String(REBOOT);
+			if(nbWiFiClient && shutterClient.connected()) {
+				shutterMessage += "#";
+				shutterClient.write(shutterMessage .c_str(), shutterMessage.length());
+			}
+			xTaskCreatePinnedToCore(RebootTask, "Reboot", 10000, NULL, 16, NULL,  1);
 			break;
 
 #ifdef USE_WIFI
