@@ -12,6 +12,7 @@
 // Alpaca REST server
 #include <UUID.h>
 #include <aWOT.h>
+#include <esp_wifi.h>
 
 #include "EtherMac.h"
 #include "dome_controller_html.h"
@@ -2546,7 +2547,16 @@ void uiResetToFactory(Request &req, Response &res)
 void RebootTask(void *)
 {
 	const TickType_t xDelay = 100 / portTICK_PERIOD_MS;
-	vTaskDelay(xDelay);
+
+	shutterClient.clear();
+	shutterClient.stop();
+
+	esp_wifi_stop();
+	vTaskDelay(xDelay/2);
+
+	esp_wifi_deinit();
+	vTaskDelay(xDelay/2);
+
 	ESP.restart();
 }
 
